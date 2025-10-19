@@ -52,6 +52,7 @@ public class AsientosController implements Initializable {
     private String titulo = "Película";
     private String hora   = "1:10 pm";
     private Image poster;
+    private Long funcionId; // ID de la función seleccionada
 
     // --- Carrito ---
     private final sigmacine.aplicacion.service.CarritoService carrito = sigmacine.aplicacion.service.CarritoService.getInstance();
@@ -331,7 +332,7 @@ public class AsientosController implements Initializable {
         if (seleccion.isEmpty()) return;
         for (String code : seleccion.stream().sorted().toList()) {
             String nombre = "Asiento " + code + " - " + (titulo != null ? titulo : "Película") + (hora != null ? " (" + hora + ")" : "");
-            var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, nombre, 1, PRECIO_ASIENTO);
+            var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO);
             carrito.addItem(dto);
             asientoItems.add(dto);
         }
@@ -340,9 +341,11 @@ public class AsientosController implements Initializable {
     public void setFuncion(String titulo,
                            String hora,
                            java.util.Set<String> ocupados,
-                           java.util.Set<String> accesibles) {
+                           java.util.Set<String> accesibles,
+                           Long funcionId) {
         if (titulo != null) this.titulo = titulo;
         if (hora   != null) this.hora   = hora;
+        this.funcionId = funcionId;
 
         this.ocupados.clear();
         if (ocupados != null) this.ocupados.addAll(ocupados);
@@ -359,6 +362,16 @@ public class AsientosController implements Initializable {
         if (gridSala != null) { poblarGrilla(); actualizarResumen(); }
     }
 
+    // Overload for backward compatibility with existing call sites
+    public void setFuncion(String titulo,
+                           String hora,
+                           java.util.Set<String> ocupados,
+                           java.util.Set<String> accesibles) {
+        setFuncion(titulo, hora, ocupados, accesibles, null);
+    }
+
+    public Long getFuncionId() { return funcionId; }
+
     public void setPoster(Image poster) {
         this.poster = poster;
         if (imgPoster != null && poster != null) imgPoster.setImage(poster);
@@ -367,6 +380,7 @@ public class AsientosController implements Initializable {
     public void setFuncionConPoster(String titulo, String hora, Collection<String> ocupados, Image poster) {
         setFuncion(titulo, hora,
                 ocupados == null ? Collections.emptySet() : new HashSet<>(ocupados),
+                null,
                 null);
         setPoster(poster);
     }

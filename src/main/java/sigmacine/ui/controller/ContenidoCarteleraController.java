@@ -27,17 +27,21 @@ import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.FuncionRepositoryJdbc;
 import sigmacine.aplicacion.session.Session;
-import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
 import sigmacine.aplicacion.service.VerHistorialService;
 
 import java.io.File;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
+import javafx.geometry.Pos;
 // (duplicate import removed)
-import sigmacine.ui.controller.ControladorControlador;
 
 public class ContenidoCarteleraController {
 
@@ -66,6 +70,7 @@ public class ContenidoCarteleraController {
     @FXML private StackPane trailerContainer;
     @FXML private ScrollPane spCenter;
     @FXML private VBox detalleRoot;
+    @FXML private HBox dayTabs;
 
     private Pelicula pelicula;
     private UsuarioDTO usuario;
@@ -98,6 +103,7 @@ public class ContenidoCarteleraController {
 
             btnComprar.setOnAction(e -> onComprarTickets());
         }
+    // tabs de día se construyen al cargar la película
         // Wire historial menu action (open as modal from detail page)
         if (miHistorial != null) {
             miHistorial.setOnAction(e -> onVerHistorial());
@@ -354,7 +360,7 @@ public class ContenidoCarteleraController {
         if (lblReparto != null) lblReparto.setText(safe(p.getReparto(), ""));
         if (txtSinopsis != null) txtSinopsis.setText(safe(p.getSinopsis()));
 
-        // Cargar funciones por ciudad/sede/sala
+        // Cargar funciones por ciudad/sede/sala; tabs por fechas disponibles
         try {
             if (panelFunciones != null) {
                 panelFunciones.getChildren().clear();
@@ -366,6 +372,20 @@ public class ContenidoCarteleraController {
                     funciones = funciones.stream()
                             .filter(f -> city.equalsIgnoreCase(f.getCiudad()))
                             .toList();
+                }
+                // construir tabs de día en base a fechas disponibles
+                buildDayTabsFrom(funciones);
+                // aplicar filtro por día si hay pestaña seleccionada (fall back a la primera fecha disponible)
+                java.time.LocalDate selected = getSelectedDay();
+                if (selected == null) {
+                    java.time.LocalDate first = funciones.stream().map(FuncionDisponibleDTO::getFecha)
+                            .sorted()
+                            .findFirst().orElse(null);
+                    setSelectedDay(first);
+                }
+                if (getSelectedDay() != null) {
+                    java.time.LocalDate d = getSelectedDay();
+                    funciones = funciones.stream().filter(f -> d.equals(f.getFecha())).toList();
                 }
                 renderFunciones(funciones);
             }
@@ -407,45 +427,72 @@ public class ContenidoCarteleraController {
     }
 
     private void renderFunciones(List<FuncionDisponibleDTO> funciones) {
+        panelFunciones.getChildren().clear();
+        try { panelFunciones.setAlignment(Pos.CENTER); } catch (Exception ignore) {}
         if (funciones == null || funciones.isEmpty()) return;
 
-        String currentCiudad = null;
-        String currentSede = null;
-        VBox sedeBox = null;
-        VBox ciudadBox = null;
-
+        // Agrupar por ciudad -> sede y acumular horas únicas por sede
+        Map<String, Map<String, Set<FuncionDisponibleDTO>>> porCiudad = new LinkedHashMap<>();
         for (FuncionDisponibleDTO f : funciones) {
-            if (!f.getCiudad().equals(currentCiudad)) {
-                currentCiudad = f.getCiudad();
-                currentSede = null;
-                ciudadBox = new VBox(6);
-                Label lblCiudad = new Label(currentCiudad);
-                lblCiudad.setStyle("-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:16;");
-                ciudadBox.getChildren().add(lblCiudad);
-                panelFunciones.getChildren().add(ciudadBox);
-            }
+            porCiudad.computeIfAbsent(f.getCiudad(), k -> new LinkedHashMap<>())
+                    .computeIfAbsent(f.getSede(), k -> new LinkedHashSet<>())
+                    .add(f);
+        }
 
-            if (!f.getSede().equals(currentSede)) {
-                currentSede = f.getSede();
-                Label lblSede = new Label(currentSede);
-                lblSede.setStyle("-fx-text-fill:#e5e7eb;-fx-font-weight:bold;-fx-font-size:14;");
-                sedeBox = new VBox(4);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("h:mma", Locale.ENGLISH);
+
+        for (var ciudadEntry : porCiudad.entrySet()) {
+            VBox ciudadBox = new VBox(8);
+            try { ciudadBox.setAlignment(Pos.TOP_LEFT); } catch (Exception ignore) {}
+            Label lblCiudad = new Label(ciudadEntry.getKey());
+            lblCiudad.setStyle("-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:16; -fx-alignment:center;");
+            ciudadBox.getChildren().add(lblCiudad);
+
+            for (var sedeEntry : ciudadEntry.getValue().entrySet()) {
+                VBox sedeBox = new VBox(4);
+                try { sedeBox.setAlignment(Pos.TOP_LEFT); } catch (Exception ignore) {}
+                Label lblSede = new Label(sedeEntry.getKey());
+                lblSede.setStyle("-fx-text-fill:#e5e7eb;-fx-font-weight:bold;-fx-font-size:14; -fx-alignment:center;");
                 sedeBox.getChildren().add(lblSede);
-                if (ciudadBox != null) ciudadBox.getChildren().add(sedeBox);
+
+                // Etiqueta HORA
+                Label lblHora = new Label("HORA");
+                lblHora.setStyle("-fx-text-fill:#aaaaaa;-fx-font-size:12;-fx-font-weight:bold;");
+                sedeBox.getChildren().add(lblHora);
+
+                // Contenedor centrado por sede
+                HBox fila = new HBox(8);
+                fila.setAlignment(Pos.CENTER_LEFT);
+                fila.setStyle("-fx-background-color:transparent;");
+
+                // ordenar por hora
+        List<FuncionDisponibleDTO> ordenadas = sedeEntry.getValue().stream()
+                        .sorted(java.util.Comparator.comparing(FuncionDisponibleDTO::getHora))
+                        .collect(Collectors.toList());
+
+                // construir pills solo con la hora en formato am/pm
+                for (FuncionDisponibleDTO f : ordenadas) {
+                    String pillText = fmt.format(f.getHora()).toLowerCase(); // ej: 12:50pm
+                    Button b = new Button(pillText);
+                    b.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff66;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 12 4 12;");
+                    // Guardar selección exacta de función
+                    b.setOnAction(e -> seleccionarFuncion(f, b));
+                    fila.getChildren().add(b);
+                }
+                sedeBox.getChildren().add(fila);
+                ciudadBox.getChildren().add(sedeBox);
             }
 
-            // fila de horas por sala
-            HBox fila = new HBox(6);
-            fila.setStyle("-fx-background-color:transparent;");
-            String pillText = String.format("%s — Sala %d %s", f.getHora().toString(), f.getNumeroSala(), f.getTipoSala());
-            Button b = new Button(pillText);
-            b.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff66;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 10 4 10;");
-            b.setOnAction(e -> seleccionarFuncionPill(pillText));
-            fila.getChildren().add(b);
-            if (sedeBox != null) sedeBox.getChildren().add(fila);
+            // Envolver cada bloque de ciudad en un contenedor centrado horizontalmente
+            HBox wrapCity = new HBox(ciudadBox);
+            wrapCity.setAlignment(Pos.CENTER);
+            panelFunciones.getChildren().add(wrapCity);
         }
     }
 
+    private String selectedFuncionText;
+    private Long selectedFuncionId;
+    private Button selectedHoraButton;
     private void seleccionarFuncionPill(String texto) {
         if (lvFunciones != null) {
             if (!lvFunciones.getItems().contains(texto)) {
@@ -453,7 +500,24 @@ public class ContenidoCarteleraController {
             }
             lvFunciones.getSelectionModel().select(texto);
         }
+        selectedFuncionText = texto;
         if (lblHoraPill != null) lblHoraPill.setText(texto);
+    }
+
+    private void seleccionarFuncion(FuncionDisponibleDTO f, Button sourceBtn) {
+    this.selectedFuncionId = f.getFuncionId();
+        String texto = java.time.format.DateTimeFormatter.ofPattern("h:mma", java.util.Locale.ENGLISH)
+                .format(f.getHora()).toLowerCase();
+        seleccionarFuncionPill(texto);
+        try {
+            if (selectedHoraButton != null) {
+                selectedHoraButton.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff66;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 12 4 12;");
+            }
+            selectedHoraButton = sourceBtn;
+            if (selectedHoraButton != null) {
+                selectedHoraButton.setStyle("-fx-background-color:#8A2F24;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 12 4 12;");
+            }
+        } catch (Exception ignore) {}
     }
 
     @FXML private void onComprarTickets(javafx.event.ActionEvent e) { onComprarTickets(); }
@@ -461,13 +525,24 @@ public class ContenidoCarteleraController {
     @FXML
     private void onComprarTickets() {
         try {
+            // Debe haber una función seleccionada
+        String seleccion = (lvFunciones != null && lvFunciones.getSelectionModel() != null)
+            ? lvFunciones.getSelectionModel().getSelectedItem() : selectedFuncionText;
+            if (seleccion == null || seleccion.isBlank()) {
+                var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                a.setHeaderText("Selecciona una hora");
+                a.setContentText("Primero elige una función (sede/hora) antes de continuar.");
+                a.showAndWait();
+                return;
+            }
+        if (selectedFuncionId == null) {
+        // Si no quedó registrado el ID (p.ej. desde una selección previa), intenta resolverlo por hora + fecha
+        // Nota: Esto asume horas únicas por sede/día; si no, conviene extender el ListView para guardar el id.
+        }
             if (isEmbedded()) {
                 String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
                         ? lblTitulo.getText() : "Película";
-                String hora = (lvFunciones != null && lvFunciones.getSelectionModel() != null
-                        && lvFunciones.getSelectionModel().getSelectedItem() != null)
-                        ? lvFunciones.getSelectionModel().getSelectedItem()
-                        : "1:10 pm";
+                String hora = seleccion;
 
                 Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
                 Set<String> accesibles = Set.of("E3","E4","E5","E6");
@@ -476,12 +551,9 @@ public class ContenidoCarteleraController {
                 return;
             }
 
-            String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
+        String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
                     ? lblTitulo.getText() : "Película";
-            String hora = (lvFunciones != null && lvFunciones.getSelectionModel() != null
-                    && lvFunciones.getSelectionModel().getSelectedItem() != null)
-                    ? lvFunciones.getSelectionModel().getSelectedItem()
-                    : "1:10 pm";
+        String hora = seleccion;
 
             URL url = getClass().getResource("/sigmacine/ui/views/asientos.fxml");
             if (url == null) {
@@ -498,7 +570,8 @@ public class ContenidoCarteleraController {
             AsientosController ctrl = loader.getController();
             Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
             Set<String> accesibles = Set.of("E3","E4","E5","E6");
-            ctrl.setFuncion(titulo, hora, ocupados, accesibles);
+            // Por ahora AsientosController no recibe ID de función; solo pasamos texto y hora.
+            ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId);
 
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
                     ? pelicula.getPosterUrl() : null;
@@ -525,6 +598,58 @@ public class ContenidoCarteleraController {
             a.showAndWait();
         }
     }
+
+    // Construye 5 pestañas de día (hoy + 4) y maneja selección
+    private void buildDayTabsFrom(List<FuncionDisponibleDTO> funciones) {
+        if (dayTabs == null) return;
+        dayTabs.getChildren().clear();
+        if (funciones == null || funciones.isEmpty()) return;
+
+        // días disponibles (distintos), máximo 5
+        List<java.time.LocalDate> fechas = funciones.stream()
+                .map(FuncionDisponibleDTO::getFecha)
+                .distinct()
+                .sorted()
+                .limit(5)
+                .toList();
+
+        int idx = 0;
+        for (java.time.LocalDate d : fechas) {
+            String text = d.getMonth().toString().substring(0,3).toUpperCase() + " " + d.getDayOfMonth();
+            Button tab = new Button(text);
+            tab.getStyleClass().add("day-tab");
+            final int tabIndex = idx;
+            tab.setOnAction(e -> {
+                setSelectedDay(d);
+                try { setPelicula(this.pelicula); } catch (Exception ignore) {}
+                updateDayTabStyles(tabIndex);
+            });
+            dayTabs.getChildren().add(tab);
+            idx++;
+        }
+
+        // seleccionar el primer día disponible si no hay selección
+        if (getSelectedDay() == null && !fechas.isEmpty()) {
+            setSelectedDay(fechas.get(0));
+            updateDayTabStyles(0);
+        }
+    }
+
+    private void updateDayTabStyles(int selectedIdx) {
+        if (dayTabs == null) return;
+        for (int i = 0; i < dayTabs.getChildren().size(); i++) {
+            var n = dayTabs.getChildren().get(i);
+            if (n instanceof Button b) {
+                if (i == selectedIdx) b.setStyle("-fx-background-color:#8A2F24;-fx-text-fill:white;-fx-background-radius:10;" );
+                else b.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff22;-fx-text-fill:#ddd;-fx-background-radius:10;-fx-border-radius:10;");
+            }
+        }
+    }
+
+    // estado del día seleccionado (simple, en memoria)
+    private java.time.LocalDate selectedDay;
+    private void setSelectedDay(java.time.LocalDate d) { this.selectedDay = d; }
+    private java.time.LocalDate getSelectedDay() { return this.selectedDay; }
 
     private boolean isEmbedded() {
         try {

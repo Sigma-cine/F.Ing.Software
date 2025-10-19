@@ -100,6 +100,17 @@
                             </children>
                         </HBox>
 
+                        <!-- Sección de funciones: ciudad/sede/horas con pestañas de día -->
+                        <VBox spacing="10" alignment="TOP_CENTER" prefWidth="820">
+                            <children>
+                                <Label text="Funciones en tu ciudad" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" />
+                                <!-- Pestañas de día (se llenan desde el controlador) -->
+                                <HBox fx:id="dayTabs" spacing="8" alignment="CENTER" />
+                                <!-- Panel donde se pintan sedes y horarios -->
+                                <VBox fx:id="panelFunciones" spacing="8" alignment="CENTER" />
+                            </children>
+                        </VBox>
+
                         <Label text="TRAILER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" />
                         <HBox alignment="CENTER" prefWidth="820">
                             <children>

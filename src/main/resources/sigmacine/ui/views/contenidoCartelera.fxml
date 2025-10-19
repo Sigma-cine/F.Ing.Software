@@ -107,7 +107,16 @@
                             </children>
                         </HBox>
 
-                        <!-- Trailer centered below -->
+                        <!-- Sección de funciones: ciudad/sede/horas con pestañas de día -->
+                        <VBox spacing="10" alignment="TOP_CENTER" prefWidth="820">
+                            <children>
+                                <Label text="Funciones en tu ciudad" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" />
+                                <HBox fx:id="dayTabs" spacing="8" alignment="CENTER" />
+                                <VBox fx:id="panelFunciones" spacing="8" alignment="CENTER" />
+                            </children>
+                        </VBox>
+
+                        <!-- Trailer centrado -->
                         <Label text="TRAILER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" />
                         <HBox alignment="CENTER" prefWidth="820">
                             <children>
