@@ -194,6 +194,10 @@ public class AsientosController implements Initializable {
             var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCompras.fxml"));
             var controller = new VerHistorialController(service);
             if (this.usuario != null) controller.setUsuarioEmail(this.usuario.getEmail());
+            else {
+                var cur = sigmacine.aplicacion.session.Session.getCurrent();
+                if (cur != null && cur.getEmail() != null && !cur.getEmail().isBlank()) controller.setUsuarioEmail(cur.getEmail());
+            }
             loader.setController(controller);
             Parent root = loader.load();
             Stage stage = (Stage) gridSala.getScene().getWindow();
@@ -332,7 +336,8 @@ public class AsientosController implements Initializable {
         if (seleccion.isEmpty()) return;
         for (String code : seleccion.stream().sorted().toList()) {
             String nombre = "Asiento " + code + " - " + (titulo != null ? titulo : "Película") + (hora != null ? " (" + hora + ")" : "");
-            var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO);
+            // Use the DTO constructor that includes asiento so the repository can persist BOLETO and BOLETO_SILLA
+            var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
             carrito.addItem(dto);
             asientoItems.add(dto);
         }

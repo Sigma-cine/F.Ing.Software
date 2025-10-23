@@ -24,11 +24,15 @@ public class CompraService {
         // Calcular total (BigDecimal) y validaciones mínimas
         BigDecimal total = BigDecimal.ZERO;
         for (CompraProductoDTO it : items) {
-            if (it.getProductoId() == null) {
-                throw new IllegalArgumentException("Hay un item de tipo boleto; no se inserta en COMPRA_PRODUCTO.");
-            }
             if (it.getCantidad() <= 0) {
-                throw new IllegalArgumentException("Cantidad inválida para producto " + it.getProductoId());
+                throw new IllegalArgumentException("Cantidad inválida para item " + it.getNombre());
+            }
+            // If productoId == null it's a boleto; repository will handle boletos separately.
+            if (it.getProductoId() == null) {
+                // boleto must have funcionId
+                if (it.getFuncionId() == null) {
+                    throw new IllegalArgumentException("Boleto sin funcionId no puede procesarse: " + it.getNombre());
+                }
             }
             BigDecimal sub = it.getPrecioUnitario().multiply(BigDecimal.valueOf(it.getCantidad()));
             total = total.add(sub);

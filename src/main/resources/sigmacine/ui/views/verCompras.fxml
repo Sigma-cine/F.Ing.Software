@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@sigma.css">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
+        <HBox fx:id="localTopbar" alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
             <children>
                 <Button fx:id="btnVolver" styleClass="toplink" text="← Volver" />
                 <Label styleClass="brand" text="SIGMA CINE" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;" />

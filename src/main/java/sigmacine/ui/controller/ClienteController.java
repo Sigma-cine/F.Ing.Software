@@ -576,11 +576,31 @@ public class ClienteController {
             VerHistorialController historialController = new VerHistorialController(historialService);
             historialController.setClienteController(this);
 
-            if (this.usuario != null) historialController.setUsuarioEmail(this.usuario.getEmail());
+            if (this.usuario != null) {
+                historialController.setUsuarioEmail(this.usuario.getEmail());
+            } else {
+                // Fallback: use current session's user email if the controller's usuario was not initialized
+                var current = Session.getCurrent();
+                if (current != null && current.getEmail() != null && !current.getEmail().isBlank()) {
+                    historialController.setUsuarioEmail(current.getEmail());
+                }
+            }
 
             loader.setController(historialController);
             Parent historialView = loader.load();
-            content.getChildren().setAll(historialView);
+            // Replace the entire Scene root so the topbar from pagina_inicial.fxml is not duplicated
+            Stage stage = (Stage) (content != null && content.getScene() != null ? content.getScene().getWindow() : btnCartelera.getScene().getWindow());
+            if (stage != null) {
+                Scene current = stage.getScene();
+                double w = current != null ? current.getWidth() : 900;
+                double h = current != null ? current.getHeight() : 600;
+                stage.setScene(new Scene(historialView, w > 0 ? w : 900, h > 0 ? h : 600));
+                stage.setTitle("Historial de compras");
+                stage.setMaximized(true);
+            } else {
+                // fallback: embed into content if we can't locate the stage
+                content.getChildren().setAll(historialView);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             content.getChildren().setAll(new Label("Error cargando Historial: " + ex.getMessage()));

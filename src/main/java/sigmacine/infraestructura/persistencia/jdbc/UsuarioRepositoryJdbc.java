@@ -155,7 +155,8 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
 
     @Override
     public List<HistorialCompraDTO> verHistorial(String emailPlano) {
-                final String sql = """
+        System.out.println("[UsuarioRepositoryJdbc] verHistorial llamada con email='" + emailPlano + "'");
+        final String sql = """
         SELECT
             co.ID AS COMPRA_ID,
             co.FECHA AS COMPRA_FECHA,
@@ -189,9 +190,12 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
 
             try (ResultSet rs = ps.executeQuery()) {
                 var lista = new ArrayList<HistorialCompraDTO>();
+                var ids = new ArrayList<Long>();
                 while (rs.next()) {
                     lista.add(CompraMapper.mapHistorial(rs));
+                    ids.add(rs.getObject("COMPRA_ID", Long.class));
                 }
+                System.out.println("[UsuarioRepositoryJdbc] verHistorial -> compras encontradas para '" + emailPlano + "' : " + ids);
                 return lista;
             }
         } catch (SQLException e) {
@@ -211,7 +215,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 + "WHERE b.COMPRA_ID = ?";
 
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sqlBoletos)) {
+            PreparedStatement ps = con.prepareStatement(sqlBoletos)) {
             ps.setLong(1, compraId);
             try (ResultSet rs = ps.executeQuery()) {
                 var lista = new ArrayList<Boleto>();

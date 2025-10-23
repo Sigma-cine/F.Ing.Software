@@ -19,6 +19,9 @@ public class VerHistorialController {
     @FXML
     private Button btnVolver;
     
+    @FXML
+    private javafx.scene.layout.HBox localTopbar;
+    
     private ClienteController clienteController;
     
     private final VerHistorialService historialService;
@@ -55,6 +58,18 @@ public class VerHistorialController {
             // Limpiar nodos promocionales que puedan haber quedado en la escena
             javafx.application.Platform.runLater(() -> limpiarNodosPromocionales());
         }
+
+        // Evitar mostrar doble topbar: si la escena ya contiene un nodo con styleClass 'topbar', hide local topbar
+        try {
+            if (localTopbar != null && comprasContainer != null && comprasContainer.getScene() != null) {
+                var root = comprasContainer.getScene().getRoot();
+                boolean sceneHasTopbar = root.lookup(".topbar") != null;
+                if (sceneHasTopbar) {
+                    localTopbar.setVisible(false);
+                    localTopbar.setManaged(false);
+                }
+            }
+        } catch (Exception ignore) {}
     }
 
     @FXML

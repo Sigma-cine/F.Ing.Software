@@ -13,9 +13,7 @@ import sigmacine.aplicacion.facade.AuthFacade;
 import sigmacine.ui.controller.ControladorControlador;
 import sigmacine.aplicacion.service.RegistroService;
 
-//Son temporales
-import sigmacine.dominio.entity.*;//Estas import son solo para no tener que hacer login
-import sigmacine.aplicacion.data.UsuarioDTO;// Por defecto se quemara un usuario y no se consumira informacion desde la base de datos
+    //Son temporales
 
 
 public class App extends Application {
@@ -24,7 +22,6 @@ public class App extends Application {
     public void start(Stage stage) {
 
         DatabaseConfig db = new DatabaseConfig();
-        // Ejecutar scripts SQL de esquema y datos si la base está vacía
         try (var conn = db.getConnection()) {
             ScriptLoader.runScripts(conn);
         } catch (Exception e) {
@@ -38,24 +35,19 @@ public class App extends Application {
 
 
     ControladorControlador coordinador = new ControladorControlador(stage, authFacade);
-
     // Arrancar en la vista cliente_home y mostrar popup de selección de ciudad
-    // Si hubiera un usuario por defecto (guest) podemos usar un DTO vacío
-    sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
-    guest.setId(0); // id 0 = invitado
-    guest.setEmail("");
-    guest.setNombre("Invitado");
-
-    // Si por ejecuciones previas la preferencia ya estaba marcada, la removemos
-    // para que el selector de ciudad se muestre una vez ahora. Después de mostrarse
-    // se guardará en Preferences y no volverá a aparecer en siguientes ejecuciones.
+    // Asegurar que el popup de ciudad pueda mostrarse (si antes quedó marcado como mostrado, lo removemos)
     try {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(sigmacine.ui.controller.ControladorControlador.class);
         if (prefs.getBoolean("cityPopupShown", false)) {
             prefs.remove("cityPopupShown");
         }
     } catch (Exception ignored) {}
-
+    // Start as guest and show cliente home with city popup
+    sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
+    guest.setId(0); // id 0 = invitado
+    guest.setEmail("");
+    guest.setNombre("Invitado");
     coordinador.mostrarClienteHomeConPopup(guest);
 
 
