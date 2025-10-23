@@ -1,0 +1,56 @@
+name: Compilación y ejecución de pruebas
+
+# Eventos que gatillan la ejecución del pipeline
+on:
+  # Ejecución manual
+  workflow_dispatch:
+  # Cada vez que se haga un push al repositorio
+  #push:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - developer  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+     # Asegura que solo se ejecute si el PR fue MERGED (no cerrado sin fusionar)
+    if: github.event.pull_request.merged == true
+
+    steps:
+      # Descargar última version desde el repositorio
+      - name: Descargar del repositorio
+        uses: actions/checkout@v4
+
+      # Instalar java
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      # Compilar y empaquetar
+      - name: Compilar y empaquetar
+        run: mvn --batch-mode -DskipTests package
+
+      # Ejecutar pruebas automatizadas (JUnit)
+      - name: Ejecutar pruebas
+        run: mvn --batch-mode test
+
+      # Generar un reporte de pruebas
+      - name: Reporte de pruebas
+        uses: mikepenz/action-junit-report@v5
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: '**/target/surefire-reports/TEST-*.xml'
+          
+     
+      - name: Publish test coverage results
+        uses: PavanMudigonda/jacoco-reporter@v4.8
+        with:
+          coverage_results_path: 'target/site/jacoco/jacoco.xml'
+          coverage_report_title: 'Test coverage results'
+          coverage_report_name: 'Test coverage results'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
