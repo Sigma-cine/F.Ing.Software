@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="52.0" prefWidth="600.0" style="-fx-padding: 40; -fx-background-color: #993726;" BorderPane.alignment="CENTER">
+         <left>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Agregar Película" BorderPane.alignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="23.0" />
+               </font>
+            </Text>
+         </left>
+      </BorderPane>
+   </top>
+   <center>
+      <GridPane style="-fx-padding: 20;" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="348.00001220703126" minWidth="10.0" prefWidth="348.00001220703126" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="275.20001220703125" minWidth="10.0" prefWidth="212.7999877929687" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="168.20001640319825" minHeight="0.0" prefHeight="39.000006103515624" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="18.199993896484372" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="31.399987792968744" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="41.800012207031244" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="0.0" prefHeight="22.600006103515625" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="23.399987792968744" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="34.00000915527343" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="29.999990844726568" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="19.00004882812499" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="41.19996337890626" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="195.20004119873045" minHeight="10.0" prefHeight="24.40003662109376" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Título de la Película:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <TextField alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="23.0" prefWidth="311.0" GridPane.rowIndex="1" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Genero de la Película:" GridPane.rowIndex="2">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <TextField alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="314.0" GridPane.rowIndex="3" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Clasificación Película:" GridPane.rowIndex="4">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="314.0" GridPane.rowIndex="5" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Agregar Imágen:" GridPane.columnIndex="1">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" style="-fx-background-color: #993726; -fx-background-radius: 10;" text="Adjuntar Foto" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" style="-fx-background-color: #993726; -fx-background-radius: 10;" text="Agregar Horario" textFill="WHITE" GridPane.rowIndex="10">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Sinopsis:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="105.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Agregar Trailer:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="107.0" style="-fx-background-color: #993726; -fx-background-radius: 10;" text="Adjuntar Link" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button alignment="CENTER" mnemonicParsing="false" prefHeight="26.0" prefWidth="130.0" style="-fx-background-color: #993726; -fx-background-radius: 10;" text="Agregar película" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="10">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Button>
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Duración Película:" GridPane.rowIndex="6">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="314.0" GridPane.rowIndex="7" />
+            <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Reparto Película:" GridPane.rowIndex="8">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Text>
+            <TextField maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="28.0" prefWidth="314.0" GridPane.rowIndex="9" />
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>
