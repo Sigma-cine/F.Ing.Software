@@ -31,9 +31,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Locale;
 
-/**
- * Controlador principal del cliente (pagina_inicial.fxml).
- */
 public class ClienteController {
 
     @FXML private Button btnPromoVerMas;
@@ -73,13 +70,11 @@ public class ClienteController {
     private UsuarioDTO usuario;
     private String ciudadSeleccionada;
     private ControladorControlador coordinador;
-    // Evita disparar múltiples cargas de posters cuando la vista se crea desde distintos flujos
     private boolean postersRequested = false;
 
-    // --- Carrito Overlay state ---
-    private javafx.scene.Node carritoNode;           // contenido de verCarrito.fxml
-    private javafx.scene.layout.Pane overlayCarrito; // capa con dimmer + carrito
-    private javafx.scene.layout.StackPane carritoWrapper; // posicionable
+    private javafx.scene.Node carritoNode;
+    private javafx.scene.layout.Pane overlayCarrito;
+    private javafx.scene.layout.StackPane carritoWrapper;
     private boolean carritoVisible = false;
     private static final double CART_WIDTH = 600;
     private static final double CART_OFFSET_Y = 8;
@@ -108,7 +103,6 @@ public class ClienteController {
             return;
         }
         postersRequested = true;
-        // Intentar buscar un elemento que debería existir para verificar si la escena está lista
         if (btnCartelera != null && btnCartelera.getScene() != null) {
             Platform.runLater(() -> cargarPeliculasInicio());
         } else if (btnCartelera != null) {
@@ -157,9 +151,8 @@ public class ClienteController {
         if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> onLogout());
         
         if (miHistorial != null) miHistorial.setOnAction(e -> onVerHistorial()); // Llama al método corregido.
-
-    // Disable profile menu when not logged in
-    updateMenuPerfilState();
+        
+        updateMenuPerfilState();
 
         if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> onIniciarSesion());
         if (btnRegistrarse  != null) {
@@ -173,19 +166,11 @@ public class ClienteController {
         }
 
         if (content != null) {
-            content.getChildren().addListener((ListChangeListener<Node>) c -> updatePublicidadVisibility());
-            updatePublicidadVisibility();
+            content.getChildren().addListener((ListChangeListener<Node>) (c -> updatePublicidadVisibility()));
         }
 
-        // Las películas se cargarán cuando se llame init() o init(usuario, ciudad)
-        // Si esta vista se usa en `cliente_home.fxml` sin invocar init(), aseguramos la carga aquí.
-        esperarYCargarPeliculas();
     }
 
-    /**
-     * Muestra la publicidad sólo cuando no hay sub-vistas cargadas en el StackPane `content`.
-     * También marca los nodes como managed=false cuando están ocultos para que no ocupen espacio.
-     */
     private void updatePublicidadVisibility() {
         try {
             boolean hasContent = content != null && !content.getChildren().isEmpty();
@@ -198,17 +183,14 @@ public class ClienteController {
                 promoPane.setVisible(show);
                 promoPane.setManaged(show);
             }
-            // Also hide footer posters when another view is shown (e.g., historial)
             try {
                 if (footerGrid == null) {
                     footerGrid = localizarFooterGridDesdeRoot();
-                    // don't crash if still null
                 }
                 if (footerGrid != null) {
                     footerGrid.setVisible(show);
                     footerGrid.setManaged(show);
                     if (!show) {
-                        // clear images so posters visually disappear and free resources
                         try {
                             for (javafx.scene.Node n : footerGrid.getChildren()) {
                                 if (n instanceof ImageView) {
@@ -217,7 +199,6 @@ public class ClienteController {
                             }
                         } catch (Exception ignore) {}
                     } else {
-                        // if footer becomes visible again, ensure posters are (re)loaded
                         Platform.runLater(() -> {
                             try { cargarPeliculasInicio(); } catch (Exception ignore) {}
                         });
@@ -248,7 +229,6 @@ public class ClienteController {
             overlayCarrito.setVisible(false);
             overlayCarrito.setManaged(false);
 
-            // Usamos el propio StackPane 'content' como contenedor de overlay
             javafx.scene.layout.StackPane stackCentro = content;
             dimmer.prefWidthProperty().bind(stackCentro.widthProperty());
             dimmer.prefHeightProperty().bind(stackCentro.heightProperty());
@@ -274,7 +254,6 @@ public class ClienteController {
             if (n != overlayCarrito) n.setEffect(new javafx.scene.effect.GaussianBlur(12));
         }
 
-        // posicionar cerca del botón cart
         javafx.geometry.Bounds b = btnCart.localToScene(btnCart.getBoundsInLocal());
         javafx.geometry.Point2D p = stackCentro.sceneToLocal(b.getMaxX(), b.getMaxY());
 
@@ -309,7 +288,6 @@ public class ClienteController {
     @FXML
     private void onBrandClick() {
         try {
-            // If already on main, optionally no-op; else ensure we are on pagina_inicial
             Stage stage = null;
             try { stage = (Stage) (content != null ? content.getScene().getWindow() : btnCartelera.getScene().getWindow()); } catch (Exception ignore) {}
             if (stage == null) return;
@@ -399,7 +377,6 @@ public class ClienteController {
 
     private void onIniciarSesion() {
         
-        // if already logged in, perform logout; otherwise show login
         if (Session.isLoggedIn()) {
             var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
             a.setTitle("Cerrar sesi\u00F3n");
@@ -430,19 +407,16 @@ public class ClienteController {
 
     private void onLogout() {
         
-        // clear application session and update UI
         Session.clear();
         this.usuario = null;
         if (lblUserName != null) { lblUserName.setText(""); lblUserName.setVisible(false); }
         if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(true); btnIniciarSesion.setText("Iniciar sesi\u00F3n"); }
         if (btnRegistrarse != null) btnRegistrarse.setDisable(false);
         updateMenuPerfilState();
-        // Navigate back to main pagina_inicial.fxml so the app returns to a neutral state
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
             Parent root = loader.load();
             ClienteController ctrl = loader.getController();
-            // initialize without a user so the controller sets up default UI and posters
             ctrl.init(null);
             ctrl.setCoordinador(this.coordinador);
 
@@ -454,7 +428,6 @@ public class ClienteController {
             stage.setTitle("Sigma Cine - Cliente");
             stage.setMaximized(true);
         } catch (Exception ex) {
-            // if navigation fails, ignore and keep current UI but logged out
             System.err.println("No se pudo navegar a pagina_inicial tras cerrar sesión: " + ex.getMessage());
             ex.printStackTrace();
         }
@@ -579,16 +552,20 @@ public class ClienteController {
             if (this.usuario != null) {
                 historialController.setUsuarioEmail(this.usuario.getEmail());
             } else {
-                // Fallback: use current session's user email if the controller's usuario was not initialized
                 var current = Session.getCurrent();
                 if (current != null && current.getEmail() != null && !current.getEmail().isBlank()) {
                     historialController.setUsuarioEmail(current.getEmail());
                 }
             }
 
-            loader.setController(historialController);
+            loader.setControllerFactory(cls -> {
+                if (cls == sigmacine.ui.controller.VerHistorialController.class) return historialController;
+                try { return cls.getDeclaredConstructor().newInstance(); } catch (Exception ex) { throw new RuntimeException(ex); }
+            });
+            javafx.scene.Scene prev = null;
+            try { prev = (content != null && content.getScene() != null) ? content.getScene() : (btnCartelera != null ? btnCartelera.getScene() : null); } catch (Exception ignore) {}
+            try { historialController.setPreviousScene(prev); } catch (Exception ignore) {}
             Parent historialView = loader.load();
-            // Replace the entire Scene root so the topbar from pagina_inicial.fxml is not duplicated
             Stage stage = (Stage) (content != null && content.getScene() != null ? content.getScene().getWindow() : btnCartelera.getScene().getWindow());
             if (stage != null) {
                 Scene current = stage.getScene();
@@ -598,12 +575,24 @@ public class ClienteController {
                 stage.setTitle("Historial de compras");
                 stage.setMaximized(true);
             } else {
-                // fallback: embed into content if we can't locate the stage
                 content.getChildren().setAll(historialView);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            content.getChildren().setAll(new Label("Error cargando Historial: " + ex.getMessage()));
+            String msg = ex.toString();
+            javafx.scene.control.Label lab = new javafx.scene.control.Label("Error cargando Historial: " + msg);
+            lab.setStyle("-fx-text-fill: #fff;");
+            javafx.scene.control.TextArea ta = new javafx.scene.control.TextArea();
+            java.io.StringWriter sw = new java.io.StringWriter();
+            ex.printStackTrace(new java.io.PrintWriter(sw));
+            ta.setText(sw.toString());
+            ta.setEditable(false);
+            ta.setWrapText(true);
+            ta.setPrefRowCount(10);
+            ta.setStyle("-fx-control-inner-background: #111; -fx-text-fill: #fff;");
+            javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(8, lab, ta);
+            box.setStyle("-fx-padding: 12;");
+            content.getChildren().setAll(box);
         }
     }
 
@@ -617,7 +606,6 @@ public class ClienteController {
             FXMLLoader loader = new FXMLLoader(url);
             Parent carteleraView = loader.load();
 
-            // Wire controller with session/coordinator if available
             try {
                 Object ctrl = loader.getController();
                 if (ctrl != null) {
@@ -649,42 +637,27 @@ public class ClienteController {
         }
     }
 
-    /**
-     * Carga las películas desde la BD y las muestra en las 4 cards del footer.
-     * Llena los pósters y títulos de las películas.
-     */
     private void cargarPeliculasInicio() {
         
         
         try {
             DatabaseConfig db = new DatabaseConfig();
             PeliculaRepositoryJdbc repo = new PeliculaRepositoryJdbc(db);
-            
-            // Buscar todas las películas (o filtrar por estado "En Cartelera")
             List<Pelicula> peliculas = repo.buscarPorTitulo(""); // buscar todas
             
-            
-            
-            // Si no hay películas, salir
             if (peliculas == null || peliculas.isEmpty()) {
                 
                 return;
             }
-            
-            // Si los campos @FXML están null, intentar ubicar el GridPane desde la raíz de la escena
             if (footerGrid == null) {
                 footerGrid = localizarFooterGridDesdeRoot();
                 
             }
-            // Si aún no lo tenemos, como fallback intentar lookup
             if (footerGrid == null) {
                 
                 buscarYCargarConLookup(peliculas);
                 return;
             }
-            
-            // Independientemente de que existan placeholders en el FXML, renderizamos dinámicamente
-            // para controlar tamaño y centrado con precisión.
             
             renderizarFooterDinamico(footerGrid, peliculas);
             return;
@@ -695,12 +668,8 @@ public class ClienteController {
         }
     }
     
-    /**
-     * Localiza el GridPane del footer navegando la raíz de la escena en lugar de @FXML.
-     */
     private javafx.scene.layout.GridPane localizarFooterGridDesdeRoot() {
         try {
-            // Tomar cualquier nodo inyectado para llegar a la escena
             javafx.scene.Scene sc = null;
             if (promoPane != null) sc = promoPane.getScene();
             if (sc == null && content != null) sc = content.getScene();
@@ -724,43 +693,33 @@ public class ClienteController {
         return null;
     }
 
-    /**
-     * Construye tarjetas de películas en el footer al estilo de ResultadosBusqueda (programático).
-     */
     private void renderizarFooterDinamico(javafx.scene.layout.GridPane grid, List<Pelicula> peliculas) {
         try {
             if (grid == null) return;
             grid.getChildren().clear();
 
-            // Quitar restricciones de columnas/filas del FXML que estaban forzando tamaños pequeños
             if (grid.getColumnConstraints() != null) grid.getColumnConstraints().clear();
             if (grid.getRowConstraints() != null) grid.getRowConstraints().clear();
 
-            // Mantener el GridPane al ancho de su contenido para centrar el bloque completo en el HBox
             grid.setMaxWidth(javafx.scene.layout.Region.USE_PREF_SIZE);
             grid.setPrefWidth(javafx.scene.layout.Region.USE_COMPUTED_SIZE);
             grid.setPadding(new javafx.geometry.Insets(12, 64, 12, 64)); // margen y ligero padding superior
 
-            // Espaciados entre tarjetas
-            grid.setHgap(64); // separación horizontal mayor
-            grid.setVgap(16); // separación vertical mayor
+            grid.setHgap(64);
+            grid.setVgap(16);
             grid.setAlignment(javafx.geometry.Pos.CENTER);
-            // Ligeramente elevado visualmente
             grid.setTranslateY(-30);
 
-            // Mostrar solo 3 películas por defecto, centradas
             int max = Math.min(3, peliculas.size());
-            // Con constraints limpiadas, usamos columnas 0..(max-1) y el GridPane centrará el bloque
             int startCol = 0;
 
             for (int i = 0; i < max; i++) {
                 Pelicula p = peliculas.get(i);
                 int col = startCol + i;
 
-                // Poster más grande
                 ImageView poster = new ImageView();
                 poster.setPreserveRatio(true);
-                poster.setFitWidth(220); // ancho mayor
+                poster.setFitWidth(220);
                 String posterRef = p.getPosterUrl();
                 if (posterRef != null && !posterRef.isBlank()) {
                     Image img = resolveImage(posterRef);
@@ -771,7 +730,6 @@ public class ClienteController {
                 javafx.scene.layout.GridPane.setMargin(poster, new javafx.geometry.Insets(0, 0, 8, 0));
                 grid.getChildren().add(poster);
 
-                // Título centrado y con wrap
                 Label titulo = new Label(p.getTitulo() != null ? p.getTitulo() : "Sin título");
                 titulo.setWrapText(true);
                 titulo.setMaxWidth(220);
@@ -784,16 +742,13 @@ public class ClienteController {
                 javafx.scene.layout.GridPane.setMargin(titulo, new javafx.geometry.Insets(0, 0, 8, 0));
                 grid.getChildren().add(titulo);
 
-                // Botón "Ver más" (opcional, sin acción por ahora)
                 Button verMas = new Button("Ver más");
                 verMas.setStyle("-fx-background-color: #993726; -fx-background-radius: 14; -fx-font-weight: bold; -fx-text-fill: #ffffff;");
                 verMas.setPrefWidth(96);
                 verMas.setPrefHeight(34);
                 verMas.setOnAction(e -> abrirDetallePelicula(p));
-                // When clicked, navigate to the detalle de película screen for this movie
                 verMas.setOnAction(ev -> {
                     try {
-                        // Prepare detail root
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/verdetallepelicula.fxml"));
                         Parent detailRoot = loader.load();
                         Object ctrl = loader.getController();
@@ -809,7 +764,6 @@ public class ClienteController {
                         double w = current != null ? current.getWidth() : 900;
                         double h = current != null ? current.getHeight() : 600;
 
-                        // Fade out current root, then set new scene and fade in
                         Parent currentRoot = current != null ? current.getRoot() : null;
                         if (currentRoot != null) {
                             FadeTransition fadeOut = new FadeTransition(Duration.millis(220), currentRoot);
@@ -821,7 +775,6 @@ public class ClienteController {
                                     stage.setScene(newScene);
                                     stage.setTitle("Sigma Cine - Detalle película");
                                     stage.setMaximized(true);
-                                    // start fade-in
                                     FadeTransition fadeIn = new FadeTransition(Duration.millis(220), newScene.getRoot());
                                     newScene.getRoot().setOpacity(0.0);
                                     fadeIn.setFromValue(0.0);
@@ -831,7 +784,6 @@ public class ClienteController {
                             });
                             fadeOut.play();
                         } else {
-                            // fallback: just set scene without animation
                             stage.setScene(new Scene(detailRoot, w > 0 ? w : 900, h > 0 ? h : 600));
                             stage.setTitle("Sigma Cine - Detalle película");
                             stage.setMaximized(true);
@@ -847,7 +799,6 @@ public class ClienteController {
                 grid.getChildren().add(verMas);
             }
 
-            // Forzar layout una vez añadidos
             javafx.application.Platform.runLater(() -> {
                 try { grid.applyCss(); grid.layout(); } catch (Exception ignore) {}
             });
@@ -860,7 +811,6 @@ public class ClienteController {
     private void buscarYCargarConLookup(List<Pelicula> peliculas) {
         
         try {
-            // Intentar obtener los ImageView directamente por fx:id
             ImageView img1 = buscarImageView("#imgCard1");
             ImageView img2 = buscarImageView("#imgCard2");
             ImageView img3 = buscarImageView("#imgCard3");
@@ -885,13 +835,10 @@ public class ClienteController {
         }
     }
     
-    // buscarImageView and buscarLabel helpers are defined earlier in this class; duplicates removed.
-    
     @SuppressWarnings("unused")
     private void buscarYCargarEnGrid(List<Pelicula> peliculas) {
         
         try {
-            // Buscar todos los nodos del GridPane
             for (javafx.scene.Node node : footerGrid.getChildren()) {
                 if (node instanceof ImageView) {
                     ImageView img = (ImageView) node;
@@ -901,7 +848,6 @@ public class ClienteController {
                     if (colIndex == null) colIndex = 0;
                     if (rowIndex == null) rowIndex = 0;
                     
-                    // Solo procesar ImageViews en la fila 0 (pósters)
                     if (rowIndex == 0 && colIndex >= 0 && colIndex < peliculas.size()) {
                         Pelicula pelicula = peliculas.get(colIndex);
                         String posterUrl = pelicula.getPosterUrl();
@@ -923,7 +869,6 @@ public class ClienteController {
                     if (colIndex == null) colIndex = 0;
                     if (rowIndex == null) rowIndex = 0;
                     
-                    // Solo procesar Labels en la fila 1 (títulos)
                     if (rowIndex == 1 && colIndex >= 0 && colIndex < peliculas.size()) {
                         Pelicula pelicula = peliculas.get(colIndex);
                         lbl.setText(pelicula.getTitulo() != null ? pelicula.getTitulo() : "Sin título");
@@ -937,12 +882,6 @@ public class ClienteController {
         }
     }
     
-    // cargarCard and resolveImage helpers are defined earlier in this class; duplicates removed.
-
-    /**
-     * Abre la pantalla de detalle de película (contenidoCartelera.fxml) para la película indicada.
-     * Mantiene la sesión de usuario y el coordinador para navegación.
-     */
     @SuppressWarnings("unused")
     private void abrirDetallePelicula(Pelicula p) {
         if (p == null) return;
@@ -975,8 +914,6 @@ public class ClienteController {
             ex.printStackTrace();
         }
     }
-
-    // Methods required by ContenidoCarteleraController embedding flow
     public boolean isSameScene(Button anyButton) {
         try {
             if (anyButton == null) return false;

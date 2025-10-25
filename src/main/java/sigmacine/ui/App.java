@@ -12,9 +12,15 @@ import sigmacine.aplicacion.service.LoginService;
 import sigmacine.aplicacion.facade.AuthFacade;
 import sigmacine.ui.controller.ControladorControlador;
 import sigmacine.aplicacion.service.RegistroService;
+import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
+import sigmacine.infraestructura.persistencia.jdbc.CompraRepositoryJdbc;
+import sigmacine.aplicacion.service.CompraService;
+import sigmacine.aplicacion.service.CarritoService;
+import javafx.util.Callback;
 
-    //Son temporales
-
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 public class App extends Application {
 
@@ -35,37 +41,67 @@ public class App extends Application {
 
 
     ControladorControlador coordinador = new ControladorControlador(stage, authFacade);
-    // Arrancar en la vista cliente_home y mostrar popup de selección de ciudad
-    // Asegurar que el popup de ciudad pueda mostrarse (si antes quedó marcado como mostrado, lo removemos)
+
+    // Build a simple service container to support controller instantiation (basic DI)
+    Map<Class<?>, Object> container = new HashMap<>();
+    container.put(sigmacine.infraestructura.configDataBase.DatabaseConfig.class, db);
+    container.put(sigmacine.dominio.repository.UsuarioRepository.class, repo);
+    container.put(sigmacine.aplicacion.service.LoginService.class, loginService);
+    container.put(sigmacine.aplicacion.service.RegistroService.class, registroService);
+    container.put(sigmacine.aplicacion.facade.AuthFacade.class, authFacade);
+    // repositories and services commonly used by controllers
+    var peliculaRepo = new PeliculaRepositoryJdbc(db);
+    container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
+    var compraRepo = new CompraRepositoryJdbc(db);
+    container.put(CompraRepositoryJdbc.class, compraRepo);
+    var compraService = new CompraService(compraRepo);
+    container.put(CompraService.class, compraService);
+    container.put(CarritoService.class, CarritoService.getInstance());
+
+    // Controller factory: try to find a constructor whose parameter types are available in container
+    Callback<Class<?>, Object> controllerFactory = (Class<?> clazz) -> {
+        try {
+            for (Constructor<?> ctor : clazz.getConstructors()) {
+                Class<?>[] pts = ctor.getParameterTypes();
+                Object[] args = new Object[pts.length];
+                boolean ok = true;
+                for (int i = 0; i < pts.length; i++) {
+                    Object candidate = null;
+                    // search for a matching instance by assignable type
+                    for (Map.Entry<Class<?>, Object> e : container.entrySet()) {
+                        if (pts[i].isAssignableFrom(e.getKey())) {
+                            candidate = e.getValue();
+                            break;
+                        }
+                    }
+                    if (candidate == null) { ok = false; break; }
+                    args[i] = candidate;
+                }
+                if (ok) {
+                    return ctor.newInstance(args);
+                }
+            }
+            // fallback to no-arg constructor
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (Exception ex) {
+            throw new RuntimeException("No se pudo instanciar controlador: " + clazz.getName(), ex);
+        }
+    };
+
+    // provide the factory to the coordinator so it applies to FXMLLoader instances
+    coordinador.setControllerFactory(controllerFactory);
     try {
         java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(sigmacine.ui.controller.ControladorControlador.class);
         if (prefs.getBoolean("cityPopupShown", false)) {
             prefs.remove("cityPopupShown");
         }
     } catch (Exception ignored) {}
-    // Start as guest and show cliente home with city popup
     sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
-    guest.setId(0); // id 0 = invitado
+    guest.setId(0);
     guest.setEmail("");
     guest.setNombre("Invitado");
     coordinador.mostrarClienteHomeConPopup(guest);
 
-
-       /*  //Este codigo es para omitir el login
-           // Usuario u;
-            UsuarioDTO dto = new UsuarioDTO();
-            dto.setId(6L);
-            dto.setEmail("ClientePrueba@sigma.com");
-
-            //Aca el rol se definiria para las pantallas
-           // dto.setRol("ADMIN");
-           dto.setRol("");
-
-                dto.setNombre("Equipo Sigma Cliente");
-                dto.setFechaRegistro("25-09-2025");
-            
-            ControladorControlador coordinador=new ControladorControlador(stage, authFacade);
-            coordinador.mostrarHome(dto);*/
     }
 
     public static void main(String[] args) {

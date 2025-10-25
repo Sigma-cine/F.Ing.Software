@@ -11,6 +11,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
+import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 
 import java.net.URL;
 import java.math.BigDecimal;
@@ -22,7 +23,6 @@ public class AsientosController implements Initializable {
     @FXML private GridPane gridSala;
     @FXML private Label lblResumen;
 
-    // Unified top bar controls
     @FXML private Button btnCartelera;
     @FXML private Button btnConfiteria;
     @FXML private Button btnSigmaCard;
@@ -62,7 +62,6 @@ public class AsientosController implements Initializable {
     // Popup del carrito (implementación ligera reutilizando verCarrito.fxml)
     private Stage cartStage;
 
-    // session/coordinator wiring
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
     public void setUsuario(UsuarioDTO u) { this.usuario = u; refreshSessionUI(); }
@@ -70,7 +69,6 @@ public class AsientosController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Hook up top bar actions
         if (btnCartelera != null) btnCartelera.setOnAction(e -> goCartelera());
         if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
         if (btnCart != null) btnCart.setOnAction(e -> toggleCartPopup());
@@ -193,12 +191,20 @@ public class AsientosController implements Initializable {
             var service = new sigmacine.aplicacion.service.VerHistorialService(usuarioRepo);
             var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCompras.fxml"));
             var controller = new VerHistorialController(service);
+            // permitir volver a la escena actual
+            javafx.scene.Scene prev = null;
+            try { prev = gridSala != null && gridSala.getScene() != null ? gridSala.getScene() : null; } catch (Exception ignore) {}
+            try { controller.setPreviousScene(prev); } catch (Exception ignore) {}
             if (this.usuario != null) controller.setUsuarioEmail(this.usuario.getEmail());
             else {
                 var cur = sigmacine.aplicacion.session.Session.getCurrent();
                 if (cur != null && cur.getEmail() != null && !cur.getEmail().isBlank()) controller.setUsuarioEmail(cur.getEmail());
             }
-            loader.setController(controller);
+            System.out.println("[AsientosController] opening historial view...");
+            loader.setControllerFactory(cls -> {
+                if (cls == sigmacine.ui.controller.VerHistorialController.class) return controller;
+                try { return cls.getDeclaredConstructor().newInstance(); } catch (Exception ex) { throw new RuntimeException(ex); }
+            });
             Parent root = loader.load();
             Stage stage = (Stage) gridSala.getScene().getWindow();
             Scene current = stage.getScene();
@@ -214,7 +220,7 @@ public class AsientosController implements Initializable {
         if (texto == null) texto = "";
         try {
             var db = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
-            var repo = new sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc(db);
+            var repo = new PeliculaRepositoryJdbc(db);
             var resultados = repo.buscarPorTitulo(texto);
             var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/resultados_busqueda.fxml"));
             Parent root = loader.load();
@@ -319,12 +325,6 @@ public class AsientosController implements Initializable {
         if (btnContinuar != null) btnContinuar.setDisable(n == 0);
     }
 
-    /**
-     * Sincroniza los asientos seleccionados con el CarritoService:
-     * - Elimina los ítems previos de esta función (asientoItems).
-     * - Añade un item por cada asiento seleccionado con nombre "Asiento <code> - <película> (<hora>)".
-     * - Mantiene una lista local para poder limpiar en la próxima actualización.
-     */
     private void sincronizarAsientosConCarrito() {
         // Quitar del observable los items anteriores vinculados a la selección de asientos actual
         if (!asientoItems.isEmpty()) {
@@ -336,7 +336,6 @@ public class AsientosController implements Initializable {
         if (seleccion.isEmpty()) return;
         for (String code : seleccion.stream().sorted().toList()) {
             String nombre = "Asiento " + code + " - " + (titulo != null ? titulo : "Película") + (hora != null ? " (" + hora + ")" : "");
-            // Use the DTO constructor that includes asiento so the repository can persist BOLETO and BOLETO_SILLA
             var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
             carrito.addItem(dto);
             asientoItems.add(dto);
@@ -344,10 +343,10 @@ public class AsientosController implements Initializable {
     }
 
     public void setFuncion(String titulo,
-                           String hora,
-                           java.util.Set<String> ocupados,
-                           java.util.Set<String> accesibles,
-                           Long funcionId) {
+                        String hora,
+                        java.util.Set<String> ocupados,
+                        java.util.Set<String> accesibles,
+                        Long funcionId) {
         if (titulo != null) this.titulo = titulo;
         if (hora   != null) this.hora   = hora;
         this.funcionId = funcionId;
@@ -367,11 +366,10 @@ public class AsientosController implements Initializable {
         if (gridSala != null) { poblarGrilla(); actualizarResumen(); }
     }
 
-    // Overload for backward compatibility with existing call sites
     public void setFuncion(String titulo,
-                           String hora,
-                           java.util.Set<String> ocupados,
-                           java.util.Set<String> accesibles) {
+                        String hora,
+                        java.util.Set<String> ocupados,
+                        java.util.Set<String> accesibles) {
         setFuncion(titulo, hora, ocupados, accesibles, null);
     }
 
@@ -401,8 +399,7 @@ public class AsientosController implements Initializable {
 
     @FXML
     private void onContinuar() {
-        // Petición del usuario: que no haga nada (no navegar). Se puede dejar un log opcional.
-        System.out.println("[Asientos] Continuar presionado - sin acción (configurado así por requerimiento)");
+    // Continuar pressed - no action (kept silent)
     }
 
     private Set<String> shiftAccesiblesToFirstRowPlus2(Set<String> entrada) {
@@ -443,11 +440,10 @@ public class AsientosController implements Initializable {
                     if (ev.getCode() == KeyCode.ESCAPE) cartStage.close();
                 });
             }
-            // Reposicionar cerca del botón Cart si es posible
             if (btnCart != null && btnCart.getScene() != null) {
                 javafx.geometry.Bounds b = btnCart.localToScreen(btnCart.getBoundsInLocal());
                 if (b != null) {
-                    cartStage.setX(b.getMaxX() - 600); // ancho estimado
+                    cartStage.setX(b.getMaxX() - 600);
                     cartStage.setY(b.getMaxY() + 8);
                 }
             }

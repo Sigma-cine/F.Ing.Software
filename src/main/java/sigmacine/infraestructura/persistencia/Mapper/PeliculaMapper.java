@@ -8,7 +8,7 @@ import sigmacine.dominio.entity.Pelicula;
 public class PeliculaMapper {
 
     public static Pelicula map(ResultSet rs) throws SQLException {       
-         Pelicula p = new Pelicula(
+        Pelicula p = new Pelicula(
             rs.getInt("ID"),
             rs.getString("TITULO"),
             rs.getString("GENERO"),
@@ -17,9 +17,17 @@ public class PeliculaMapper {
             rs.getString("DIRECTOR"),
             rs.getString("ESTADO")
         ); 
-         String posterUrl = rs.getString("POSTER_URL"); // puede venir null
+        String posterUrl = rs.getString("POSTER_URL");
         if (posterUrl != null) {
-            p.setPosterUrl(posterUrl);
+            String normalized = posterUrl;
+            try {
+                String lower = posterUrl.toLowerCase();
+                if (lower.contains("src") && (lower.contains("images") || lower.contains("img"))) {
+                        int idx = Math.max(posterUrl.lastIndexOf('/'), posterUrl.lastIndexOf('\\'));
+                    if (idx >= 0 && idx + 1 < posterUrl.length()) normalized = posterUrl.substring(idx + 1);
+                }
+            } catch (Exception ignore) {}
+            p.setPosterUrl(normalized);
         }
 
         String sinopsis = rs.getString("SINOPSIS");
@@ -27,7 +35,6 @@ public class PeliculaMapper {
             p.setSinopsis(sinopsis);
         }
 
-        // Reparto: guardamos la cadena tal cual (coma-separada)
         String reparto = rs.getString("REPARTO");
         if (reparto != null) {
             p.setReparto(reparto);

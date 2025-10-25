@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@sigma.css">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.VerHistorialController" stylesheets="@sigma.css">
     <top>
         <HBox fx:id="localTopbar" alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
             <children>

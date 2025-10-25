@@ -155,7 +155,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
 
     @Override
     public List<HistorialCompraDTO> verHistorial(String emailPlano) {
-        System.out.println("[UsuarioRepositoryJdbc] verHistorial llamada con email='" + emailPlano + "'");
+        // diagnostics removed
         final String sql = """
         SELECT
             co.ID AS COMPRA_ID,
@@ -195,7 +195,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                     lista.add(CompraMapper.mapHistorial(rs));
                     ids.add(rs.getObject("COMPRA_ID", Long.class));
                 }
-                System.out.println("[UsuarioRepositoryJdbc] verHistorial -> compras encontradas para '" + emailPlano + "' : " + ids);
+                // compras found for user
                 return lista;
             }
         } catch (SQLException e) {
@@ -221,13 +221,16 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 var lista = new ArrayList<Boleto>();
                 while (rs.next()) {
                     Boleto b = new Boleto();
-                    b.setId(rs.getObject("ID", Long.class));
-                    // build asiento string from SILLA (fila + numero) if available
+                    Long bId = rs.getObject("ID", Long.class);
+                    b.setId(bId);
                     String fila = rs.getString("FILA");
                     Integer nro = rs.getObject("SILLA_NUMERO", Integer.class);
                     String asiento = null;
                     if (fila != null || nro != null) {
                         asiento = (fila != null ? fila : "") + (nro != null ? String.valueOf(nro) : "");
+                    }
+                    if (asiento == null || asiento.isBlank()) {
+                        asiento = "Sin asignar";
                     }
                     b.setAsiento(asiento);
                     java.math.BigDecimal precioBd = rs.getBigDecimal("PRECIO_FINAL");

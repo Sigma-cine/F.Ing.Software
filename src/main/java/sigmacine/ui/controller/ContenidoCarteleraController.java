@@ -41,14 +41,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.format.DateTimeFormatter;
 import javafx.geometry.Pos;
-// (duplicate import removed)
 
 public class ContenidoCarteleraController {
 
     @FXML private Button btnCarteleraTop;
     @FXML private Button btnBack;
 
-    // Session-related topbar controls (copied from pagina_inicial.fxml)
     @FXML private MenuButton menuPerfil;
     @FXML private Button btnIniciarSesion;
     @FXML private Button btnRegistrarse;
@@ -75,11 +73,6 @@ public class ContenidoCarteleraController {
     private Pelicula pelicula;
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
-    // optional back navigation state (currently not used)
-    // private List<Pelicula> backPeliculas;
-    // private String backTexto;
-    // back navigation placeholders (reserved for future use)
-
     private ClienteController host;
     public void setHost(ClienteController host) { this.host = host; }
 
@@ -104,24 +97,20 @@ public class ContenidoCarteleraController {
             btnComprar.setOnAction(e -> onComprarTickets());
         }
     // tabs de día se construyen al cargar la película
-        // Wire historial menu action (open as modal from detail page)
         if (miHistorial != null) {
             miHistorial.setOnAction(e -> onVerHistorial());
         }
         if (btnRegistrarse != null) {
             btnRegistrarse.setOnAction(e -> onRegistrarse());
         }
-        // session UI setup
         try { refreshSessionUI(); } catch (Exception ignore) {}
         if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> {
             try {
-                // Prefer to delegate to the app coordinator so AuthFacade is injected
                 if (this.coordinador != null) {
                     this.coordinador.mostrarLogin();
                     refreshSessionUI();
                     return;
                 }
-                // Try global coordinator instance if one was registered
                 try {
                     ControladorControlador global = ControladorControlador.getInstance();
                     if (global != null) {
@@ -131,7 +120,6 @@ public class ContenidoCarteleraController {
                     }
                 } catch (Throwable ignore) {}
 
-                // Fallback: load login.fxml manually but try to set AuthFacade if available
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
                 Parent root = loader.load();
                 Object ctrl = loader.getController();
@@ -144,7 +132,6 @@ public class ContenidoCarteleraController {
                         ControladorControlador global = ControladorControlador.getInstance();
                         if (global != null) {
                             lc.setCoordinador(global);
-                            // set AuthFacade if available via getter
                             try {
                                 sigmacine.aplicacion.facade.AuthFacade af = global.getAuthFacade();
                                 if (af != null) lc.setAuthFacade(af);
@@ -152,8 +139,6 @@ public class ContenidoCarteleraController {
                         }
                     } catch (Throwable ignore) {}
 
-                    // Ensure that after successful login we don't navigate away from the
-                    // detail view: instead close the dialog and refresh the session UI.
                     lc.setOnSuccess(() -> {
                         try { dialog.close(); } catch (Exception ignore) {}
                         try { refreshSessionUI(); } catch (Exception ignore) {}
@@ -166,7 +151,6 @@ public class ContenidoCarteleraController {
     if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); refreshSessionUI(); });
     }
 
-    // duplicate onBrandClick/onVerHistorial/refreshSessionUI removed
 
     @FXML
     private void onBrandClick() {
@@ -190,7 +174,6 @@ public class ContenidoCarteleraController {
     }
 
     private void onVerHistorial() {
-        // Require login like in ClienteController
     if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
             javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             a.setTitle("Acceso denegado");
@@ -200,20 +183,21 @@ public class ContenidoCarteleraController {
             return;
         }
         try {
-            // Build service and controller
             DatabaseConfig dbConfig = new DatabaseConfig();
             UsuarioRepositoryJdbc usuarioRepo = new UsuarioRepositoryJdbc(dbConfig);
             VerHistorialService historialService = new VerHistorialService(usuarioRepo);
 
-            // Load full-screen history view (not a modal)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCompras.fxml"));
             VerHistorialController historialController = new VerHistorialController(historialService);
-            // Inject email if available
+            // permitir volver a la escena previa
+            javafx.scene.Scene prev = null;
+            try { prev = panelFunciones != null && panelFunciones.getScene() != null ? panelFunciones.getScene() : null; } catch (Exception ignore) {}
+            try { historialController.setPreviousScene(prev); } catch (Exception ignore) {}
+
             try {
                 if (this.usuario != null && this.usuario.getEmail() != null) {
                     historialController.setUsuarioEmail(this.usuario.getEmail());
                 } else {
-                    // fallback to session current user if available
                     sigmacine.aplicacion.data.UsuarioDTO cur = sigmacine.aplicacion.session.Session.getCurrent();
                     if (cur != null && cur.getEmail() != null) historialController.setUsuarioEmail(cur.getEmail());
                 }
@@ -221,7 +205,6 @@ public class ContenidoCarteleraController {
             loader.setController(historialController);
 
             Parent root = loader.load();
-            // Replace current window scene to navigate fully
             Stage stage = null;
             try { stage = (Stage) (btnBack != null ? btnBack.getScene().getWindow() : (menuPerfil != null ? menuPerfil.getScene().getWindow() : null)); } catch (Exception ignore) {}
             if (stage != null) {
@@ -289,13 +272,11 @@ public class ContenidoCarteleraController {
                 this.coordinador.mostrarRegistro();
                 return;
             }
-            // intentar usar coordinador global
             try {
                 ControladorControlador global = ControladorControlador.getInstance();
                 if (global != null) { global.mostrarRegistro(); return; }
             } catch (Throwable ignore) {}
 
-            // Fallback: no hay coordinador — informar al usuario
             javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             a.setTitle("Registro");
             a.setHeaderText(null);
@@ -331,7 +312,6 @@ public class ContenidoCarteleraController {
     }
 
     public void setBackResults(List<Pelicula> peliculas, String textoBuscado) {
-        // reserved for future: maintain a reference to go back to results page
     }
 
     public void setPelicula(Pelicula p) {
@@ -536,8 +516,7 @@ public class ContenidoCarteleraController {
                 return;
             }
         if (selectedFuncionId == null) {
-        // Si no quedó registrado el ID (p.ej. desde una selección previa), intenta resolverlo por hora + fecha
-        // Nota: Esto asume horas únicas por sede/día; si no, conviene extender el ListView para guardar el id.
+
         }
             if (isEmbedded()) {
                 String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
@@ -570,7 +549,7 @@ public class ContenidoCarteleraController {
             AsientosController ctrl = loader.getController();
             Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
             Set<String> accesibles = Set.of("E3","E4","E5","E6");
-            // Por ahora AsientosController no recibe ID de función; solo pasamos texto y hora.
+            // Por ahora AsientosController no recibe ID de función, solo pasamos texto y hora.
             ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId);
 
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
@@ -599,13 +578,11 @@ public class ContenidoCarteleraController {
         }
     }
 
-    // Construye 5 pestañas de día (hoy + 4) y maneja selección
     private void buildDayTabsFrom(List<FuncionDisponibleDTO> funciones) {
         if (dayTabs == null) return;
         dayTabs.getChildren().clear();
         if (funciones == null || funciones.isEmpty()) return;
 
-        // días disponibles (distintos), máximo 5
         List<java.time.LocalDate> fechas = funciones.stream()
                 .map(FuncionDisponibleDTO::getFecha)
                 .distinct()
@@ -628,7 +605,6 @@ public class ContenidoCarteleraController {
             idx++;
         }
 
-        // seleccionar el primer día disponible si no hay selección
         if (getSelectedDay() == null && !fechas.isEmpty()) {
             setSelectedDay(fechas.get(0));
             updateDayTabStyles(0);
@@ -646,7 +622,6 @@ public class ContenidoCarteleraController {
         }
     }
 
-    // estado del día seleccionado (simple, en memoria)
     private java.time.LocalDate selectedDay;
     private void setSelectedDay(java.time.LocalDate d) { this.selectedDay = d; }
     private java.time.LocalDate getSelectedDay() { return this.selectedDay; }

@@ -52,7 +52,9 @@ public class DetalleCompraController {
                 for (Boleto b : boletos) {
                     HBox row = new HBox(10);
                     row.getStyleClass().add("line-item");
-                    Label seat = new Label("Asiento: " + (b.getAsiento() != null ? b.getAsiento() : "N/A"));
+                    String asientoVal = b.getAsiento();
+                    if (asientoVal == null || asientoVal.isBlank() || "Sin asignar".equals(asientoVal)) asientoVal = "Sin asignar";
+                    Label seat = new Label("Asiento: " + asientoVal);
                     seat.getStyleClass().add("small-muted");
                     Label precio = new Label(String.format("$ %.2f", (double) b.getPrecio()));
                     precio.getStyleClass().add("venue-box");

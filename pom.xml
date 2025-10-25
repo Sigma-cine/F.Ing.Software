@@ -113,6 +113,16 @@
               <classpathScope>runtime</classpathScope>
             </configuration>
           </execution>
+          <execution>
+            <id>simulate-purchase</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>sigmacine.tools.PurchaseSimulator</mainClass>
+              <classpathScope>runtime</classpathScope>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 

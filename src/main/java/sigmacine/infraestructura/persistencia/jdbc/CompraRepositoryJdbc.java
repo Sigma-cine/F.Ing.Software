@@ -19,15 +19,10 @@ public class CompraRepositoryJdbc implements CompraRepository {
 
     @Override
     public Long guardarCompraProductos(int clienteId, LocalDate fecha, List<CompraProductoDTO> items, String metodoPago,  BigDecimal total) {
-
-        //if (clienteId == null) throw new IllegalArgumentException("clienteId requerido");
         if (items == null || items.isEmpty()) throw new IllegalArgumentException("La compra no tiene productos");
         if (metodoPago == null || metodoPago.trim().isEmpty()) throw new IllegalArgumentException("metodoPago requerido");
         if (total == null) throw new IllegalArgumentException("total requerido");
 
-        /*final String nextCompraIdSql = "SELECT COALESCE(MAX(ID),0)+1 AS NEXT_ID FROM COMPRA";
-        final String nextPagoIdSql   = "SELECT COALESCE(MAX(ID),0)+1 AS NEXT_ID FROM PAGO";
-*/
         final String nextCompraIdSql = "SELECT NEXT VALUE FOR SEQ_COMPRA AS NEXT_ID";
         final String nextPagoIdSql   = "SELECT NEXT VALUE FOR SEQ_PAGO AS NEXT_ID";
 
@@ -66,21 +61,21 @@ public class CompraRepositoryJdbc implements CompraRepository {
             Long pagoId;
 
             try {
+                // diagnostics removed
                 // 1) IDs
                 try (PreparedStatement ps = con.prepareStatement(nextCompraIdSql);
-                     ResultSet rs = ps.executeQuery()) {
+                    ResultSet rs = ps.executeQuery()) {
                     rs.next();
                     compraId = rs.getLong("NEXT_ID");
                 }
                 try (PreparedStatement ps = con.prepareStatement(nextPagoIdSql);
-                     ResultSet rs = ps.executeQuery()) {
+                    ResultSet rs = ps.executeQuery()) {
                     rs.next();
                     pagoId = rs.getLong("NEXT_ID");
                 }
 
                 // 2) COMPRA
-                try (PreparedStatement ps = con.prepareStatement(insertCompra)) {
-                    System.out.println("[CompraRepositoryJdbc] Preparando INSERT COMPRA -> ID=" + compraId + ", CLIENTE_ID=" + clienteId + ", TOTAL=" + total);
+                    try (PreparedStatement ps = con.prepareStatement(insertCompra)) {
                     ps.setLong(1, compraId);
                     ps.setBigDecimal(2, total);
                     ps.setDate(3, Date.valueOf(fecha));
@@ -112,15 +107,13 @@ public class CompraRepositoryJdbc implements CompraRepository {
 
                     // 3b) BOLETOS: insertar cada boleto individualmente (productoId == null)
                     try (PreparedStatement nextBoletoPs = con.prepareStatement(nextBoletoIdSql);
-                         PreparedStatement psBoleto = con.prepareStatement(insertBoleto);
-                         PreparedStatement psBoletoSilla = con.prepareStatement(insertBoletoSilla)) {
+                        PreparedStatement psBoleto = con.prepareStatement(insertBoleto);
+                        PreparedStatement psBoletoSilla = con.prepareStatement(insertBoletoSilla)) {
                         for (CompraProductoDTO it : items) {
-                            if (it.getProductoId() != null) continue; // skip products
-
+                            if (it.getProductoId() != null) continue;
                             if (it.getFuncionId() == null) {
                                 throw new IllegalArgumentException("Boleto sin funcionId no puede insertarse.");
                             }
-                            // obtain next boleto id
                             long boletoId;
                             try (ResultSet rs = nextBoletoPs.executeQuery()) {
                                 rs.next(); boletoId = rs.getLong("NEXT_ID");
@@ -136,21 +129,24 @@ public class CompraRepositoryJdbc implements CompraRepository {
                             psBoleto.setLong(7, it.getFuncionId());
                             psBoleto.executeUpdate();
 
-                            // Map silla if asiento code is provided: find SILLA.ID by fila+numero within the SALA of the function
                             String asiento = it.getAsiento();
                             if (asiento != null && !asiento.isBlank()) {
-                                // Asiento format: 'A5' or 'B10' -> fila letter(s) + number
                                 String filaPart = asiento.replaceAll("\\d", "");
                                 String numPart = asiento.replaceAll("\\D", "");
                                 boolean sillaInserted = false;
                                 if (!numPart.isBlank()) {
-                                    // Lookup SALA_ID for the function
                                     Long salaId = null;
                                     try (PreparedStatement psSala = con.prepareStatement("SELECT SALA_ID FROM FUNCION WHERE ID = ? FETCH FIRST 1 ROWS ONLY")) {
                                         psSala.setLong(1, it.getFuncionId());
                                         try (ResultSet rsSala = psSala.executeQuery()) {
                                             if (rsSala.next()) salaId = rsSala.getObject("SALA_ID", Long.class);
                                         }
+                                    }
+
+                                    if (salaId == null) {
+                                        // salaId missing
+                                    } else {
+                                        // mapping seat
                                     }
 
                                     if (salaId != null) {
@@ -160,30 +156,71 @@ public class CompraRepositoryJdbc implements CompraRepository {
                                             psFindSilla.setLong(3, salaId);
                                             try (ResultSet rs = psFindSilla.executeQuery()) {
                                                 if (rs.next()) {
-                                                    long sillaId = rs.getLong("ID");
-                                                    psBoletoSilla.setLong(1, boletoId);
-                                                    psBoletoSilla.setLong(2, sillaId);
-                                                    psBoletoSilla.executeUpdate();
-                                                    sillaInserted = true;
+                                                            long sillaId = rs.getLong("ID");
+                                                            psBoletoSilla.setLong(1, boletoId);
+                                                            psBoletoSilla.setLong(2, sillaId);
+                                                            psBoletoSilla.executeUpdate();
+                                                            // mark silla as occupied
+                                                            try (PreparedStatement psUpdate = con.prepareStatement("UPDATE SILLA SET ESTADO_BOOL = FALSE WHERE ID = ?")) {
+                                                                psUpdate.setLong(1, sillaId);
+                                                                int updated = psUpdate.executeUpdate();
+                                                                // updated
+                                                            }
+                                                            sillaInserted = true;
                                                 }
                                             }
                                         }
 
-                                        // Fallback: if not found within the sala, try a global lookup by fila+numero
                                         if (!sillaInserted) {
                                             try (PreparedStatement psFindSillaGlobal = con.prepareStatement("SELECT ID FROM SILLA WHERE FILA = ? AND NUMERO = ? FETCH FIRST 1 ROWS ONLY")) {
                                                 psFindSillaGlobal.setString(1, filaPart);
                                                 psFindSillaGlobal.setInt(2, Integer.parseInt(numPart));
                                                 try (ResultSet rs2 = psFindSillaGlobal.executeQuery()) {
-                                                    if (rs2.next()) {
+                                                        if (rs2.next()) {
                                                         long sillaId = rs2.getLong("ID");
                                                         psBoletoSilla.setLong(1, boletoId);
                                                         psBoletoSilla.setLong(2, sillaId);
                                                         psBoletoSilla.executeUpdate();
-                                                        System.out.println("[CompraRepositoryJdbc] Asiento mapeado globalmente: asiento=" + asiento + " -> SILLA_ID=" + sillaId + " (boleto=" + boletoId + ")");
+                                                        // mark silla as occupied (global match)
+                                                        try (PreparedStatement psUpdate = con.prepareStatement("UPDATE SILLA SET ESTADO_BOOL = FALSE WHERE ID = ?")) {
+                                                            psUpdate.setLong(1, sillaId);
+                                                            int updated = psUpdate.executeUpdate();
+                                                            // updated
+                                                        }
                                                     } else {
-                                                        System.out.println("[CompraRepositoryJdbc] No se encontró SILLA para asiento=" + asiento + " (funcionId=" + it.getFuncionId() + ", boleto=" + boletoId + ")");
-                                                    }
+                                                            // no match found; optionally create dynamic seat
+                                                            if (salaId != null) {
+                                                                try {
+                                                                    long nextSillaId = 0L;
+                                                                    try (PreparedStatement psNext = con.prepareStatement("SELECT COALESCE(MAX(ID),0)+1 AS NEXT_ID FROM SILLA");
+                                                                         ResultSet rsNext = psNext.executeQuery()) {
+                                                                        rsNext.next();
+                                                                        nextSillaId = rsNext.getLong("NEXT_ID");
+                                                                    }
+                                                                    try (PreparedStatement psIns = con.prepareStatement("INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES (?, ?, ?, ?, ?, ?)")) {
+                                                                        psIns.setLong(1, nextSillaId);
+                                                                        psIns.setString(2, filaPart);
+                                                                        psIns.setInt(3, Integer.parseInt(numPart));
+                                                                        psIns.setString(4, "Estandar");
+                                                                        psIns.setBoolean(5, false);
+                                                                        psIns.setLong(6, salaId);
+                                                                        psIns.executeUpdate();
+                                                                    }
+                                                                    // insert boleto_silla for newly created seat
+                                                                    psBoletoSilla.setLong(1, boletoId);
+                                                                    psBoletoSilla.setLong(2, nextSillaId);
+                                                                    psBoletoSilla.executeUpdate();
+                                                                    try (PreparedStatement psUpdate = con.prepareStatement("UPDATE SILLA SET ESTADO_BOOL = FALSE WHERE ID = ?")) {
+                                                                        psUpdate.setLong(1, nextSillaId);
+                                                                        int updated = psUpdate.executeUpdate();
+                                                                        // updated
+                                                                    }
+                                                                    sillaInserted = true;
+                                                                } catch (SQLException e) {
+                                                                    // error creating dynamic seat
+                                                                }
+                                                            }
+                                                        }
                                                 }
                                             }
                                         }

@@ -1,6 +1,10 @@
 package sigmacine.ui.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -24,15 +28,14 @@ public class DetallePeliculaController {
     @FXML private javafx.scene.layout.StackPane trailerContainer;
     @FXML private javafx.scene.layout.HBox trailerButtons;
     @FXML private Label lblTituloPelicula;
-    @FXML private VBox panelFunciones; // opcional si generas horarios por código
-    @FXML private Button btnComprar;   // opcional
+    @FXML private VBox panelFunciones;
+    @FXML private Button btnComprar;
     @FXML private Button btnRegresarBusqueda;
     @FXML private Button btnRegresarHome;
 
     @FXML private Label lblGenero, lblClasificacion, lblDuracion, lblDirector, lblReparto;
 
     private Pelicula pelicula;
-    // data to return to results screen
     private List<Pelicula> backResults;
     private String backTexto;
 
@@ -45,27 +48,40 @@ public class DetallePeliculaController {
     private void initialize() {
         if (btnComprar != null) {
             btnComprar.setOnAction(e -> {
-                // Añadir un boleto de ejemplo al carrito (id=null, precio por defecto 1000 => $10.00)
+                // Navegar a la vista de contenidoCartelera para elegir función y asientos
                 try {
-                    sigmacine.aplicacion.service.CarritoService cs = sigmacine.aplicacion.service.CarritoService.getInstance();
-                    sigmacine.dominio.entity.Boleto b = new sigmacine.dominio.entity.Boleto();
-                    b.setPelicula(safe(pelicula != null ? pelicula.getTitulo() : "Película"));
-                    b.setSala("General");
-                    b.setHorario("Por definir");
-                    b.setAsiento("N/A");
-                    b.setPrecio(1000); // 1000 centavos => $10.00
-                    cs.addBoleto(b);
-                    // Si el overlay del carrito está presente, intentar refrescar su controlador
-                    try {
-                        javafx.scene.Node parent = btnComprar.getScene().lookup("#carritoRoot");
-                        if (parent != null) {
-                            Object ctrl = parent.getProperties().get("fx:controller");
-                            if (ctrl instanceof sigmacine.ui.controller.VerCarritoController) {
-                                ((sigmacine.ui.controller.VerCarritoController) ctrl).refresh();
-                            }
-                        }
-                    } catch (Exception ex) { /* ignore */ }
-                } catch (Exception ex) { ex.printStackTrace(); }
+                    var url = getClass().getResource("/sigmacine/ui/views/contenidoCartelera.fxml");
+                    if (url == null) {
+                        var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                        a.setHeaderText("No se encontró la vista de funciones");
+                        a.setContentText("Ruta esperada: /sigmacine/ui/views/contenidoCartelera.fxml");
+                        a.showAndWait();
+                        return;
+                    }
+                    FXMLLoader loader = new FXMLLoader(url);
+                    Parent root = loader.load();
+                    Object ctrl = loader.getController();
+                    if (ctrl instanceof sigmacine.ui.controller.ContenidoCarteleraController) {
+                        sigmacine.ui.controller.ContenidoCarteleraController c = (sigmacine.ui.controller.ContenidoCarteleraController) ctrl;
+                        try { c.setPelicula(this.pelicula); } catch (Exception ignore) {}
+                        try { c.setUsuario(sigmacine.aplicacion.session.Session.getCurrent()); } catch (Exception ignore) {}
+                        try { c.setCoordinador(null); } catch (Exception ignore) {}
+                    }
+
+                    Stage stage = (Stage) btnComprar.getScene().getWindow();
+                    Scene current = stage.getScene();
+                    double w = current != null ? current.getWidth() : 900;
+                    double h = current != null ? current.getHeight() : 600;
+                    stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
+                    stage.setTitle("Selecciona función y asientos");
+                    stage.setMaximized(true);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                    a.setHeaderText("Error al abrir funciones");
+                    a.setContentText(String.valueOf(ex));
+                    a.showAndWait();
+                }
             });
         }
         if (btnRegresarBusqueda != null) {
@@ -74,12 +90,10 @@ public class DetallePeliculaController {
                     var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/resultados_busqueda.fxml"));
                     javafx.scene.Parent root = loader.load();
                     ResultadosBusquedaController ctrl = loader.getController();
-                    // if we have back data, restore it
                     if (this.backResults != null) {
                         ctrl.setResultados(this.backResults, this.backTexto != null ? this.backTexto : "");
                     }
                     javafx.stage.Stage stage = (javafx.stage.Stage) btnRegresarBusqueda.getScene().getWindow();
-                    // preserve window size
                     javafx.scene.Scene current = stage.getScene();
                     double w = current != null ? current.getWidth() : 900;
                     double h = current != null ? current.getHeight() : 600;
@@ -112,49 +126,41 @@ public class DetallePeliculaController {
         // Poster
         String url = safe(p.getPosterUrl());
         if (!url.isEmpty()) {
-            // try classpath resource first
             try {
                 var res = getClass().getResourceAsStream("/Images/" + url);
                 if (res != null) {
                     imgPoster.setImage(new Image(res));
                 } else {
-                    // try URL (remote)
                     imgPoster.setImage(new Image(url, true));
                 }
             } catch (Exception ex) {
-                // fallback: null image
                 imgPoster.setImage(null);
             }
         } else {
             imgPoster.setImage(null);
         }
 
-        // Encabezado
         lblSinopsisTitulo.setText("SINOPSIS — " + safe(p.getTitulo(), "N/D"));
         lblTituloPelicula.setText(safe(p.getTitulo(), "N/D"));
 
-        // Ficha técnica (lo que mostraba el Alert)
         lblGenero.setText(safe(p.getGenero(), "N/D"));
         lblClasificacion.setText(safe(p.getClasificacion(), "N/D"));
         int dur = p.getDuracion();
-        lblDuracion.setText(dur > 0 ? dur + " min" : "N/D");  // usa >0 si quieres mostrar N/D cuando venga 0
+        lblDuracion.setText(dur > 0 ? dur + " min" : "N/D");
 
         lblDirector.setText(safe(p.getDirector(), "N/D"));
-    lblReparto.setText(safe(p.getReparto())); // puede ser largo
+    lblReparto.setText(safe(p.getReparto()));
 
         // Sinopsis
         txtSinopsis.setText(safe(p.getSinopsis()));
-
-        // Trailer: load trailers from PELICULA_TRAILER table (if present) and show selector buttons.
+        
         try {
             trailerContainer.getChildren().clear();
             trailerButtons.getChildren().clear();
             List<String> trailers = new ArrayList<>();
-            // primary trailer field (legacy)
             if (p.getTrailer() != null && !p.getTrailer().isBlank()) trailers.add(p.getTrailer());
-            // load additional trailers from DB
             try (Connection cn = new DatabaseConfig().getConnection();
-                 PreparedStatement ps = cn.prepareStatement("SELECT URL FROM PELICULA_TRAILER WHERE PELICULA_ID = ?")) {
+                PreparedStatement ps = cn.prepareStatement("SELECT URL FROM PELICULA_TRAILER WHERE PELICULA_ID = ?")) {
                 ps.setInt(1, p.getId());
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -162,7 +168,7 @@ public class DetallePeliculaController {
                         if (u != null && !u.isBlank() && !trailers.contains(u)) trailers.add(u);
                     }
                 }
-            } catch (Exception dbex) { /* ignore DB trailer errors */ }
+            } catch (Exception dbex) { }
 
             if (trailers.isEmpty()) {
                 javafx.scene.control.Label none = new javafx.scene.control.Label("No hay trailer disponible");
@@ -171,7 +177,6 @@ public class DetallePeliculaController {
                 return;
             }
 
-            // create a WebView (via reflection to be safe) and a loader function
             Object webView = null;
             Object engine = null;
             final boolean[] webAvailable = new boolean[] { true };
@@ -194,7 +199,6 @@ public class DetallePeliculaController {
                     try {
                         trailerContainer.getChildren().clear();
                         if (webAvailable[0] && finalWebView != null && finalEngine != null) {
-                            // generate embed HTML for youtube
                             String html = null;
                             if (trailerUrl.contains("youtube.com") || trailerUrl.contains("youtu.be")) {
                                 String id = null;
@@ -227,7 +231,6 @@ public class DetallePeliculaController {
                     } catch (Exception ex) { ex.printStackTrace(); }
                 });
                 trailerButtons.getChildren().add(b);
-                // auto-click first
                 if (i == 0) b.fire();
             }
         } catch (Exception ex) {
@@ -235,7 +238,6 @@ public class DetallePeliculaController {
         }
     }
 
-    /* ===== helpers ===== */
 
     private static String safe(String s) {
         return (s == null || s.trim().equalsIgnoreCase("null")) ? "" : s.trim();

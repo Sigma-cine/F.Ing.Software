@@ -24,7 +24,6 @@ public class CarteleraController {
     private ControladorControlador coordinador;
     private UsuarioDTO usuario;
 
-    // Shared topbar controls
     @FXML private Button btnIniciarSesion;
     @FXML private Button btnRegistrarse;
     @FXML private Label lblUserName;
@@ -33,7 +32,6 @@ public class CarteleraController {
     @FXML private MenuItem miHistorial;
     @FXML private TextField txtBuscar;
 
-    // Content grid
     @FXML private javafx.scene.layout.FlowPane gridPeliculas;
 
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
@@ -76,7 +74,6 @@ public class CarteleraController {
             Label gen = new Label(safe(p.getGenero(), "N/D")); gen.setStyle("-fx-text-fill: #cbd5e1;");
             Label dur = new Label((p.getDuracion() > 0 ? p.getDuracion() + " min" : "N/D")); dur.setStyle("-fx-text-fill: #cbd5e1;");
 
-            // Botón para ver detalle de la película
             Button btnDetalle = new Button("Ver detalle película");
             btnDetalle.getStyleClass().add("primary-btn");
             btnDetalle.setOnAction(e -> abrirDetalle(p));
@@ -98,7 +95,6 @@ public class CarteleraController {
             if (lower.startsWith("http://") || lower.startsWith("https://") || lower.startsWith("file:/")) {
                 return new Image(ref, true);
             }
-            // If it contains a full source path, extract just the filename
             if (ref.contains("src\\main\\resources\\Images\\") || ref.contains("src/main/resources/Images/")) {
                 String fileName = ref.substring(Math.max(ref.lastIndexOf('\\'), ref.lastIndexOf('/')) + 1);
                 java.net.URL res = getClass().getResource("/Images/" + fileName);
@@ -159,7 +155,6 @@ public class CarteleraController {
 
     private void wireTopbar() {
         try {
-            // session-driven visibility (similar to other controllers)
             boolean logged = sigmacine.aplicacion.session.Session.isLoggedIn();
             if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(!logged); btnIniciarSesion.setManaged(!logged); }
             if (btnRegistrarse != null) { btnRegistrarse.setVisible(!logged); btnRegistrarse.setManaged(!logged); }
@@ -172,6 +167,7 @@ public class CarteleraController {
             if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); wireTopbar(); });
             if (miHistorial != null) miHistorial.setOnAction(e -> {
                 try {
+                    System.out.println("[CarteleraController] miHistorial clicked, preparing historial view...");
                     if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
                         javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                         a.setTitle("Acceso denegado"); a.setHeaderText(null); a.setContentText("Debes iniciar sesión para ver tu historial de compras."); a.showAndWait(); return;
@@ -183,7 +179,15 @@ public class CarteleraController {
                     var controller = new VerHistorialController(historialService);
                     var cur = sigmacine.aplicacion.session.Session.getCurrent();
                     if (cur != null && cur.getEmail()!=null) controller.setUsuarioEmail(cur.getEmail());
-                    loader.setController(controller);
+                    // capturar escena actual para permitir volver
+                    javafx.scene.Scene prev = null;
+                    try { prev = gridPeliculas != null && gridPeliculas.getScene() != null ? gridPeliculas.getScene() : null; } catch (Exception ignore) {}
+                    try { controller.setPreviousScene(prev); } catch (Exception ignore) {}
+                    // use controller factory to avoid NPEs when FXML expects injections
+                    loader.setControllerFactory(cls -> {
+                        if (cls == sigmacine.ui.controller.VerHistorialController.class) return controller;
+                        try { return cls.getDeclaredConstructor().newInstance(); } catch (Exception ex) { throw new RuntimeException(ex); }
+                    });
                     javafx.scene.Parent root = loader.load();
                     Stage stage = (Stage) gridPeliculas.getScene().getWindow();
                     Scene current = stage.getScene();

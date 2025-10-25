@@ -21,9 +21,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Minimal, single-definition PagoController.
- */
+
 public class PagoController {
 
     @FXML private ListView<CompraProductoDTO> listaResumen;
