@@ -147,6 +147,7 @@ public class ClienteController {
 
     if (btnCartelera!= null) btnCartelera.setOnAction(e -> mostrarCartelera());
     if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
+    if (btnSigmaCard != null) btnSigmaCard.setOnAction(e -> onSigmaCardTop());
     if (btnCart != null) btnCart.setOnAction(e -> toggleCarritoOverlay());
         if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> onLogout());
         
@@ -471,6 +472,15 @@ public class ClienteController {
     @FXML private void onCard2(){ }
     @FXML private void onCard3(){ }
     @FXML private void onCard4(){ }
+
+    @FXML
+    private void onSigmaCardTop() {
+        try {
+            javafx.stage.Stage stage = null;
+            try { stage = content != null && content.getScene() != null ? (javafx.stage.Stage) content.getScene().getWindow() : (btnCartelera != null && btnCartelera.getScene() != null ? (javafx.stage.Stage) btnCartelera.getScene().getWindow() : null); } catch (Exception ignore) {}
+            if (stage != null) SigmaCardController.openAsScene(stage);
+        } catch (Exception ex) { ex.printStackTrace(); }
+    }
 
 
     private void onSeleccionarCiudad() {
