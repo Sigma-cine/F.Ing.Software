@@ -696,21 +696,38 @@ public class ContenidoCarteleraController {
             webView.setPrefSize(600, 360);
             webView.setMaxSize(600, 360);
             
-            // Habilitar JavaScript en el WebView
+            // Habilitar JavaScript y configuraciones importantes
             webEngine.setJavaScriptEnabled(true);
             
-            // Configurar User Agent para evitar restricciones
-            webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+            // Configurar User Agent más moderno
+            webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
             
-            // Hacer el WebView interactivo
+            // Hacer el WebView completamente interactivo
             webView.setMouseTransparent(false);
             webView.setPickOnBounds(true);
             webView.setFocusTraversable(true);
             
+            // Listener para errores
+            webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+                if (newState == javafx.concurrent.Worker.State.FAILED) {
+                    System.out.println("Error cargando trailer: " + url);
+                    // Intentar con URL alternativa sin parámetros
+                    String simpleUrl = url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
+                    if (!url.equals(simpleUrl)) {
+                        webEngine.load(simpleUrl);
+                    } else {
+                        mostrarMensajeError();
+                    }
+                } else if (newState == javafx.concurrent.Worker.State.SUCCEEDED) {
+                    System.out.println("Trailer cargado exitosamente: " + url);
+                }
+            });
+            
             // Convertir URL de YouTube a formato embebido
             String embedUrl = convertirUrlYouTubeAEmbed(url);
+            System.out.println("Cargando trailer: " + embedUrl);
             
-            // Cargar directamente la URL embed sin HTML personalizado
+            // Cargar la URL
             webEngine.load(embedUrl);
             
             trailerContainer.getChildren().add(webView);
