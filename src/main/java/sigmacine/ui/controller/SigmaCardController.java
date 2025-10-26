@@ -122,10 +122,40 @@ public class SigmaCardController {
 	@FXML
 	private void onBrandClick() {
 		try {
-			// If this view is shown as a modal, close the modal. Otherwise, try to navigate to home by closing this window.
+			// If this view is shown as a modal, close the modal.
 			javafx.stage.Window w = null;
 			try { if (btnRegistrarme != null && btnRegistrarme.getScene() != null) w = btnRegistrarme.getScene().getWindow(); } catch (Exception ignore) {}
 			if (w instanceof javafx.stage.Stage s) {
+				// Instead of closing the whole stage (which can exit the app when this is the primary stage),
+				// try to navigate back to the main/home scene if available.
+				try {
+					// Navigate to the cliente home screen
+					java.net.URL url = SigmaCardController.class.getResource("/sigmacine/ui/views/cliente_home.fxml");
+					if (url != null) {
+						javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(url);
+						javafx.scene.Parent root = loader.load();
+						Object ctrl = loader.getController();
+						// If the target controller provides initializeWithSession, invoke it to prefill data
+						if (ctrl != null) {
+							try {
+								var method = ctrl.getClass().getMethod("initializeWithSession");
+								method.invoke(ctrl);
+							} catch (NoSuchMethodException ignore) {
+							} catch (Exception ex) {
+								// ignore invocation errors, continue navigation
+							}
+						}
+						double wdt = s.getWidth() > 0 ? s.getWidth() : 900;
+						double hgt = s.getHeight() > 0 ? s.getHeight() : 600;
+						s.setScene(new javafx.scene.Scene(root, wdt, hgt));
+						s.setTitle("Cliente - Sigma Cine");
+						return;
+					}
+				} catch (Exception ignore) {
+					// if navigation fails, fall back to closing the stage
+				}
+
+				// fallback: close the stage
 				s.close();
 			}
 		} catch (Exception ex) {

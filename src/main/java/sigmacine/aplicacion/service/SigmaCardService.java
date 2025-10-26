@@ -3,33 +3,48 @@ package sigmacine.aplicacion.service;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Lightweight in-memory SigmaCard service used by the UI.
- * This is intentionally simple for the demo: it stores balances by card id in memory.
- */
+import sigmacine.dominio.repository.SigmaCardRepository;
+import sigmacine.infraestructura.persistencia.jdbc.SigmaCardRepositoryJdbc;
+import sigmacine.infraestructura.configDataBase.DatabaseConfig;
+
 public class SigmaCardService {
 
-	private final Map<String, BigDecimal> balances = new ConcurrentHashMap<>();
+	private final SigmaCardRepository repository;
 
-	/**
-	 * Register a card with id and pin. Pin is accepted but not validated in this simple impl.
-	 * @return true if card was created, false if it already existed
-	 */
+	public SigmaCardService() {
+		this.repository = new SigmaCardRepositoryJdbc(new DatabaseConfig());
+	}
+
+	// For tests or DI
+	public SigmaCardService(SigmaCardRepository repository) {
+		this.repository = repository;
+	}
+
 	public boolean registrarCard(String id, String pin) {
-		return balances.putIfAbsent(id, BigDecimal.ZERO) == null;
+		long uid = parseUserId(id);
+		return repository.crearSiNoExiste(uid);
 	}
 
 	public BigDecimal recargar(String id, BigDecimal monto) {
 		if (monto == null) throw new IllegalArgumentException("Monto requerido");
-		balances.merge(id, monto, BigDecimal::add);
-		return balances.get(id);
+		long uid = parseUserId(id);
+		return repository.recargar(uid, monto);
 	}
 
 	public BigDecimal consultarSaldo(String id) {
-		return balances.getOrDefault(id, BigDecimal.ZERO);
+		long uid = parseUserId(id);
+		BigDecimal val = repository.consultarSaldo(uid);
+		return val != null ? val : BigDecimal.ZERO;
+	}
+
+	private long parseUserId(String id) {
+		if (id == null) throw new IllegalArgumentException("Identificación requerida");
+		try {
+			return Long.parseLong(id.trim());
+		} catch (NumberFormatException ex) {
+			throw new IllegalArgumentException("Identificación inválida: debe ser numérica");
+		}
 	}
 
 	public String format(BigDecimal value) {
