@@ -13,6 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.web.WebView;
+import javafx.scene.web.WebEngine;
 import javafx.stage.Modality;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -22,10 +24,13 @@ import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.data.FuncionDisponibleDTO;
 import sigmacine.dominio.entity.Pelicula;
+import sigmacine.dominio.entity.PeliculaTrailer;
 import sigmacine.dominio.repository.FuncionRepository;
+import sigmacine.dominio.repository.PeliculaTrailerRepository;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.FuncionRepositoryJdbc;
+import sigmacine.infraestructura.persistencia.jdbc.PeliculaTrailerRepositoryJdbc;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
 import sigmacine.aplicacion.service.VerHistorialService;
@@ -66,6 +71,7 @@ public class ContenidoCarteleraController {
     @FXML private Button btnContinuar;
 
     @FXML private StackPane trailerContainer;
+    @FXML private HBox trailerButtons;
     @FXML private ScrollPane spCenter;
     @FXML private VBox detalleRoot;
     @FXML private HBox dayTabs;
@@ -79,9 +85,9 @@ public class ContenidoCarteleraController {
 
     @FXML
     private void initialize() {
-        if (trailerContainer != null && trailerContainer.getChildren().isEmpty()) {
-            trailerContainer.setMouseTransparent(true);
-            trailerContainer.setPickOnBounds(false);
+        if (trailerContainer != null) {
+            trailerContainer.setMouseTransparent(false);
+            trailerContainer.setPickOnBounds(true);
         }
         if (spCenter != null) spCenter.setPannable(false);
 
@@ -339,6 +345,9 @@ public class ContenidoCarteleraController {
         if (lblDirector != null) lblDirector.setText(safe(p.getDirector(), "N/D"));
         if (lblReparto != null) lblReparto.setText(safe(p.getReparto(), ""));
         if (txtSinopsis != null) txtSinopsis.setText(safe(p.getSinopsis()));
+
+        // Cargar trailers
+        cargarTrailers(p.getId());
 
         // Cargar funciones por ciudad/sede/sala; tabs por fechas disponibles
         try {
@@ -634,5 +643,128 @@ public class ContenidoCarteleraController {
         } catch (Throwable t) {
             return false;
         }
+    }
+
+    private void cargarTrailers(int peliculaId) {
+        try {
+            if (trailerContainer == null) return;
+            
+            // Limpiar contenido anterior
+            trailerContainer.getChildren().clear();
+            if (trailerButtons != null) {
+                trailerButtons.getChildren().clear();
+            }
+            
+            // Obtener trailers de la base de datos
+            DatabaseConfig db = new DatabaseConfig();
+            PeliculaTrailerRepository trailerRepo = new PeliculaTrailerRepositoryJdbc(db);
+            List<PeliculaTrailer> trailers = trailerRepo.obtenerTrailersPorPelicula(peliculaId);
+            
+            String trailerUrl = null;
+            
+            if (!trailers.isEmpty()) {
+                // Usar solo el primer trailer de la lista
+                trailerUrl = trailers.get(0).getUrl();
+            } else if (pelicula != null && pelicula.getTrailer() != null && !pelicula.getTrailer().trim().isEmpty()) {
+                // Si no hay trailers en la tabla PELICULA_TRAILER, usar el trailer principal de la película
+                trailerUrl = pelicula.getTrailer();
+            }
+            
+            if (trailerUrl != null && !trailerUrl.trim().isEmpty()) {
+                cargarTrailerEnWebView(trailerUrl);
+            } else {
+                mostrarMensajeNoTrailer();
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensajeNoTrailer();
+        }
+    }
+    
+    private void cargarTrailerEnWebView(String url) {
+        try {
+            if (trailerContainer == null) return;
+            
+            trailerContainer.getChildren().clear();
+            
+            // Crear WebView para mostrar el trailer
+            javafx.scene.web.WebView webView = new javafx.scene.web.WebView();
+            javafx.scene.web.WebEngine webEngine = webView.getEngine();
+            
+            // Configurar el tamaño del WebView
+            webView.setPrefSize(600, 360);
+            webView.setMaxSize(600, 360);
+            
+            // Habilitar JavaScript en el WebView
+            webEngine.setJavaScriptEnabled(true);
+            
+            // Configurar User Agent para evitar restricciones
+            webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+            
+            // Hacer el WebView interactivo
+            webView.setMouseTransparent(false);
+            webView.setPickOnBounds(true);
+            webView.setFocusTraversable(true);
+            
+            // Convertir URL de YouTube a formato embebido
+            String embedUrl = convertirUrlYouTubeAEmbed(url);
+            
+            // Cargar directamente la URL embed sin HTML personalizado
+            webEngine.load(embedUrl);
+            
+            trailerContainer.getChildren().add(webView);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensajeError();
+        }
+    }
+    
+    private void mostrarMensajeNoTrailer() {
+        trailerContainer.getChildren().clear();
+        Label lblNoTrailer = new Label("No hay trailer disponible para esta película");
+        lblNoTrailer.setStyle("-fx-text-fill: #999; -fx-font-size: 14;");
+        trailerContainer.getChildren().add(lblNoTrailer);
+    }
+    
+    private void mostrarMensajeError() {
+        trailerContainer.getChildren().clear();
+        Label lblError = new Label("Error al cargar el trailer");
+        lblError.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 14;");
+        trailerContainer.getChildren().add(lblError);
+    }
+    
+    private String convertirUrlYouTubeAEmbed(String url) {
+        if (url == null || url.trim().isEmpty()) return url;
+        
+        try {
+            // Patrones comunes de URL de YouTube
+            if (url.contains("youtube.com/watch?v=")) {
+                String videoId = url.substring(url.indexOf("v=") + 2);
+                if (videoId.contains("&")) {
+                    videoId = videoId.substring(0, videoId.indexOf("&"));
+                }
+                // Parámetros optimizados sin mute para permitir sonido
+                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+            } else if (url.contains("youtu.be/")) {
+                String videoId = url.substring(url.lastIndexOf("/") + 1);
+                if (videoId.contains("?")) {
+                    videoId = videoId.substring(0, videoId.indexOf("?"));
+                }
+                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+            } else if (url.contains("youtube.com/embed/")) {
+                // Si ya está en formato embed, agregar parámetros sin autoplay ni mute
+                if (url.contains("?")) {
+                    return url + "&controls=1&modestbranding=1&rel=0&enablejsapi=1";
+                } else {
+                    return url + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return url; // Devolver URL original si no se puede convertir
     }
 }

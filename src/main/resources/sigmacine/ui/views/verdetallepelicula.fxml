@@ -114,12 +114,7 @@
                         <Label text="TRAILER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" />
                         <HBox alignment="CENTER" prefWidth="820">
                             <children>
-                                <VBox spacing="6" alignment="CENTER">
-                                    <children>
-                                        <HBox fx:id="trailerButtons" spacing="8" alignment="CENTER" />
-                                        <StackPane fx:id="trailerContainer" prefHeight="360" prefWidth="600" />
-                                    </children>
-                                </VBox>
+                                <StackPane fx:id="trailerContainer" prefHeight="360" prefWidth="600" />
                             </children>
                         </HBox>
                     </children>
