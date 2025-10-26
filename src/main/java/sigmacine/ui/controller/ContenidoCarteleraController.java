@@ -698,7 +698,7 @@ public class ContenidoCarteleraController {
             
             trailerContainer.getChildren().clear();
             
-            // Crear WebView para mostrar el trailer
+            // Crear WebView simple para mostrar el trailer
             javafx.scene.web.WebView webView = new javafx.scene.web.WebView();
             javafx.scene.web.WebEngine webEngine = webView.getEngine();
             
@@ -706,21 +706,10 @@ public class ContenidoCarteleraController {
             webView.setPrefSize(600, 360);
             webView.setMaxSize(600, 360);
             
-            // Habilitar JavaScript y configuraciones importantes
-            webEngine.setJavaScriptEnabled(true);
-            
-            // Configurar User Agent más moderno
-            webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-            
-            // Hacer el WebView completamente interactivo
-            webView.setMouseTransparent(false);
-            webView.setPickOnBounds(true);
-            webView.setFocusTraversable(true);
-            
             // Convertir URL de YouTube a formato embebido
             String embedUrl = convertirUrlYouTubeAEmbed(url);
             
-            // Cargar la URL
+            // Cargar la URL directamente
             webEngine.load(embedUrl);
             
             trailerContainer.getChildren().add(webView);
