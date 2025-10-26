@@ -698,19 +698,13 @@ public class ContenidoCarteleraController {
             
             trailerContainer.getChildren().clear();
             
-            // Crear WebView simple para mostrar el trailer
+            // WebView súper simple - configuración mínima
             javafx.scene.web.WebView webView = new javafx.scene.web.WebView();
-            javafx.scene.web.WebEngine webEngine = webView.getEngine();
-            
-            // Configurar el tamaño del WebView
             webView.setPrefSize(600, 360);
-            webView.setMaxSize(600, 360);
             
-            // Convertir URL de YouTube a formato embebido
+            // Convertir URL y cargar directamente
             String embedUrl = convertirUrlYouTubeAEmbed(url);
-            
-            // Cargar la URL directamente
-            webEngine.load(embedUrl);
+            webView.getEngine().load(embedUrl);
             
             trailerContainer.getChildren().add(webView);
             
