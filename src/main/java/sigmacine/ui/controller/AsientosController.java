@@ -71,6 +71,7 @@ public class AsientosController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         if (btnCartelera != null) btnCartelera.setOnAction(e -> goCartelera());
         if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
+    if (btnSigmaCard != null) btnSigmaCard.setOnAction(e -> onSigmaCardTop());
         if (btnCart != null) btnCart.setOnAction(e -> toggleCartPopup());
         if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> {
             if (sigmacine.aplicacion.session.Session.isLoggedIn()) return; // ya logueado
@@ -111,6 +112,15 @@ public class AsientosController implements Initializable {
 
     @FXML private void onBrandClick() { goHome(); }
     @FXML private void onBuscarTop() { doSearch(txtBuscar != null ? txtBuscar.getText() : ""); }
+
+    @FXML
+    private void onSigmaCardTop() {
+        try {
+            javafx.stage.Stage stage = null;
+            try { stage = gridSala != null && gridSala.getScene() != null ? (javafx.stage.Stage) gridSala.getScene().getWindow() : null; } catch (Exception ignore) {}
+            if (stage != null) SigmaCardController.openAsScene(stage);
+        } catch (Exception ex) { ex.printStackTrace(); }
+    }
 
     private void goHome() {
         try {
@@ -394,19 +404,15 @@ public class AsientosController implements Initializable {
 
         tryFindPosterInScene();
 
-        // Final fallback: if we have a funcionId, try to read the peliculaId from FUNCION and
-        // resolve the Pelicula to get poster + title. This covers cases where caller only
-        // provided a funcionId or the view was opened by function selection.
         if ((imgPoster == null || imgPoster.getImage() == null) && this.funcionId != null) {
             try {
                 var db = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
                 try (var cn = db.getConnection();
-                     var ps = cn.prepareStatement("SELECT PELICULA_ID FROM FUNCION WHERE ID = ?")) {
+                    var ps = cn.prepareStatement("SELECT PELICULA_ID FROM FUNCION WHERE ID = ?")) {
                     ps.setLong(1, this.funcionId);
                     try (var rs = ps.executeQuery()) {
                         if (rs.next()) {
                             long peliculaId = rs.getLong("PELICULA_ID");
-                            // fetch all peliculas and find the one with this id (repo has no buscarPorId)
                             var repo = new sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc(db);
                             var todas = repo.buscarTodas();
                             for (var p : todas) {
@@ -460,7 +466,6 @@ public class AsientosController implements Initializable {
                 } catch (Exception ignore) {}
             }
 
-            // Also try to copy the title from known labels in the scene
             String[] titleIds = new String[] {"#lblTituloPelicula", "#lblTitulo"};
             for (String id : titleIds) {
                 try {

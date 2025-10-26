@@ -98,13 +98,13 @@
                             <!-- Cabecera -->
                             <HBox spacing="12" alignment="CENTER_LEFT">
                                 <children>
-                                    <StackPane prefWidth="140" prefHeight="140"
+                                    <StackPane prefWidth="220" prefHeight="320"
                                                style="-fx-background-color:#222; -fx-background-radius:8;">
-                                        <ImageView fx:id="imgPoster" fitWidth="120" fitHeight="120" preserveRatio="true"/>
+                                        <ImageView fx:id="imgPoster" fitWidth="200" fitHeight="300" preserveRatio="true"/>
                                     </StackPane>
                                     <VBox spacing="6">
                                         <children>
-                                            <Label fx:id="lblTitulo" text="Película" style="-fx-text-fill:#fff; -fx-font-weight:bold;">
+                                            <Label fx:id="lblTitulo" text="Película" style="-fx-text-fill:#fff; -fx-font-weight:bold;" wrapText="true" maxWidth="200">
                                                 <font><Font size="16"/></font>
                                             </Label>
                                             <Label fx:id="lblHoraPill" text="1:10 pm" styleClass="pill"/>
