@@ -47,7 +47,7 @@
                         <MenuItem text="Confitería"/>
                         <MenuItem text="Promociones"/>
                         <MenuItem text="Información Personal"/>
-                        <MenuItem text="SigmaCard"/>
+                        <MenuItem fx:id="miSigmaCard" text="SigmaCard" onAction="#onSigmaCardTop"/>
                         <MenuItem fx:id="miHistorial" text="Historial de compras"/>
                         <MenuItem text="Notificaciones"/>
                         <MenuItem text="Cartelera"/>

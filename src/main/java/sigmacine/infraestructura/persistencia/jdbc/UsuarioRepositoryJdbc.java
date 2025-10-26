@@ -57,6 +57,30 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 return mapUsuario(rs);
             }
         } catch (SQLException e) {
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            // Si falta la tabla SIGMA_CARD u otra tabla relacionada, hacemos un fallback a una consulta simple
+            if (msg.contains("table") && msg.contains("not found")) {
+                System.err.println("UsuarioRepositoryJdbc: tabla relacionada no encontrada al buscar por email; realizando consulta simple sin joins");
+                final String simpleSql = "SELECT U.ID, U.EMAIL, U.CONTRASENA, U.ROL FROM USUARIO U WHERE U.EMAIL = ? FETCH FIRST 1 ROWS ONLY";
+                try (Connection con2 = db.getConnection();
+                     PreparedStatement ps2 = con2.prepareStatement(simpleSql)) {
+                    ps2.setString(1, email.value());
+                    try (ResultSet rs2 = ps2.executeQuery()) {
+                        if (!rs2.next()) return null;
+                        int id = rs2.getInt("ID");
+                        Email em = new Email(rs2.getString("EMAIL"));
+                        PasswordHash ph = new PasswordHash(rs2.getString("CONTRASENA"));
+                        Usuario.Rol rol = normalizarRol(rs2.getString("ROL"));
+                        if (rol == Usuario.Rol.ADMIN) {
+                            return Usuario.crearAdmin(id, em, ph, "");
+                        } else {
+                            return Usuario.crearCliente(id, em, ph, "", null);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException("Error consultando USUARIO por email (fallback)", ex);
+                }
+            }
             throw new RuntimeException("Error consultando USUARIO por email", e);
         }
     }
@@ -217,6 +241,11 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 return lista;
             }
         } catch (SQLException e) {
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            if (msg.contains("table") && msg.contains("not found")) {
+                System.err.println("UsuarioRepositoryJdbc: tabla faltante al consultar historial, devolviendo lista vacía");
+                return new ArrayList<>();
+            }
             throw new RuntimeException("Error consultando historial de compras del usuario " + emailPlano, e);
         }
     }
