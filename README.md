@@ -66,6 +66,10 @@ cd Sigma-cine
 
 ### Ejecución
 Para ejecutar la aplicación ejecuta la clase principal (Main.java o similar) desde tu IDE.
+Si deseas ejecutar por terminal, ejecuta:
+```
+mvn -q exec:java@run-ui
+```
 
 ## Mapeo de documentos
 ### Plan de Administración del Proyecto (PMP): 

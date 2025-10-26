@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sigmacine.ui.controller.PagoController"
+            prefWidth="480" prefHeight="520"
+            style="-fx-background-color:#000; -fx-padding:24;" >
+
+    <!-- ToggleGroup will be created in the controller to avoid FXML KeyPath parsing issues -->
+
+    <top>
+        <VBox spacing="6">
+            <children>
+                <Label text="Resumen de compra" style="-fx-text-fill:#fff; -fx-font-weight:bold; -fx-font-size:18;" />
+                <Separator />
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="14">
+            <children>
+                <Label text="Items" style="-fx-text-fill:#bbb; -fx-font-weight:bold;" />
+                <ListView fx:id="listaResumen" prefHeight="180" />
+
+                <HBox>
+                    <children>
+                        <Label text="TOTAL" style="-fx-text-fill:#fff; -fx-font-weight:bold;" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblTotal" style="-fx-text-fill:#fff; -fx-font-weight:bold;" text="0.00" />
+                    </children>
+                </HBox>
+
+                <Label text="Método de pago" style="-fx-text-fill:#bbb; -fx-font-weight:bold;" />
+                <VBox spacing="8">
+                    <children>
+                        <RadioButton fx:id="rbCredito" text="Tarjeta de crédito" selected="true" style="-fx-text-fill:#ddd;" />
+                        <RadioButton fx:id="rbDebito" text="Tarjeta débito" style="-fx-text-fill:#ddd;" />
+                    </children>
+                </VBox>
+
+                <Button fx:id="btnPagar" text="Pagar" style="-fx-background-color:#8B2E21; -fx-text-fill:white; -fx-font-weight:bold; -fx-background-radius:20; -fx-padding:8 20;" />
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

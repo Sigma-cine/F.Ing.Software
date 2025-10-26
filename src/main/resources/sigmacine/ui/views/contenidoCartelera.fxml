@@ -6,34 +6,30 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="517.0" prefWidth="883.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 
-<top>
+<BorderPane prefWidth="960.0" prefHeight="600.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ContenidoCarteleraController">
+
+    <top>
         <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
             <children>
-
-                <!-- Logo -->
-                <Label styleClass="brand" text="SIGMA CINE" />
-
-                <!-- Links -->
-                <Button styleClass="toplink" text="Cartelera" />
+                <Button fx:id="btnBack" styleClass="toplink" text="← Volver" onAction="#onVolver" />
+                <Label styleClass="brand" text="SIGMA CINE" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;"/>
+                <Button fx:id="btnCarteleraTop" styleClass="toplink" text="Cartelera" onAction="#onCartelera" />
                 <Button styleClass="toplink" text="Confitería" />
                 <Button styleClass="toplink" text="Sigma Card" />
-
-                <!-- Separador flexible -->
                 <Region HBox.hgrow="ALWAYS" />
-
-                <!-- Buscador -->
                 <TextField prefWidth="200" promptText="Buscar" styleClass="search" />
-
-                <!-- Carrito -->
                 <VBox fx:id="carritoPanel" spacing="16">
-   <children>
-                <Button styleClass="toplink" text="Cart" />
-   </children>
+                    <children>
+                        <Button styleClass="toplink" text="Cart" />
+                    </children>
                 </VBox>
+                <!-- Session controls (same ids as pagina_inicial.fxml) -->
+                <Button fx:id="btnIniciarSesion" text="Iniciar sesión" styleClass="toplink" />
+                <Label fx:id="lblUserName" text="" styleClass="toplink" visible="false" />
+                <Button fx:id="btnRegistrarse" text="Registrarse" styleClass="toplink" />
 
-                <MenuButton styleClass="icon-btn" text="👤">
+                <MenuButton fx:id="menuPerfil" styleClass="icon-btn" text="👤">
                     <items>
                         <MenuItem text="Mi Cuenta" />
                         <MenuItem text="Buscar Tiquetes" />
@@ -41,11 +37,11 @@
                         <MenuItem text="Promociones" />
                         <MenuItem text="Información Personal" />
                         <MenuItem text="SigmaCard" />
-                        <MenuItem text="Historial de compras" />
+                        <MenuItem fx:id="miHistorial" text="Historial de compras" />
                         <MenuItem text="Notificaciones" />
                         <MenuItem text="Cartelera" />
                         <SeparatorMenuItem />
-                        <MenuItem text="Cerrar Sesión" />
+                        <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
                     </items>
                 </MenuButton>
             </children>
@@ -54,129 +50,91 @@
             </padding>
         </HBox>
     </top>
-   <left>
 
-                      <!-- IZQUIERDA -->
-          <VBox prefHeight="421.0" prefWidth="437.0" spacing="12" style="-fx-background-color: #0D0D0D;" BorderPane.alignment="CENTER">
-              <children>
-                  <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" styleClass="section-title" text="SINOPSIS" />
-                  <ImageView fitHeight="241.0" fitWidth="405.0" preserveRatio="true" />
-                  <TextArea editable="false" prefHeight="147.0" prefRowCount="12" prefWidth="405.0" style="-fx-control-inner-background: #0D0D0D; -fx-text-fill: white; -fx-border-color: #2a2a2a;" text="Texto de ejemplo de sinopsis..." wrapText="true" />
-              </children>
-              <padding>
-                  <Insets bottom="16" left="16" right="16" top="16" />
-              </padding>
-          </VBox>
-   </left>
-   <center>
+    <!-- Left column removed: layout will be a single vertical column in the center -->
 
-          <!-- DERECHA -->
-          <ScrollPane fitToWidth="true" style="-fx-background: #0D0D0D; -fx-background-color: #0D0D0D;" BorderPane.alignment="CENTER">
-              <content>
-                  <VBox spacing="20" style="-fx-background-color: #0D0D0D;">
-                      <children>
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #0D0D0D; -fx-background-color: #0D0D0D;" BorderPane.alignment="CENTER">
+            <content>
+                <VBox fx:id="detalleRoot" spacing="16" style="-fx-background-color: transparent;" alignment="TOP_CENTER">
+                    <children>
+                        <!-- Two-column row: left=title+poster (50%), right=sinopsis+ficha+buy (50%) -->
+                        <HBox spacing="24" alignment="TOP_CENTER" prefWidth="820">
+                            <children>
+                                <VBox spacing="12" alignment="TOP_CENTER" prefWidth="410">
+                                    <children>
+                                        <Label fx:id="lblTituloPelicula" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 28;" wrapText="true" />
+                                        <ImageView fx:id="imgPoster" fitWidth="260.0" preserveRatio="true" />
+                                    </children>
+                                </VBox>
 
-                          <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" styleClass="section-title" text="DÍA" />
+                                <VBox spacing="12" alignment="TOP_LEFT" prefWidth="410">
+                                    <children>
+                                        <Label text="SINOPSIS" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" />
+                                        <TextArea fx:id="txtSinopsis" editable="false" prefHeight="180.0" wrapText="true" style="-fx-control-inner-background: #0D0D0D; -fx-text-fill: white; -fx-border-color: #2a2a2a;" />
 
-                          <!-- Chips de día -->
-                          <FlowPane hgap="10" vgap="10">
-                              <children>
-                                  <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" styleClass="chip" text="AGO 1" />
-                                  <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="AGO 2" />
-                                  <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="AGO 3" />
-                                  <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="AGO 4" />
-                                  <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="AGO 5" />
-                              </children>
-                              <padding>
-                                  <Insets bottom="8" left="8" right="8" top="8" />
-                              </padding>
-                          </FlowPane>
+                                        <Label text="FICHA TÉCNICA" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" />
+                                        <GridPane hgap="10" vgap="6" style="-fx-background-color: transparent;">
+                                            <columnConstraints>
+                                                <ColumnConstraints halignment="RIGHT" minWidth="110"/>
+                                                <ColumnConstraints hgrow="ALWAYS"/>
+                                            </columnConstraints>
+                                            <children>
+                                                <Label text="Género:" style="-fx-text-fill: #cbd5e1;"/>
+                                                <Label fx:id="lblGenero" GridPane.columnIndex="1" style="-fx-text-fill: #ffffff;"/>
 
-                          <!-- SEDE 1 -->
-                          <VBox spacing="10">
-                              <children>
-                                  <HBox alignment="CENTER_LEFT" spacing="8" styleClass="venue-box">
-                                      <children>
-                                          <Label style="-fx-text-fill: white; -fx-font-size: 16;" text="•" />
-                                          <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" styleClass="venue-box" text="Salitre Plaza" />
-                                      </children>
-                                  </HBox>
-                                  <Label style="-fx-text-fill: #CFCFCF; -fx-font-size: 12;" text="HORA" />
-                                  <FlowPane hgap="12" vgap="12">
-                                      <children>
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="12:50pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="3:45pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" styleClass="chip" text="6:45pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="9:45pm" />
-                                      </children>
-                                  </FlowPane>
-                              </children>
-                          </VBox>
+                                                <Label text="Clasificación:" GridPane.rowIndex="1" style="-fx-text-fill: #cbd5e1;"/>
+                                                <Label fx:id="lblClasificacion" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-text-fill: #ffffff;"/>
 
-                          <Separator style="-fx-background-color: #8A2F24;" />
+                                                <Label text="Duración:" GridPane.rowIndex="2" style="-fx-text-fill: #cbd5e1;"/>
+                                                <Label fx:id="lblDuracion" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-text-fill: #ffffff;"/>
 
-                          <!-- SEDE 2 -->
-                          <VBox spacing="10">
-                              <children>
-                                  <HBox alignment="CENTER_LEFT" spacing="8" styleClass="venue-box">
-                                      <children>
-                                          <Label style="-fx-text-fill: white; -fx-font-size: 16;" text="•" />
-                                          <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" text="Gran Estación" />
-                                      </children>
-                                  </HBox>
-                                  <Label style="-fx-text-fill: #CFCFCF; -fx-font-size: 12;" text="HORA" />
-                                  <FlowPane hgap="12" vgap="12">
-                                      <children>
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="1:10pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="7:40pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="10:40pm" />
-                                      </children>
-                                  </FlowPane>
-                        <Separator style="-fx-background-color: #8A2F24;" />
-                              </children>
-                          </VBox>
+                                                <Label text="Director:" GridPane.rowIndex="3" style="-fx-text-fill: #cbd5e1;"/>
+                                                <Label fx:id="lblDirector" GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-text-fill: #ffffff;"/>
 
-                          <!-- SEDE 3 -->
-                          <VBox spacing="10">
-                              <children>
-                                  <HBox alignment="CENTER_LEFT" spacing="8" styleClass="venue-box">
-                                      <children>
-                                          <Label style="-fx-text-fill: white; -fx-font-size: 16;" text="•" />
-                                          <Label style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" text="Parque La Colina" />
-                                      </children>
-                                  </HBox>
-                                  <Label style="-fx-text-fill: #CFCFCF; -fx-font-size: 12;" text="HORA" />
-                                  <FlowPane hgap="12" vgap="12">
-                                      <children>
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="11:00am" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="11:40am" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="12:00pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="1:55pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="3:30pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="4:50pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="7:45pm" />
-                                          <Button style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: #E6E6E6; -fx-border-radius: 18; -fx-background-radius: 18; -fx-padding: 6 12 6 12;" text="10:45pm" />
-                                      </children>
-                                  </FlowPane>
-                              </children>
-                          </VBox>
+                                                <Label text="Reparto:" GridPane.rowIndex="4" style="-fx-text-fill: #cbd5e1;"/>
+                                                <Label fx:id="lblReparto" GridPane.columnIndex="1" GridPane.rowIndex="4" style="-fx-text-fill: #ffffff;" wrapText="true"/>
+                                            </children>
+                                        </GridPane>
 
-                          <!-- Botón comprar -->
-                          <HBox alignment="CENTER_RIGHT">
-                              <children>
-                                  <Button style="-fx-background-color: #8A2F24; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 8 18 8 18;" text="Comprar Tiquete" />
-                              </children>
-                              <padding>
-                                  <Insets bottom="8" left="8" right="8" top="8" />
-                              </padding>
-                          </HBox>
+                                        <HBox alignment="CENTER_RIGHT">
+                                            <children>
+                                                <Button fx:id="btnComprar" style="-fx-background-color: #8A2F24; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 12 24 12 24;" text="Comprar Tiquete" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
 
-                      </children>
-                      <padding>
-                          <Insets bottom="24" left="20" right="20" top="16" />
-                      </padding>
-                  </VBox>
-              </content>
-          </ScrollPane>
-   </center>
+                        <!-- Sección de funciones: ciudad/sede/horas con pestañas de día -->
+                        <VBox spacing="10" alignment="TOP_CENTER" prefWidth="820">
+                            <children>
+                                <Label text="Funciones en tu ciudad" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" />
+                                <HBox fx:id="dayTabs" spacing="8" alignment="CENTER" />
+                                <VBox fx:id="panelFunciones" spacing="8" alignment="CENTER" />
+                            </children>
+                        </VBox>
+
+                        <!-- Trailer centrado -->
+                        <Label text="TRAILER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14;" />
+                        <HBox alignment="CENTER" prefWidth="820">
+                            <children>
+                                <VBox spacing="6" alignment="CENTER">
+                                    <children>
+                                        <HBox fx:id="trailerButtons" spacing="8" alignment="CENTER" />
+                                        <StackPane fx:id="trailerContainer" prefHeight="360" prefWidth="600" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets top="12" right="12" left="12" bottom="24" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
 </BorderPane>

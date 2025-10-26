@@ -7,14 +7,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="517.0" prefWidth="883.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="517.0" prefWidth="883.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ConfiteriaController">
 
     <top>
         <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
             <children>
 
                 <!-- Logo -->
-                <Label styleClass="brand" text="SIGMA CINE" />
+                <Label styleClass="brand" text="SIGMA CINE" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;"/>
 
                 <!-- Links -->
                 <Button styleClass="toplink" text="Cartelera" />

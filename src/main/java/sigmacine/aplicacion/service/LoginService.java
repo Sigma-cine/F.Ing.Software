@@ -1,11 +1,9 @@
 package sigmacine.aplicacion.service;
 
-import java.util.Optional;
-
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.dominio.repository.UsuarioRepository;
-import sigmacine.dominio.entity.*;
-import sigmacine.dominio.valueobject.*;
+import sigmacine.dominio.entity.Usuario;
+import sigmacine.dominio.valueobject.Email;
 
 public class LoginService {
 
@@ -18,26 +16,29 @@ public class LoginService {
     public UsuarioDTO autenticar(String emailRaw, String passwordRaw) {
         try {
             Email email = new Email(emailRaw);
-            Optional<Usuario> opt = usuarios.buscarPorEmail(email);
-            if (opt.isEmpty()) return null;
 
-            Usuario u = opt.get();
+            Usuario u = usuarios.buscarPorEmail(email);
+            if (u == null) return null;
+
             if (!u.autenticar(passwordRaw)) return null;
 
             UsuarioDTO dto = new UsuarioDTO();
             dto.setId(u.getId());
             dto.setEmail(u.getEmail().value());
-            dto.setRol(u.getRol());
+            dto.setRol(u.getRol().name());  
+            dto.setNombre(u.getNombre());
 
-            if (u instanceof Admin a) {
-                dto.setNombre(a.getNombre());
-            } else if (u instanceof Cliente c) {
-                dto.setNombre(c.getNombre());
-                dto.setFechaRegistro(c.getFechaRegistro());
+            if (u.getFechaRegistro() != null) {
+                dto.setFechaRegistro(u.getFechaRegistro().toString());
+            } else {
+                dto.setFechaRegistro(null);
             }
+
             return dto;
+
         } catch (IllegalArgumentException ex) {
             return null;
         }
     }
 }
+

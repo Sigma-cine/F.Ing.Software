@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Separator?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.HistorialController" stylesheets="@../css/sigmacine.css">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="1000.0" styleClass="dark-bg" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            
+            <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="1000.0" style="-fx-background-color: #0d0d0d;">
+               <children>
+                  <Label styleClass="brand" text="SIGMA CINE">
+                     <HBox.margin><Insets left="20.0" right="10.0" /></HBox.margin>
+                  </Label>
+                  <Separator orientation="VERTICAL" styleClass="brand-sep" />
+                  
+                  <Label styleClass="toplink" text="Cartelera"><HBox.margin><Insets left="20.0" /></HBox.margin></Label>
+                  <Label styleClass="toplink" text="Confitería"><HBox.margin><Insets left="20.0" /></HBox.margin></Label>
+                  <Label styleClass="toplink" text="Sigma Card"><HBox.margin><Insets left="20.0" /></HBox.margin></Label>
+                  <Label styleClass="toplink" text="HISTORIAL"><HBox.margin><Insets left="20.0" /></HBox.margin></Label>
+                  
+                  <Label HBox.hgrow="ALWAYS" />
+                  
+                  <Button styleClass="icon-btn" text="👤" /> 
+                  <Button styleClass="icon-btn" text="🛒"><HBox.margin><Insets right="5.0" /></HBox.margin></Button>
+                  <Button styleClass="icon-btn" text="🔍"><HBox.margin><Insets right="20.0" /></HBox.margin></Button>
+               </children>
+            </HBox>
+
+            <HBox alignment="CENTER" prefHeight="40.0" prefWidth="1000.0" styleClass="topbar">
+               <children>
+                  <Label styleClass="toplink" text="No olvides utilizar tu Sigma Card para tener descuentos en funciones y confitería!" />
+               </children>
+            </HBox>
+            
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox fx:id="comprasContainer" alignment="TOP_CENTER" prefWidth="980.0" spacing="15.0" styleClass="dark-bg">
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                     
+                     <Label styleClass="section-title" text="Tus Últimas Compras" alignment="CENTER_LEFT" prefWidth="960.0" />
+                     
+                     <HBox alignment="CENTER_LEFT" prefHeight="150.0" prefWidth="960.0" 
+                           style="-fx-background-color: #161616; -fx-background-radius: 8;" 
+                           spacing="20.0">
+                        <children>
+                           <StackPane prefHeight="130.0" prefWidth="90.0" style="-fx-background-color: #2a2a2a; -fx-background-radius: 4;">
+                              <children><Label styleClass="muted" text="Póster" /></children>
+                           </StackPane>
+                           
+                           <VBox prefHeight="130.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                              <children>
+                                 <Label styleClass="section-title" text="[Título de la Compra]" />
+                                 <Label styleClass="label" text="[Ubicación]" />
+                                 <Label styleClass="label" text="[Fecha y Hora]" />
+                                 <Label styleClass="muted" text="ID: [ID de Transacción]" />
+                                 <Label styleClass="venue-box" text="Total: [Monto]"><VBox.margin><Insets top="5.0" /></VBox.margin></Label>
+                              </children>
+                           </VBox>
+                           
+                           <Button styleClass="buy-btn" text="Ver Detalle" />
+                        </children>
+                        <padding>
+                           <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                        </padding>
+                     </HBox>
+                     
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

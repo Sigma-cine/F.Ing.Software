@@ -1,20 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="sigmacine.ui.controller.AdminController">
+<?import javafx.scene.text.*?>
+
+<BorderPane fx:id="rootPane"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="sigmacine.ui.controller.AdminController"
+            prefWidth="1200" prefHeight="720">
+
+    <!-- HEADER / BARRA SUPERIOR -->
     <top>
-        <Label fx:id="welcomeLabel" text="Bienvenido al Cine Sigma"
-               style="-fx-font-size:18; -fx-font-weight:bold; -fx-padding:10;"/>
+        <BorderPane style="-fx-background-color: #812d1eff;">
+            <left>
+                <HBox spacing="12" style="-fx-padding:18 24;">
+                    <Label text="Administración  •  Sigma Cine"
+                           style="-fx-text-fill:white; -fx-font-size:22; -fx-font-weight:bold;"/>
+                </HBox>
+            </left>
+            <right>
+                <HBox spacing="12" style="-fx-padding:18 24;">
+                    <Label fx:id="welcomeLabel"
+                           style="-fx-text-fill:rgba(255,255,255,.85); -fx-font-size:14;"/>
+                </HBox>
+            </right>
+        </BorderPane>
     </top>
-    <center>
-        <VBox spacing="8" style="-fx-padding:16;">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox spacing="10" style="-fx-padding:16; -fx-background-color:#111; -fx-pref-width:260;">
             <Button text="Gestionar funciones"/>
             <Button text="Gestionar productos"/>
             <Button text="Reportes"/>
+            <Separator/>
+
+            <!-- Películas -->
+            <Button text="Gestionar película"
+                    onAction="#abrirAgregarPelicula"
+                    style="-fx-background-color:#993726; -fx-text-fill:white; -fx-background-radius:10;"/>
+
+            <Separator/>
+            <Button text="Volver a inicio"
+                    onAction="#mostrarInicio"
+                    style="-fx-background-color:transparent; -fx-text-fill:white; -fx-border-color:#333; -fx-background-radius:10; -fx-border-radius:10;"/>
+
+            <Pane VBox.vgrow="ALWAYS"/>
+            <Button text="Cerrar sesión"
+                    onAction="#onLogout"
+                    style="-fx-background-color:#7a1f15; -fx-text-fill:white; -fx-background-radius:10;"/>
         </VBox>
+    </left>
+
+    <!-- CONTENIDO: área vacía donde se cargan las vistas -->
+    <center>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #000000ff; ">
+            <!-- Vacío por defecto -->
+        </StackPane>
     </center>
-    <bottom>
-        <Button text="Cerrar sesión" onAction="#onLogout" style="-fx-padding:10;"/>
-    </bottom>
 </BorderPane>

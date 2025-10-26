@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="960.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.VerDetallePeliculaController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
+            <children>
+                <Button fx:id="btnBack" onAction="#onVolver" styleClass="toplink" text="← Volver" />
+                <Label onMouseClicked="#onBrandClick" style="-fx-cursor: hand;" styleClass="brand" text="SIGMA CINE" />
+                <Button fx:id="btnCarteleraTop" onAction="#onCartelera" styleClass="toplink" text="Cartelera" />
+                <Button styleClass="toplink" text="Confitería" />
+                <Button styleClass="toplink" text="Sigma Card" />
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField prefWidth="200" promptText="Buscar" styleClass="search" />
+                <VBox fx:id="carritoPanel" spacing="16">
+                    <children>
+                        <Button styleClass="toplink" text="Cart" />
+                    </children>
+                </VBox>
+                <Button fx:id="btnIniciarSesion" styleClass="toplink" text="Iniciar sesión" />
+                <Label fx:id="lblUserName" styleClass="toplink" text="" visible="false" />
+                <Button fx:id="btnRegistrarse" styleClass="toplink" text="Registrarse" />
+
+                <MenuButton fx:id="menuPerfil" styleClass="icon-btn" text="👤">
+                    <items>
+                        <MenuItem text="Mi Cuenta" />
+                        <MenuItem text="Buscar Tiquetes" />
+                        <MenuItem text="Confitería" />
+                        <MenuItem text="Promociones" />
+                        <MenuItem text="Información Personal" />
+                        <MenuItem text="SigmaCard" />
+                        <MenuItem fx:id="miHistorial" text="Historial de compras" />
+                        <MenuItem text="Notificaciones" />
+                        <MenuItem text="Cartelera" />
+                        <SeparatorMenuItem />
+                        <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
+                    </items>
+                </MenuButton>
+            </children>
+            <padding>
+                <Insets bottom="8" left="16" right="16" top="8" />
+            </padding>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #0D0D0D; -fx-background-color: #0D0D0D;" BorderPane.alignment="CENTER">
+            <content>
+                <VBox fx:id="detalleRoot" alignment="TOP_CENTER" spacing="16" style="-fx-background-color: transparent;">
+                    <children>
+                        <!-- Título de la película -->
+                        <Label fx:id="lblTituloPelicula" alignment="CENTER" contentDisplay="CENTER" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 28;" wrapText="true" />
+                        
+                        <!-- Layout principal: poster a la izquierda, info a la derecha -->
+                        <HBox alignment="CENTER" prefWidth="900" spacing="16">
+                            <children>
+                                <!-- Poster a la izquierda, centrado verticalmente -->
+                                <VBox alignment="CENTER" prefWidth="450.0">
+                                    <children>
+                                        <ImageView fx:id="imgPoster" fitHeight="480.0" fitWidth="420.0" preserveRatio="true" />
+                                    </children>
+                                </VBox>
+                                
+                                <!-- Información a la derecha -->
+                                <VBox alignment="TOP_LEFT" prefWidth="420.0" spacing="16">
+                                    <children>
+                                        <!-- Sinopsis -->
+                                        <VBox spacing="8">
+                                            <children>
+                                                <Label style="-fx-text-fill: #8A2F24; -fx-font-weight: bold; -fx-font-size: 16;" text="SINOPSIS" />
+                                                <TextArea fx:id="txtSinopsis" editable="false" prefHeight="120.0" style="-fx-control-inner-background: #0D0D0D; -fx-text-fill: white; -fx-border-color: #2a2a2a;" wrapText="true" />
+                                            </children>
+                                        </VBox>
+                                        
+                                        <!-- Ficha técnica -->
+                                        <VBox spacing="8">
+                                            <children>
+                                                <Label style="-fx-text-fill: #8A2F24; -fx-font-weight: bold; -fx-font-size: 16;" text="FICHA TÉCNICA" />
+                                                <GridPane hgap="10" style="-fx-background-color: transparent;" vgap="6">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints halignment="RIGHT" minWidth="110" />
+                                                        <ColumnConstraints hgrow="ALWAYS" />
+                                                    </columnConstraints>
+                                                    <children>
+                                                        <Label style="-fx-text-fill: #cbd5e1;" text="Género:" />
+                                                        <Label fx:id="lblGenero" style="-fx-text-fill: #ffffff;" GridPane.columnIndex="1" />
+
+                                                        <Label style="-fx-text-fill: #cbd5e1;" text="Clasificación:" GridPane.rowIndex="1" />
+                                                        <Label fx:id="lblClasificacion" style="-fx-text-fill: #ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                                        <Label style="-fx-text-fill: #cbd5e1;" text="Duración:" GridPane.rowIndex="2" />
+                                                        <Label fx:id="lblDuracion" style="-fx-text-fill: #ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                                        <Label style="-fx-text-fill: #cbd5e1;" text="Director:" GridPane.rowIndex="3" />
+                                                        <Label fx:id="lblDirector" style="-fx-text-fill: #ffffff;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                                        <Label style="-fx-text-fill: #cbd5e1;" text="Reparto:" GridPane.rowIndex="4" />
+                                                        <Label fx:id="lblReparto" style="-fx-text-fill: #ffffff;" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                    </children>
+                                                    <rowConstraints>
+                                                        <RowConstraints />
+                                                        <RowConstraints />
+                                                        <RowConstraints />
+                                                        <RowConstraints />
+                                                        <RowConstraints />
+                                                    </rowConstraints>
+                                                </GridPane>
+                                            </children>
+                                        </VBox>
+                                        
+                                        <!-- Funciones -->
+                                        <VBox spacing="8">
+                                            <children>
+                                                <Label style="-fx-text-fill: #8A2F24; -fx-font-weight: bold; -fx-font-size: 16;" text="Funciones en tu ciudad" />
+                                                
+                                                <!-- Pestañas de día -->
+                                                <HBox fx:id="dayTabs" alignment="CENTER" spacing="8" />
+                                                
+                                                <!-- Panel donde se pintan sedes y horarios -->
+                                                <VBox fx:id="panelFunciones" alignment="CENTER" spacing="8" />
+                                                
+                                                <!-- Botón comprar -->
+                                                <HBox alignment="CENTER">
+                                                    <children>
+                                                        <Button fx:id="btnComprar" alignment="CENTER" prefHeight="42.0" prefWidth="300.0" style="-fx-background-color: #8A2F24; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 12 24 12 24;" text="Comprar Tiquete" />
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <Label style="-fx-text-fill: #8A2F24; -fx-font-weight: bold; -fx-font-size: 14;" text="TRAILER" />
+                        <HBox alignment="CENTER" prefWidth="900">
+                            <children>
+                                <StackPane fx:id="trailerContainer" prefHeight="360" prefWidth="600" />
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding>
+                        <Insets bottom="24" left="12" right="12" top="12" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -1,4 +1,4 @@
-package sigmacine.infraestructura.configdatabase;
+package sigmacine.infraestructura.configDataBase;
 
 import java.sql.*;
 
@@ -6,8 +6,10 @@ public class TestConexion {
     public static void main(String[] args) {
         try {
             DatabaseConfig db = new DatabaseConfig();               
-            try (Connection conn = db.getConnection()) {      
-                ScriptLoader.runScripts(conn);      
+
+            try (Connection conn = db.getConnection()) {          
+                ScriptLoader.runScripts(conn);     
+
                 System.out.println("Conectado a: " + conn.getMetaData().getURL());
 
                 try (Statement st = conn.createStatement();

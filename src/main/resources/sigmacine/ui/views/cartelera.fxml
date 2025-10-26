@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@sigma.css" fx:controller="sigmacine.ui.controller.CarteleraController">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
+            <children>
+                <Label styleClass="brand" text="SIGMA CINE" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;"/>
+                <Button fx:id="btnCarteleraTop" styleClass="toplink" text="Cartelera" disable="true"/>
+                <Button styleClass="toplink" text="Confitería" />
+                <Button styleClass="toplink" text="Sigma Card" />
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField fx:id="txtBuscar" promptText="Buscar" prefWidth="240" styleClass="search" />
+                <Button text="Buscar" onAction="#onBuscarTop" />
+                <VBox fx:id="carritoPanel" spacing="16">
+                    <children>
+                        <Button styleClass="toplink" text="Cart" />
+                    </children>
+                </VBox>
+                <Button fx:id="btnIniciarSesion" text="Iniciar sesión" styleClass="toplink" />
+                <Label fx:id="lblUserName" text="" styleClass="toplink" visible="false" />
+                <Button fx:id="btnRegistrarse" text="Registrarse" styleClass="toplink" />
+                <MenuButton fx:id="menuPerfil" styleClass="icon-btn" text="👤">
+                    <items>
+                        <MenuItem text="Mi Cuenta" />
+                        <MenuItem text="Buscar Tiquetes" />
+                        <MenuItem text="Confitería" />
+                        <MenuItem text="Promociones" />
+                        <MenuItem text="Información Personal" />
+                        <MenuItem text="SigmaCard" />
+                        <MenuItem fx:id="miHistorial" text="Historial de compras" />
+                        <MenuItem text="Notificaciones" />
+                        <MenuItem text="Cartelera" />
+                        <SeparatorMenuItem />
+                        <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
+                    </items>
+                </MenuButton>
+            </children>
+            <padding>
+                <Insets bottom="8" left="16" right="16" top="8" />
+            </padding>
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <content>
+                <VBox spacing="16" alignment="TOP_CENTER" style="-fx-padding: 16;">
+                    <Label text="Cartelera" style="-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 24;" />
+                    <FlowPane fx:id="gridPeliculas" hgap="16" vgap="16" alignment="CENTER" />
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>
