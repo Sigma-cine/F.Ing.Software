@@ -6,7 +6,7 @@ public class Pelicula {
     private String genero;
     private String clasificacion;
     private int duracion;
-    private String director;   
+    private String director;
     private String reparto;
     private String trailer;
     private String sinopsis;

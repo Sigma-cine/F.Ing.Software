@@ -17,8 +17,8 @@ public class VerCarritoController {
 
     @FXML private StackPane carritoRoot;
     @FXML private ListView<CompraProductoDTO> listaItems;
-    @FXML private Label lblTotal;       // total de tiquetes (subtotal)
-    @FXML private Label lblTotalGlobal; // TOTAL grande (si lo agregamos en FXML)
+    @FXML private Label lblTotal;
+    @FXML private Label lblTotalGlobal;
     @FXML private Button btnProcederPago;
 
     private final CarritoService carrito = CarritoService.getInstance();
@@ -29,7 +29,6 @@ public class VerCarritoController {
         updateTotal();
         carrito.addListener(c -> updateTotal());
 
-        // Handler principal viene del FXML onAction="#onProcederPago"; no reasignamos aquí.
     }
 
     private void updateTotal() {
@@ -40,7 +39,6 @@ public class VerCarritoController {
         } catch (Exception ignore) {}
     }
 
-    // Permite que otros controladores fuercen el refresco (compatibilidad)
     public void refresh() {
         if (listaItems != null) listaItems.refresh();
         updateTotal();
@@ -54,10 +52,7 @@ public class VerCarritoController {
             a.showAndWait();
             return;
         }
-        // Cargar el FXML de pago para usar PagoController (persistencia real)
         try {
-            // Use getResourceAsStream to avoid URL/URI conversion issues on paths with
-            // special characters (OneDrive, accents, spaces). FXMLLoader can load from InputStream.
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
             try (java.io.InputStream in = getClass().getResourceAsStream("/sigmacine/ui/views/pago.fxml")) {
                 if (in == null) throw new RuntimeException("Recurso /sigmacine/ui/views/pago.fxml no encontrado en el classpath.");
@@ -65,7 +60,6 @@ public class VerCarritoController {
                 Stage stage = new Stage();
                 stage.setTitle("Pago");
                 stage.initModality(Modality.APPLICATION_MODAL);
-                // intentar establecer owner si es posible
                 try {
                     if (carritoRoot != null && carritoRoot.getScene() != null) {
                         Stage owner = (Stage) carritoRoot.getScene().getWindow();
@@ -78,13 +72,11 @@ public class VerCarritoController {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            // fallback: informar al usuario y no cerrar la ventana principal
             new Alert(Alert.AlertType.ERROR, "No se pudo abrir la ventana de pago: " + ex.getMessage()).showAndWait();
         }
     }
 
 
-    // Handler invocado desde el FXML (onAction="#onProcederPago")
     @FXML
     private void onProcederPago() {
         navegarAPantallaPago();

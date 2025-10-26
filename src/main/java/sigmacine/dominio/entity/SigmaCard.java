@@ -7,7 +7,6 @@ public class SigmaCard {
     private BigDecimal saldo;
     private boolean activa;
 
-    // Constructor para inicializar una nueva tarjeta
     public SigmaCard() {
         
     }
@@ -18,7 +17,7 @@ public class SigmaCard {
         }
         this.id = id;
         this.saldo = saldoInicial;
-        this.activa = true; // Por defecto, una nueva tarjeta está activa
+        this.activa = true;
     }
 
     public void recargar(BigDecimal monto) {

@@ -1,10 +1,9 @@
 package sigmacine.dominio.entity;
 
-/** Representa un producto (por ejemplo confitería) que puede añadirse al carrito. */
 public class Producto {
 	private Long id;
 	private String nombre;
-	private long precio; // en centavos o unidad mínima
+	private long precio;
 
 	public Producto() {}
 

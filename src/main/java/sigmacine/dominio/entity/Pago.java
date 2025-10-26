@@ -2,10 +2,6 @@ package sigmacine.dominio.entity;
 
 import java.time.LocalDate;
 
-/**
- * Dominio: Pago
- * Representa la información del pago asociada a una compra.
- */
 public class Pago {
 	private Long id;
 	private String metodo;

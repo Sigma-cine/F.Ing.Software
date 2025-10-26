@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Funcion {
     private List<Pelicula> trailers;
-    private Pelicula pelicula; 
+    private Pelicula pelicula;
     private Sala sala;
     private Date fecha;
     private Time horaInicio;

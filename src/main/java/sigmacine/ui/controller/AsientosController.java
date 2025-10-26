@@ -128,7 +128,8 @@ public class AsientosController implements Initializable {
             var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
             Parent root = loader.load();
             Object ctrl = loader.getController();
-            if (ctrl instanceof ClienteController c) {
+            if (ctrl instanceof ClienteController) {
+                ClienteController c = (ClienteController) ctrl;
                 c.setCoordinador(this.coordinador);
                 c.init(this.usuario);
             }

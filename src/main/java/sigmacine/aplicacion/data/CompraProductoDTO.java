@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 public class CompraProductoDTO {
     private final Long productoId;
-    private final Long funcionId; // opcional para boletos
-    private final String asiento; // opcional: codigo de silla para boletos, p.ej. "A5"
+    private final Long funcionId;
+    private final String asiento;
     private final String nombre;
     private final int cantidad;
     private final BigDecimal precioUnitario;

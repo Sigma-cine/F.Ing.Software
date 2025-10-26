@@ -10,7 +10,6 @@
 
 <StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ResultadosBusquedaController" style="-fx-background-color: #000000;">
     <children>
-    <!-- Move results area further up: reduce top padding, reduce spacing and increase ScrollPane height -->
     <VBox alignment="CENTER" spacing="8" maxWidth="1200.0" style="-fx-padding: 10 30 30 30;">
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
                 <children>

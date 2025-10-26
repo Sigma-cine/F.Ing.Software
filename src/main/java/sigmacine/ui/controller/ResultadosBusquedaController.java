@@ -55,7 +55,6 @@ public class ResultadosBusquedaController {
                     c.setCoordinador(this.coordinador);
                 }
             } catch (Exception ignore) {}
-            // preserve current window size when switching
             javafx.scene.Scene current = stage.getScene();
             double w = current != null ? current.getWidth() : 900;
             double h = current != null ? current.getHeight() : 600;
@@ -85,23 +84,19 @@ public class ResultadosBusquedaController {
             // Card container
             VBox tarjeta = new VBox(6);
             tarjeta.setAlignment(Pos.TOP_LEFT);
-            // Fixed card height (slightly larger so sinopsis can display fully)
             tarjeta.setPrefHeight(300);
             tarjeta.prefWidthProperty().bind(panelPeliculas.widthProperty().subtract(40));
             tarjeta.setStyle("-fx-background-color: #222; -fx-background-radius: 10; -fx-padding: 8; -fx-effect: dropshadow(gaussian, #000, 4, 0.12, 0, 1);");
 
-            // Poster column (left) - reserve 1/3 width
             javafx.scene.layout.StackPane posterPane = new javafx.scene.layout.StackPane();
             posterPane.prefWidthProperty().bind(tarjeta.widthProperty().multiply(1.0/3.0));
-            // Let poster pane height be determined by the info column; keep sensible minimums
             posterPane.setMinWidth(80);
             posterPane.setMinHeight(80);
             posterPane.setStyle("-fx-background-color: transparent;");
 
             ImageView poster = new ImageView();
             poster.setPreserveRatio(true);
-            // we will bind poster fitHeight later to match the info column height
-
+            
             javafx.scene.control.Label posterPlaceholder = new javafx.scene.control.Label("No image");
             posterPlaceholder.setStyle("-fx-text-fill: #999; -fx-font-size: 12px;");
             posterPlaceholder.setWrapText(true);
@@ -111,7 +106,6 @@ public class ResultadosBusquedaController {
             poster.visibleProperty().bind(poster.imageProperty().isNotNull());
             posterPlaceholder.visibleProperty().bind(poster.imageProperty().isNull());
 
-            // Try load poster (remote URL or classpath resource under /Images)
             try {
                 String posterRef = p.getPosterUrl();
                 if (posterRef != null && !posterRef.isBlank()) {
@@ -125,7 +119,6 @@ public class ResultadosBusquedaController {
                 ex.printStackTrace();
             }
 
-            // Info column (center) - reserve 1/3 width
             VBox infoCol = new VBox(6);
             infoCol.setAlignment(Pos.TOP_LEFT);
             infoCol.prefWidthProperty().bind(tarjeta.widthProperty().multiply(1.0/3.0));
@@ -149,26 +142,21 @@ public class ResultadosBusquedaController {
             reparto.setWrapText(true);
             String sinopsisText = p.getSinopsis() != null ? p.getSinopsis() : "No disponible";
             Label sinopsis = new Label("Sinopsis: " + sinopsisText);
-            // use same size/color as other info labels
             sinopsis.setStyle("-fx-text-fill: #ccc; -fx-font-size: 12px;");
             sinopsis.setWrapText(true);
 
             infoCol.getChildren().addAll(titulo, genero, clasificacion, duracion, director, reparto, sinopsis);
 
-            // Ensure wrapping respects the info column width
             titulo.maxWidthProperty().bind(infoCol.widthProperty().subtract(10));
             titulo.setMaxHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
             reparto.maxWidthProperty().bind(infoCol.widthProperty().subtract(10));
             sinopsis.maxWidthProperty().bind(infoCol.widthProperty().subtract(10));
 
-            // Make posterPane follow a portion of the tarjeta height
             posterPane.prefHeightProperty().bind(tarjeta.heightProperty().multiply(0.9));
 
-            // Bind poster fitHeight to the posterPane so the image scales properly
             poster.fitHeightProperty().bind(posterPane.heightProperty().multiply(0.95));
             poster.fitWidthProperty().bind(posterPane.widthProperty().multiply(0.9));
 
-            // Button column (right) - reserve 1/3 width
             javafx.scene.layout.StackPane btnPane = new javafx.scene.layout.StackPane();
             btnPane.prefWidthProperty().bind(tarjeta.widthProperty().multiply(1.0/3.0));
             btnPane.setMaxWidth(Double.MAX_VALUE);
@@ -204,14 +192,12 @@ private void mostrarDetallePelicula(Pelicula p) {
         javafx.scene.Parent rootDetalle = loader.load();
 
     VerDetallePeliculaController ctrl = loader.getController();
-    // pass session info so detail can preserve and return with the same user
     try {
         ctrl.setCoordinador(this.coordinador);
     } catch (Exception ignore) {}
     try {
         ctrl.setUsuario(this.usuario);
     } catch (Exception ignore) {}
-    // Ensure the controller refreshes its session-aware UI
     try {
         ctrl.refreshSessionUI();
     } catch (Exception ignore) {}
@@ -242,7 +228,6 @@ private void mostrarDetallePelicula(Pelicula p) {
                 return new Image(ref, true);
             }
             
-            // 2. Si contiene la ruta completa "src\main\resources\Images\", extraer solo el nombre
             if (ref.contains("src\\main\\resources\\Images\\") || ref.contains("src/main/resources/Images/")) {
                 String fileName = ref.substring(ref.lastIndexOf("\\") + 1);
                 if (fileName.isEmpty()) fileName = ref.substring(ref.lastIndexOf("/") + 1);
@@ -254,19 +239,16 @@ private void mostrarDetallePelicula(Pelicula p) {
                 }
             }
             
-            // 3. Probar como recurso directo /Images/...
             java.net.URL res = getClass().getResource("/Images/" + ref);
             if (res != null) {
                 return new Image(res.toExternalForm(), false);
             }
             
-            // 4. Probar como archivo local
             File f = new File(ref);
             if (f.exists()) {
                 return new Image(f.toURI().toString(), false);
             }
             
-            // 5. Probar con / al inicio
             res = getClass().getResource(ref.startsWith("/") ? ref : ("/" + ref));
             if (res != null) {
                 return new Image(res.toExternalForm(), false);

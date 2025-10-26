@@ -27,9 +27,7 @@ public class CompraBoletoJUnitTest {
         var repo = new CompraRepositoryJdbc(db);
         var svc = new CompraService(repo);
 
-        // Product item
         CompraProductoDTO prod = new CompraProductoDTO(1L, "Combo Popcorn", 1, new BigDecimal("10.50"));
-        // Two boletos for funcionId = 1 (A1 and A2)
         CompraProductoDTO boleto1 = new CompraProductoDTO(null, 1L, "Boleto A1", 1, new BigDecimal("12.00"), "A1");
         CompraProductoDTO boleto2 = new CompraProductoDTO(null, 1L, "Boleto A2", 1, new BigDecimal("12.00"), "A2");
 
@@ -58,7 +56,6 @@ public class CompraBoletoJUnitTest {
                 assertEquals(1, rs.getInt("CNT"));
             }
 
-            // ensure BOLETO_SILLA entries are present for each boleto
             try (ResultSet rs = st.executeQuery("SELECT COUNT(*) AS CNT FROM BOLETO_SILLA WHERE BOLETO_ID IN (SELECT ID FROM BOLETO WHERE COMPRA_ID = " + compraId + ")")) {
                 assertTrue(rs.next());
                 assertEquals(2, rs.getInt("CNT"));

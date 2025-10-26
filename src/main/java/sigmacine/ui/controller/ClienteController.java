@@ -39,7 +39,6 @@ public class ClienteController {
     @FXML private Button btnSigmaCard;
     @FXML private Button btnCart;
     @FXML private MenuItem miCerrarSesion;
-    @FXML private MenuItem miSigmaCard;
     @FXML private MenuItem miHistorial;
     @FXML private MenuButton menuPerfil;
 
@@ -149,7 +148,6 @@ public class ClienteController {
     if (btnCartelera!= null) btnCartelera.setOnAction(e -> mostrarCartelera());
     if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
     if (btnSigmaCard != null) btnSigmaCard.setOnAction(e -> onSigmaCardTop());
-    if (miSigmaCard != null) miSigmaCard.setOnAction(e -> onSigmaCardTop());
     if (btnCart != null) btnCart.setOnAction(e -> toggleCarritoOverlay());
         if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> onLogout());
         
@@ -483,9 +481,12 @@ public class ClienteController {
             if (stage != null) SigmaCardController.openAsScene(stage);
         } catch (Exception ex) { ex.printStackTrace(); }
     }
+
+
     private void onSeleccionarCiudad() {
-        String ciudad= (cbCiudad != null) ? cbCiudad.getValue() : null;
+        String ciudad = (cbCiudad != null) ? cbCiudad.getValue() : null;
         if (ciudad == null || ciudad.isBlank()) return;
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
             Parent root = loader.load();
@@ -945,6 +946,10 @@ public class ClienteController {
 
             AsientosController ctrl = loader.getController();
             ctrl.setFuncion(titulo, hora, ocupados, accesibles);
+
+            // Try to resolve poster for the given title and pass it to the AsientosController so the
+            // poster appears in the right-hand panel. We search the Pelicula repository by title
+            // and use the first match if available.
             try {
                 if (titulo != null && !titulo.isBlank()) {
                     DatabaseConfig db = new DatabaseConfig();

@@ -109,15 +109,6 @@ INSERT INTO COMPRA_PRODUCTO (COMPRA_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, 
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (2, 50.00, TRUE);
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (3,  0.00, TRUE);
 
--- -----------------------------------------------------------------------------
--- Bulk funciones adicionales: muchas funciones por película y por sede/sala
--- Fechas: 2025-10-19 y 2025-10-20
--- Horarios: 13:00, 16:00, 19:00
--- Películas: (1) Dune: Part Two (duración 02:46:00), (2) Joker (duración 02:02:00)
--- Salas: 1..10 (todas las definidas en SEDE/SALA)
--- Nota: IDs continúan a partir de 16 (último ID usado arriba)
--- -----------------------------------------------------------------------------
-
 -- 2025-10-19 - Película 1 (Dune: Part Two)
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
 (17, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 1),

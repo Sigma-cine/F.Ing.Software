@@ -51,7 +51,7 @@ public class SigmaCardRepositoryJdbc implements SigmaCardRepository {
     public BigDecimal consultarSaldo(long usuarioId) {
         final String sql = "SELECT SALDO FROM SIGMA_CARD WHERE ID = ?";
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+            PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, usuarioId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) return null;
