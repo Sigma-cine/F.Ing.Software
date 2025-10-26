@@ -937,6 +937,30 @@ public class ClienteController {
             AsientosController ctrl = loader.getController();
             ctrl.setFuncion(titulo, hora, ocupados, accesibles);
 
+            // Try to resolve poster for the given title and pass it to the AsientosController so the
+            // poster appears in the right-hand panel. We search the Pelicula repository by title
+            // and use the first match if available.
+            try {
+                if (titulo != null && !titulo.isBlank()) {
+                    DatabaseConfig db = new DatabaseConfig();
+                    sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc repo = new sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc(db);
+                    var resultados = repo.buscarPorTitulo(titulo);
+                    if (resultados != null && !resultados.isEmpty()) {
+                        var p = resultados.get(0);
+                        String posterRef = p.getPosterUrl();
+                        if (posterRef != null && !posterRef.isBlank()) {
+                            try {
+                                java.io.InputStream is = getClass().getResourceAsStream(posterRef.startsWith("/") ? posterRef : ("/" + posterRef));
+                                javafx.scene.image.Image img = null;
+                                if (is != null) img = new javafx.scene.image.Image(is);
+                                else img = resolveImage(posterRef);
+                                if (img != null) ctrl.setPoster(img);
+                            } catch (Exception ignore) {}
+                        }
+                    }
+                }
+            } catch (Exception ignore) {}
+
             Stage stage = null;
             if (content != null && content.getScene() != null) stage = (Stage) content.getScene().getWindow();
             else if (btnCartelera != null && btnCartelera.getScene() != null) stage = (Stage) btnCartelera.getScene().getWindow();

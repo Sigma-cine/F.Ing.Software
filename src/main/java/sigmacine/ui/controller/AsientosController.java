@@ -326,7 +326,6 @@ public class AsientosController implements Initializable {
     }
 
     private void sincronizarAsientosConCarrito() {
-        // Quitar del observable los items anteriores vinculados a la selección de asientos actual
         if (!asientoItems.isEmpty()) {
             for (var dto : asientoItems) {
                 carrito.removeItem(dto);
@@ -364,6 +363,118 @@ public class AsientosController implements Initializable {
         if (lblTitulo != null)   lblTitulo.setText(this.titulo);
         if (lblHoraPill != null) lblHoraPill.setText(this.hora);
         if (gridSala != null) { poblarGrilla(); actualizarResumen(); }
+
+        if ((this.poster == null || imgPoster == null || imgPoster.getImage() == null) && this.titulo != null && !this.titulo.isBlank()) {
+            try {
+                var db = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
+                var repo = new sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc(db);
+                var resultados = repo.buscarPorTitulo(this.titulo);
+                if (resultados != null && !resultados.isEmpty()) {
+                    var p = resultados.get(0);
+                    String posterRef = p.getPosterUrl();
+                    if (posterRef != null && !posterRef.isBlank()) {
+                        try {
+                            java.io.InputStream is = getClass().getResourceAsStream(posterRef.startsWith("/") ? posterRef : ("/" + posterRef));
+                            javafx.scene.image.Image img = null;
+                            if (is != null) img = new javafx.scene.image.Image(is);
+                            else {
+                                java.net.URL res = getClass().getResource("/Images/" + posterRef);
+                                if (res != null) img = new javafx.scene.image.Image(res.toExternalForm(), false);
+                                else {
+                                    java.io.File f = new java.io.File(posterRef);
+                                    if (f.exists()) img = new javafx.scene.image.Image(f.toURI().toString(), false);
+                                }
+                            }
+                            if (img != null) setPoster(img);
+                        } catch (Exception ignore) {}
+                    }
+                }
+            } catch (Exception ignore) {}
+        }
+
+        tryFindPosterInScene();
+
+        // Final fallback: if we have a funcionId, try to read the peliculaId from FUNCION and
+        // resolve the Pelicula to get poster + title. This covers cases where caller only
+        // provided a funcionId or the view was opened by function selection.
+        if ((imgPoster == null || imgPoster.getImage() == null) && this.funcionId != null) {
+            try {
+                var db = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
+                try (var cn = db.getConnection();
+                     var ps = cn.prepareStatement("SELECT PELICULA_ID FROM FUNCION WHERE ID = ?")) {
+                    ps.setLong(1, this.funcionId);
+                    try (var rs = ps.executeQuery()) {
+                        if (rs.next()) {
+                            long peliculaId = rs.getLong("PELICULA_ID");
+                            // fetch all peliculas and find the one with this id (repo has no buscarPorId)
+                            var repo = new sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc(db);
+                            var todas = repo.buscarTodas();
+                            for (var p : todas) {
+                                try {
+                                    if (p.getId() == peliculaId) {
+                                        String posterRef = p.getPosterUrl();
+                                        if (posterRef != null && !posterRef.isBlank()) {
+                                            java.net.URL res = getClass().getResource((posterRef.startsWith("/") ? posterRef : ("/" + posterRef)));
+                                            javafx.scene.image.Image img = null;
+                                            if (res != null) img = new javafx.scene.image.Image(res.toExternalForm(), false);
+                                            else {
+                                                java.net.URL res2 = getClass().getResource("/Images/" + posterRef);
+                                                if (res2 != null) img = new javafx.scene.image.Image(res2.toExternalForm(), false);
+                                                else {
+                                                    java.io.File f = new java.io.File(posterRef);
+                                                    if (f.exists()) img = new javafx.scene.image.Image(f.toURI().toString(), false);
+                                                }
+                                            }
+                                            if (img != null) imgPoster.setImage(img);
+                                        }
+                                        if (lblTitulo != null && (lblTitulo.getText() == null || lblTitulo.getText().equals("Película"))) {
+                                            lblTitulo.setText(p.getTitulo() != null ? p.getTitulo() : lblTitulo.getText());
+                                        }
+                                        break;
+                                    }
+                                } catch (Exception ignore) {}
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ignore) {}
+        }
+    }
+
+    private void tryFindPosterInScene() {
+        try {
+            if (imgPoster == null) return;
+            if (imgPoster.getImage() != null) return;
+            javafx.scene.Scene sc = null;
+            try { sc = gridSala != null ? gridSala.getScene() : null; } catch (Exception ignore) {}
+            if (sc == null) return;
+
+            String[] candidateIds = new String[] {"#imgPoster", "#imgCard1", "#imgCard2", "#imgCard3", "#imgCard4", "#imgPublicidad"};
+            for (String id : candidateIds) {
+                try {
+                    javafx.scene.Node n = sc.lookup(id);
+                    if (n instanceof javafx.scene.image.ImageView iv) {
+                        javafx.scene.image.Image i = iv.getImage();
+                        if (i != null) { imgPoster.setImage(i); return; }
+                    }
+                } catch (Exception ignore) {}
+            }
+
+            // Also try to copy the title from known labels in the scene
+            String[] titleIds = new String[] {"#lblTituloPelicula", "#lblTitulo"};
+            for (String id : titleIds) {
+                try {
+                    javafx.scene.Node n = sc.lookup(id);
+                    if (n instanceof javafx.scene.control.Label l) {
+                        String t = l.getText();
+                        if (t != null && !t.isBlank() && (lblTitulo == null || lblTitulo.getText() == null || lblTitulo.getText().equals("Película"))) {
+                            if (lblTitulo != null) lblTitulo.setText(t);
+                            return;
+                        }
+                    }
+                } catch (Exception ignore) {}
+            }
+        } catch (Exception ignore) {}
     }
 
     public void setFuncion(String titulo,
@@ -399,7 +510,7 @@ public class AsientosController implements Initializable {
 
     @FXML
     private void onContinuar() {
-    // Continuar pressed - no action (kept silent)
+
     }
 
     private Set<String> shiftAccesiblesToFirstRowPlus2(Set<String> entrada) {

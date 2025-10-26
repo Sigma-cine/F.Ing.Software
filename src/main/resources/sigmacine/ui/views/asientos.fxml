@@ -98,9 +98,9 @@
                             <!-- Cabecera -->
                             <HBox spacing="12" alignment="CENTER_LEFT">
                                 <children>
-                                    <StackPane prefWidth="56" prefHeight="56"
+                                    <StackPane prefWidth="140" prefHeight="140"
                                                style="-fx-background-color:#222; -fx-background-radius:8;">
-                                        <ImageView fx:id="imgPoster" fitWidth="56" fitHeight="56" preserveRatio="true"/>
+                                        <ImageView fx:id="imgPoster" fitWidth="120" fitHeight="120" preserveRatio="true"/>
                                     </StackPane>
                                     <VBox spacing="6">
                                         <children>
