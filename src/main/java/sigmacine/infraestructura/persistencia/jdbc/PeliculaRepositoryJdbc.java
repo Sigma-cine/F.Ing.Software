@@ -12,35 +12,37 @@ import sigmacine.dominio.repository.PeliculaRepository;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.infraestructura.persistencia.Mapper.PeliculaMapper;
 
-/*Se utilizara la misma estructura de codigo en las funciones buscarPorTitulo, buscarPorGenero y buscarTodas,
- por que solo se debe hacer una busqueda como tal y teniendo la coneccion a la base de datos H2, la unica diferencia es 
- la consulta sql.
- */
+
 
 public class PeliculaRepositoryJdbc implements PeliculaRepository {
- 
-     private final DatabaseConfig db;
+    private final DatabaseConfig db;
 
     public PeliculaRepositoryJdbc(DatabaseConfig db) {
         this.db = db;
     }
-     
+
 
     @Override
     public List<Pelicula> buscarPorTitulo(String q) {
         String sql = "SELECT ID,TITULO,GENERO,CLASIFICACION,DURACION,DIRECTOR,ESTADO,POSTER_URL,SINOPSIS,REPARTO " +
-                     "FROM PELICULA WHERE UPPER(TITULO) LIKE UPPER(?)";
+                    "FROM PELICULA WHERE UPPER(TITULO) LIKE UPPER(?)";
         try (Connection cn = db.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+            PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setString(1, "%"+q+"%");
             try (ResultSet rs = ps.executeQuery()) {
                 List<Pelicula> out = new ArrayList<>();
                 while (rs.next()){
-                     out.add(PeliculaMapper.map(rs));
+                    out.add(PeliculaMapper.map(rs));
                     }
                 return out;
             }
         } catch (SQLException e) {
+            // Si la tabla no existe (por ejemplo en un entorno sin inicializar), no propagamos la excepción
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            if (msg.contains("table") && msg.contains("not found")) {
+                System.err.println("PeliculaRepositoryJdbc: tabla PELICULA no encontrada - devolviendo lista vacía");
+                return new ArrayList<>();
+            }
             throw new RuntimeException("Error en la buscando por título", e);
         }
     }
@@ -60,6 +62,11 @@ public class PeliculaRepositoryJdbc implements PeliculaRepository {
                 return out;
             }
         } catch (SQLException e) {
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            if (msg.contains("table") && msg.contains("not found")) {
+                System.err.println("PeliculaRepositoryJdbc: tabla PELICULA no encontrada (genero) - devolviendo lista vacía");
+                return new ArrayList<>();
+            }
             throw new RuntimeException("Error en la busqueda por genero", e);
         }
 
@@ -80,6 +87,11 @@ public class PeliculaRepositoryJdbc implements PeliculaRepository {
             return out;
 
         } catch (SQLException e) {
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            if (msg.contains("table") && msg.contains("not found")) {
+                System.err.println("PeliculaRepositoryJdbc: tabla PELICULA no encontrada (buscarTodas) - devolviendo lista vacía");
+                return new ArrayList<>();
+            }
             throw new RuntimeException("Error en el listado de las peliculas", e);
         }
     }

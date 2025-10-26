@@ -16,7 +16,6 @@ public class SigmaCardService {
 		this.repository = new SigmaCardRepositoryJdbc(new DatabaseConfig());
 	}
 
-	// For tests or DI
 	public SigmaCardService(SigmaCardRepository repository) {
 		this.repository = repository;
 	}
