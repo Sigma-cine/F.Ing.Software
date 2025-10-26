@@ -42,10 +42,10 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 (3, 'Godzilla x Kong: The New Empire', 'Acción, Ciencia ficción', 'PG-13', 115, 'Adam Wingard', 'Rebecca Hall, Brian Tyree Henry',
 'https://www.youtube.com/watch?v=qqj12z9f48E',
 'Kong y Godzilla se unen para luchar contra una amenaza colosal desconocida que se esconde en nuestro mundo.',
-'Próximamente', 'src\\main\\resources\\Images\\godzillavskong_poster.png', FALSE);
+'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
 
 
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=Way9Dexny3w');
+INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (4, 3, 'https://www.youtube.com/watch?v=lV1OOlGwExM');
@@ -264,5 +264,14 @@ INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID
 (132,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 6),
 (133,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 7),
 (134,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 8),
-(135,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 9),
-(136,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2,10);
+(136,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 9),
+(135,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2,10);
+
+-- Funciones para Godzilla x Kong (PELICULA_ID = 3)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(200,'2025-10-19','14:30','Activa', TIME '01:55:00', TRUE, 3, 1),
+(201,'2025-10-19','17:15','Activa', TIME '01:55:00', TRUE, 3, 2),
+(202,'2025-10-19','20:00','Activa', TIME '01:55:00', TRUE, 3, 3),
+(203,'2025-10-20','15:00','Activa', TIME '01:55:00', TRUE, 3, 4),
+(204,'2025-10-20','18:30','Activa', TIME '01:55:00', TRUE, 3, 5),
+(205,'2025-10-20','21:15','Activa', TIME '01:55:00', TRUE, 3, 6);

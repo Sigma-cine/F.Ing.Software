@@ -20,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.data.FuncionDisponibleDTO;
@@ -349,13 +350,20 @@ public class ContenidoCarteleraController {
         // Cargar trailers
         cargarTrailers(p.getId());
 
+        // Cargar funciones
+        cargarFunciones();
+    }
+
+    private void cargarFunciones() {
+        if (pelicula == null) return;
+        
         // Cargar funciones por ciudad/sede/sala; tabs por fechas disponibles
         try {
             if (panelFunciones != null) {
                 panelFunciones.getChildren().clear();
                 DatabaseConfig db = new DatabaseConfig();
                 FuncionRepository repo = new FuncionRepositoryJdbc(db);
-                List<FuncionDisponibleDTO> funciones = repo.listarPorPelicula(p.getId());
+                List<FuncionDisponibleDTO> funciones = repo.listarPorPelicula(pelicula.getId());
                 String city = Session.getSelectedCity();
                 if (city != null && !city.isBlank()) {
                     funciones = funciones.stream()
@@ -449,8 +457,10 @@ public class ContenidoCarteleraController {
                 lblHora.setStyle("-fx-text-fill:#aaaaaa;-fx-font-size:12;-fx-font-weight:bold;");
                 sedeBox.getChildren().add(lblHora);
 
-                // Contenedor centrado por sede
-                HBox fila = new HBox(8);
+                // Contenedor que se envuelve cuando no hay espacio suficiente
+                javafx.scene.layout.FlowPane fila = new javafx.scene.layout.FlowPane();
+                fila.setHgap(8);
+                fila.setVgap(4);
                 fila.setAlignment(Pos.CENTER_LEFT);
                 fila.setStyle("-fx-background-color:transparent;");
 
@@ -607,7 +617,7 @@ public class ContenidoCarteleraController {
             final int tabIndex = idx;
             tab.setOnAction(e -> {
                 setSelectedDay(d);
-                try { setPelicula(this.pelicula); } catch (Exception ignore) {}
+                cargarFunciones(); // Solo actualizar funciones, no toda la película
                 updateDayTabStyles(tabIndex);
             });
             dayTabs.getChildren().add(tab);
@@ -707,25 +717,8 @@ public class ContenidoCarteleraController {
             webView.setPickOnBounds(true);
             webView.setFocusTraversable(true);
             
-            // Listener para errores
-            webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-                if (newState == javafx.concurrent.Worker.State.FAILED) {
-                    System.out.println("Error cargando trailer: " + url);
-                    // Intentar con URL alternativa sin parámetros
-                    String simpleUrl = url.contains("?") ? url.substring(0, url.indexOf("?")) : url;
-                    if (!url.equals(simpleUrl)) {
-                        webEngine.load(simpleUrl);
-                    } else {
-                        mostrarMensajeError();
-                    }
-                } else if (newState == javafx.concurrent.Worker.State.SUCCEEDED) {
-                    System.out.println("Trailer cargado exitosamente: " + url);
-                }
-            });
-            
             // Convertir URL de YouTube a formato embebido
             String embedUrl = convertirUrlYouTubeAEmbed(url);
-            System.out.println("Cargando trailer: " + embedUrl);
             
             // Cargar la URL
             webEngine.load(embedUrl);
@@ -736,6 +729,23 @@ public class ContenidoCarteleraController {
             e.printStackTrace();
             mostrarMensajeError();
         }
+    }
+    
+    private String extraerVideoIdSimple(String url) {
+        if (url == null) return null;
+        try {
+            if (url.contains("watch?v=")) {
+                int index = url.indexOf("watch?v=") + 8;
+                String id = url.substring(index);
+                if (id.contains("&")) {
+                    id = id.substring(0, id.indexOf("&"));
+                }
+                return id;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     
     private void mostrarMensajeNoTrailer() {
@@ -762,7 +772,6 @@ public class ContenidoCarteleraController {
                 if (videoId.contains("&")) {
                     videoId = videoId.substring(0, videoId.indexOf("&"));
                 }
-                // Parámetros optimizados sin mute para permitir sonido
                 return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
             } else if (url.contains("youtu.be/")) {
                 String videoId = url.substring(url.lastIndexOf("/") + 1);
@@ -771,7 +780,7 @@ public class ContenidoCarteleraController {
                 }
                 return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
             } else if (url.contains("youtube.com/embed/")) {
-                // Si ya está en formato embed, agregar parámetros sin autoplay ni mute
+                // Si ya está en formato embed, agregar parámetros
                 if (url.contains("?")) {
                     return url + "&controls=1&modestbranding=1&rel=0&enablejsapi=1";
                 } else {
@@ -783,5 +792,35 @@ public class ContenidoCarteleraController {
         }
         
         return url; // Devolver URL original si no se puede convertir
+    }
+    
+    private String extraerVideoId(String url) {
+        if (url == null || url.trim().isEmpty()) return null;
+        
+        try {
+            if (url.contains("youtube.com/watch?v=")) {
+                String videoId = url.substring(url.indexOf("v=") + 2);
+                if (videoId.contains("&")) {
+                    videoId = videoId.substring(0, videoId.indexOf("&"));
+                }
+                return videoId;
+            } else if (url.contains("youtu.be/")) {
+                String videoId = url.substring(url.lastIndexOf("/") + 1);
+                if (videoId.contains("?")) {
+                    videoId = videoId.substring(0, videoId.indexOf("?"));
+                }
+                return videoId;
+            } else if (url.contains("youtube.com/embed/")) {
+                String videoId = url.substring(url.indexOf("/embed/") + 7);
+                if (videoId.contains("?")) {
+                    videoId = videoId.substring(0, videoId.indexOf("?"));
+                }
+                return videoId;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return null;
     }
 }
