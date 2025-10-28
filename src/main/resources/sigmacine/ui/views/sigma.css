@@ -152,3 +152,104 @@
 
 .hyperlink { -fx-text-fill: #8A2F24; -fx-border-color: transparent; -fx-underline: false; }
 .hyperlink:hover { -fx-underline: true; }
+
+/* ======================= Confitería / Menú ======================= */
+.menu-scroll { -fx-background-color: transparent; }
+.menu-grid { -fx-padding: 12; -fx-hgap: 24; -fx-vgap: 24; }
+.menu-item {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-padding: 10;
+  -fx-border-color: transparent;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0.2, 0, 2);
+}
+.menu-item .menu-image-frame {
+  -fx-background-color: transparent;
+  -fx-border-color: #c77adf;
+  -fx-border-width: 8;
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+  -fx-padding: 0;
+}
+.menu-item ImageView { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 8, 0.2, 0, 2); }
+.menu-title { -fx-text-fill: #222; -fx-font-weight: bold; -fx-font-size: 13px; }
+.menu-desc { -fx-text-fill: #444; -fx-font-size: 12px; }
+.menu-price { -fx-text-fill: #222; -fx-font-weight: bold; -fx-padding: 6 0 8 0; }
+.menu-add-btn { -fx-background-color: #f0f0f0; -fx-text-fill: #222; -fx-border-color: #cfcfcf; -fx-background-radius: 6; -fx-border-radius: 6; -fx-padding: 6 10; }
+.menu-add-btn:hover { -fx-background-color: #f7f7f7; }
+
+.page-root { -fx-background-color: #0D0D0D; }
+.page-header .page-title { -fx-text-fill: #222; -fx-font-weight: bold; }
+
+.section-title { -fx-font-size: 32px; -fx-text-fill: #fff; -fx-font-weight: bold; }
+.menu-scroll { -fx-background-color: transparent; }
+.menu-grid { -fx-hgap: 24; -fx-vgap: 24; -fx-padding: 12; }
+.menu-item { -fx-background-color: transparent; -fx-padding: 8; }
+.menu-image-frame { -fx-border-color: #d9a9e6; -fx-border-width: 6; -fx-border-radius: 6; -fx-padding: 0; -fx-background-color: linear-gradient(#f4e8f8,#f0e0f6); }
+.menu-title { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-font-size: 18px; }
+.menu-desc { -fx-text-fill: #ddd; -fx-font-size: 12px; }
+.menu-price { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-padding: 6 0 8 0; }
+.buy-btn { -fx-background-color: #8A2F24; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 18; }
+
+.menu-select .combo-box-base, .menu-select { -fx-background-radius: 20; -fx-pref-width: 180; }
+.menu-select .combo-box { -fx-background-color: #e6e6e6; }
+.menu-select .list-cell { -fx-text-fill: #222; }
+
+.menu-image-frame { -fx-border-color: #c77adf; -fx-border-width: 8; -fx-border-radius: 8; -fx-padding: 0; -fx-background-color: transparent; }
+
+.page-root { -fx-background-color: #0b0b0b; }
+.section-title { -fx-font-size: 36px; -fx-text-fill: #ffffff; -fx-font-weight: bold; }
+
+.button, .buy-btn, .menu-add-btn {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-border-color: transparent;
+  -fx-background-insets: 0;
+  -fx-effect: none;
+}
+.button:focused, .buy-btn:focused, .menu-add-btn:focused, .button:armed {
+  -fx-effect: none;
+  -fx-border-color: transparent;
+}
+
+.menu-select .combo-box-base, .menu-select .combo-box {
+  -fx-background-color: #e6e6e6;
+  -fx-border-color: transparent;
+  -fx-background-insets: 0;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+  -fx-effect: none;
+}
+.menu-select .combo-box-base .arrow-button, .menu-select .combo-box-base .arrow {
+  -fx-background-color: transparent;
+}
+
+.root *:focused {
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.menu-item, .menu-item *, .menu-image-frame, .menu-item .menu-image-frame {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+  -fx-background-insets: 0;
+}
+
+.menu-image-frame ImageView {
+  -fx-background-color: transparent;
+}
+
+.menu-image-frame {
+  /* JavaFX-specific props */
+  -fx-border-width: 0;
+  -fx-border-color: transparent;
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+  /* standard names for linter/compatibility */
+  border-width: 0;
+  border-color: transparent;
+  background-color: transparent;
+  padding: 0;
+}
+
+

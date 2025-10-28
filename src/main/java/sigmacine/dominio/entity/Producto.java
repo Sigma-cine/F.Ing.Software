@@ -5,6 +5,7 @@ public class Producto {
 	private Long id;
 	private String nombre;
 	private long precio; // en centavos o unidad mínima
+	private String imagenUrl;
 
 	public Producto() {}
 
@@ -12,6 +13,13 @@ public class Producto {
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
+	}
+
+	public Producto(Long id, String nombre, long precio, String imagenUrl) {
+		this.id = id;
+		this.nombre = nombre;
+		this.precio = precio;
+		this.imagenUrl = imagenUrl;
 	}
 
 	public Long getId() { return id; }
@@ -22,6 +30,9 @@ public class Producto {
 
 	public long getPrecio() { return precio; }
 	public void setPrecio(long precio) { this.precio = precio; }
+
+	public String getImagenUrl() { return imagenUrl; }
+	public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 
 	@Override
 	public String toString() {

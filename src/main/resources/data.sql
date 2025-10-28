@@ -54,10 +54,17 @@ INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada Genera
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(3, 'Entrada VIP',       25.00, '2025-01-01');
 
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(1, 'Combo Popcorn', 'Popcorn grande y refresco grande', 'COMIDA', 10.50, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Hot Dog',       'Hot Dog Clásico con papas',        'COMIDA',  8.75, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(3, 'Nachos',        'Nachos con queso y jalapeños',     'COMIDA',  9.25, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Agua',          'Botella de agua (500ml)',          'BEBIDA',  3.00, 'Disponible', TRUE);
+-- PRODUCTO now includes IMAGEN_URL; if a product has no image the row will be removed later by cleanup SQL
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(1, 'Combo Popcorn', 'Popcorn grande y refresco grande', NULL, 'COMIDA', 10.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Hot Dog',       'Hot Dog Clásico con papas',        NULL, 'COMIDA',  8.75, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(3, 'Nachos',        'Nachos con queso y jalapeños',     NULL, 'COMIDA',  9.25, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Agua',          'Botella de agua (500ml)',          NULL, 'BEBIDA',  3.00, 'Disponible', TRUE);
+-- Productos adicionales de confitería (imágenes en /Images/Menu)
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(5, 'Crispetas',     'Palomitas de maíz clásicas',       '/Images/Menu/Crispetas.png', 'COMIDA',  7.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(6, 'Gaseosa',       'Refresco pequeño (330ml)',         '/Images/Menu/Gaseosas.png', 'BEBIDA',  4.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(7, 'ICEE',          'Bebida ICEE (pequeña)',            '/Images/Menu/ICEE.png', 'BEBIDA',  5.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(8, 'Chocolatas',    'Selección de chocolates y dulces',  '/Images/Menu/Chocolatas.png', 'CONFITERIA', 6.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(9, 'Pipsas',        'Porción de pizza estilo cine',     '/Images/Menu/Pipsas.png', 'COMIDA',  11.00, 'Disponible', TRUE);
 
 -- Funciones en distintas ciudades y sedes
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(1,  '2025-09-15', '12:50', 'Activa', TIME '02:46:00', TRUE, 1, 1); -- Bogotá / Salitre Plaza
@@ -109,6 +116,10 @@ INSERT INTO COMPRA_PRODUCTO (COMPRA_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, 
 
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (2, 50.00, TRUE);
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (3,  0.00, TRUE);
+
+-- Cleanup: remove products that lack an image and any purchase lines that reference them
+DELETE FROM COMPRA_PRODUCTO WHERE PRODUCTO_ID IN (SELECT ID FROM PRODUCTO WHERE IMAGEN_URL IS NULL);
+DELETE FROM PRODUCTO WHERE IMAGEN_URL IS NULL;
 
 -- -----------------------------------------------------------------------------
 -- Bulk funciones adicionales: muchas funciones por película y por sede/sala
