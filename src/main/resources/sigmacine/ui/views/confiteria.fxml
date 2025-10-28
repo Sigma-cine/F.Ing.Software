@@ -60,7 +60,7 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="695.0" prefWidth="875.0">
                     <children>
-                        <GridPane gridLinesVisible="true" layoutX="-5.0" layoutY="66.0" prefHeight="613.0" prefWidth="882.0">
+                        <GridPane layoutX="-5.0" layoutY="66.0" prefHeight="613.0" prefWidth="882.0">
                             <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="290.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="334.0" minWidth="10.0" prefWidth="327.0" />

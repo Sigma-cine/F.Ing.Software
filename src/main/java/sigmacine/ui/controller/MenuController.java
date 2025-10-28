@@ -91,16 +91,20 @@ public class MenuController implements Initializable {
     title.getStyleClass().add("menu-title");
         title.setWrapText(true);
         title.setMaxWidth(520);
+        title.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
     javafx.scene.control.Label desc = new javafx.scene.control.Label(p.descripcion != null ? p.descripcion : "");
     desc.getStyleClass().add("menu-desc");
         desc.setWrapText(true);
         desc.setMaxWidth(520);
+        desc.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
     javafx.scene.control.Label price = new javafx.scene.control.Label("$" + p.precio.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString());
     price.getStyleClass().add("menu-price");
+        price.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
     javafx.scene.layout.HBox selectors = new javafx.scene.layout.HBox(12);
+    selectors.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
     javafx.scene.control.ComboBox<String> cbSize = new javafx.scene.control.ComboBox<>();
     cbSize.getItems().addAll("Tamaño", "Pequeño", "Mediano", "Grande");
     cbSize.getSelectionModel().selectFirst();
@@ -124,7 +128,7 @@ public class MenuController implements Initializable {
         box.setPadding(new Insets(8));
         box.getStyleClass().add("menu-item");
         box.setPrefWidth(540);
-        box.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+        box.setAlignment(javafx.geometry.Pos.TOP_CENTER);
         return box;
     }
 
