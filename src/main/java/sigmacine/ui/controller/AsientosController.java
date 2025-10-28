@@ -292,7 +292,7 @@ public class AsientosController implements Initializable {
                             seleccion.remove(code);
                         }
                         actualizarResumen();
-                        sincronizarAsientosConCarrito();
+                        // NO sincronizar con carrito aquí, solo actualizar visualmente
                     });
                 }
 
@@ -336,18 +336,48 @@ public class AsientosController implements Initializable {
     }
 
     private void sincronizarAsientosConCarrito() {
+        System.out.println("DEBUG: sincronizarAsientosConCarrito iniciado");
+        System.out.println("DEBUG: seleccion actual: " + seleccion);
+        System.out.println("DEBUG: asientoItems antes: " + asientoItems.size());
+        
+        // Limpiar asientos anteriores del carrito
         if (!asientoItems.isEmpty()) {
             for (var dto : asientoItems) {
                 carrito.removeItem(dto);
+                System.out.println("DEBUG: Removido del carrito: " + dto.getNombre());
             }
             asientoItems.clear();
         }
-        if (seleccion.isEmpty()) return;
+        
+        if (seleccion.isEmpty()) {
+            System.out.println("DEBUG: No hay selección, terminando");
+            return;
+        }
+        
+        // Añadir todos los asientos seleccionados al carrito
         for (String code : seleccion.stream().sorted().toList()) {
             String nombre = "Asiento " + code + " - " + (titulo != null ? titulo : "Película") + (hora != null ? " (" + hora + ")" : "");
             var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
             carrito.addItem(dto);
             asientoItems.add(dto);
+            System.out.println("DEBUG: Añadido al carrito: " + nombre);
+        }
+        
+        System.out.println("DEBUG: asientoItems después: " + asientoItems.size());
+        
+        // Mostrar mensaje de confirmación cuando se confirman los asientos
+        if (!seleccion.isEmpty()) {
+            javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            confirmacion.setTitle("Asientos añadidos al carrito");
+            confirmacion.setHeaderText("¡Asientos confirmados!");
+            
+            String mensaje = seleccion.size() == 1 
+                ? "Se añadió 1 asiento al carrito:\n" + seleccion.iterator().next()
+                : "Se añadieron " + seleccion.size() + " asientos al carrito:\n" + 
+                  String.join(", ", seleccion.stream().sorted().toList());
+            
+            confirmacion.setContentText(mensaje);
+            confirmacion.showAndWait();
         }
     }
 
@@ -515,7 +545,21 @@ public class AsientosController implements Initializable {
 
     @FXML
     private void onContinuar() {
-
+        // Ahora es cuando sincronizamos los asientos con el carrito
+        if (seleccion.isEmpty()) {
+            javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+            alerta.setTitle("Selección requerida");
+            alerta.setHeaderText("No hay asientos seleccionados");
+            alerta.setContentText("Por favor selecciona al menos un asiento antes de continuar.");
+            alerta.showAndWait();
+            return;
+        }
+        
+        // Sincronizar con el carrito y mostrar confirmación
+        sincronizarAsientosConCarrito();
+        
+        // Aquí podrías agregar navegación a la siguiente pantalla si es necesario
+        // Por ejemplo, ir a confitería o a pago
     }
 
     private Set<String> shiftAccesiblesToFirstRowPlus2(Set<String> entrada) {

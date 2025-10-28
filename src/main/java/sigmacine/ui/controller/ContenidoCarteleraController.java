@@ -1,5 +1,6 @@
 package sigmacine.ui.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +23,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
+import java.net.URL;
+import java.util.Set;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.data.FuncionDisponibleDTO;
 import sigmacine.dominio.entity.Pelicula;
@@ -101,7 +104,10 @@ public class ContenidoCarteleraController {
             btnComprar.toFront();
             if (btnComprar.getParent() != null) btnComprar.getParent().toFront();
 
-            btnComprar.setOnAction(e -> onComprarTickets());
+            btnComprar.setOnAction(e -> {
+                System.out.println("DEBUG: Botón Comprar clickeado!");
+                onComprarTickets();
+            });
         }
     // tabs de día se construyen al cargar la película
         if (miHistorial != null) {
@@ -523,10 +529,130 @@ public class ContenidoCarteleraController {
 
     @FXML
     private void onComprarTickets() {
+        System.out.println("=== DEBUG COMPRAR TICKETS ===");
+        System.out.println("onComprarTickets() INICIADO");
+        
+        try {
+            // Verificar si el usuario ha iniciado sesión usando Session global
+            UsuarioDTO usuarioActual = sigmacine.aplicacion.session.Session.getCurrent();
+            boolean isLoggedIn = sigmacine.aplicacion.session.Session.isLoggedIn();
+            
+            System.out.println("Usuario actual: " + usuarioActual);
+            System.out.println("isLoggedIn(): " + isLoggedIn);
+            
+            if (!isLoggedIn) {
+                System.out.println("Usuario NO logueado - Mostrando alerta de login");
+                
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                alert.setTitle("Iniciar Sesión Requerido");
+                alert.setHeaderText("Debe iniciar sesión");
+                alert.setContentText("Para comprar boletos debe iniciar sesión primero. ¿Desea ir a la pantalla de login?");
+                
+                System.out.println("Alerta creada, mostrando...");
+                
+                // Agregar botones personalizados
+                javafx.scene.control.ButtonType btnIrLogin = new javafx.scene.control.ButtonType("Ir a Login");
+                javafx.scene.control.ButtonType btnCancelar = new javafx.scene.control.ButtonType("Cancelar", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(btnIrLogin, btnCancelar);
+                
+                var result = alert.showAndWait();
+                System.out.println("Usuario respondió a la alerta: " + result);
+                
+                if (result.isPresent() && result.get() == btnIrLogin) {
+                    System.out.println("Usuario eligió ir a Login");
+                    
+                    // Usar el mismo patrón del botón iniciar sesión que ya funciona
+                    try {
+                        if (this.coordinador != null) {
+                            System.out.println("Usando coordinador para mostrar login");
+                            // En lugar de usar coordinador.mostrarLogin() directamente, crearemos nuestro propio diálogo
+                            // para tener control total del callback
+                        }
+                        
+                        System.out.println("Creando diálogo de login con control personalizado");
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
+                        Parent root = loader.load();
+                        Object ctrl = loader.getController();
+                        Stage dialog = new Stage();
+                        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+                        dialog.initOwner(btnComprar.getScene().getWindow());
+                        
+                        if (ctrl instanceof LoginController) {
+                            LoginController lc = (LoginController) ctrl;
+                            
+                            // SÍ configurar dependencias para que funcione el login
+                            try {
+                                ControladorControlador global = ControladorControlador.getInstance();
+                                if (global != null) {
+                                    lc.setCoordinador(global);
+                                    try {
+                                        sigmacine.aplicacion.facade.AuthFacade af = global.getAuthFacade();
+                                        if (af != null) lc.setAuthFacade(af);
+                                    } catch (Throwable ignore) {}
+                                }
+                            } catch (Throwable ignore) {}
+
+                            // Configurar callback personalizado que anula cualquier otro comportamiento
+                            lc.setOnSuccess(() -> {
+                                System.out.println(">>> CALLBACK PERSONALIZADO EJECUTÁNDOSE <<<");
+                                System.out.println("Login exitoso, cerrando diálogo e iniciando navegación a asientos");
+                                try { 
+                                    dialog.close(); 
+                                    System.out.println("Diálogo cerrado exitosamente");
+                                } catch (Exception ex) {
+                                    System.out.println("Error cerrando diálogo: " + ex.getMessage());
+                                }
+                                
+                                // Ejecutar en el siguiente ciclo del hilo de JavaFX para asegurar que el diálogo se cierre
+                                Platform.runLater(() -> {
+                                    try {
+                                        System.out.println("Ejecutando Platform.runLater...");
+                                        refreshSessionUI();
+                                        System.out.println("refreshSessionUI() completado");
+                                        System.out.println("Navegando a selección de asientos...");
+                                        continuarConCompra();
+                                        System.out.println("continuarConCompra() completado");
+                                    } catch (Exception ex) {
+                                        System.out.println("Error al continuar con compra después del login: " + ex.getMessage());
+                                        ex.printStackTrace();
+                                    }
+                                });
+                            });
+                        }
+                        dialog.setScene(new javafx.scene.Scene(root));
+                        dialog.setTitle("Iniciar Sesión - Sigma Cine");
+                        dialog.showAndWait();
+                        System.out.println("Diálogo de login cerrado");
+                        
+                    } catch (Exception ex) {
+                        System.out.println("Error al abrir login: " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                } else {
+                    System.out.println("Usuario canceló o cerró la alerta");
+                }
+                return;
+            }
+            
+            System.out.println("Usuario SÍ logueado - Continuando con compra");
+            continuarConCompra();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            a.setHeaderText("Error abriendo Asientos");
+            a.setContentText(String.valueOf(ex));
+            a.showAndWait();
+        }
+    }
+
+    private void continuarConCompra() {
         try {
             // Debe haber una función seleccionada
-        String seleccion = (lvFunciones != null && lvFunciones.getSelectionModel() != null)
-            ? lvFunciones.getSelectionModel().getSelectedItem() : selectedFuncionText;
+            String seleccion = (lvFunciones != null && lvFunciones.getSelectionModel() != null)
+                ? lvFunciones.getSelectionModel().getSelectedItem() : selectedFuncionText;
+            
+            System.out.println("DEBUG: Selección: " + seleccion);
+            System.out.println("DEBUG: selectedFuncionId: " + selectedFuncionId);
             if (seleccion == null || seleccion.isBlank()) {
                 var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                 a.setHeaderText("Selecciona una hora");
@@ -534,9 +660,9 @@ public class ContenidoCarteleraController {
                 a.showAndWait();
                 return;
             }
-        if (selectedFuncionId == null) {
+            if (selectedFuncionId == null) {
 
-        }
+            }
             if (isEmbedded()) {
                 String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
                         ? lblTitulo.getText() : "Película";
@@ -549,9 +675,9 @@ public class ContenidoCarteleraController {
                 return;
             }
 
-        String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
-                    ? lblTitulo.getText() : "Película";
-        String hora = seleccion;
+            String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
+                        ? lblTitulo.getText() : "Película";
+            String hora = seleccion;
 
             URL url = getClass().getResource("/sigmacine/ui/views/asientos.fxml");
             if (url == null) {
