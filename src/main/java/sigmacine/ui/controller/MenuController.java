@@ -5,6 +5,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -72,15 +74,12 @@ public class MenuController implements Initializable {
 
     private VBox buildProductBox(ProductItem p) {
     ImageView iv = new ImageView();
-    // make the image fill the frame completely (no inner gaps)
-    // inner area = frame size minus 2*borderWidth (borderWidth 8)
-    iv.setFitWidth(524); // 540 - 16
-    iv.setFitHeight(204); // 220 - 16
+    iv.setFitWidth(524);
+    iv.setFitHeight(204);
     iv.setPreserveRatio(false);
         iv.setSmooth(true);
         if (p.image != null) iv.setImage(p.image);
 
-        // image frame
         javafx.scene.layout.StackPane imgFrame = new javafx.scene.layout.StackPane();
         imgFrame.getStyleClass().add("menu-image-frame");
     imgFrame.setPrefWidth(540);
@@ -91,40 +90,76 @@ public class MenuController implements Initializable {
     title.getStyleClass().add("menu-title");
         title.setWrapText(true);
         title.setMaxWidth(520);
-        title.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
     javafx.scene.control.Label desc = new javafx.scene.control.Label(p.descripcion != null ? p.descripcion : "");
     desc.getStyleClass().add("menu-desc");
         desc.setWrapText(true);
         desc.setMaxWidth(520);
-        desc.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-    javafx.scene.control.Label price = new javafx.scene.control.Label("$" + p.precio.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString());
-    price.getStyleClass().add("menu-price");
-        price.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
     javafx.scene.layout.HBox selectors = new javafx.scene.layout.HBox(12);
-    selectors.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-    javafx.scene.control.ComboBox<String> cbSize = new javafx.scene.control.ComboBox<>();
-    cbSize.getItems().addAll("Tamaño", "Pequeño", "Mediano", "Grande");
-    cbSize.getSelectionModel().selectFirst();
-    javafx.scene.control.ComboBox<String> cbOpt = new javafx.scene.control.ComboBox<>();
-    cbOpt.getItems().addAll("Sabor", "Original", "Dulce", "Picante");
-    cbOpt.getSelectionModel().selectFirst();
-    cbSize.getStyleClass().add("menu-select");
-    cbOpt.getStyleClass().add("menu-select");
-    selectors.getChildren().addAll(cbSize, cbOpt);
+    selectors.setAlignment(javafx.geometry.Pos.CENTER);
+    selectors.getStyleClass().add("menu-selectors");
+    
+    final IntegerProperty quantity = new SimpleIntegerProperty(1);
+    javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
+    javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
+    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("+");
+    
+    btnMinus.getStyleClass().add("qty-btn");
+    btnPlus.getStyleClass().add("qty-btn");
+    lblQty.getStyleClass().add("qty-label");
+    
+    btnMinus.setOnAction(e -> {
+        if (quantity.get() > 1) {
+            quantity.set(quantity.get() - 1);
+            lblQty.setText(String.valueOf(quantity.get()));
+        }
+    });
+    
+    btnPlus.setOnAction(e -> {
+        if (quantity.get() < 10) {
+            quantity.set(quantity.get() + 1);
+            lblQty.setText(String.valueOf(quantity.get()));
+        }
+    });
+    
+    javafx.scene.layout.HBox qtyBox = new javafx.scene.layout.HBox(8);
+    qtyBox.setAlignment(javafx.geometry.Pos.CENTER);
+    qtyBox.getStyleClass().add("qty-selector");
+    qtyBox.getChildren().addAll(btnMinus, lblQty, btnPlus);
 
+    javafx.scene.control.ComboBox<String> cbOpt = new javafx.scene.control.ComboBox<>();
+    if (p.sabores != null && !p.sabores.trim().isEmpty()) {
+        String[] parts = p.sabores.split(",");
+        for (String s : parts) {
+            String v = s.trim().replaceAll("_", " ");
+            if (!v.isEmpty()) cbOpt.getItems().add(v);
+        }
+        cbOpt.setPromptText("Sabor");
+    } else {
+        cbOpt.getItems().addAll("Original");
+        cbOpt.setPromptText("Sabor");
+    }
+
+    cbOpt.getStyleClass().add("menu-select");
+    cbOpt.setPrefWidth(180);
+    selectors.getChildren().addAll(qtyBox, cbOpt);
 
     Button add = new Button("Agregar al carrito");
     add.getStyleClass().addAll("buy-btn", "menu-add-btn");
-        add.setOnAction(e -> {
-            var dto = new CompraProductoDTO(p.id, p.nombre, 1, p.precio);
-            CarritoService.getInstance().addItem(dto);
-        });
+    add.setOnAction(e -> {
+        String selectedSabor = null;
+        try { selectedSabor = cbOpt.getSelectionModel().getSelectedItem(); } catch (Exception ignore) {}
+        int qty = quantity.get();
 
-        // Arrange: image frame, title, selectors, price, add button, description
-        VBox box = new VBox(10, imgFrame, title, selectors, price, add, desc);
+        String itemName = p.nombre;
+        var dto = (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original"))
+            ? new CompraProductoDTO(p.id, itemName + " (" + selectedSabor + ")", qty, p.precio, selectedSabor)
+            : new CompraProductoDTO(p.id, itemName, qty, p.precio);
+        CarritoService.getInstance().addItem(dto);
+    });
+
+    VBox box = new VBox(10, imgFrame, title, selectors, add);
         box.setPadding(new Insets(8));
         box.getStyleClass().add("menu-item");
         box.setPrefWidth(540);
@@ -137,7 +172,7 @@ public class MenuController implements Initializable {
         try {
             var db = new DatabaseConfig();
             try (Connection cn = db.getConnection();
-                PreparedStatement ps = cn.prepareStatement("SELECT ID, NOMBRE, DESCRIPCION, PRECIO_LISTA, IMAGEN_URL FROM PRODUCTO WHERE ESTADO_BOOL = TRUE ORDER BY ID")) {
+                PreparedStatement ps = cn.prepareStatement("SELECT ID, NOMBRE, DESCRIPCION, PRECIO_LISTA, IMAGEN_URL, SABORES FROM PRODUCTO WHERE ESTADO_BOOL = TRUE ORDER BY ID")) {
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         long id = rs.getLong("ID");
@@ -145,6 +180,7 @@ public class MenuController implements Initializable {
                         String descripcion = rs.getString("DESCRIPCION");
                         BigDecimal precio = rs.getBigDecimal("PRECIO_LISTA");
                         String imagenUrl = rs.getString("IMAGEN_URL");
+                        String sabores = rs.getString("SABORES");
                         if (filter != null && !filter.isBlank()) {
                             String f = filter.toLowerCase();
                             if (!(nombre != null && nombre.toLowerCase().contains(f)) && !(descripcion != null && descripcion.toLowerCase().contains(f))) continue;
@@ -156,7 +192,7 @@ public class MenuController implements Initializable {
                             } catch (Exception ignore) {}
                         }
                         if (img == null) img = tryLoadImageFor(nombre, id);
-                        out.add(new ProductItem(id, nombre, descripcion, precio, img));
+                        out.add(new ProductItem(id, nombre, descripcion, precio, img, sabores));
                     }
                 }
             }
@@ -177,7 +213,7 @@ public class MenuController implements Initializable {
     }
 
     private static class ProductItem {
-        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image;
-        ProductItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image) { this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; }
+        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores;
+        ProductItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores) { this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; }
     }
 }
