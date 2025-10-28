@@ -1,6 +1,7 @@
 package sigmacine.aplicacion.data;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class CompraProductoDTO {
     private final Long productoId;
@@ -58,5 +59,23 @@ public class CompraProductoDTO {
 
     private String format(BigDecimal v) {
         return v.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        CompraProductoDTO that = (CompraProductoDTO) obj;
+        return cantidad == that.cantidad &&
+               Objects.equals(productoId, that.productoId) &&
+               Objects.equals(funcionId, that.funcionId) &&
+               Objects.equals(asiento, that.asiento) &&
+               Objects.equals(nombre, that.nombre) &&
+               Objects.equals(precioUnitario, that.precioUnitario);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productoId, funcionId, asiento, nombre, cantidad, precioUnitario);
     }
 }

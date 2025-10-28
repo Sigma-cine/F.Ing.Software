@@ -51,6 +51,8 @@ public class AsientosController implements Initializable {
 
     private String titulo = "Película";
     private String hora   = "1:10 pm";
+    private String ciudad = "";  // Ciudad de la función
+    private String sede = "";    // Sede/centro comercial de la función
     private Image poster;
     private Long funcionId; // ID de la función seleccionada
 
@@ -342,11 +344,13 @@ public class AsientosController implements Initializable {
         
         // Limpiar asientos anteriores del carrito
         if (!asientoItems.isEmpty()) {
+            System.out.println("DEBUG: Intentando remover " + asientoItems.size() + " asientos anteriores del carrito");
             for (var dto : asientoItems) {
                 carrito.removeItem(dto);
                 System.out.println("DEBUG: Removido del carrito: " + dto.getNombre());
             }
             asientoItems.clear();
+            System.out.println("DEBUG: Lista asientoItems limpiada");
         }
         
         if (seleccion.isEmpty()) {
@@ -356,7 +360,25 @@ public class AsientosController implements Initializable {
         
         // Añadir todos los asientos seleccionados al carrito
         for (String code : seleccion.stream().sorted().toList()) {
-            String nombre = "Asiento " + code + " - " + (titulo != null ? titulo : "Película") + (hora != null ? " (" + hora + ")" : "");
+            // Crear nombre más descriptivo con película, sede, hora y asiento
+            StringBuilder nombreBuilder = new StringBuilder();
+            nombreBuilder.append("Asiento ").append(code);
+            
+            if (titulo != null && !titulo.isBlank()) {
+                nombreBuilder.append(" - ").append(titulo);
+            }
+            
+            if (sede != null && !sede.isBlank()) {
+                nombreBuilder.append(" - ").append(sede);
+            } else if (ciudad != null && !ciudad.isBlank()) {
+                nombreBuilder.append(" - ").append(ciudad);
+            }
+            
+            if (hora != null && !hora.isBlank()) {
+                nombreBuilder.append(" (").append(hora).append(")");
+            }
+            
+            String nombre = nombreBuilder.toString();
             var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
             carrito.addItem(dto);
             asientoItems.add(dto);
@@ -386,8 +408,20 @@ public class AsientosController implements Initializable {
                         java.util.Set<String> ocupados,
                         java.util.Set<String> accesibles,
                         Long funcionId) {
+        setFuncion(titulo, hora, ocupados, accesibles, funcionId, "", "");
+    }
+
+    public void setFuncion(String titulo,
+                        String hora,
+                        java.util.Set<String> ocupados,
+                        java.util.Set<String> accesibles,
+                        Long funcionId,
+                        String ciudad,
+                        String sede) {
         if (titulo != null) this.titulo = titulo;
         if (hora   != null) this.hora   = hora;
+        if (ciudad != null) this.ciudad = ciudad;
+        if (sede   != null) this.sede   = sede;
         this.funcionId = funcionId;
 
         this.ocupados.clear();
@@ -402,7 +436,11 @@ public class AsientosController implements Initializable {
 
         if (lblTitulo != null)   lblTitulo.setText(this.titulo);
         if (lblHoraPill != null) lblHoraPill.setText(this.hora);
-        if (gridSala != null) { poblarGrilla(); actualizarResumen(); }
+        if (gridSala != null) { 
+            poblarGrilla(); 
+            sincronizarConCarritoExistente(); // Verificar asientos ya en carrito
+            actualizarResumen(); 
+        }
 
         if ((this.poster == null || imgPoster == null || imgPoster.getImage() == null) && this.titulo != null && !this.titulo.isBlank()) {
             try {
@@ -613,5 +651,44 @@ public class AsientosController implements Initializable {
             ex.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "No se pudo abrir el carrito: " + ex.getMessage()).showAndWait();
         }
+    }
+
+    /**
+     * Sincroniza el estado visual de los asientos con los que ya están en el carrito
+     * para evitar duplicados cuando el usuario vuelve a entrar a la pantalla.
+     */
+    private void sincronizarConCarritoExistente() {
+        System.out.println("DEBUG: Sincronizando asientos con carrito existente");
+        
+        // Limpiar la selección y lista de asientos actuales
+        seleccion.clear();
+        asientoItems.clear();
+        
+        // Verificar qué asientos de esta función ya están en el carrito
+        var itemsCarrito = carrito.getItems();
+        for (var item : itemsCarrito) {
+            // Verificar si este item es un asiento de la función actual
+            if (item.getFuncionId() != null && 
+                item.getAsiento() != null && 
+                item.getFuncionId().equals(this.funcionId)) {
+                
+                String codigoAsiento = item.getAsiento();
+                System.out.println("DEBUG: Asiento encontrado en carrito: " + codigoAsiento);
+                
+                // Marcar este asiento como seleccionado
+                seleccion.add(codigoAsiento);
+                asientoItems.add(item);
+                
+                // Actualizar el estado visual del botón correspondiente
+                ToggleButton boton = seatByCode.get(codigoAsiento);
+                if (boton != null) {
+                    boton.setSelected(true);
+                    setSeatState(boton, SeatState.SELECTED);
+                    System.out.println("DEBUG: Botón " + codigoAsiento + " marcado como seleccionado");
+                }
+            }
+        }
+        
+        System.out.println("DEBUG: Sincronización completada. Asientos seleccionados: " + seleccion);
     }
 }

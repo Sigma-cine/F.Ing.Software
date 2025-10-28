@@ -434,15 +434,37 @@ public class ContenidoCarteleraController {
         try { panelFunciones.setAlignment(Pos.CENTER); } catch (Exception ignore) {}
         if (funciones == null || funciones.isEmpty()) return;
 
-        // Agrupar por ciudad -> sede y acumular horas únicas por sede
-        Map<String, Map<String, Set<FuncionDisponibleDTO>>> porCiudad = new LinkedHashMap<>();
+        System.out.println("DEBUG: Renderizando " + funciones.size() + " funciones");
         for (FuncionDisponibleDTO f : funciones) {
-            porCiudad.computeIfAbsent(f.getCiudad(), k -> new LinkedHashMap<>())
-                    .computeIfAbsent(f.getSede(), k -> new LinkedHashSet<>())
-                    .add(f);
+            System.out.println("DEBUG: " + f.toString());
+        }
+
+        // Agrupar por ciudad -> sede y acumular horas únicas por sede
+        // Para evitar duplicados de hora, usaremos un Map con clave compuesta
+        Map<String, Map<String, Map<String, FuncionDisponibleDTO>>> porCiudad = new LinkedHashMap<>();
+        for (FuncionDisponibleDTO f : funciones) {
+            String ciudad = f.getCiudad();
+            String sede = f.getSede();
+            String horaKey = f.getHora().toString(); // Usar hora como clave única
+            
+            porCiudad.computeIfAbsent(ciudad, k -> new LinkedHashMap<>())
+                    .computeIfAbsent(sede, k -> new LinkedHashMap<>())
+                    .put(horaKey, f); // put sobrescribe si ya existe, manteniendo solo una función por hora
         }
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("h:mma", Locale.ENGLISH);
+
+        System.out.println("DEBUG: Después de agrupar por hora única:");
+        for (var ciudadEntry : porCiudad.entrySet()) {
+            System.out.println("DEBUG: Ciudad: " + ciudadEntry.getKey());
+            for (var sedeEntry : ciudadEntry.getValue().entrySet()) {
+                System.out.println("DEBUG:   Sede: " + sedeEntry.getKey() + " - " + sedeEntry.getValue().size() + " horas únicas");
+                for (var horaEntry : sedeEntry.getValue().entrySet()) {
+                    FuncionDisponibleDTO f = horaEntry.getValue();
+                    System.out.println("DEBUG:     " + f.getHora() + " (ID: " + f.getFuncionId() + ")");
+                }
+            }
+        }
 
         for (var ciudadEntry : porCiudad.entrySet()) {
             VBox ciudadBox = new VBox(8);
@@ -470,8 +492,8 @@ public class ContenidoCarteleraController {
                 fila.setAlignment(Pos.CENTER_LEFT);
                 fila.setStyle("-fx-background-color:transparent;");
 
-                // ordenar por hora
-        List<FuncionDisponibleDTO> ordenadas = sedeEntry.getValue().stream()
+                // ordenar por hora y tomar solo los valores únicos
+                List<FuncionDisponibleDTO> ordenadas = sedeEntry.getValue().values().stream()
                         .sorted(java.util.Comparator.comparing(FuncionDisponibleDTO::getHora))
                         .collect(Collectors.toList());
 
@@ -497,6 +519,7 @@ public class ContenidoCarteleraController {
 
     private String selectedFuncionText;
     private Long selectedFuncionId;
+    private FuncionDisponibleDTO selectedFuncion; // Objeto completo de la función seleccionada
     private Button selectedHoraButton;
     private void seleccionarFuncionPill(String texto) {
         if (lvFunciones != null) {
@@ -510,7 +533,8 @@ public class ContenidoCarteleraController {
     }
 
     private void seleccionarFuncion(FuncionDisponibleDTO f, Button sourceBtn) {
-    this.selectedFuncionId = f.getFuncionId();
+        this.selectedFuncionId = f.getFuncionId();
+        this.selectedFuncion = f; // Guardar el objeto completo
         String texto = java.time.format.DateTimeFormatter.ofPattern("h:mma", java.util.Locale.ENGLISH)
                 .format(f.getHora()).toLowerCase();
         seleccionarFuncionPill(texto);
@@ -664,8 +688,15 @@ public class ContenidoCarteleraController {
 
             }
             if (isEmbedded()) {
-                String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
-                        ? lblTitulo.getText() : "Película";
+                String titulo = "Película"; // fallback por defecto
+                
+                // Intentar obtener el título de múltiples fuentes
+                if (pelicula != null && pelicula.getTitulo() != null && !pelicula.getTitulo().isBlank()) {
+                    titulo = pelicula.getTitulo(); // Primer intento: del objeto película
+                } else if (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank()) {
+                    titulo = lblTitulo.getText(); // Segundo intento: del label
+                }
+                
                 String hora = seleccion;
 
                 Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
@@ -675,8 +706,16 @@ public class ContenidoCarteleraController {
                 return;
             }
 
-            String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
-                        ? lblTitulo.getText() : "Película";
+            String titulo = "Película"; // fallback por defecto
+            
+            // Intentar obtener el título de múltiples fuentes
+            if (pelicula != null && pelicula.getTitulo() != null && !pelicula.getTitulo().isBlank()) {
+                titulo = pelicula.getTitulo(); // Primer intento: del objeto película
+            } else if (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank()) {
+                titulo = lblTitulo.getText(); // Segundo intento: del label
+            }
+            
+            System.out.println("DEBUG: Título obtenido para asientos: '" + titulo + "'");
             String hora = seleccion;
 
             URL url = getClass().getResource("/sigmacine/ui/views/asientos.fxml");
@@ -694,8 +733,13 @@ public class ContenidoCarteleraController {
             AsientosController ctrl = loader.getController();
             Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
             Set<String> accesibles = Set.of("E3","E4","E5","E6");
-            // Por ahora AsientosController no recibe ID de función, solo pasamos texto y hora.
-            ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId);
+            
+            // Obtener información de ciudad y sede de la función seleccionada
+            String ciudad = selectedFuncion != null ? selectedFuncion.getCiudad() : "";
+            String sede = selectedFuncion != null ? selectedFuncion.getSede() : "";
+            
+            // Pasar información completa incluyendo ciudad y sede
+            ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId, ciudad, sede);
 
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
                     ? pelicula.getPosterUrl() : null;
