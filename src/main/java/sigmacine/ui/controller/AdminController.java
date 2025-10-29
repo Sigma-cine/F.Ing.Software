@@ -3,15 +3,12 @@ package sigmacine.ui.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;        
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;     
-import javafx.stage.Stage;       
 import sigmacine.aplicacion.data.UsuarioDTO;
+import sigmacine.aplicacion.service.admi.GestionFuncionesService;
 import sigmacine.aplicacion.service.admi.GestionPeliculasService;
-import sigmacine.ui.controller.admin.AgregarPeliculaController;
-
+import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 
 public class AdminController {
 
@@ -21,13 +18,17 @@ public class AdminController {
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
 
-    // Servicio inyectado por constructor (lo provee tu controllerFactory en App.start)
     private final GestionPeliculasService gestionPeliculasService;
+    private final GestionFuncionesService gestionFuncionesService;
+    private final PeliculaRepositoryJdbc peliculaRepo;
 
-    public AdminController(GestionPeliculasService gestionPeliculasService) {
+    public AdminController(GestionPeliculasService gestionPeliculasService,
+                           GestionFuncionesService gestionFuncionesService,
+                           PeliculaRepositoryJdbc peliculaRepo) {
         this.gestionPeliculasService = gestionPeliculasService;
+        this.gestionFuncionesService = gestionFuncionesService;
+        this.peliculaRepo = peliculaRepo;
     }
-
 
     public void init(UsuarioDTO usuario, ControladorControlador coordinador) {
         this.usuario = usuario;
@@ -52,37 +53,43 @@ public class AdminController {
         }
     }
 
-   
     @FXML
     private void abrirAgregarPelicula() {
         try {
-            java.net.URL fxml = AdminController.class.getResource(
-                "/sigmacine/ui/views/Administrador/agregar_pelicula.fxml"
-            );
-            if (fxml == null) {
-                throw new IllegalStateException("No se encontró agregar_pelicula.fxml en el classpath.");
-             }
-             System.out.println("Cargados FXML:" + fxml);
+            var fxml = AdminController.class.getResource("/sigmacine/ui/views/Administrador/agregar_pelicula.fxml");
+            if (fxml == null) throw new IllegalStateException("No se encontró agregar_pelicula.fxml");
             FXMLLoader loader = new FXMLLoader(fxml);
-            //Opcioanl
-            loader.setControllerFactory(param -> new AgregarPeliculaController());
-
+            loader.setControllerFactory(param -> new sigmacine.ui.controller.admin.AgregarPeliculaController());
             Parent view = loader.load();
-
-            AgregarPeliculaController controller = loader.getController();
-            controller.setGestionPeliculasService(gestionPeliculasService);
-
-            // Cargar dentro del centro del dashboard
-            if (contentArea != null) {
-                contentArea.getChildren().setAll(view);
+            var controller = loader.getController();
+            if (controller instanceof sigmacine.ui.controller.admin.AgregarPeliculaController c) {
+                c.setGestionPeliculasService(gestionPeliculasService);
             }
+            if (contentArea != null) contentArea.getChildren().setAll(view);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Si más adelante agregas otros módulos, crea métodos similares:
-    // @FXML private void abrirGestorFunciones() { ... set contentArea ... }
-    // @FXML private void abrirGestorProductos() { ... set contentArea ... }
-    // @FXML private void abrirReportes()        { ... set contentArea ... }
+    @FXML
+    public void abrirGestionFunciones() {
+        try {
+            final String ruta = "/sigmacine/ui/views/Administrador/gestion_funciones.fxml";
+            var fxml = AdminController.class.getResource(ruta);
+            if (fxml == null) throw new IllegalStateException("No se encontró " + ruta);
+
+            FXMLLoader loader = new FXMLLoader(fxml);
+            loader.setControllerFactory(param ->
+                new sigmacine.ui.controller.admin.GestionFuncionesController(
+                    this.gestionFuncionesService,
+                    this.peliculaRepo
+                )
+            );
+
+            Parent view = loader.load();
+            if (contentArea != null) contentArea.getChildren().setAll(view);
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo abrir la pantalla de gestión de funciones", e);
+        }
+    }
 }

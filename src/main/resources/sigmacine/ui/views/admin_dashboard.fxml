@@ -9,7 +9,6 @@
             fx:controller="sigmacine.ui.controller.AdminController"
             prefWidth="1200" prefHeight="720">
 
-    <!-- HEADER / BARRA SUPERIOR -->
     <top>
         <BorderPane style="-fx-background-color: #812d1eff;">
             <left>
@@ -27,15 +26,16 @@
         </BorderPane>
     </top>
 
-    <!-- SIDEBAR -->
     <left>
         <VBox spacing="10" style="-fx-padding:16; -fx-background-color:#111; -fx-pref-width:260;">
-            <Button text="Gestionar funciones"/>
+            <Button text="Gestionar funciones"
+                    onAction="#abrirGestionFunciones"
+                    style="-fx-background-color:#993726; -fx-text-fill:white; -fx-background-radius:10;"/>
+
             <Button text="Gestionar productos"/>
             <Button text="Reportes"/>
             <Separator/>
 
-            <!-- Películas -->
             <Button text="Gestionar película"
                     onAction="#abrirAgregarPelicula"
                     style="-fx-background-color:#993726; -fx-text-fill:white; -fx-background-radius:10;"/>
@@ -52,10 +52,8 @@
         </VBox>
     </left>
 
-    <!-- CONTENIDO: área vacía donde se cargan las vistas -->
     <center>
         <StackPane fx:id="contentArea" style="-fx-background-color: #000000ff; ">
-            <!-- Vacío por defecto -->
         </StackPane>
     </center>
 </BorderPane>

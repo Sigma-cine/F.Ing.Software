@@ -17,12 +17,13 @@ import sigmacine.infraestructura.persistencia.jdbc.CompraRepositoryJdbc;
 import sigmacine.aplicacion.service.CompraService;
 import sigmacine.aplicacion.service.CarritoService;
 import javafx.util.Callback;
-
+import sigmacine.dominio.repository.admi.FuncionAdminRepository;
 // Inyecciones de administrador
 import sigmacine.dominio.repository.admi.PeliculaAdminRepository;
+import sigmacine.infraestructura.persistencia.jdbc.admi.FuncionAdminRepositoryJdbc;
 import sigmacine.infraestructura.persistencia.jdbc.admi.PeliculaAdminRepositoryJdbc;
+import sigmacine.aplicacion.service.admi.GestionFuncionesService;
 import sigmacine.aplicacion.service.admi.GestionPeliculasService;
-
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -43,89 +44,79 @@ public class App extends Application {
         UsuarioRepository repo = new UsuarioRepositoryJdbc(db);
         LoginService loginService = new LoginService(repo);
         RegistroService registroService = new RegistroService(repo);
-        AuthFacade authFacade = new AuthFacade(loginService, registroService); 
+        AuthFacade authFacade = new AuthFacade(loginService, registroService);
 
+        ControladorControlador coordinador = new ControladorControlador(stage, authFacade);
 
-    ControladorControlador coordinador = new ControladorControlador(stage, authFacade);
+        Map<Class<?>, Object> container = new HashMap<>();
+        container.put(sigmacine.infraestructura.configDataBase.DatabaseConfig.class, db);
+        container.put(sigmacine.dominio.repository.UsuarioRepository.class, repo);
+        container.put(sigmacine.aplicacion.service.LoginService.class, loginService);
+        container.put(sigmacine.aplicacion.service.RegistroService.class, registroService);
+        container.put(sigmacine.aplicacion.facade.AuthFacade.class, authFacade);
 
-    // Build a simple service container to support controller instantiation (basic DI)
-    Map<Class<?>, Object> container = new HashMap<>();
-    container.put(sigmacine.infraestructura.configDataBase.DatabaseConfig.class, db);
-    container.put(sigmacine.dominio.repository.UsuarioRepository.class, repo);
-    container.put(sigmacine.aplicacion.service.LoginService.class, loginService);
-    container.put(sigmacine.aplicacion.service.RegistroService.class, registroService);
-    container.put(sigmacine.aplicacion.facade.AuthFacade.class, authFacade);
-    // repositories and services commonly used by controllers
-   /* var peliculaRepo = new PeliculaRepositoryJdbc(db);
-    container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
-    var compraRepo = new CompraRepositoryJdbc(db);
-    container.put(CompraRepositoryJdbc.class, compraRepo);
-    var compraService = new CompraService(compraRepo);
-    container.put(CompraService.class, compraService);
-    container.put(CarritoService.class, CarritoService.getInstance());*/
+        PeliculaRepositoryJdbc peliculaRepo = new PeliculaRepositoryJdbc(db);
+        container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
 
-PeliculaRepositoryJdbc peliculaRepo = new PeliculaRepositoryJdbc(db);
-container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
+        CompraRepositoryJdbc compraRepo = new CompraRepositoryJdbc(db);
+        container.put(CompraRepositoryJdbc.class, compraRepo);
 
-CompraRepositoryJdbc compraRepo = new CompraRepositoryJdbc(db);
-container.put(CompraRepositoryJdbc.class, compraRepo);
+        CompraService compraService = new CompraService(compraRepo);
+        container.put(CompraService.class, compraService);
 
-CompraService compraService = new CompraService(compraRepo);
-container.put(CompraService.class, compraService);
+        container.put(CarritoService.class, CarritoService.getInstance());
 
-container.put(CarritoService.class, CarritoService.getInstance());
-PeliculaAdminRepository adminRepo = new PeliculaAdminRepositoryJdbc(db);
-container.put(PeliculaAdminRepository.class, adminRepo);
+        PeliculaAdminRepository adminRepo = new PeliculaAdminRepositoryJdbc(db);
+        container.put(PeliculaAdminRepository.class, adminRepo);
 
-GestionPeliculasService gestionPeliculasService =new GestionPeliculasService(peliculaRepo, adminRepo);
-container.put(GestionPeliculasService.class, gestionPeliculasService);
+        GestionPeliculasService gestionPeliculasService = new GestionPeliculasService(peliculaRepo, adminRepo);
+        container.put(GestionPeliculasService.class, gestionPeliculasService);
 
-    
+        FuncionAdminRepository funcAdminRepo = new FuncionAdminRepositoryJdbc(db);
+        container.put(FuncionAdminRepository.class, funcAdminRepo);
 
-    // Controller factory: try to find a constructor whose parameter types are available in container
-    Callback<Class<?>, Object> controllerFactory = (Class<?> clazz) -> {
-        try {
-            for (Constructor<?> ctor : clazz.getConstructors()) {
-                Class<?>[] pts = ctor.getParameterTypes();
-                Object[] args = new Object[pts.length];
-                boolean ok = true;
-                for (int i = 0; i < pts.length; i++) {
-                    Object candidate = null;
-                    // search for a matching instance by assignable type
-                    for (Map.Entry<Class<?>, Object> e : container.entrySet()) {
-                        if (pts[i].isAssignableFrom(e.getKey())) {
-                            candidate = e.getValue();
-                            break;
+        GestionFuncionesService gestionFuncionesService = new GestionFuncionesService(funcAdminRepo);
+        container.put(GestionFuncionesService.class, gestionFuncionesService);
+
+        Callback<Class<?>, Object> controllerFactory = (Class<?> clazz) -> {
+            try {
+                for (Constructor<?> ctor : clazz.getConstructors()) {
+                    Class<?>[] pts = ctor.getParameterTypes();
+                    Object[] args = new Object[pts.length];
+                    boolean ok = true;
+                    for (int i = 0; i < pts.length; i++) {
+                        Object candidate = null;
+                        for (Map.Entry<Class<?>, Object> e : container.entrySet()) {
+                            if (pts[i].isAssignableFrom(e.getKey())) {
+                                candidate = e.getValue();
+                                break;
+                            }
                         }
+                        if (candidate == null) { ok = false; break; }
+                        args[i] = candidate;
                     }
-                    if (candidate == null) { ok = false; break; }
-                    args[i] = candidate;
+                    if (ok) return ctor.newInstance(args);
                 }
-                if (ok) {
-                    return ctor.newInstance(args);
-                }
+                return clazz.getDeclaredConstructor().newInstance();
+            } catch (Exception ex) {
+                throw new RuntimeException("No se pudo instanciar controlador: " + clazz.getName(), ex);
             }
-            // fallback to no-arg constructor
-            return clazz.getDeclaredConstructor().newInstance();
-        } catch (Exception ex) {
-            throw new RuntimeException("No se pudo instanciar controlador: " + clazz.getName(), ex);
-        }
-    };
+        };
 
-    // provide the factory to the coordinator so it applies to FXMLLoader instances
-    coordinador.setControllerFactory(controllerFactory);
-    try {
-        java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(sigmacine.ui.controller.ControladorControlador.class);
-        if (prefs.getBoolean("cityPopupShown", false)) {
-            prefs.remove("cityPopupShown");
-        }
-    } catch (Exception ignored) {}
-    sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
-    guest.setId(0);
-    guest.setEmail("");
-    guest.setNombre("Invitado");
-    coordinador.mostrarClienteHomeConPopup(guest);
+        coordinador.setControllerFactory(controllerFactory);
 
+        try {
+            java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(sigmacine.ui.controller.ControladorControlador.class);
+            if (prefs.getBoolean("cityPopupShown", false)) {
+                prefs.remove("cityPopupShown");
+            }
+        } catch (Exception ignored) {}
+
+        sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
+        guest.setId(0);
+        guest.setEmail("");
+        guest.setNombre("Invitado");
+        coordinador.mostrarClienteHomeConPopup(guest);
     }
 
     public static void main(String[] args) {
