@@ -33,6 +33,7 @@ public class MenuController implements Initializable {
     @FXML private GridPane gridMenu;
     @FXML private TextField txtBuscar;
     @FXML private Button btnVerCarrito;
+    @FXML private Button btnVerCombos;
 
     private UsuarioDTO usuario;
 
@@ -40,11 +41,28 @@ public class MenuController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         if (txtBuscar != null) txtBuscar.setOnAction(e -> loadProducts(txtBuscar.getText()));
         if (btnVerCarrito != null) btnVerCarrito.setOnAction(e -> toggleCarrito());
+        if (btnVerCombos != null) btnVerCombos.setOnAction(e -> showCombos());
         if (gridMenu != null) gridMenu.getStyleClass().add("menu-grid");
         loadProducts(null);
     }
 
     public void setUsuario(UsuarioDTO u) { this.usuario = u; }
+
+    private void showCombos() {
+        try {
+            javafx.stage.Stage stage = (javafx.stage.Stage) btnVerCombos.getScene().getWindow();
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/combos.fxml"));
+            Parent root = loader.load();
+            javafx.scene.Scene current = stage.getScene();
+            double w = current != null ? current.getWidth() : 1000;
+            double h = current != null ? current.getHeight() : 700;
+            stage.setScene(new javafx.scene.Scene(root, w, h));
+            stage.setTitle("Sigma Cine - Combos");
+            stage.setMaximized(true);
+        } catch (Exception ex) { 
+            ex.printStackTrace(); 
+        }
+    }
 
     private void toggleCarrito() {
         try {
@@ -108,6 +126,9 @@ public class MenuController implements Initializable {
     btnMinus.getStyleClass().add("qty-btn");
     btnPlus.getStyleClass().add("qty-btn");
     lblQty.getStyleClass().add("qty-label");
+    
+    btnMinus.setStyle("-fx-text-fill: #222222;");
+    btnPlus.setStyle("-fx-text-fill: #222222;");
     
     btnMinus.setOnAction(e -> {
         if (quantity.get() > 1) {

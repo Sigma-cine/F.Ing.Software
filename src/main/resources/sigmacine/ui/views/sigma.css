@@ -369,7 +369,6 @@
   -fx-prompt-text-fill: #666666 !important;
 }
 
-/* Quantity selector with +/- buttons */
 .qty-selector {
   -fx-alignment: center !important;
   -fx-spacing: 8 !important;
@@ -392,6 +391,10 @@
   -fx-min-width: 35 !important;
   -fx-pref-width: 35 !important;
   -fx-alignment: center !important;
+}
+
+.qty-btn .text {
+  -fx-fill: #222222 !important;
 }
 
 .qty-btn:hover {
@@ -442,4 +445,71 @@
   -fx-text-fill: #222222 !important;
 }
 
+/* ======================= ScrollBar Styling ======================= */
+.menu-scroll > .viewport {
+  -fx-background-color: transparent;
+}
 
+.menu-scroll .scroll-bar:vertical {
+  -fx-background-color: transparent;
+  -fx-pref-width: 12px;
+  -fx-background-radius: 6;
+}
+
+.menu-scroll .scroll-bar:vertical .track {
+  -fx-background-color: rgba(255, 255, 255, 0.1);
+  -fx-background-radius: 6;
+  -fx-border-color: transparent;
+}
+
+.menu-scroll .scroll-bar:vertical .thumb {
+  -fx-background-color: rgba(199, 122, 223, 0.6);
+  -fx-background-radius: 6;
+  -fx-background-insets: 0;
+}
+
+.menu-scroll .scroll-bar:vertical .thumb:hover {
+  -fx-background-color: rgba(199, 122, 223, 0.8);
+}
+
+.menu-scroll .scroll-bar:vertical .thumb:pressed {
+  -fx-background-color: rgba(199, 122, 223, 1.0);
+}
+
+.menu-scroll .scroll-bar:vertical .increment-button,
+.menu-scroll .scroll-bar:vertical .decrement-button {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+  -fx-pref-height: 0;
+}
+
+.menu-scroll .scroll-bar:vertical .increment-arrow,
+.menu-scroll .scroll-bar:vertical .decrement-arrow {
+  -fx-shape: "";
+  -fx-padding: 0;
+}
+
+/* ======================= Brand Separator ======================= */
+.brand-sep {
+  -fx-background-color: rgba(199, 122, 223, 0.5);
+  -fx-pref-height: 2;
+}
+
+/* ======================= Primary Button (Back/Volver) ======================= */
+.primary-btn {
+  -fx-background-color: #8b3026 !important;
+  -fx-text-fill: white !important;
+  -fx-background-radius: 20 !important;
+  -fx-padding: 10 24 !important;
+  -fx-font-size: 14px !important;
+  -fx-font-weight: bold !important;
+  -fx-cursor: hand;
+}
+
+.primary-btn:hover {
+  -fx-background-color: #a33d2f !important;
+}
+
+.primary-btn:pressed {
+  -fx-background-color: #721f19 !important;
+}
