@@ -9,6 +9,8 @@ import javafx.stage.Stage;
 import java.util.prefs.Preferences;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.facade.AuthFacade;
+import sigmacine.ui.controller.admin.AgregarSalaController;
+
 
 public class ControladorControlador {
 
@@ -215,4 +217,41 @@ public class ControladorControlador {
             throw new RuntimeException("Error cargando cliente_home con popup de ciudad", e);
         }
     }
+
+    public void mostrarAgregarSala() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/sigmacine/ui/views/Administrador/AgregarSala.fxml")
+            );
+            if (controllerFactory != null) {
+                loader.setControllerFactory(controllerFactory);
+            }
+
+            Parent root = loader.load();
+
+            // Obtener controlador y pasar coordinador si el controlador define ese método
+            AgregarSalaController controller = loader.getController();
+            try {
+                // Intentamos llamar setCoordinador si existe
+                java.lang.reflect.Method m = controller.getClass().getMethod("setCoordinador", ControladorControlador.class);
+                if (m != null) m.invoke(controller, this);
+            } catch (NoSuchMethodException ignore) {
+                // Si no existe, no pasa nada.
+            }
+
+            stage.setTitle("Sigma Cine - Agregar Sala");
+            javafx.scene.Scene current = stage.getScene();
+            double w = current != null ? current.getWidth() : 900;
+            double h = current != null ? current.getHeight() : 600;
+            stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
+            stage.setMaximized(true);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error cargando AgregarSala.fxml", e);
+        }
+    }
+
+
 }
