@@ -22,7 +22,7 @@ public class CarritoServiceTest {
     }
 
     @Test
-    public void addAndRemoveItem_and_getTotal() {
+    public void agregarEliminarProducto() {
         CompraProductoDTO it = new CompraProductoDTO(1L, "Palomitas", 2, new BigDecimal("5.50"));
         carrito.addItem(it);
         assertEquals(1, carrito.getItems().size());
@@ -33,7 +33,7 @@ public class CarritoServiceTest {
     }
 
     @Test
-    public void addBoleto_adds_item_and_throws_on_null() {
+    public void agregarBoleto() {
         Boleto b = new Boleto(10L, "PeliculaX", "Sala1", "19:00", "A1", 1500);
         carrito.addBoleto(b);
         assertEquals(1, carrito.getItems().size());
@@ -42,7 +42,7 @@ public class CarritoServiceTest {
     }
 
     @Test
-    public void addProducto_adds_item_and_throws_on_null() {
+    public void agregarProducto() {
         Producto p = new Producto(2L, "Gaseosa", 450);
         carrito.addProducto(p);
         assertEquals(1, carrito.getItems().size());
@@ -51,7 +51,7 @@ public class CarritoServiceTest {
     }
 
     @Test
-    public void clear_resets_state() {
+    public void limpiarCarrito() {
         carrito.addItem(new CompraProductoDTO(1L, "X", 1, new BigDecimal("1.00")));
         carrito.clear();
         assertEquals(0, carrito.getItems().size());

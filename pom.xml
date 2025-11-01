@@ -10,7 +10,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>17</java.version>
+    <java.version>21</java.version>
     <javafx.version>21.0.4</javafx.version>
     <!-- Cambia según tu SO: win | linux | mac | mac-aarch64 -->
     <javafx.platform>win</javafx.platform>
@@ -68,13 +68,13 @@
 
   <build>
     <plugins>
-      <!-- Java 17 -->
+      <!-- Java 21 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>17</release>
+          <release>21</release>
         </configuration>
       </plugin>
 
@@ -127,18 +127,11 @@
       </plugin>
 
              
-    <!-- JUnit Platform Surefire Provider.-->
-             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.0.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
+  <!-- Use modern Surefire to run JUnit 5 tests -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
+      </plugin>
 
     <!-- Para el % de coverage de las pruebas .-->
              <plugin>
