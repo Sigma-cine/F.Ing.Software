@@ -146,7 +146,64 @@ public class ClienteController {
         }
 
     if (btnCartelera!= null) btnCartelera.setOnAction(e -> mostrarCartelera());
-    if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
+    if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {
+        try {
+            java.net.URL url = getClass().getResource("/sigmacine/ui/views/menu.fxml");
+            if (url == null) {
+                if (content != null) content.getChildren().setAll(new Label("Error: No se encontró menu.fxml"));
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(url);
+            Parent menuView = loader.load();
+
+            try {
+                Object ctrl = loader.getController();
+                if (ctrl != null) {
+                    try {
+                        var m = ctrl.getClass().getMethod("setUsuario", sigmacine.aplicacion.data.UsuarioDTO.class);
+                        if (m != null) m.invoke(ctrl, this.usuario);
+                    } catch (NoSuchMethodException ignore) {}
+                    try {
+                        var m2 = ctrl.getClass().getMethod("setCoordinador", sigmacine.ui.controller.ControladorControlador.class);
+                        if (m2 != null) m2.invoke(ctrl, this.coordinador);
+                    } catch (NoSuchMethodException ignore) {}
+                }
+            } catch (Exception ignore) {}
+
+            Stage stage = null;
+            try { stage = (Stage) (content != null && content.getScene() != null ? content.getScene().getWindow() : (btnCartelera != null && btnCartelera.getScene() != null ? (Stage) btnCartelera.getScene().getWindow() : null)); } catch (Exception ignore) {}
+            if (stage == null) {
+                // Fallback: embed the menu view into the content stack if no stage/window is available
+                if (content != null) {
+                    content.getChildren().setAll(menuView);
+                    return;
+                }
+                return;
+            }
+
+            Scene current = stage.getScene();
+            double w = current != null ? current.getWidth() : 900;
+            double h = current != null ? current.getHeight() : 600;
+            stage.setScene(new Scene(menuView, w > 0 ? w : 900, h > 0 ? h : 600));
+            stage.setTitle("Sigma Cine - Confitería");
+            stage.setMaximized(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            if (content != null) {
+                javafx.scene.control.Label lab = new javafx.scene.control.Label("Error: No se pudo cargar la vista de confitería. Detalles abajo:");
+                java.io.StringWriter sw = new java.io.StringWriter();
+                ex.printStackTrace(new java.io.PrintWriter(sw));
+                javafx.scene.control.TextArea ta = new javafx.scene.control.TextArea(sw.toString());
+                ta.setEditable(false);
+                ta.setWrapText(true);
+                ta.setPrefRowCount(20);
+                ta.setStyle("-fx-control-inner-background: #111; -fx-text-fill: #fff;");
+                javafx.scene.layout.VBox box = new javafx.scene.layout.VBox(8, lab, ta);
+                box.setStyle("-fx-padding:12;");
+                content.getChildren().setAll(box);
+            }
+        }
+    });
     if (btnSigmaCard != null) btnSigmaCard.setOnAction(e -> onSigmaCardTop());
     if (btnCart != null) btnCart.setOnAction(e -> toggleCarritoOverlay());
         if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> onLogout());

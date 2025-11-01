@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="sigmacine.ui.controller.CombosController" styleClass="page-root" stylesheets="@sigma.css" prefWidth="1280" prefHeight="720">
+    <top>
+        <VBox spacing="12" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="16" right="24" bottom="8" left="24" />
+            </padding>
+            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
+                <Button text="← Volver" fx:id="btnVolver" styleClass="primary-btn" />
+                <Label text="Nuestros Combos" styleClass="section-title" />
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField fx:id="txtBuscar" promptText="Buscar combo..." styleClass="search" prefWidth="250" />
+                <Button text="Ver carrito" fx:id="btnVerCarrito" styleClass="primary-btn" />
+            </HBox>
+            <Separator styleClass="brand-sep" />
+        </VBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="menu-scroll" vbarPolicy="ALWAYS">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="20">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40" />
+                    </padding>
+                    <GridPane fx:id="gridCombos" hgap="32" vgap="32" alignment="TOP_CENTER">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="540" prefWidth="540" />
+                            <ColumnConstraints minWidth="540" prefWidth="540" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

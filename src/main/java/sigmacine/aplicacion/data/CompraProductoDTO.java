@@ -9,6 +9,7 @@ public class CompraProductoDTO {
     private final String nombre;
     private final int cantidad;
     private final BigDecimal precioUnitario;
+    private String sabor; // opcional: sabor/variante seleccionada
 
     public CompraProductoDTO(Long productoId, String nombre, int cantidad, BigDecimal precioUnitario) {
         this.productoId = productoId;
@@ -17,6 +18,16 @@ public class CompraProductoDTO {
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
+    }
+
+    public CompraProductoDTO(Long productoId, String nombre, int cantidad, BigDecimal precioUnitario, String sabor) {
+        this.productoId = productoId;
+        this.funcionId = null;
+        this.asiento = null;
+        this.nombre = nombre;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
+        this.sabor = sabor;
     }
 
     public CompraProductoDTO(Long productoId, Long funcionId, String nombre, int cantidad, BigDecimal precioUnitario) {
@@ -44,6 +55,7 @@ public class CompraProductoDTO {
     public String getNombre() { return nombre; }
     public int getCantidad() { return cantidad; }
     public BigDecimal getPrecioUnitario() { return precioUnitario; }
+    public String getSabor() { return sabor; }
 
     @Override
     public String toString() {

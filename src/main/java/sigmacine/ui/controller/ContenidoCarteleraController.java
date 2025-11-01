@@ -13,19 +13,25 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.web.WebView;
+import javafx.scene.web.WebEngine;
 import javafx.stage.Modality;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.data.FuncionDisponibleDTO;
 import sigmacine.dominio.entity.Pelicula;
+import sigmacine.dominio.entity.PeliculaTrailer;
 import sigmacine.dominio.repository.FuncionRepository;
+import sigmacine.dominio.repository.PeliculaTrailerRepository;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.FuncionRepositoryJdbc;
+import sigmacine.infraestructura.persistencia.jdbc.PeliculaTrailerRepositoryJdbc;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
 import sigmacine.aplicacion.service.VerHistorialService;
@@ -66,6 +72,7 @@ public class ContenidoCarteleraController {
     @FXML private Button btnContinuar;
 
     @FXML private StackPane trailerContainer;
+    @FXML private HBox trailerButtons;
     @FXML private ScrollPane spCenter;
     @FXML private VBox detalleRoot;
     @FXML private HBox dayTabs;
@@ -79,9 +86,9 @@ public class ContenidoCarteleraController {
 
     @FXML
     private void initialize() {
-        if (trailerContainer != null && trailerContainer.getChildren().isEmpty()) {
-            trailerContainer.setMouseTransparent(true);
-            trailerContainer.setPickOnBounds(false);
+        if (trailerContainer != null) {
+            trailerContainer.setMouseTransparent(false);
+            trailerContainer.setPickOnBounds(true);
         }
         if (spCenter != null) spCenter.setPannable(false);
 
@@ -340,13 +347,23 @@ public class ContenidoCarteleraController {
         if (lblReparto != null) lblReparto.setText(safe(p.getReparto(), ""));
         if (txtSinopsis != null) txtSinopsis.setText(safe(p.getSinopsis()));
 
+        // Cargar trailers
+        cargarTrailers(p.getId());
+
+        // Cargar funciones
+        cargarFunciones();
+    }
+
+    private void cargarFunciones() {
+        if (pelicula == null) return;
+        
         // Cargar funciones por ciudad/sede/sala; tabs por fechas disponibles
         try {
             if (panelFunciones != null) {
                 panelFunciones.getChildren().clear();
                 DatabaseConfig db = new DatabaseConfig();
                 FuncionRepository repo = new FuncionRepositoryJdbc(db);
-                List<FuncionDisponibleDTO> funciones = repo.listarPorPelicula(p.getId());
+                List<FuncionDisponibleDTO> funciones = repo.listarPorPelicula(pelicula.getId());
                 String city = Session.getSelectedCity();
                 if (city != null && !city.isBlank()) {
                     funciones = funciones.stream()
@@ -440,8 +457,10 @@ public class ContenidoCarteleraController {
                 lblHora.setStyle("-fx-text-fill:#aaaaaa;-fx-font-size:12;-fx-font-weight:bold;");
                 sedeBox.getChildren().add(lblHora);
 
-                // Contenedor centrado por sede
-                HBox fila = new HBox(8);
+                // Contenedor que se envuelve cuando no hay espacio suficiente
+                javafx.scene.layout.FlowPane fila = new javafx.scene.layout.FlowPane();
+                fila.setHgap(8);
+                fila.setVgap(4);
                 fila.setAlignment(Pos.CENTER_LEFT);
                 fila.setStyle("-fx-background-color:transparent;");
 
@@ -598,7 +617,7 @@ public class ContenidoCarteleraController {
             final int tabIndex = idx;
             tab.setOnAction(e -> {
                 setSelectedDay(d);
-                try { setPelicula(this.pelicula); } catch (Exception ignore) {}
+                cargarFunciones(); // Solo actualizar funciones, no toda la película
                 updateDayTabStyles(tabIndex);
             });
             dayTabs.getChildren().add(tab);
@@ -634,5 +653,157 @@ public class ContenidoCarteleraController {
         } catch (Throwable t) {
             return false;
         }
+    }
+
+    private void cargarTrailers(int peliculaId) {
+        try {
+            if (trailerContainer == null) return;
+            
+            // Limpiar contenido anterior
+            trailerContainer.getChildren().clear();
+            if (trailerButtons != null) {
+                trailerButtons.getChildren().clear();
+            }
+            
+            // Obtener trailers de la base de datos
+            DatabaseConfig db = new DatabaseConfig();
+            PeliculaTrailerRepository trailerRepo = new PeliculaTrailerRepositoryJdbc(db);
+            List<PeliculaTrailer> trailers = trailerRepo.obtenerTrailersPorPelicula(peliculaId);
+            
+            String trailerUrl = null;
+            
+            if (!trailers.isEmpty()) {
+                // Usar solo el primer trailer de la lista
+                trailerUrl = trailers.get(0).getUrl();
+            } else if (pelicula != null && pelicula.getTrailer() != null && !pelicula.getTrailer().trim().isEmpty()) {
+                // Si no hay trailers en la tabla PELICULA_TRAILER, usar el trailer principal de la película
+                trailerUrl = pelicula.getTrailer();
+            }
+            
+            if (trailerUrl != null && !trailerUrl.trim().isEmpty()) {
+                cargarTrailerEnWebView(trailerUrl);
+            } else {
+                mostrarMensajeNoTrailer();
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensajeNoTrailer();
+        }
+    }
+    
+    private void cargarTrailerEnWebView(String url) {
+        try {
+            if (trailerContainer == null) return;
+            
+            trailerContainer.getChildren().clear();
+            
+            // WebView súper simple - configuración mínima
+            javafx.scene.web.WebView webView = new javafx.scene.web.WebView();
+            webView.setPrefSize(600, 360);
+            
+            // Convertir URL y cargar directamente
+            String embedUrl = convertirUrlYouTubeAEmbed(url);
+            webView.getEngine().load(embedUrl);
+            
+            trailerContainer.getChildren().add(webView);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensajeError();
+        }
+    }
+    
+    private String extraerVideoIdSimple(String url) {
+        if (url == null) return null;
+        try {
+            if (url.contains("watch?v=")) {
+                int index = url.indexOf("watch?v=") + 8;
+                String id = url.substring(index);
+                if (id.contains("&")) {
+                    id = id.substring(0, id.indexOf("&"));
+                }
+                return id;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    private void mostrarMensajeNoTrailer() {
+        trailerContainer.getChildren().clear();
+        Label lblNoTrailer = new Label("No hay trailer disponible para esta película");
+        lblNoTrailer.setStyle("-fx-text-fill: #999; -fx-font-size: 14;");
+        trailerContainer.getChildren().add(lblNoTrailer);
+    }
+    
+    private void mostrarMensajeError() {
+        trailerContainer.getChildren().clear();
+        Label lblError = new Label("Error al cargar el trailer");
+        lblError.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 14;");
+        trailerContainer.getChildren().add(lblError);
+    }
+    
+    private String convertirUrlYouTubeAEmbed(String url) {
+        if (url == null || url.trim().isEmpty()) return url;
+        
+        try {
+            // Patrones comunes de URL de YouTube
+            if (url.contains("youtube.com/watch?v=")) {
+                String videoId = url.substring(url.indexOf("v=") + 2);
+                if (videoId.contains("&")) {
+                    videoId = videoId.substring(0, videoId.indexOf("&"));
+                }
+                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+            } else if (url.contains("youtu.be/")) {
+                String videoId = url.substring(url.lastIndexOf("/") + 1);
+                if (videoId.contains("?")) {
+                    videoId = videoId.substring(0, videoId.indexOf("?"));
+                }
+                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+            } else if (url.contains("youtube.com/embed/")) {
+                // Si ya está en formato embed, agregar parámetros
+                if (url.contains("?")) {
+                    return url + "&controls=1&modestbranding=1&rel=0&enablejsapi=1";
+                } else {
+                    return url + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return url; // Devolver URL original si no se puede convertir
+    }
+    
+    private String extraerVideoId(String url) {
+        if (url == null || url.trim().isEmpty()) return null;
+        
+        try {
+            if (url.contains("youtube.com/watch?v=")) {
+                String videoId = url.substring(url.indexOf("v=") + 2);
+                if (videoId.contains("&")) {
+                    videoId = videoId.substring(0, videoId.indexOf("&"));
+                }
+                return videoId;
+            } else if (url.contains("youtu.be/")) {
+                String videoId = url.substring(url.lastIndexOf("/") + 1);
+                if (videoId.contains("?")) {
+                    videoId = videoId.substring(0, videoId.indexOf("?"));
+                }
+                return videoId;
+            } else if (url.contains("youtube.com/embed/")) {
+                String videoId = url.substring(url.indexOf("/embed/") + 7);
+                if (videoId.contains("?")) {
+                    videoId = videoId.substring(0, videoId.indexOf("?"));
+                }
+                return videoId;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return null;
     }
 }
