@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="sigmacine.ui.controller.BarraController"
+      fx:id="barra"
+      alignment="CENTER_LEFT"
+      spacing="12"
+      styleClass="topbar"
+      style="-fx-background-color: #8B2E21; -fx-padding: 10 16 10 16;">
+
+    <children>
+
+        <!-- LOGO -->
+        <ImageView
+                fx:id="logoImage"
+                fitHeight="40.0"
+                preserveRatio="true"
+                onMouseClicked="#onLogoClick">
+            <image>
+                <Image url="@/Images/logo.png" />
+            </image>
+        </ImageView>
+
+        <!-- Botones principales -->
+        <Button fx:id="btnCartelera"
+                styleClass="toplink"
+                text="Cartelera" />
+
+        <Button fx:id="btnConfiteria"
+                styleClass="toplink"
+                text="Confitería" />
+
+        <Button fx:id="btnSigmaCard"
+                styleClass="toplink"
+                text="Sigma Card" />
+
+        <Region HBox.hgrow="ALWAYS" />
+
+        <!-- Campo de búsqueda -->
+        <StackPane>
+            <TextField fx:id="txtBuscar"
+                       prefWidth="200"
+                       promptText="Buscar"
+                       styleClass="search" />
+            <Button fx:id="btnBuscar"
+                    styleClass="toplink"
+                    StackPane.alignment="CENTER_RIGHT">
+                <graphic>
+                    <ImageView fitWidth="18" fitHeight="18" preserveRatio="true">
+                        <image>
+                            <Image url="@/Images/search.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </StackPane>
+
+        <!-- Carrito -->
+        <Button fx:id="btnCart" styleClass="toplink">
+            <graphic>
+                <ImageView fitWidth="24" fitHeight="24" preserveRatio="true">
+                    <image>
+                        <Image url="@/Images/cart.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </Button>
+
+        <!-- Registrarse -->
+        <Button fx:id="btnRegistrarse"
+                styleClass="toplink"
+                text="Registrarse" />
+
+        <!-- StackPane con Iniciar sesión y Menú usuario -->
+        <StackPane fx:id="stackSesion" alignment="CENTER">
+            <Button fx:id="btnIniciarSesion"
+                    styleClass="toplink"
+                    text="Iniciar sesión" />
+
+            <MenuButton fx:id="menuPerfil"
+                        styleClass="icon-btn"
+                        visible="false">
+                <graphic>
+                    <ImageView fitWidth="24" fitHeight="24" preserveRatio="true">
+                        <image>
+                            <Image url="@/Images/user.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <items>
+                    <MenuItem text="Mi Cuenta" />
+                    <MenuItem text="Buscar Tiquetes" />
+                    <MenuItem text="Confitería" />
+                    <MenuItem text="Promociones" />
+                    <MenuItem text="Información Personal" />
+                    <MenuItem text="SigmaCard" />
+                    <MenuItem fx:id="miHistorial" text="Historial de compras" />
+                    <MenuItem text="Notificaciones" />
+                    <MenuItem text="Cartelera" />
+                    <SeparatorMenuItem />
+                    <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
+                </items>
+            </MenuButton>
+        </StackPane>
+
+    </children>
+</HBox>
