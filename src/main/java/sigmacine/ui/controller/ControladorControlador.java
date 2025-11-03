@@ -7,6 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
 import javafx.util.Callback;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.facade.AuthFacade;
@@ -35,6 +36,68 @@ public class ControladorControlador {
     public static ControladorControlador getInstance() { return instance; }
 
     public AuthFacade getAuthFacade() { return this.authFacade; }
+
+    public void mostrarClienteHomeConPopup(UsuarioDTO usuario) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
+            if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
+            Parent root = loader.load();
+
+            ClienteController cliente = loader.getController();
+            cliente.init(usuario);
+            cliente.setCoordinador(this);
+
+            configurarBarraEnVista(root);
+
+            javafx.scene.Scene current = stage.getScene();
+            double w = current != null ? current.getWidth() : 900;
+            double h = current != null ? current.getHeight() : 600;
+            stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
+            stage.setMaximized(true);
+            stage.setTitle("Sigma Cine - Cliente");
+            stage.show();
+
+            // MOSTRAR EL POPUP DE CIUDAD ENCIMA DE LA VISTA PRINCIPAL
+            mostrarPopupCiudad(usuario);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error cargando cliente_home", e);
+        }
+    }
+
+    private void mostrarPopupCiudad(UsuarioDTO usuario) {
+        try {
+            // Cargar el popup de ciudad existente
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/ciudad.fxml"));
+            if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
+            Parent popupRoot = loader.load();
+            
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.initOwner(stage); // El owner es la ventana principal
+            popupStage.setTitle("Seleccionar Ciudad");
+            popupStage.setScene(new Scene(popupRoot));
+            popupStage.setResizable(false);
+            
+            // Configurar el controlador del popup
+            Object controller = loader.getController();
+            if (controller instanceof CiudadController) {
+                CiudadController ciudadController = (CiudadController) controller;
+                ciudadController.setOnCiudadSelected(ciudad -> {
+                    // Cuando se selecciona una ciudad, actualizar la sesión
+                    sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
+                    popupStage.close();
+                });
+            }
+            
+            popupStage.showAndWait();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Si falla el popup, usar ciudad por defecto
+            sigmacine.aplicacion.session.Session.setSelectedCity("Bogotá");
+        }
+    }
 
     public void mostrarLogin() {
         try {
@@ -290,31 +353,6 @@ public class ControladorControlador {
             stage.show();
         } catch (Exception e) {
             throw new RuntimeException("Error cargando mi_cuenta.fxml", e);
-        }
-    }
-
-    public void mostrarClienteHomeConPopup(UsuarioDTO usuario) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-            if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
-            Parent root = loader.load();
-
-            ClienteController cliente = loader.getController();
-            cliente.init(usuario);
-            cliente.setCoordinador(this);
-
-            configurarBarraEnVista(root);
-
-            javafx.scene.Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 900;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
-            stage.setMaximized(true);
-            stage.setTitle("Sigma Cine - Cliente");
-            stage.show();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error cargando cliente_home", e);
         }
     }
 

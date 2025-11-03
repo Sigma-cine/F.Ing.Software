@@ -60,9 +60,15 @@ public class ClienteController {
 
     public void init(UsuarioDTO usuario) { 
         this.usuario = usuario;
+        
+        // Usar la ciudad de la sesión si está disponible
+        String ciudad = sigmacine.aplicacion.session.Session.getSelectedCity();
+        if (ciudad != null && !ciudad.isEmpty()) {
+            this.ciudadSeleccionada = ciudad;
+        }
+        
         esperarYCargarPeliculas();
     }
-
     public void init(UsuarioDTO usuario, String ciudad) {
         this.usuario = usuario;
         this.ciudadSeleccionada = ciudad;
