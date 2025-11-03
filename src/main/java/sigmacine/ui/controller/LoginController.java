@@ -28,6 +28,10 @@ public class LoginController {
 
     @FXML
     private void initialize() {
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("login");
+        }
         if (loginButton != null) loginButton.setOnAction(e -> { onLogin(); });
         if (registrarLink != null) registrarLink.setOnAction(e -> { if (coordinador != null) coordinador.mostrarRegistro(); });
     }

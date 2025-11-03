@@ -513,3 +513,36 @@
 .primary-btn:pressed {
   -fx-background-color: #721f19 !important;
 }
+
+.user-menu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+.user-menu-btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.user-menu-btn:showing {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.user-menu-btn .arrow-button {
+    -fx-padding: 0 0 0 8;
+    -fx-background-color: transparent;
+}
+
+.user-menu-btn .arrow-button .arrow {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+}
+
+/* Eliminar cualquier borde o sombra */
+.user-menu-btn .label {
+    -fx-text-fill: white;
+}

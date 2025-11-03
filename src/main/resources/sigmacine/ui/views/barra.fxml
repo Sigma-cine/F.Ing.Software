@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <HBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -72,42 +73,47 @@
             </graphic>
         </Button>
 
-        <!-- Registrarse -->
+        <!-- Registrarse - SIEMPRE VISIBLE pero opaco con sesión -->
         <Button fx:id="btnRegistrarse"
                 styleClass="toplink"
                 text="Registrarse" />
 
-        <!-- StackPane con Iniciar sesión y Menú usuario -->
-        <StackPane fx:id="stackSesion" alignment="CENTER">
-            <Button fx:id="btnIniciarSesion"
-                    styleClass="toplink"
-                    text="Iniciar sesión" />
+        <!-- Iniciar sesión -->
+        <Button fx:id="btnIniciarSesion"
+                styleClass="toplink"
+                text="Iniciar sesión" />
 
-            <MenuButton fx:id="menuPerfil"
-                        styleClass="icon-btn"
-                        visible="false">
-                <graphic>
-                    <ImageView fitWidth="24" fitHeight="24" preserveRatio="true">
+        <!-- MenuButton ÚNICO transparente que incluye ícono + nombre completo del usuario -->
+        <MenuButton fx:id="menuUsuario"
+                    styleClass="user-menu-btn"
+                    visible="false"
+                    style="-fx-background-color: transparent; -fx-padding: 8 12 8 8;">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <ImageView fitWidth="20" fitHeight="20" preserveRatio="true">
                         <image>
                             <Image url="@/Images/user.png" />
                         </image>
                     </ImageView>
-                </graphic>
-                <items>
-                    <MenuItem text="Mi Cuenta" />
-                    <MenuItem text="Buscar Tiquetes" />
-                    <MenuItem text="Confitería" />
-                    <MenuItem text="Promociones" />
-                    <MenuItem text="Información Personal" />
-                    <MenuItem text="SigmaCard" />
-                    <MenuItem fx:id="miHistorial" text="Historial de compras" />
-                    <MenuItem text="Notificaciones" />
-                    <MenuItem text="Cartelera" />
-                    <SeparatorMenuItem />
-                    <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
-                </items>
-            </MenuButton>
-        </StackPane>
+                    <Label fx:id="lblNombreUsuario" 
+                           style="-fx-text-fill: white; -fx-font-size: 14px;"
+                           text="Usuario" />
+                </HBox>
+            </graphic>
+            <items>
+                <MenuItem text="Mi Cuenta" />
+                <MenuItem text="Buscar Tiquetes" />
+                <MenuItem text="Confitería" />
+                <MenuItem text="Promociones" />
+                <MenuItem text="Información Personal" />
+                <MenuItem text="SigmaCard" />
+                <MenuItem fx:id="miHistorial" text="Historial de compras" />
+                <MenuItem text="Notificaciones" />
+                <MenuItem text="Cartelera" />
+                <SeparatorMenuItem />
+                <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
+            </items>
+        </MenuButton>
 
     </children>
 </HBox>

@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.geometry.Side;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
@@ -21,40 +20,187 @@ public class BarraController {
     @FXML private Button btnBuscar;
     @FXML private Button btnCart;
     @FXML private Button btnRegistrarse;
-    @FXML private StackPane stackSesion;
     @FXML private Button btnIniciarSesion;
-    @FXML private MenuButton menuPerfil;
+    
+    // MenuButton único que incluye ícono + nombre
+    @FXML private MenuButton menuUsuario;
+    @FXML private Label lblNombreUsuario;
+    
     @FXML private MenuItem miHistorial;
     @FXML private MenuItem miCerrarSesion;
 
     private ContextMenu carritoDropdown;
+    private static BarraController instance;
 
     @FXML
     public void initialize() {
+        instance = this;
         configurarEventos();
         actualizarEstadoSesion();
         configurarCarritoDropdown();
     }
 
+    public static BarraController getInstance() {
+        return instance;
+    }
+
     private void configurarEventos() {
         logoImage.setOnMouseClicked(this::onLogoClick);
 
-        btnCartelera.setOnAction(e -> navegarACartelera());
-        btnConfiteria.setOnAction(e -> navegarAConfiteria());
-        btnSigmaCard.setOnAction(e -> navegarASigmaCard());
+        btnCartelera.setOnAction(e -> {
+            navegarACartelera();
+            marcarBotonActivo("cartelera");
+        });
+        
+        btnConfiteria.setOnAction(e -> {
+            navegarAConfiteria();
+            marcarBotonActivo("confiteria");
+        });
+        
+        btnSigmaCard.setOnAction(e -> {
+            navegarASigmaCard();
+            marcarBotonActivo("sigmacard");
+        });
 
         btnBuscar.setOnAction(e -> realizarBusqueda());
         txtBuscar.setOnAction(e -> realizarBusqueda());
 
         btnCart.setOnAction(e -> navegarACarrito());
 
-        btnRegistrarse.setOnAction(e -> navegarARegistro());
-        btnIniciarSesion.setOnAction(e -> navegarALogin());
+        btnRegistrarse.setOnAction(e -> {
+            if (!Session.isLoggedIn()) {
+                navegarARegistro();
+                marcarBotonActivo("registro");
+            }
+        });
+        
+        btnIniciarSesion.setOnAction(e -> {
+            if (Session.isLoggedIn()) {
+                // Ya no navega a Mi Cuenta, el menú se abre al hacer clic
+            } else {
+                navegarALogin();
+                marcarBotonActivo("login");
+            }
+        });
 
         miCerrarSesion.setOnAction(e -> cerrarSesion());
         miHistorial.setOnAction(e -> navegarAHistorial());
         
-        configurarMenuPerfil();
+        configurarMenuUsuario();
+    }
+
+    private void configurarMenuUsuario() {
+        for (MenuItem item : menuUsuario.getItems()) {
+            if (item instanceof SeparatorMenuItem) continue;
+            
+            if (item != miHistorial && item != miCerrarSesion) {
+                item.setOnAction(e -> manejarItemMenu(item.getText()));
+            }
+        }
+    }
+
+    private void manejarItemMenu(String textoItem) {
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador == null) return;
+
+        switch (textoItem) {
+            case "Mi Cuenta":
+                coordinador.mostrarMiCuenta();
+                break;
+            case "Buscar Tiquetes":
+                coordinador.mostrarCartelera();
+                marcarBotonActivo("cartelera");
+                break;
+            case "Confitería":
+                coordinador.mostrarConfiteria();
+                marcarBotonActivo("confiteria");
+                break;
+            case "Promociones":
+                mostrarMensajeProximamente("Promociones");
+                break;
+            case "Información Personal":
+                coordinador.mostrarMiCuenta();
+                break;
+            case "SigmaCard":
+                coordinador.mostrarSigmaCard();
+                marcarBotonActivo("sigmacard");
+                break;
+            case "Historial de compras":
+                coordinador.mostrarHistorialCompras();
+                break;
+            case "Notificaciones":
+                mostrarMensajeProximamente("Notificaciones");
+                break;
+            case "Cartelera":
+                coordinador.mostrarCartelera();
+                marcarBotonActivo("cartelera");
+                break;
+        }
+    }
+
+    public void marcarBotonActivo(String botonId) {
+        resetearEstilosBotones();
+        
+        switch (botonId) {
+            case "cartelera":
+                aplicarEstiloActivo(btnCartelera);
+                break;
+            case "confiteria":
+                aplicarEstiloActivo(btnConfiteria);
+                break;
+            case "sigmacard":
+                aplicarEstiloActivo(btnSigmaCard);
+                break;
+            case "login":
+                aplicarEstiloActivo(btnIniciarSesion);
+                break;
+            case "registro":
+                if (!Session.isLoggedIn()) {
+                    aplicarEstiloActivo(btnRegistrarse);
+                }
+                break;
+        }
+    }
+
+    private void aplicarEstiloActivo(Button boton) {
+        if (boton != null) {
+            boton.setStyle("-fx-background-color: rgba(255, 255, 255, 0.3); " +
+                          "-fx-text-fill: white; " +
+                          "-fx-border-radius: 4px; " +
+                          "-fx-background-radius: 4px; " +
+                          "-fx-padding: 8 12 8 12;");
+        }
+        aplicarEstiloRegistrarse();
+    }
+
+    private void resetearEstilosBotones() {
+        Button[] botones = {btnCartelera, btnConfiteria, btnSigmaCard, btnIniciarSesion};
+        
+        for (Button boton : botones) {
+            if (boton != null) {
+                boton.setStyle("-fx-background-color: transparent; " +
+                              "-fx-text-fill: white; " +
+                              "-fx-padding: 8 12 8 12;");
+            }
+        }
+        
+        aplicarEstiloRegistrarse();
+    }
+
+    private void aplicarEstiloRegistrarse() {
+        if (Session.isLoggedIn()) {
+            // Cuando hay sesión: botón OPACO pero VISIBLE
+            btnRegistrarse.setStyle("-fx-background-color: transparent; " +
+                                   "-fx-text-fill: rgba(255, 255, 255, 0.5); " +
+                                   "-fx-padding: 8 12 8 12;");
+            btnRegistrarse.setDisable(true);
+        } else {
+            // Cuando no hay sesión: botón normal
+            btnRegistrarse.setStyle("-fx-background-color: transparent; " +
+                                   "-fx-text-fill: white; " +
+                                   "-fx-padding: 8 12 8 12;");
+            btnRegistrarse.setDisable(false);
+        }
     }
 
     private void configurarCarritoDropdown() {
@@ -62,11 +208,11 @@ public class BarraController {
         carritoDropdown.setStyle("-fx-pref-width: 300; -fx-padding: 10;");
         
         Label titulo = new Label("Carrito de Compras");
-        titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 14; -fx-padding: 5 0 10 0;");
+        titulo.setStyle("-fx-font-size: 14; -fx-padding: 5 0 10 0;");
         
         Separator separator = new Separator();
         
-        Label vacio = new Label("🛒 Tu carrito está vacío");
+        Label vacio = new Label("Tu carrito está vacío");
         vacio.setStyle("-fx-padding: 15 0; -fx-text-fill: #666; -fx-alignment: center;");
         
         Button btnVerCarrito = new Button("Ver carrito completo");
@@ -87,51 +233,6 @@ public class BarraController {
         botonItem.setHideOnClick(false);
         
         carritoDropdown.getItems().addAll(tituloItem, separatorItem, vacioItem, botonItem);
-    }
-
-    private void configurarMenuPerfil() {
-        for (MenuItem item : menuPerfil.getItems()) {
-            if (item instanceof SeparatorMenuItem) continue;
-            
-            if (item != miHistorial && item != miCerrarSesion) {
-                item.setOnAction(e -> manejarItemMenu(item.getText()));
-            }
-        }
-    }
-
-    private void manejarItemMenu(String textoItem) {
-        ControladorControlador coordinador = ControladorControlador.getInstance();
-        if (coordinador == null) return;
-
-        switch (textoItem) {
-            case "Mi Cuenta":
-                coordinador.mostrarMiCuenta();
-                break;
-            case "Buscar Tiquetes":
-                coordinador.mostrarCartelera();
-                break;
-            case "Confitería":
-                coordinador.mostrarConfiteria();
-                break;
-            case "Promociones":
-                mostrarMensajeProximamente("Promociones");
-                break;
-            case "Información Personal":
-                coordinador.mostrarMiCuenta();
-                break;
-            case "SigmaCard":
-                coordinador.mostrarSigmaCard();
-                break;
-            case "Historial de compras":
-                coordinador.mostrarHistorialCompras();
-                break;
-            case "Notificaciones":
-                mostrarMensajeProximamente("Notificaciones");
-                break;
-            case "Cartelera":
-                coordinador.mostrarCartelera();
-                break;
-        }
     }
 
     private void navegarACartelera() {
@@ -189,11 +290,19 @@ public class BarraController {
         }
     }
 
+    private void navegarAMiCuenta() {
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) {
+            coordinador.mostrarMiCuenta();
+        }
+    }
+
     @FXML
     private void onLogoClick(MouseEvent event) {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarPaginaInicial();
+            resetearEstilosBotones();
         }
     }
 
@@ -221,17 +330,20 @@ public class BarraController {
                     f.setAccessible(true);
                     f.set(null, null);
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         actualizarEstadoSesion();
         
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            coordinador.mostrarLogin();
+            coordinador.mostrarPaginaInicial();
         }
         
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -244,20 +356,47 @@ public class BarraController {
     public void actualizarEstadoSesion() {
         boolean loggedIn = Session.isLoggedIn();
         
-        btnIniciarSesion.setVisible(!loggedIn);
-        btnRegistrarse.setVisible(!loggedIn);
-        menuPerfil.setVisible(loggedIn);
+        // REGISTRARSE SIEMPRE VISIBLE - pero opaco cuando hay sesión
+        btnRegistrarse.setVisible(true);
+        btnRegistrarse.setManaged(true);
 
         if (loggedIn) {
-            String nombreUsuario = Session.getCurrent().getNombre();
-            if (nombreUsuario != null && !nombreUsuario.isEmpty()) {
-                menuPerfil.setText("Hola, " + nombreUsuario.split(" ")[0]);
-            } else {
-                menuPerfil.setText("Mi Cuenta");
+            // Cuando hay sesión: ocultar "Iniciar Sesión", mostrar MenuButton con nombre
+            btnIniciarSesion.setVisible(false);
+            btnIniciarSesion.setManaged(false);
+            menuUsuario.setVisible(true);
+            menuUsuario.setManaged(true);
+            
+            // Obtener y mostrar NOMBRE COMPLETO del usuario en el MenuButton
+            UsuarioDTO usuario = Session.getCurrent();
+            if (usuario != null) {
+                String nombreCompleto = usuario.getNombre();
+                if (nombreCompleto != null && !nombreCompleto.isEmpty()) {
+                    // Mostrar el NOMBRE COMPLETO en el Label dentro del MenuButton
+                    lblNombreUsuario.setText(nombreCompleto);
+                } else {
+                    // Si no hay nombre, mostrar el email o "Usuario"
+                    String email = usuario.getEmail();
+                    if (email != null && !email.isEmpty()) {
+                        lblNombreUsuario.setText(email);
+                    } else {
+                        lblNombreUsuario.setText("Usuario");
+                    }
+                }
             }
+            
         } else {
-            menuPerfil.setText("Mi Cuenta");
+            // Cuando no hay sesión: mostrar "Iniciar Sesión", ocultar MenuButton
+            btnIniciarSesion.setVisible(true);
+            btnIniciarSesion.setManaged(true);
+            menuUsuario.setVisible(false);
+            menuUsuario.setManaged(false);
+            btnIniciarSesion.setText("Iniciar Sesión");
+            lblNombreUsuario.setText("Usuario");
         }
+        
+        // Aplicar estilo correcto al botón Registrarse (opaco cuando hay sesión)
+        aplicarEstiloRegistrarse();
     }
 
     public void refrescarBarra() {

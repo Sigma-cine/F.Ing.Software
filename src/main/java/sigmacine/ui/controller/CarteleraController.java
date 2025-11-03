@@ -39,6 +39,11 @@ public class CarteleraController {
 
     @FXML
     private void initialize() {
+            // Marcar la página activa usando Singleton
+            BarraController barraController = BarraController.getInstance();
+            if (barraController != null) {
+                barraController.marcarBotonActivo("cartelera");
+            }
         try {
             DatabaseConfig db = new DatabaseConfig();
             PeliculaRepositoryJdbc repo = new PeliculaRepositoryJdbc(db);
