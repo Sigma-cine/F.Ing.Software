@@ -21,14 +21,7 @@
 
     <!-- Encabezado -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color:#111;">
-            <children>
-                <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Información Personal">
-                    <font><Font size="20" /></font>
-                </Label>
-            </children>
-            <padding><Insets bottom="12" left="16" right="16" top="12" /></padding>
-        </HBox>
+        <fx:include source="barra.fxml"/>
     </top>
 
     <!-- Contenido -->

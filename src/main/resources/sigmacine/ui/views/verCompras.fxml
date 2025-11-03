@@ -6,43 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.VerHistorialController" stylesheets="@sigma.css">
     <top>
-        <HBox fx:id="localTopbar" alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
-            <children>
-                <Button fx:id="btnVolver" styleClass="toplink" text="← Volver" />
-                <Label styleClass="brand" text="SIGMA CINE" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;" />
-                <Button styleClass="toplink" text="Cartelera" disable="true" />
-                <Button styleClass="toplink" text="Confitería" />
-                <Button styleClass="toplink" text="Sigma Card" />
-                <Region HBox.hgrow="ALWAYS" />
-                <TextField promptText="Buscar" prefWidth="200" styleClass="search" />
-                <VBox spacing="16">
-                    <children>
-                        <Button styleClass="toplink" text="Cart" />
-                    </children>
-                </VBox>
-                <Button text="Iniciar sesión" styleClass="toplink" />
-                <Label text="" styleClass="toplink" visible="false" />
-                <Button text="Registrarse" styleClass="toplink" />
-                <MenuButton styleClass="icon-btn" text="👤">
-                    <items>
-                        <MenuItem text="Mi Cuenta" />
-                        <MenuItem text="Buscar Tiquetes" />
-                        <MenuItem text="Confitería" />
-                        <MenuItem text="Promociones" />
-                        <MenuItem text="Información Personal" />
-                        <MenuItem text="SigmaCard" />
-                        <MenuItem text="Historial de compras" />
-                        <MenuItem text="Notificaciones" />
-                        <MenuItem text="Cartelera" />
-                        <SeparatorMenuItem />
-                        <MenuItem text="Cerrar Sesión" />
-                    </items>
-                </MenuButton>
-            </children>
-            <padding>
-                <Insets bottom="8" left="16" right="16" top="8" />
-            </padding>
-        </HBox>
+        <fx:include source="barra.fxml"/>
     </top>
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">

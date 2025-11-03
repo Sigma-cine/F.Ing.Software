@@ -183,38 +183,36 @@ public class ResultadosBusquedaController {
             } catch (Exception ignored) {}
         });
     }
-private void mostrarDetallePelicula(Pelicula p) {
-    try {
-        var url = getClass().getResource("/sigmacine/ui/views/verdetallepelicula.fxml");
-        if (url == null) throw new IllegalStateException("No se encontró verdetallepelicula.fxml");
 
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(url);
-        javafx.scene.Parent rootDetalle = loader.load();
+    private void mostrarDetallePelicula(Pelicula p) {
+        try {
+            var url = getClass().getResource("/sigmacine/ui/views/verdetallepelicula.fxml");
+            if (url == null) throw new IllegalStateException("No se encontró verdetallepelicula.fxml");
 
-    VerDetallePeliculaController ctrl = loader.getController();
-    try {
-        ctrl.setCoordinador(this.coordinador);
-    } catch (Exception ignore) {}
-    try {
-        ctrl.setUsuario(this.usuario);
-    } catch (Exception ignore) {}
-    try {
-        ctrl.refreshSessionUI();
-    } catch (Exception ignore) {}
-    ctrl.setBackResults(this.peliculas, this.textoBuscado);
-    ctrl.setPelicula(p);
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(url);
+            javafx.scene.Parent rootDetalle = loader.load();
 
-        javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
-        javafx.scene.Scene current = stage.getScene();
-        double w = current != null ? current.getWidth() : 900;
-        double h = current != null ? current.getHeight() : 600;
-        javafx.scene.Scene scene = new javafx.scene.Scene(rootDetalle, w > 0 ? w : 900, h > 0 ? h : 600);
-        stage.setScene(scene);
-        stage.setTitle(p.getTitulo() != null ? p.getTitulo() : "Detalle de Película");
-        
-    } catch (Exception ex) {
-        ex.printStackTrace();
-    }
+            VerDetallePeliculaController ctrl = loader.getController();
+            try {
+                ctrl.setCoordinador(this.coordinador);
+            } catch (Exception ignore) {}
+            try {
+                ctrl.setUsuario(this.usuario);
+            } catch (Exception ignore) {}
+            // Ensure the controller refreshes its session-aware UI
+            ctrl.setPelicula(p);
+
+            javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
+            javafx.scene.Scene current = stage.getScene();
+            double w = current != null ? current.getWidth() : 900;
+            double h = current != null ? current.getHeight() : 600;
+            javafx.scene.Scene scene = new javafx.scene.Scene(rootDetalle, w > 0 ? w : 900, h > 0 ? h : 600);
+            stage.setScene(scene);
+            stage.setTitle(p.getTitulo() != null ? p.getTitulo() : "Detalle de Película");
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private Image resolveImage(String ref) {

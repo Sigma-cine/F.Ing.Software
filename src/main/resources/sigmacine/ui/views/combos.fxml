@@ -4,19 +4,7 @@
 <?import javafx.geometry.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="sigmacine.ui.controller.CombosController" styleClass="page-root" stylesheets="@sigma.css" prefWidth="1280" prefHeight="720">
     <top>
-        <VBox spacing="12" BorderPane.alignment="CENTER">
-            <padding>
-                <Insets top="16" right="24" bottom="8" left="24" />
-            </padding>
-            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
-                <Button text="← Volver" fx:id="btnVolver" styleClass="primary-btn" />
-                <Label text="Nuestros Combos" styleClass="section-title" />
-                <Region HBox.hgrow="ALWAYS" />
-                <TextField fx:id="txtBuscar" promptText="Buscar combo..." styleClass="search" prefWidth="250" />
-                <Button text="Ver carrito" fx:id="btnVerCarrito" styleClass="primary-btn" />
-            </HBox>
-            <Separator styleClass="brand-sep" />
-        </VBox>
+        <fx:include source="barra.fxml"/>
     </top>
     <center>
         <ScrollPane fitToWidth="true" styleClass="menu-scroll" vbarPolicy="ALWAYS">

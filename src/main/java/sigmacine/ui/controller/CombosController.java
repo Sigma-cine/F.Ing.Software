@@ -31,50 +31,23 @@ public class CombosController implements Initializable {
 
     @FXML private GridPane gridCombos;
     @FXML private TextField txtBuscar;
-    @FXML private Button btnVerCarrito;
-    @FXML private Button btnVolver;
 
     private UsuarioDTO usuario;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Solo mantener el Singleton para marcar la página activa
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("combos");
+        }
+        
         if (txtBuscar != null) txtBuscar.setOnAction(e -> loadCombos(txtBuscar.getText()));
-        if (btnVerCarrito != null) btnVerCarrito.setOnAction(e -> toggleCarrito());
-        if (btnVolver != null) btnVolver.setOnAction(e -> volver());
         if (gridCombos != null) gridCombos.getStyleClass().add("menu-grid");
         loadCombos(null);
     }
 
     public void setUsuario(UsuarioDTO u) { this.usuario = u; }
-    
-    private void volver() {
-        try {
-            javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/menu.fxml"));
-            Parent root = loader.load();
-            javafx.scene.Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 1000;
-            double h = current != null ? current.getHeight() : 700;
-            stage.setScene(new javafx.scene.Scene(root, w, h));
-            stage.setTitle("Sigma Cine - Confitería");
-            stage.setMaximized(true);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void toggleCarrito() {
-        try {
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCarrito.fxml"));
-            var root = loader.load();
-            var stage = new javafx.stage.Stage();
-            stage.initOwner(gridCombos.getScene().getWindow());
-            stage.initModality(javafx.stage.Modality.NONE);
-            stage.setResizable(false);
-            stage.setScene(new javafx.scene.Scene((Parent) root));
-            stage.show();
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
 
     private void loadCombos(String filter) {
         try {
