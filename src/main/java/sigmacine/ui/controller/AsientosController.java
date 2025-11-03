@@ -23,18 +23,7 @@ public class AsientosController implements Initializable {
     @FXML private GridPane gridSala;
     @FXML private Label lblResumen;
 
-    @FXML private Button btnCartelera;
-    @FXML private Button btnConfiteria;
-    @FXML private Button btnSigmaCard;
-    @FXML private Button btnCart;
-    @FXML private Button btnIniciarSesion;
-    @FXML private Button btnRegistrarse;
-    @FXML private Label  lblUserName;
-    @FXML private MenuButton menuPerfil;
-    @FXML private MenuItem miCerrarSesion;
-    @FXML private MenuItem miHistorial;
     @FXML private TextField txtBuscar;
-    @FXML private Button btnBuscar;
 
     @FXML private Label lblTitulo;
     @FXML private Label lblHoraPill;
@@ -64,32 +53,19 @@ public class AsientosController implements Initializable {
 
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
-    public void setUsuario(UsuarioDTO u) { this.usuario = u; refreshSessionUI(); }
+    public void setUsuario(UsuarioDTO u) { this.usuario = u; }
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        if (btnCartelera != null) btnCartelera.setOnAction(e -> goCartelera());
-        if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
-    if (btnSigmaCard != null) btnSigmaCard.setOnAction(e -> onSigmaCardTop());
-        if (btnCart != null) btnCart.setOnAction(e -> toggleCartPopup());
-        if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> {
-            if (sigmacine.aplicacion.session.Session.isLoggedIn()) return; // ya logueado
-            if (coordinador != null) { coordinador.mostrarLogin(); refreshSessionUI(); }
-            else onIniciarSesion();
-        });
-        if (btnRegistrarse != null) btnRegistrarse.setOnAction(e -> {
-            if (sigmacine.aplicacion.session.Session.isLoggedIn()) return; // no permitir si ya está logueado
-            if (coordinador != null) coordinador.mostrarRegistro();
-            else onRegistrarse();
-        });
-        if (btnRegistrarse != null) btnRegistrarse.setOnAction(e -> onRegistrarse());
-        if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); refreshSessionUI(); });
-        if (miHistorial != null) miHistorial.setOnAction(e -> onVerHistorial());
-        if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> onIniciarSesion());
+        // Solo mantener el Singleton para marcar la página activa
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("asientos");
+        }
+        
         if (txtBuscar != null) {
             txtBuscar.setOnKeyPressed(ev -> { if (ev.getCode() == KeyCode.ENTER) doSearch(txtBuscar.getText()); });
-            if (btnBuscar != null) btnBuscar.setOnAction(e -> doSearch(txtBuscar.getText()));
         }
 
         // Demo si nadie setea función
@@ -107,124 +83,9 @@ public class AsientosController implements Initializable {
 
         poblarGrilla();
         actualizarResumen();
-        refreshSessionUI();
     }
 
-    @FXML private void onBrandClick() { goHome(); }
     @FXML private void onBuscarTop() { doSearch(txtBuscar != null ? txtBuscar.getText() : ""); }
-
-    @FXML
-    private void onSigmaCardTop() {
-        try {
-            javafx.stage.Stage stage = null;
-            try { stage = gridSala != null && gridSala.getScene() != null ? (javafx.stage.Stage) gridSala.getScene().getWindow() : null; } catch (Exception ignore) {}
-            if (stage != null) SigmaCardController.openAsScene(stage);
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private void goHome() {
-        try {
-            Stage stage = (Stage) (gridSala != null ? gridSala.getScene().getWindow() : btnContinuar.getScene().getWindow());
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-            Parent root = loader.load();
-            Object ctrl = loader.getController();
-            if (ctrl instanceof ClienteController c) {
-                c.setCoordinador(this.coordinador);
-                c.init(this.usuario);
-            }
-            Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 1000;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w, h));
-            stage.setTitle("Sigma Cine");
-            stage.setMaximized(true);
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private void goCartelera() {
-        try {
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/cartelera.fxml"));
-            Parent root = loader.load();
-            Object ctrl = loader.getController();
-            try {
-                var su = ctrl.getClass().getMethod("setUsuario", sigmacine.aplicacion.data.UsuarioDTO.class);
-                if (su != null) su.invoke(ctrl, this.usuario);
-            } catch (NoSuchMethodException ignore) {}
-            try {
-                var sc = ctrl.getClass().getMethod("setCoordinador", sigmacine.ui.controller.ControladorControlador.class);
-                if (sc != null) sc.invoke(ctrl, this.coordinador);
-            } catch (NoSuchMethodException ignore) {}
-            try {
-                var rf = ctrl.getClass().getMethod("refreshSessionUI");
-                if (rf != null) rf.invoke(ctrl);
-            } catch (NoSuchMethodException ignore) {}
-
-            Stage stage = (Stage) gridSala.getScene().getWindow();
-            Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 900;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w, h));
-            stage.setTitle("Sigma Cine - Cartelera");
-            stage.setMaximized(true);
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private void onIniciarSesion() {
-        if (sigmacine.aplicacion.session.Session.isLoggedIn()) return;
-        if (coordinador != null) { coordinador.mostrarLogin(); refreshSessionUI(); return; }
-        try {
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
-            Parent root = loader.load();
-            var dialog = new javafx.stage.Stage();
-            dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            dialog.initOwner(gridSala.getScene().getWindow());
-            var ctrl = loader.getController();
-            if (ctrl instanceof LoginController lc) {
-                try { ControladorControlador global = ControladorControlador.getInstance(); if (global != null) { lc.setCoordinador(global); lc.setAuthFacade(global.getAuthFacade()); } } catch (Throwable ignore) {}
-                lc.setOnSuccess(() -> { try { dialog.close(); } catch (Exception ignore) {} refreshSessionUI(); });
-            }
-            dialog.setScene(new Scene(root));
-            dialog.showAndWait();
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private void onRegistrarse() {
-        if (sigmacine.aplicacion.session.Session.isLoggedIn()) return;
-        if (coordinador != null) { coordinador.mostrarRegistro(); return; }
-    }
-
-    private void onVerHistorial() {
-        if (!sigmacine.aplicacion.session.Session.isLoggedIn()) return;
-        try {
-            var db = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
-            var usuarioRepo = new sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc(db);
-            var service = new sigmacine.aplicacion.service.VerHistorialService(usuarioRepo);
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCompras.fxml"));
-            var controller = new VerHistorialController(service);
-            // permitir volver a la escena actual
-            javafx.scene.Scene prev = null;
-            try { prev = gridSala != null && gridSala.getScene() != null ? gridSala.getScene() : null; } catch (Exception ignore) {}
-            try { controller.setPreviousScene(prev); } catch (Exception ignore) {}
-            if (this.usuario != null) controller.setUsuarioEmail(this.usuario.getEmail());
-            else {
-                var cur = sigmacine.aplicacion.session.Session.getCurrent();
-                if (cur != null && cur.getEmail() != null && !cur.getEmail().isBlank()) controller.setUsuarioEmail(cur.getEmail());
-            }
-            System.out.println("[AsientosController] opening historial view...");
-            loader.setControllerFactory(cls -> {
-                if (cls == sigmacine.ui.controller.VerHistorialController.class) return controller;
-                try { return cls.getDeclaredConstructor().newInstance(); } catch (Exception ex) { throw new RuntimeException(ex); }
-            });
-            Parent root = loader.load();
-            Stage stage = (Stage) gridSala.getScene().getWindow();
-            Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 900;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w, h));
-            stage.setTitle("Historial de compras");
-            stage.setMaximized(true);
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
 
     private void doSearch(String texto) {
         if (texto == null) texto = "";
@@ -250,15 +111,6 @@ public class AsientosController implements Initializable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    private void refreshSessionUI() {
-        boolean logged = sigmacine.aplicacion.session.Session.isLoggedIn();
-        var u = sigmacine.aplicacion.session.Session.getCurrent();
-        if (lblUserName != null) { lblUserName.setVisible(logged); lblUserName.setManaged(logged); lblUserName.setText(logged && u != null ? (u.getNombre() != null ? u.getNombre() : "") : ""); }
-        if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(!logged); btnIniciarSesion.setManaged(!logged); }
-        if (btnRegistrarse  != null) btnRegistrarse.setDisable(logged);
-        if (menuPerfil != null) { menuPerfil.setVisible(logged); menuPerfil.setManaged(logged); }
     }
 
     private void poblarGrilla() {
@@ -529,45 +381,5 @@ public class AsientosController implements Initializable {
             } catch (NumberFormatException ignore) {}
         }
         return out;
-    }
-
-    // ---------------- Carrito popup ----------------
-    private void toggleCartPopup() {
-        if (cartStage != null && cartStage.isShowing()) {
-            cartStage.close();
-        } else {
-            openCartPopup();
-        }
-    }
-
-    private void openCartPopup() {
-        try {
-            if (cartStage == null) {
-                var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCarrito.fxml"));
-                Parent root = loader.load();
-                cartStage = new Stage();
-                cartStage.initOwner(gridSala.getScene().getWindow());
-                cartStage.initModality(javafx.stage.Modality.NONE); // no bloquea
-                cartStage.setResizable(false);
-                cartStage.setTitle("Carrito");
-                cartStage.setScene(new Scene(root));
-                // Cerrar con ESC
-                cartStage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, ev -> {
-                    if (ev.getCode() == KeyCode.ESCAPE) cartStage.close();
-                });
-            }
-            if (btnCart != null && btnCart.getScene() != null) {
-                javafx.geometry.Bounds b = btnCart.localToScreen(btnCart.getBoundsInLocal());
-                if (b != null) {
-                    cartStage.setX(b.getMaxX() - 600);
-                    cartStage.setY(b.getMaxY() + 8);
-                }
-            }
-            cartStage.show();
-            cartStage.toFront();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "No se pudo abrir el carrito: " + ex.getMessage()).showAndWait();
-        }
     }
 }

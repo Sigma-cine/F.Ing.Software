@@ -212,10 +212,6 @@ private void mostrarDetallePelicula(Pelicula p) {
         ctrl.setUsuario(this.usuario);
     } catch (Exception ignore) {}
     // Ensure the controller refreshes its session-aware UI
-    try {
-        ctrl.refreshSessionUI();
-    } catch (Exception ignore) {}
-    ctrl.setBackResults(this.peliculas, this.textoBuscado);
     ctrl.setPelicula(p);
 
         javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
