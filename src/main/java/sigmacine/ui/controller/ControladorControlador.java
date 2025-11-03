@@ -255,7 +255,7 @@ public class ControladorControlador {
 
     public void mostrarHistorialCompras() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/historial_compras.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCompras.fxml"));
             if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
             Parent root = loader.load();
             

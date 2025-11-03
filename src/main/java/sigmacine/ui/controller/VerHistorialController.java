@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import sigmacine.aplicacion.service.VerHistorialService;
 import sigmacine.aplicacion.data.HistorialCompraDTO;
+import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
 
 public class VerHistorialController {
     
@@ -24,9 +25,22 @@ public class VerHistorialController {
     
     private javafx.scene.Scene previousScene;
     
-    private final VerHistorialService historialService;
+    private VerHistorialService historialService;
     private String usuarioEmail;
 
+    // Constructor sin parámetros requerido por FXML
+    public VerHistorialController() {
+        // Inicializar servicio por defecto
+        try {
+            DatabaseConfig dbConfig = new DatabaseConfig();
+            UsuarioRepositoryJdbc usuarioRepo = new UsuarioRepositoryJdbc(dbConfig);
+            this.historialService = new VerHistorialService(usuarioRepo);
+        } catch (Exception e) {
+            System.err.println("Error inicializando VerHistorialService: " + e.getMessage());
+        }
+    }
+
+    // Constructor con parámetros (opcional - para inyección manual)
     public VerHistorialController(VerHistorialService historialService) {
         this.historialService = historialService;
     }
