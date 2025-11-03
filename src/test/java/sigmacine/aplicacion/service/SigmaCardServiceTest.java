@@ -18,7 +18,7 @@ public class SigmaCardServiceTest {
     }
 
     @Test
-    public void registrar_and_parse_errors() {
+    public void registrarSigmaCard() {
         SigmaCardService svc = new SigmaCardService(new StubRepo());
         assertThrows(IllegalArgumentException.class, () -> svc.registrarCard(null, "x"));
         assertThrows(IllegalArgumentException.class, () -> svc.registrarCard("abc", "x"));
@@ -26,7 +26,7 @@ public class SigmaCardServiceTest {
     }
 
     @Test
-    public void recargar_and_consultar_and_format() {
+    public void recargarYConsultarSaldo() {
         StubRepo r = new StubRepo();
         SigmaCardService svc = new SigmaCardService(r);
         assertThrows(IllegalArgumentException.class, () -> svc.recargar("1", null));
@@ -37,5 +37,32 @@ public class SigmaCardServiceTest {
     String f = svc.format(BigDecimal.ZERO);
     assertNotNull(f);
     assertTrue(f.contains("0") || f.contains("00"));
+    }
+
+    @Test
+    public void consultarSaldoNuloDevuelveCero() {
+        SigmaCardService svc = new SigmaCardService(new SigmaCardRepository() {
+            @Override public boolean crearSiNoExiste(long usuarioId) { return false; }
+            @Override public BigDecimal recargar(long usuarioId, BigDecimal monto) { return BigDecimal.ZERO; }
+            @Override public BigDecimal consultarSaldo(long usuarioId) { return null; }
+        });
+        BigDecimal saldo = svc.consultarSaldo("123");
+        assertEquals(BigDecimal.ZERO, saldo);
+    }
+
+    @Test
+    public void constructorSinArgumentos() {
+        // Este test cubre el constructor sin argumentos que instancia el repositorio real
+        SigmaCardService svc = new SigmaCardService();
+        assertNotNull(svc);
+    }
+
+    @Test
+    public void formatConValorNulo() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        String formateado = svc.format(null);
+        assertNotNull(formateado);
+        // Debe formatear como cero en pesos colombianos
+        assertTrue(formateado.contains("0"));
     }
 }

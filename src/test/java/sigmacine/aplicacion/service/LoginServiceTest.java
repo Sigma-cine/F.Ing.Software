@@ -24,7 +24,7 @@ public class LoginServiceTest {
     }
 
     @Test
-    public void autenticar_success_and_fail_cases() {
+    public void autenticar() {
         String plain = "secret";
         String hash = BCrypt.hashpw(plain, BCrypt.gensalt(4));
         PasswordHash ph = new PasswordHash(hash);
@@ -40,5 +40,34 @@ public class LoginServiceTest {
 
         var dto3 = svc.autenticar("not-an-email", plain);
         assertNull(dto3);
+    }
+
+    @Test
+    public void autenticarConEmailNuloDevuelveNull() {
+        LoginService svc = new LoginService(new StubRepo(null));
+        var dto = svc.autenticar(null, "clave");
+        assertNull(dto);
+    }
+
+    @Test
+    public void autenticarUsuarioNoExistenteDevuelveNull() {
+        LoginService svc = new LoginService(new StubRepo(null));
+        var dto = svc.autenticar("noexiste@example.com", "clave");
+        assertNull(dto);
+    }
+
+    @Test
+    public void autenticarConFechaRegistroNula() {
+        String plain = "secret";
+        String hash = BCrypt.hashpw(plain, BCrypt.gensalt(4));
+        PasswordHash ph = new PasswordHash(hash);
+        // Usuario Admin no tiene fecha de registro
+        Usuario admin = Usuario.crearAdmin(1, new Email("admin@example.com"), ph, "Admin");
+        
+        LoginService svc = new LoginService(new StubRepo(admin));
+        var dto = svc.autenticar("admin@example.com", plain);
+        assertNotNull(dto);
+        assertEquals(1, dto.getId());
+        assertNull(dto.getFechaRegistro());
     }
 }

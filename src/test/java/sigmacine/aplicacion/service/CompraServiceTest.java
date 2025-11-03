@@ -20,7 +20,7 @@ public class CompraServiceTest {
     }
 
     @Test
-    public void validar_argumentos_nulos_o_invalidos() {
+    public void validarArgumentos() {
         CompraService svc = new CompraService(new StubRepo());
         assertThrows(IllegalArgumentException.class, () -> svc.confirmarCompraProductos(1, null, "m"));
         assertThrows(IllegalArgumentException.class, () -> svc.confirmarCompraProductos(1, List.of(), "m"));
@@ -31,7 +31,7 @@ public class CompraServiceTest {
     }
 
     @Test
-    public void confirmar_compra_llama_repo_y_devuelve_id() {
+    public void confirmarCompraProductos() {
         StubRepo repo = new StubRepo();
         CompraService svc = new CompraService(repo);
         CompraProductoDTO prod = new CompraProductoDTO(5L, "Refri", 2, new BigDecimal("3.00"));
@@ -39,5 +39,12 @@ public class CompraServiceTest {
         assertEquals(9999L, res);
         assertEquals(42L, repo.lastCliente.longValue());
         assertEquals(1, repo.lastItems.size());
+    }
+
+    @Test
+    public void confirmarCompraConCantidadNegativaLanzaExcepcion() {
+        CompraService svc = new CompraService(new StubRepo());
+        CompraProductoDTO malo = new CompraProductoDTO(1L, "X", -2, new BigDecimal("1.00"));
+        assertThrows(IllegalArgumentException.class, () -> svc.confirmarCompraProductos(1, List.of(malo), "m"));
     }
 }

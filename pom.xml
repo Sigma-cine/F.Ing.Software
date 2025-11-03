@@ -12,7 +12,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>21</java.version>
     <javafx.version>21.0.4</javafx.version>
-    <!-- Cambia según tu SO: win | linux | mac | mac-aarch64 -->
+    <!--para que sirva en diferentes SO -->
     <javafx.platform>win</javafx.platform>
   </properties>
 
@@ -23,8 +23,7 @@
       <artifactId>h2</artifactId>
       <version>2.3.232</version>
     </dependency>
-
-    <!-- BCrypt para PasswordHash.matches(...) -->
+    
     <dependency>
       <groupId>org.mindrot</groupId>
       <artifactId>jbcrypt</artifactId>
@@ -137,7 +136,7 @@
              <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <goals>

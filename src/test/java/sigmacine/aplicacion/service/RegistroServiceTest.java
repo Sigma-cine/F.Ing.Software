@@ -24,17 +24,24 @@ public class RegistroServiceTest {
     }
 
     @Test
-    public void registrar_throws_when_email_exists() {
+    public void registrarConFallos() {
         StubRepo repo = new StubRepo(Usuario.crearCliente(5, new Email("a@b.com"), new PasswordHash("$2a$10$abcdefghijklmnopqrstuv"), "N", java.time.LocalDate.now()));
         RegistroService svc = new RegistroService(repo);
         assertThrows(IllegalArgumentException.class, () -> svc.registrarCliente("N", "a@b.com", "p"));
     }
 
     @Test
-    public void registrar_success_calls_repo() {
+    public void registrarExitoso() {
         StubRepo repo = new StubRepo(null);
         RegistroService svc = new RegistroService(repo);
         int id = svc.registrarCliente("Nombre", "nuevo@ex.com", "clave");
         assertEquals(123, id);
+    }
+
+    @Test
+    public void registrarConEmailInvalidoLanzaExcepcion() {
+        StubRepo repo = new StubRepo(null);
+        RegistroService svc = new RegistroService(repo);
+        assertThrows(IllegalArgumentException.class, () -> svc.registrarCliente("N", "invalid-email", "p"));
     }
 }

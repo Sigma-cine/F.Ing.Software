@@ -58,4 +58,52 @@ public class CarritoServiceTest {
         assertTrue(carrito.getBoletos().isEmpty());
         assertTrue(carrito.getProductos().isEmpty());
     }
+
+    @Test
+    public void listenerRecibeEventoAlAgregarYEliminar() {
+        final int[] contador = {0};
+        carrito.addListener(change -> contador[0] += 1);
+        carrito.addItem(new CompraProductoDTO(1L, "X", 1, new BigDecimal("1.00")));
+        assertTrue(contador[0] > 0);
+        contador[0] = 0;
+        carrito.removeItem(carrito.getItems().get(0));
+        assertTrue(contador[0] > 0);
+    }
+
+    @Test
+    public void agregarItemNulo() {
+        int sizeBefore = carrito.getItems().size();
+        carrito.addItem(null);
+        assertEquals(sizeBefore, carrito.getItems().size());
+    }
+
+    @Test
+    public void removerItemNulo() {
+        carrito.addItem(new CompraProductoDTO(1L, "X", 1, new BigDecimal("1.00")));
+        int sizeBefore = carrito.getItems().size();
+        carrito.removeItem(null);
+        assertEquals(sizeBefore, carrito.getItems().size());
+    }
+
+    @Test
+    public void agregarBoletoSinHorario() {
+        Boleto b = new Boleto(10L, "Pelicula", "Sala1", null, "A1", 1500);
+        carrito.addBoleto(b);
+        assertEquals(1, carrito.getItems().size());
+        CompraProductoDTO item = carrito.getItems().get(0);
+        assertTrue(item.getNombre().contains("Pelicula"));
+    }
+
+    @Test
+    public void agregarBoletoConPeliculaNula() {
+        Boleto b = new Boleto(10L, null, "Sala1", "19:00", "A1", 1500);
+        carrito.addBoleto(b);
+        assertEquals(1, carrito.getItems().size());
+    }
+
+    @Test
+    public void getTotalConCarritoVacio() {
+        assertEquals(BigDecimal.ZERO.setScale(2), carrito.getTotal());
+    }
 }
+
