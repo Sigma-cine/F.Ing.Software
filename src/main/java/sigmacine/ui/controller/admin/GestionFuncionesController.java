@@ -87,25 +87,28 @@ public class GestionFuncionesController {
         });
 
         colSala.setCellValueFactory(c -> {
-            var dto = c.getValue();
+            FuncionDisponibleDTO dto = c.getValue();
             String sala = (dto.getNumeroSala() > 0 ? "Sala " + dto.getNumeroSala() : "");
             String sede = (dto.getSede() != null && !dto.getSede().isBlank()) ? " (" + dto.getSede() + ")" : "";
             return new SimpleStringProperty(sala + sede);
         });
 
         colFecha.setCellValueFactory(c -> {
-            var f = c.getValue().getFecha();
+            LocalDate f = c.getValue().getFecha();
             return new SimpleStringProperty(f != null ? f.format(DateTimeFormatter.ISO_LOCAL_DATE) : "");
         });
 
         colHora.setCellValueFactory(c -> {
-            var h = c.getValue().getHora();
+            LocalTime h = c.getValue().getHora();
             return new SimpleStringProperty(h != null ? h.toString() : "");
         });
 
-        colDuracion.setCellValueFactory(c -> new SimpleStringProperty(formatDuracion(detallesFuncion.get(c.getValue().getFuncionId()))));
-        colEstado.setCellValueFactory(c -> new SimpleStringProperty(formatEstado(detallesFuncion.get(c.getValue().getFuncionId()))));
-        colEstadoBool.setCellValueFactory(c -> new SimpleStringProperty(formatActivo(detallesFuncion.get(c.getValue().getFuncionId()))));
+        colDuracion.setCellValueFactory(c ->
+                new SimpleStringProperty(formatDuracion(detallesFuncion.get(c.getValue().getFuncionId()))));
+        colEstado.setCellValueFactory(c ->
+                new SimpleStringProperty(formatEstado(detallesFuncion.get(c.getValue().getFuncionId()))));
+        colEstadoBool.setCellValueFactory(c ->
+                new SimpleStringProperty(formatActivo(detallesFuncion.get(c.getValue().getFuncionId()))));
 
         // Sincronizar selección -> formulario
         tblFunciones.getSelectionModel().selectedItemProperty().addListener((obs, old, sel) -> {
@@ -115,13 +118,16 @@ public class GestionFuncionesController {
             tfHora.setText(sel.getHora() != null ? sel.getHora().toString() : "");
 
             if (sel.getPeliculaId() > 0) {
-                cbPelicula.getItems().stream()
-                    .filter(p -> p.getId() == sel.getPeliculaId())
-                    .findFirst().ifPresent(cbPelicula::setValue);
+                for (Pelicula p : cbPelicula.getItems()) {
+                    if (p.getId() == sel.getPeliculaId()) {
+                        cbPelicula.setValue(p);
+                        break;
+                    }
+                }
             }
             seleccionarSalaDesdeDTO(sel);
 
-            var f = detallesFuncion.get(sel.getFuncionId());
+            Funcion f = detallesFuncion.get(sel.getFuncionId());
             if (f != null) {
                 if (f.getDuracion() != null) tfDuracion.setText(toHHmm(f.getDuracion().toLocalTime()));
                 if (f.getEstado() != null) cbEstado.getSelectionModel().select(f.getEstado());
@@ -130,37 +136,40 @@ public class GestionFuncionesController {
         });
 
         // ------ Form ------
-        var peliculas = FXCollections.observableArrayList(peliculaRepo.buscarTodas());
+        ObservableList<Pelicula> peliculas =
+                FXCollections.observableArrayList(peliculaRepo.buscarTodas());
         cbPelicula.setItems(peliculas);
-        tituloPelicula.clear();
-        tituloPelicula.putAll(
-            peliculas.stream()
-             .collect(Collectors.toMap(
-                 p -> Long.valueOf(p.getId()),
-                 Pelicula::getTitulo,
-                 (a, b) -> a,
-                 LinkedHashMap::new
-             ))
-        );
 
-        cbPelicula.setCellFactory(list -> new ListCell<>() {
+        // FIX de genéricos: construir Map<Long,String> explícito y luego putAll
+        Map<Long, String> cacheTitulos =
+                peliculas.stream().collect(Collectors.toMap(
+                        p -> Long.valueOf(p.getId()),
+                        Pelicula::getTitulo,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
+        tituloPelicula.clear();
+        tituloPelicula.putAll(cacheTitulos);
+
+        cbPelicula.setCellFactory(list -> new ListCell<Pelicula>() {
             @Override protected void updateItem(Pelicula item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? "" : item.getTitulo());
             }
         });
-        cbPelicula.setButtonCell(new ListCell<>() {
+        cbPelicula.setButtonCell(new ListCell<Pelicula>() {
             @Override protected void updateItem(Pelicula item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? "" : item.getTitulo());
             }
         });
-        cbPelicula.setConverter(new StringConverter<>() {
+        cbPelicula.setConverter(new StringConverter<Pelicula>() {
             @Override public String toString(Pelicula p) { return p == null ? "" : p.getTitulo(); }
             @Override public Pelicula fromString(String s) {
-                return cbPelicula.getItems().stream()
-                        .filter(p -> Objects.equals(p.getTitulo(), s))
-                        .findFirst().orElse(null);
+                for (Pelicula p : cbPelicula.getItems()) {
+                    if (Objects.equals(p.getTitulo(), s)) return p;
+                }
+                return null;
             }
         });
 
@@ -168,16 +177,16 @@ public class GestionFuncionesController {
         cbEstado.getSelectionModel().select("Activa");
 
         cbSala.setItems(FXCollections.observableArrayList(
-            new IdNombre(1,  "Sala 1 (Salitre Plaza)"),
-            new IdNombre(2,  "Sala 2 (Salitre Plaza 3D)"),
-            new IdNombre(3,  "Sala 3 (Salitre VIP)"),
-            new IdNombre(4,  "Sala 1 (Gran Estación)"),
-            new IdNombre(5,  "Sala 2 (Gran Estación 3D)"),
-            new IdNombre(6,  "Sala 1 (Parque La Colina)"),
-            new IdNombre(7,  "Sala 2 (Parque La Colina VIP)"),
-            new IdNombre(8,  "Sala 1 (Viva Envigado)"),
-            new IdNombre(9,  "Sala 2 (Viva Envigado 3D)"),
-            new IdNombre(10, "Sala 1 (El Tesoro)")
+                new IdNombre(1,  "Sala 1 (Salitre Plaza)"),
+                new IdNombre(2,  "Sala 2 (Salitre Plaza 3D)"),
+                new IdNombre(3,  "Sala 3 (Salitre VIP)"),
+                new IdNombre(4,  "Sala 1 (Gran Estación)"),
+                new IdNombre(5,  "Sala 2 (Gran Estación 3D)"),
+                new IdNombre(6,  "Sala 1 (Parque La Colina)"),
+                new IdNombre(7,  "Sala 2 (Parque La Colina VIP)"),
+                new IdNombre(8,  "Sala 1 (Viva Envigado)"),
+                new IdNombre(9,  "Sala 2 (Viva Envigado 3D)"),
+                new IdNombre(10, "Sala 1 (El Tesoro)")
         ));
 
         dpFecha.setValue(LocalDate.now());
@@ -194,7 +203,7 @@ public class GestionFuncionesController {
     public void onBuscar() {
         String q = safe(tfBuscar.getText());
         try {
-            var res = q.isEmpty() ? service.listarTodas() : service.buscar(q);
+            List<FuncionDisponibleDTO> res = q.isEmpty() ? service.listarTodas() : service.buscar(q);
             cargarModeloYDetalles(res);
             setStatusInfo(res.isEmpty() ? "Sin resultados." : ("Resultados: " + res.size()));
         } catch (Exception e) {
@@ -205,7 +214,7 @@ public class GestionFuncionesController {
     @FXML
     public void onListarTodas() {
         try {
-            var res = service.listarTodas();
+            List<FuncionDisponibleDTO> res = service.listarTodas();
             cargarModeloYDetalles(res);
             setStatusInfo("Se listaron " + modelo.size() + " funciones.");
         } catch (Exception e) {
@@ -229,7 +238,7 @@ public class GestionFuncionesController {
     @FXML
     public void onCrear() {
         try {
-            var dto = buildFormDTO(0);
+            FuncionFormDTO dto = buildFormDTO(0);
             service.crear(dto);
             onListarTodas();
             onNuevo();
@@ -243,8 +252,11 @@ public class GestionFuncionesController {
     public void onActualizar() {
         try {
             long id = parseLongOrZero(safe(tfIdEdicion.getText()));
-            if (id <= 0) { setStatusInfo("Selecciona una fila o ingresa un ID para actualizar."); return; }
-            var dto = buildFormDTO(id);
+            if (id <= 0) {
+                setStatusInfo("Selecciona una fila o ingresa un ID para actualizar.");
+                return;
+            }
+            FuncionFormDTO dto = buildFormDTO(id);
             service.actualizar(dto);
             onListarTodas();
             setStatusSuccess("Función actualizada (ID " + id + ").");
@@ -255,7 +267,7 @@ public class GestionFuncionesController {
 
     @FXML
     public void onEliminar() {
-        var sel = tblFunciones.getSelectionModel().getSelectedItem();
+        FuncionDisponibleDTO sel = tblFunciones.getSelectionModel().getSelectedItem();
         if (sel == null) { setStatusInfo("Selecciona una fila para eliminar."); return; }
         long id = sel.getFuncionId();
         try {
@@ -277,9 +289,9 @@ public class GestionFuncionesController {
     private void cargarModeloYDetalles(List<FuncionDisponibleDTO> res) {
         modelo.setAll(res);
         detallesFuncion.clear();
-        for (var dto : res) {
+        for (FuncionDisponibleDTO dto : res) {
             try {
-                var f = service.buscarPorId(dto.getFuncionId());
+                Funcion f = service.buscarPorId(dto.getFuncionId());
                 if (f != null) detallesFuncion.put(dto.getFuncionId(), f);
             } catch (Exception ignored) {}
         }
@@ -299,7 +311,7 @@ public class GestionFuncionesController {
         if (hora.isEmpty()) throw new RuntimeException("Ingresa la hora (HH:mm).");
         if (dur.isEmpty())  throw new RuntimeException("Ingresa la duración (HH:mm).");
 
-        var dto = new FuncionFormDTO();
+        FuncionFormDTO dto = new FuncionFormDTO();
         dto.id = id; // 0 => crear; >0 => actualizar
         dto.peliculaId = peli.getId();
         dto.salaId = sala.id;

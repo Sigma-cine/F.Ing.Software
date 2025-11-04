@@ -41,9 +41,14 @@ public class AdminController {
 
     @FXML
     private void onLogout() {
-        if (coordinador != null) {
-            coordinador.mostrarLogin();
-        }
+        //if (coordinador != null) {
+        /*  usuario.setId(0);
+        usuario.setEmail("");
+        usuario.setNombre("Invitado");
+        coordinador.mostrarHome(usuario);*/
+        coordinador.mostrarClienteHomeConPopup(usuario);
+        //}
+      // coordinador.mostrarLogin();
     }
 
     @FXML

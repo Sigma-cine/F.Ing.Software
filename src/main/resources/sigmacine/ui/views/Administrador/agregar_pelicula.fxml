@@ -3,105 +3,107 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="980.0"
+<BorderPane prefHeight="680.0" prefWidth="1200.0"
             style="-fx-background-color: #000000;"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="sigmacine.ui.controller.admin.AgregarPeliculaController">
 
-    <!-- BARRA SUPERIOR -->
+    <!-- Header -->
     <top>
-        <BorderPane prefHeight="52.0" style="-fx-padding: 40; -fx-background-color: #993726;">
-            <left>
-                <Text text="Administrar Películas" fill="WHITE">
-                    <font><Font name="System Bold" size="23.0"/></font>
-                </Text>
-            </left>
+        <BorderPane prefHeight="80.0" style="-fx-background-color: #993726;" BorderPane.alignment="CENTER">
+            <center>
+                <Label text="Administrar Películas" textFill="WHITE">
+                    <font><Font name="System Bold" size="22.0"/></font>
+                </Label>
+            </center>
+            <right>
+                <HBox spacing="10" style="-fx-padding: 10;">
+                    <TextField fx:id="campoBusqueda" promptText="Buscar por título o género" prefWidth="420"/>
+                    <Button text="Buscar"       style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onBuscar"/>
+                    <Button text="Listar todas" style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onListarTodas"/>
+                </HBox>
+            </right>
         </BorderPane>
     </top>
 
-    <!-- CONTENIDO -->
+    <!-- Tabla + Panel gestión -->
     <center>
-        <VBox spacing="10" style="-fx-padding: 16;">
-            <!-- BUSCADOR -->
-            <HBox spacing="8" style="-fx-background-color:#111; -fx-padding:10; -fx-background-radius: 6;">
-                <TextField fx:id="campoBusqueda" promptText="Buscar por título o género" HBox.hgrow="ALWAYS"
-                           style="-fx-background-radius: 6; -fx-text-fill: #000;"/>
-                <Button text="Buscar"       onAction="#onBuscar"
-                        style="-fx-background-color:#993726; -fx-background-radius:10; -fx-text-fill:WHITE;"/>
-                <Button text="Listar todas" onAction="#onListarTodas"
-                        style="-fx-background-color:#993726; -fx-background-radius:10; -fx-text-fill:WHITE;"/>
-            </HBox>
-
-            <!-- TABLA -->
-            <TableView fx:id="tablaPeliculas" prefHeight="260.0">
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <!-- Tabla -->
+            <TableView fx:id="tablaPeliculas" prefHeight="330">
                 <columns>
-                    <TableColumn fx:id="columnaId"            text="ID"            prefWidth="60"/>
-                    <TableColumn fx:id="columnaTitulo"        text="Título"        prefWidth="240"/>
+                    <TableColumn fx:id="columnaId"            text="ID"            prefWidth="70"/>
+                    <TableColumn fx:id="columnaTitulo"        text="Título"        prefWidth="300"/>
                     <TableColumn fx:id="columnaGenero"        text="Género"        prefWidth="160"/>
-                    <TableColumn fx:id="columnaClasificacion" text="Clasificación" prefWidth="120"/>
-                    <TableColumn fx:id="columnaDuracion"      text="Duración"      prefWidth="90"/>
+                    <TableColumn fx:id="columnaClasificacion" text="Clasificación" prefWidth="130"/>
+                    <TableColumn fx:id="columnaDuracion"      text="Duración"      prefWidth="100"/>
                     <TableColumn fx:id="columnaEstado"        text="Estado"        prefWidth="140"/>
                 </columns>
             </TableView>
 
-            <!-- FORMULARIO (crear/editar) -->
+            <!-- Panel de gestión -->
             <TitledPane text="Gestión de Películas" expanded="true">
                 <content>
-                    <GridPane hgap="10" vgap="8" style="-fx-padding: 16; -fx-background-color: #000000;">
+                    <GridPane hgap="12" vgap="10" style="-fx-background-color: #111; -fx-padding: 16; -fx-background-radius: 8;">
                         <columnConstraints>
-                            <ColumnConstraints percentWidth="15"/>
-                            <ColumnConstraints percentWidth="35"/>
-                            <ColumnConstraints percentWidth="15"/>
-                            <ColumnConstraints percentWidth="35"/>
+                            <ColumnConstraints prefWidth="210"/>
+                            <ColumnConstraints prefWidth="370"/>
+                            <ColumnConstraints prefWidth="210"/>
+                            <ColumnConstraints prefWidth="370"/>
                         </columnConstraints>
 
                         <!-- Fila 0 -->
                         <Label text="Título:" textFill="WHITE"/>
-                        <TextField fx:id="campoTituloPelicula" GridPane.columnIndex="1" style="-fx-background-radius:6;"/>
+                        <TextField fx:id="campoTituloPelicula" GridPane.columnIndex="1" />
                         <Label text="Género:" textFill="WHITE" GridPane.columnIndex="2"/>
-                        <TextField fx:id="campoGeneroPelicula" GridPane.columnIndex="3" style="-fx-background-radius:6;"/>
+                        <TextField fx:id="campoGeneroPelicula" GridPane.columnIndex="3"/>
 
                         <!-- Fila 1 -->
                         <Label text="Clasificación:" textFill="WHITE" GridPane.rowIndex="1"/>
-                        <TextField fx:id="campoClasificacionPelicula" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-background-radius:6;"/>
+                        <TextField fx:id="campoClasificacionPelicula" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                         <Label text="Duración (min):" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-                        <TextField fx:id="campoDuracionMinutos" GridPane.columnIndex="3" GridPane.rowIndex="1" style="-fx-background-radius:6;"/>
+                        <TextField fx:id="campoDuracionMinutos" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
 
                         <!-- Fila 2 -->
                         <Label text="Director:" textFill="WHITE" GridPane.rowIndex="2"/>
-                        <TextField fx:id="campoDirectorPelicula" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-background-radius:6;"/>
+                        <TextField fx:id="campoDirectorPelicula" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                         <Label text="Reparto:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                        <TextField fx:id="campoRepartoPelicula" GridPane.columnIndex="3" GridPane.rowIndex="2" style="-fx-background-radius:6;"/>
+                        <TextField fx:id="campoRepartoPelicula" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
 
-                        <!-- Fila 3 -->
-                        <Label text="Trailer (URL):" textFill="WHITE" GridPane.rowIndex="3"/>
-                        <TextField fx:id="campoUrlTrailer" GridPane.columnIndex="1" GridPane.rowIndex="3" style="-fx-background-radius:6;"/>
-                        <Label text="Poster (URL):" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                        <TextField fx:id="campoUrlPoster" GridPane.columnIndex="3" GridPane.rowIndex="3" style="-fx-background-radius:6;"/>
-
-                        <!-- Fila 4 -->
-                        <Label text="Estado:" textFill="WHITE" GridPane.rowIndex="4"/>
-                        <ComboBox fx:id="comboEstado" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-                        <Label text="Sinopsis:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="4"/>
-                        <TextArea fx:id="campoSinopsisPelicula" GridPane.columnIndex="3" GridPane.rowIndex="4"
-                                  prefRowCount="3" style="-fx-background-radius:6;"/>
-
-                        <!-- Fila 5: Botones -->
-                        <HBox spacing="8" GridPane.columnSpan="4" GridPane.rowIndex="5" style="-fx-padding: 8 0 0 0;">
-                            <Button text="Nuevo" onAction="#onNuevo"
-                                    style="-fx-background-color:#444; -fx-background-radius:10; -fx-text-fill:WHITE;"/>
-                            <Button text="Crear" onAction="#onCrearNuevaPelicula"
-                                    style="-fx-background-color:#993726; -fx-background-radius:10; -fx-text-fill:WHITE;"/>
-                            <Button text="Actualizar" onAction="#onActualizarSeleccion"
-                                    style="-fx-background-color:#993726; -fx-background-radius:10; -fx-text-fill:WHITE;"/>
-                            <Button text="Eliminar" onAction="#onEliminarSeleccion"
-                                    style="-fx-background-color:#7a1f15; -fx-background-radius:10; -fx-text-fill:WHITE;"/>
+                        <!-- Fila 3: Póster + Trailer URL -->
+                        <Label text="Póster:" textFill="WHITE" GridPane.rowIndex="3"/>
+                        <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="3" alignment="CENTER_LEFT">
+                            <Button text="Elegir imagen" onAction="#onElegirImagen"
+                                    style="-fx-background-color:#993726; -fx-text-fill:white;"/>
+                            <Label fx:id="lblImgStatus" text="Sin imagen" textFill="WHITE"/>
                         </HBox>
 
-                        <!-- Fila 6: Mensajes en línea -->
-                        <Label fx:id="mensajeLabel"
-                               GridPane.columnSpan="4" GridPane.rowIndex="6" GridPane.halignment="CENTER"
+                        <Label text="Trailer (URL):" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                        <TextField fx:id="campoUrlTrailer" GridPane.columnIndex="3" GridPane.rowIndex="3"
+                                   promptText="https://www.youtube.com/watch?v=..."/>
+
+                        <!-- Fila 4: Texto de ruta del póster -->
+                        <Label text="Ruta póster:" textFill="WHITE" GridPane.rowIndex="4"/>
+                        <TextField fx:id="campoUrlPoster" GridPane.columnIndex="1" GridPane.rowIndex="4"
+                                   promptText="ruta relativa (p.ej. Images/xyz.png)"/>
+
+                        <!-- Fila 5 -->
+                        <Label text="Estado:" textFill="WHITE" GridPane.rowIndex="5"/>
+                        <ComboBox fx:id="comboEstado" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                        <Label text="Sinopsis:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+                        <TextArea fx:id="campoSinopsisPelicula" GridPane.columnIndex="3" GridPane.rowIndex="5" prefRowCount="3"/>
+
+                        <!-- Fila 6: Botones -->
+                        <HBox spacing="10" GridPane.rowIndex="6" GridPane.columnSpan="4" alignment="CENTER_LEFT">
+                            <Button text="Nuevo"      style="-fx-background-color: #333;"     textFill="WHITE" onAction="#onNuevo"/>
+                            <Button text="Crear"      style="-fx-background-color: #993726;"  textFill="WHITE" onAction="#onCrearNuevaPelicula"/>
+                            <Button text="Actualizar" style="-fx-background-color: #993726;"  textFill="WHITE" onAction="#onActualizarSeleccion"/>
+                            <Button text="Eliminar"   style="-fx-background-color: #993726;"  textFill="WHITE" onAction="#onEliminarSeleccion"/>
+                        </HBox>
+
+                        <!-- Fila 7: Mensajes -->
+                        <Label fx:id="mensajeLabel" GridPane.rowIndex="7" GridPane.columnSpan="4"
                                style="-fx-font-weight:bold; -fx-padding:6; -fx-text-fill:white;"/>
                     </GridPane>
                 </content>
