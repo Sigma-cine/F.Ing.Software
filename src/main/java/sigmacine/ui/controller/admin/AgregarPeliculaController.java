@@ -100,7 +100,7 @@ public class AgregarPeliculaController {
             if (file == null) return;
 
             Path projectRoot = Path.of("").toAbsolutePath();
-            Path imagesDir   = projectRoot.resolve("src//main//resources//Images");
+            Path imagesDir   = projectRoot.resolve("src/main/resources/Images");
             if (!Files.exists(imagesDir)) Files.createDirectories(imagesDir);
 
             String ext = extension(file.getName());
@@ -122,6 +122,8 @@ public class AgregarPeliculaController {
             mostrarMensaje("ERROR", "No se pudo cargar la imagen: " + ex.getMessage());
         }
     }
+
+
 
     private static String extension(String name) {
         int p = name.lastIndexOf('.');
