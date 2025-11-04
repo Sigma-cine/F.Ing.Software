@@ -584,8 +584,7 @@ public class AsientosController implements Initializable {
         // Sincronizar con el carrito y mostrar confirmación
         sincronizarAsientosConCarrito();
         
-        // Abrir pantalla de pago
-        abrirPantallaPago();
+        // Ya no navegamos automáticamente a pago - el usuario puede ir al carrito o continuar comprando
     }
 
     private Set<String> shiftAccesiblesToFirstRowPlus2(Set<String> entrada) {
@@ -671,34 +670,6 @@ public class AsientosController implements Initializable {
                     setSeatState(boton, SeatState.SELECTED);
                 }
             }
-        }
-    }
-    
-    /**
-     * Abre la pantalla de pago como un diálogo modal.
-     */
-    private void abrirPantallaPago() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/pago.fxml"));
-            javafx.scene.Parent root = loader.load();
-            
-            javafx.stage.Stage dialogPago = new javafx.stage.Stage();
-            dialogPago.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            dialogPago.initOwner(btnContinuar.getScene().getWindow());
-            dialogPago.setTitle("Resumen de compra - Sigma Cine");
-            dialogPago.setResizable(false);
-            dialogPago.setScene(new javafx.scene.Scene(root));
-            
-            // Mostrar el diálogo y esperar a que se cierre
-            dialogPago.showAndWait();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            javafx.scene.control.Alert error = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
-            error.setTitle("Error");
-            error.setHeaderText("Error al abrir pantalla de pago");
-            error.setContentText("No se pudo cargar la pantalla de pago: " + e.getMessage());
-            error.showAndWait();
         }
     }
 }
