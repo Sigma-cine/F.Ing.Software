@@ -260,7 +260,7 @@ public class ControladorControlador {
 
     public void mostrarConfiteria() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/confiteria.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/menu.fxml"));
             if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
             Parent root = loader.load();
             

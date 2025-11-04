@@ -26,7 +26,7 @@ public class VerHistorialServiceTest {
     }
 
     @Test
-    public void verHistorial_delegates_to_repo() {
+    public void verHistorial() {
     HistorialCompraDTO h = new HistorialCompraDTO(1L, LocalDate.now(), BigDecimal.ZERO, "Bogota", LocalDate.now(), LocalTime.NOON, 1, 0);
     List<HistorialCompraDTO> list = List.of(h);
         VerHistorialService svc = new VerHistorialService(new StubRepo(list));

@@ -36,14 +36,26 @@ public class MenuController implements Initializable {
     @FXML private Button btnVerCombos;
 
     private UsuarioDTO usuario;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Solo mantener el Singleton para marcar la página activa
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            // Ensure the top navigation bar (BarraController) marks Confitería active when showing the menu
+            try {
+                var barra = BarraController.getInstance();
+                if (barra != null) barra.marcarBotonActivo("confiteria");
+            } catch (Exception ignore) {}
+            
+            barraController.marcarBotonActivo("combos");
+        }
         if (txtBuscar != null) txtBuscar.setOnAction(e -> loadProducts(txtBuscar.getText()));
         if (btnVerCarrito != null) btnVerCarrito.setOnAction(e -> toggleCarrito());
         if (btnVerCombos != null) btnVerCombos.setOnAction(e -> showCombos());
         if (gridMenu != null) gridMenu.getStyleClass().add("menu-grid");
         loadProducts(null);
+        
+        
     }
 
     public void setUsuario(UsuarioDTO u) { this.usuario = u; }
@@ -104,10 +116,18 @@ public class MenuController implements Initializable {
     imgFrame.setPrefHeight(220);
         imgFrame.getChildren().add(iv);
 
-    javafx.scene.control.Label title = new javafx.scene.control.Label(p.nombre != null ? p.nombre : "");
-    title.getStyleClass().add("menu-title");
-        title.setWrapText(true);
-        title.setMaxWidth(520);
+    javafx.scene.control.Label titleName = new javafx.scene.control.Label(p.nombre != null ? p.nombre : "");
+    titleName.getStyleClass().add("menu-title");
+        titleName.setWrapText(true);
+        titleName.setMaxWidth(420);
+
+    javafx.scene.control.Label priceLabel = new javafx.scene.control.Label(p.precio != null ? String.format("$%.2f", p.precio.doubleValue()) : "");
+    priceLabel.getStyleClass().add("menu-price");
+    priceLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #fff;");
+
+    javafx.scene.layout.HBox titleBox = new javafx.scene.layout.HBox(8, titleName, priceLabel);
+    titleBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+    titleBox.setMaxWidth(520);
 
     javafx.scene.control.Label desc = new javafx.scene.control.Label(p.descripcion != null ? p.descripcion : "");
     desc.getStyleClass().add("menu-desc");
@@ -180,7 +200,7 @@ public class MenuController implements Initializable {
         CarritoService.getInstance().addItem(dto);
     });
 
-    VBox box = new VBox(10, imgFrame, title, selectors, add);
+    VBox box = new VBox(10, imgFrame, titleBox, desc, selectors, add);
         box.setPadding(new Insets(8));
         box.getStyleClass().add("menu-item");
         box.setPrefWidth(540);
@@ -193,7 +213,7 @@ public class MenuController implements Initializable {
         try {
             var db = new DatabaseConfig();
             try (Connection cn = db.getConnection();
-                PreparedStatement ps = cn.prepareStatement("SELECT ID, NOMBRE, DESCRIPCION, PRECIO_LISTA, IMAGEN_URL, SABORES FROM PRODUCTO WHERE ESTADO_BOOL = TRUE ORDER BY ID")) {
+                PreparedStatement ps = cn.prepareStatement("SELECT ID, NOMBRE, DESCRIPCION, PRECIO_LISTA, IMAGEN_URL, SABORES FROM PRODUCTO WHERE ESTADO_BOOL = TRUE AND TIPO IN ('COMIDA','BEBIDA') ORDER BY ID")) {
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
                         long id = rs.getLong("ID");

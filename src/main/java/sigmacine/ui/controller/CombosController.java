@@ -76,84 +76,72 @@ public class CombosController implements Initializable {
         imgFrame.setPrefHeight(220);
         imgFrame.getChildren().add(iv);
 
-        javafx.scene.control.Label title = new javafx.scene.control.Label(combo.nombre != null ? combo.nombre : "");
-        title.getStyleClass().add("menu-title");
-        title.setWrapText(true);
-        title.setMaxWidth(520);
+    javafx.scene.control.Label titleName = new javafx.scene.control.Label(combo.nombre != null ? combo.nombre : "");
+    titleName.getStyleClass().add("menu-title");
+    titleName.setWrapText(true);
+    titleName.setMaxWidth(420);
 
-        javafx.scene.control.Label desc = new javafx.scene.control.Label(combo.descripcion != null ? combo.descripcion : "");
-        desc.getStyleClass().add("menu-desc");
-        desc.setWrapText(true);
-        desc.setMaxWidth(520);
+    javafx.scene.control.Label priceLabel = new javafx.scene.control.Label(combo.precio != null ? String.format("$%.2f", combo.precio.doubleValue()) : "");
+    priceLabel.getStyleClass().add("menu-price");
+    priceLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #fff;");
 
-        javafx.scene.layout.HBox selectors = new javafx.scene.layout.HBox(12);
-        selectors.setAlignment(javafx.geometry.Pos.CENTER);
-        selectors.getStyleClass().add("menu-selectors");
-        
+    javafx.scene.layout.HBox titleBox = new javafx.scene.layout.HBox(8, titleName, priceLabel);
+    titleBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+    titleBox.setMaxWidth(520);
+
+    javafx.scene.control.Label desc = new javafx.scene.control.Label(combo.descripcion != null ? combo.descripcion : "");
+    desc.getStyleClass().add("menu-desc");
+    desc.setWrapText(true);
+    desc.setMaxWidth(520);
+
+        // quantity selector
         final IntegerProperty quantity = new SimpleIntegerProperty(1);
         javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
         javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
         javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("+");
-        
+
         btnMinus.getStyleClass().add("qty-btn");
         btnPlus.getStyleClass().add("qty-btn");
         lblQty.getStyleClass().add("qty-label");
-        
-        // Force text color inline to override any CSS rules
+
         btnMinus.setStyle("-fx-text-fill: #222222;");
         btnPlus.setStyle("-fx-text-fill: #222222;");
-        
+
         btnMinus.setOnAction(e -> {
             if (quantity.get() > 1) {
                 quantity.set(quantity.get() - 1);
                 lblQty.setText(String.valueOf(quantity.get()));
             }
         });
-        
+
         btnPlus.setOnAction(e -> {
             if (quantity.get() < 10) {
                 quantity.set(quantity.get() + 1);
                 lblQty.setText(String.valueOf(quantity.get()));
             }
         });
-        
+
         javafx.scene.layout.HBox qtyBox = new javafx.scene.layout.HBox(8);
         qtyBox.setAlignment(javafx.geometry.Pos.CENTER);
         qtyBox.getStyleClass().add("qty-selector");
         qtyBox.getChildren().addAll(btnMinus, lblQty, btnPlus);
 
-        javafx.scene.control.ComboBox<String> cbOpt = new javafx.scene.control.ComboBox<>();
-        if (combo.sabores != null && !combo.sabores.trim().isEmpty()) {
-            String[] parts = combo.sabores.split(",");
-            for (String s : parts) {
-                String v = s.trim().replaceAll("_", " ");
-                if (!v.isEmpty()) cbOpt.getItems().add(v);
-            }
-            cbOpt.setPromptText("Sabor");
-        } else {
-            cbOpt.getItems().addAll("Original");
-            cbOpt.setPromptText("Sabor");
-        }
-
-        cbOpt.getStyleClass().add("menu-select");
-        cbOpt.setPrefWidth(180);
-        selectors.getChildren().addAll(qtyBox, cbOpt);
-
+        // Add button
         Button add = new Button("Agregar al carrito");
         add.getStyleClass().addAll("buy-btn", "menu-add-btn");
         add.setOnAction(e -> {
-            String selectedSabor = null;
-            try { selectedSabor = cbOpt.getSelectionModel().getSelectedItem(); } catch (Exception ignore) {}
             int qty = quantity.get();
-
             String itemName = combo.nombre;
-            var dto = (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original"))
-                ? new CompraProductoDTO(combo.id, itemName + " (" + selectedSabor + ")", qty, combo.precio, selectedSabor)
-                : new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
+            var dto = new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
             CarritoService.getInstance().addItem(dto);
         });
 
-        VBox box = new VBox(10, imgFrame, title, selectors, add);
+        // Center quantity selector and add button together
+        javafx.scene.layout.HBox actionBox = new javafx.scene.layout.HBox(12);
+        actionBox.setAlignment(javafx.geometry.Pos.CENTER);
+        actionBox.getChildren().addAll(qtyBox, add);
+
+    VBox box = new VBox(10, imgFrame, titleBox, desc, actionBox);
         box.setPadding(new Insets(8));
         box.getStyleClass().add("menu-item");
         box.setPrefWidth(540);

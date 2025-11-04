@@ -52,7 +52,6 @@ public class SigmaCardServiceTest {
 
     @Test
     public void constructorSinArgumentos() {
-        // Este test cubre el constructor sin argumentos que instancia el repositorio real
         SigmaCardService svc = new SigmaCardService();
         assertNotNull(svc);
     }
@@ -62,7 +61,6 @@ public class SigmaCardServiceTest {
         SigmaCardService svc = new SigmaCardService(new StubRepo());
         String formateado = svc.format(null);
         assertNotNull(formateado);
-        // Debe formatear como cero en pesos colombianos
         assertTrue(formateado.contains("0"));
     }
 }

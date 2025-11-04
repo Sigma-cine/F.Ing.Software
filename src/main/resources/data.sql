@@ -54,10 +54,7 @@ INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada Genera
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(3, 'Entrada VIP',       25.00, '2025-01-01');
 
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(1, 'Combo Popcorn', 'Popcorn grande y refresco grande', NULL, 'Original', 'COMIDA', 10.50, 'Disponible', TRUE);
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Perro caliente',       'Hot Dog Clásico con papas', '/Images/Menu/Perro_caliente.png', 'Original', 'COMIDA',  8.75, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(3, 'Nachos',        'Nachos con queso y jalapeños',     NULL, 'Original,Extra Queso', 'COMIDA',  9.25, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Agua',          'Botella de agua (500ml)',          NULL, 'Original', 'BEBIDA',  3.00, 'Disponible', TRUE);
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(5, 'Crispetas',     'Palomitas de maíz clásicas',       '/Images/Menu/Crispetas.png', 'Dulce,Salada,Mixta', 'COMIDA',  7.50, 'Disponible', TRUE);
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(6, 'Gaseosa',       'Refresco pequeño (330ml)',         '/Images/Menu/Gaseosas.png', 'CocaCola,Manzana,Naranja', 'BEBIDA',  4.00, 'Disponible', TRUE);
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(7, 'ICEE',          'Bebida ICEE (pequeña)',            '/Images/Menu/ICEE.png', 'Fresa,Mora_Azul,Limón', 'BEBIDA',  5.00, 'Disponible', TRUE);
@@ -66,11 +63,11 @@ INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO
 
 -- COMBOS
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(10, 'Shake Up Your Snacking', 'Tus palomitas, tus reglas', '/Images/Combos/Combo_shake_up_your_shaking.png', 'Original', 'COMBO', 14.99, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(11, 'Combo Nachos', 'Agregue los palomitas taps de mantequilla como prefiera', '/Images/Combos/Combo_nachos.png', 'Original', 'COMBO', 12.50, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(12, 'Snack & Sip', 'Agregue los palomitas taps de mantequilla como prefiera', '/Images/Combos/Combo_snack_sip.png', 'Original', 'COMBO', 13.75, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(13, 'Combo Pitufos', 'Donde tus abuelos vivan en emocionantes aventuras con bebidas exclusivas', '/Images/Combos/Combo_pitufos.png', 'Original', 'COMBO', 11.99, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(11, 'Combo Nachos', 'Nachos con queso y hot dog clásico', '/Images/Combos/Combo_nachos.png', 'Original', 'COMBO', 12.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(12, 'Snack & Sip', 'Crispetas y bebida ilimitada', '/Images/Combos/Combo_snack_sip.png', 'Original', 'COMBO', 13.75, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(13, 'Combo Pitufos', 'Crispetas, vaso con pitufos y tu peluche favorito', '/Images/Combos/Combo_pitufos.png', 'Original', 'COMBO', 11.99, 'Disponible', TRUE);
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(14, 'Gaseosas Exclusivas', 'Disfruta la mejor selección de bebidas', '/Images/Combos/Combo_gaseosas_exclusivas.png', 'CocaCola,Fanta,MrBig,Manzana,Limón', 'COMBO', 8.99, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(15, 'Combo Crispetas y Perro', 'Crispetas grandes y hot dog clásico', '/Images/Combos/Combo_crispetas_perro.png', 'Original', 'COMBO', 15.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(15, 'Combo Crispetas y Perro', 'Crispetas grandes, M&M, ICEE, gaseosa y hot dog clásico', '/Images/Combos/Combo_crispetas_perro.png', 'Original', 'COMBO', 15.50, 'Disponible', TRUE);
 
 -- Funciones en distintas ciudades y sedes
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(1,  '2025-09-15', '12:50', 'Activa', TIME '02:46:00', TRUE, 1, 1); -- Bogotá / Salitre Plaza
@@ -123,8 +120,6 @@ INSERT INTO COMPRA_PRODUCTO (COMPRA_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, 
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (2, 50.00, TRUE);
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (3,  0.00, TRUE);
 
--- DELETE FROM COMPRA_PRODUCTO WHERE PRODUCTO_ID IN (SELECT ID FROM PRODUCTO WHERE IMAGEN_URL IS NULL);
--- DELETE FROM PRODUCTO WHERE IMAGEN_URL IS NULL;
 
 -- 2025-10-19 - Película 1 (Dune: Part Two)
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
