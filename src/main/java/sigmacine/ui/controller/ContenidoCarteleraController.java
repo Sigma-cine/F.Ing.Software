@@ -31,6 +31,8 @@ import sigmacine.dominio.entity.Pelicula;
 import sigmacine.dominio.entity.PeliculaTrailer;
 import sigmacine.dominio.repository.FuncionRepository;
 import sigmacine.dominio.repository.PeliculaTrailerRepository;
+import sigmacine.aplicacion.service.SillaService;
+import sigmacine.infraestructura.persistencia.jdbc.SillaRepositoryJdbc;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.FuncionRepositoryJdbc;
@@ -649,8 +651,9 @@ public class ContenidoCarteleraController {
                 
                 String hora = seleccion;
 
-                Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
-                Set<String> accesibles = Set.of("E3","E4","E5","E6");
+                // Obtener asientos ocupados y accesibles desde la base de datos
+                Set<String> ocupados = obtenerAsientosOcupados(selectedFuncionId);
+                Set<String> accesibles = obtenerAsientosAccesibles(selectedFuncionId);
 
                 host.mostrarAsientos(titulo, hora, ocupados, accesibles);
                 return;
@@ -680,8 +683,10 @@ public class ContenidoCarteleraController {
             Parent root = loader.load();
 
             AsientosController ctrl = loader.getController();
-            Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
-            Set<String> accesibles = Set.of("E3","E4","E5","E6");
+            
+            // Obtener asientos ocupados y accesibles desde la base de datos
+            Set<String> ocupados = obtenerAsientosOcupados(selectedFuncionId);
+            Set<String> accesibles = obtenerAsientosAccesibles(selectedFuncionId);
             
             // Obtener información de ciudad y sede de la función seleccionada
             String ciudad = selectedFuncion != null ? selectedFuncion.getCiudad() : "";
@@ -924,5 +929,47 @@ public class ContenidoCarteleraController {
         }
         
         return null;
+    }
+    
+    /**
+     * Obtiene los asientos ocupados para una función específica desde la base de datos.
+     */
+    private Set<String> obtenerAsientosOcupados(Long funcionId) {
+        if (funcionId == null) {
+            // Datos por defecto si no hay función seleccionada
+            return Set.of("B3", "B4", "C7", "E2", "F8");
+        }
+        
+        try {
+            DatabaseConfig dbConfig = new DatabaseConfig();
+            SillaRepositoryJdbc sillaRepo = new SillaRepositoryJdbc(dbConfig);
+            SillaService sillaService = new SillaService(sillaRepo);
+            return sillaService.obtenerAsientosOcupados(funcionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // En caso de error, usar datos por defecto para no bloquear la UI
+            return Set.of("B3", "B4", "C7", "E2", "F8");
+        }
+    }
+    
+    /**
+     * Obtiene los asientos accesibles para una función específica desde la base de datos.
+     */
+    private Set<String> obtenerAsientosAccesibles(Long funcionId) {
+        if (funcionId == null) {
+            // Datos por defecto si no hay función seleccionada
+            return Set.of("E3", "E4", "E5", "E6");
+        }
+        
+        try {
+            DatabaseConfig dbConfig = new DatabaseConfig();
+            SillaRepositoryJdbc sillaRepo = new SillaRepositoryJdbc(dbConfig);
+            SillaService sillaService = new SillaService(sillaRepo);
+            return sillaService.obtenerAsientosAccesibles(funcionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // En caso de error, usar datos por defecto
+            return Set.of("E3", "E4", "E5", "E6");
+        }
     }
 }
