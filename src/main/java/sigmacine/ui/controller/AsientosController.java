@@ -212,7 +212,6 @@ public class AsientosController implements Initializable {
                 var cur = sigmacine.aplicacion.session.Session.getCurrent();
                 if (cur != null && cur.getEmail() != null && !cur.getEmail().isBlank()) controller.setUsuarioEmail(cur.getEmail());
             }
-            System.out.println("[AsientosController] opening historial view...");
             loader.setControllerFactory(cls -> {
                 if (cls == sigmacine.ui.controller.VerHistorialController.class) return controller;
                 try { return cls.getDeclaredConstructor().newInstance(); } catch (Exception ex) { throw new RuntimeException(ex); }
@@ -338,23 +337,15 @@ public class AsientosController implements Initializable {
     }
 
     private void sincronizarAsientosConCarrito() {
-        System.out.println("DEBUG: sincronizarAsientosConCarrito iniciado");
-        System.out.println("DEBUG: seleccion actual: " + seleccion);
-        System.out.println("DEBUG: asientoItems antes: " + asientoItems.size());
-        
         // Limpiar asientos anteriores del carrito
         if (!asientoItems.isEmpty()) {
-            System.out.println("DEBUG: Intentando remover " + asientoItems.size() + " asientos anteriores del carrito");
             for (var dto : asientoItems) {
                 carrito.removeItem(dto);
-                System.out.println("DEBUG: Removido del carrito: " + dto.getNombre());
             }
             asientoItems.clear();
-            System.out.println("DEBUG: Lista asientoItems limpiada");
         }
         
         if (seleccion.isEmpty()) {
-            System.out.println("DEBUG: No hay selección, terminando");
             return;
         }
         
@@ -382,10 +373,7 @@ public class AsientosController implements Initializable {
             var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
             carrito.addItem(dto);
             asientoItems.add(dto);
-            System.out.println("DEBUG: Añadido al carrito: " + nombre);
         }
-        
-        System.out.println("DEBUG: asientoItems después: " + asientoItems.size());
         
         // Mostrar mensaje de confirmación cuando se confirman los asientos
         if (!seleccion.isEmpty()) {
@@ -658,8 +646,6 @@ public class AsientosController implements Initializable {
      * para evitar duplicados cuando el usuario vuelve a entrar a la pantalla.
      */
     private void sincronizarConCarritoExistente() {
-        System.out.println("DEBUG: Sincronizando asientos con carrito existente");
-        
         // Limpiar la selección y lista de asientos actuales
         seleccion.clear();
         asientoItems.clear();
@@ -673,7 +659,6 @@ public class AsientosController implements Initializable {
                 item.getFuncionId().equals(this.funcionId)) {
                 
                 String codigoAsiento = item.getAsiento();
-                System.out.println("DEBUG: Asiento encontrado en carrito: " + codigoAsiento);
                 
                 // Marcar este asiento como seleccionado
                 seleccion.add(codigoAsiento);
@@ -684,11 +669,8 @@ public class AsientosController implements Initializable {
                 if (boton != null) {
                     boton.setSelected(true);
                     setSeatState(boton, SeatState.SELECTED);
-                    System.out.println("DEBUG: Botón " + codigoAsiento + " marcado como seleccionado");
                 }
             }
         }
-        
-        System.out.println("DEBUG: Sincronización completada. Asientos seleccionados: " + seleccion);
     }
 }

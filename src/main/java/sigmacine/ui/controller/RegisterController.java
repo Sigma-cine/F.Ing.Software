@@ -71,7 +71,6 @@ public class RegisterController {
 
     @FXML
     public void onRegistrar() {
-        System.out.println("[DEBUG] onRegistrar invoked");
         String nombre = txtNombre.getText().trim();
         String email  = txtEmail.getText().trim();
         String pass   = txtPassword.getText();

@@ -167,7 +167,6 @@ public class CarteleraController {
             if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); wireTopbar(); });
             if (miHistorial != null) miHistorial.setOnAction(e -> {
                 try {
-                    System.out.println("[CarteleraController] miHistorial clicked, preparing historial view...");
                     if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
                         javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                         a.setTitle("Acceso denegado"); a.setHeaderText(null); a.setContentText("Debes iniciar sesión para ver tu historial de compras."); a.showAndWait(); return;
