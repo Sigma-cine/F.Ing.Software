@@ -41,7 +41,6 @@ public class App extends Application {
 
         ControladorControlador coordinador = new ControladorControlador(stage, authFacade);
 
-        // Build a simple service container to support controller instantiation (basic DI)
         Map<Class<?>, Object> container = new HashMap<>();
         container.put(sigmacine.infraestructura.configDataBase.DatabaseConfig.class, db);
         container.put(sigmacine.dominio.repository.UsuarioRepository.class, repo);
@@ -49,7 +48,6 @@ public class App extends Application {
         container.put(sigmacine.aplicacion.service.RegistroService.class, registroService);
         container.put(sigmacine.aplicacion.facade.AuthFacade.class, authFacade);
         
-        // repositories and services commonly used by controllers
         var peliculaRepo = new PeliculaRepositoryJdbc(db);
         container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
         var compraRepo = new CompraRepositoryJdbc(db);
@@ -58,7 +56,6 @@ public class App extends Application {
         container.put(CompraService.class, compraService);
         container.put(CarritoService.class, CarritoService.getInstance());
 
-        // Controller factory: try to find a constructor whose parameter types are available in container
         Callback<Class<?>, Object> controllerFactory = (Class<?> clazz) -> {
             try {
                 for (Constructor<?> ctor : clazz.getConstructors()) {
@@ -67,7 +64,6 @@ public class App extends Application {
                     boolean ok = true;
                     for (int i = 0; i < pts.length; i++) {
                         Object candidate = null;
-                        // search for a matching instance by assignable type
                         for (Map.Entry<Class<?>, Object> e : container.entrySet()) {
                             if (pts[i].isAssignableFrom(e.getKey())) {
                                 candidate = e.getValue();
@@ -84,17 +80,14 @@ public class App extends Application {
                         return ctor.newInstance(args);
                     }
                 }
-                // fallback to no-arg constructor
                 return clazz.getDeclaredConstructor().newInstance();
             } catch (Exception ex) {
                 throw new RuntimeException("No se pudo instanciar controlador: " + clazz.getName(), ex);
             }
         };
 
-        // provide the factory to the coordinator so it applies to FXMLLoader instances
         coordinador.setControllerFactory(controllerFactory);
         
-        // Clear preference if exists
         try {
             java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(sigmacine.ui.controller.ControladorControlador.class);
             if (prefs.getBoolean("cityPopupShown", false)) {
@@ -102,7 +95,6 @@ public class App extends Application {
             }
         } catch (Exception ignored) {}
         
-        // Mostrar la página principal con el popup de ciudad
         sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
         guest.setId(0);
         guest.setEmail("");

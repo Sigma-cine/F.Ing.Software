@@ -41,7 +41,6 @@ public class DetallePeliculaController {
 
     @FXML
     private void initialize() {
-        // Solo mantener el Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("detalle");
@@ -49,7 +48,6 @@ public class DetallePeliculaController {
         
         if (btnComprar != null) {
             btnComprar.setOnAction(e -> {
-                // Navegar a la vista de contenidoCartelera para elegir función y asientos
                 try {
                     var url = getClass().getResource("/sigmacine/ui/views/contenidoCartelera.fxml");
                     if (url == null) {

@@ -12,7 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import sigmacine.aplicacion.data.CompraProductoDTO;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.service.CarritoService;

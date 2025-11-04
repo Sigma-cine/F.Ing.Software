@@ -5,15 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
-import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -64,7 +61,6 @@ public class ContenidoCarteleraController {
 
     @FXML
     private void initialize() {
-        // Solo mantener el Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("detalle");
@@ -141,10 +137,8 @@ public class ContenidoCarteleraController {
         if (lblReparto != null) lblReparto.setText(safe(p.getReparto(), ""));
         if (txtSinopsis != null) txtSinopsis.setText(safe(p.getSinopsis()));
 
-        // Cargar trailers
         cargarTrailers(p.getId());
 
-        // Cargar funciones
         cargarFunciones();
     }
 
@@ -163,9 +157,7 @@ public class ContenidoCarteleraController {
                             .filter(f -> city.equalsIgnoreCase(f.getCiudad()))
                             .toList();
                 }
-                // construir tabs de día en base a fechas disponibles
                 buildDayTabsFrom(funciones);
-                // aplicar filtro por día si hay pestaña seleccionada (fall back a la primera fecha disponible)
                 java.time.LocalDate selected = getSelectedDay();
                 if (selected == null) {
                     java.time.LocalDate first = funciones.stream().map(FuncionDisponibleDTO::getFecha)
@@ -222,7 +214,6 @@ public class ContenidoCarteleraController {
         try { panelFunciones.setAlignment(Pos.CENTER); } catch (Exception ignore) {}
         if (funciones == null || funciones.isEmpty()) return;
 
-        // Agrupar por ciudad -> sede y acumular horas únicas por sede
         Map<String, Map<String, Set<FuncionDisponibleDTO>>> porCiudad = new LinkedHashMap<>();
         for (FuncionDisponibleDTO f : funciones) {
             porCiudad.computeIfAbsent(f.getCiudad(), k -> new LinkedHashMap<>())
@@ -246,29 +237,24 @@ public class ContenidoCarteleraController {
                 lblSede.setStyle("-fx-text-fill:#e5e7eb;-fx-font-weight:bold;-fx-font-size:14; -fx-alignment:center;");
                 sedeBox.getChildren().add(lblSede);
 
-                // Etiqueta HORA
                 Label lblHora = new Label("HORA");
                 lblHora.setStyle("-fx-text-fill:#aaaaaa;-fx-font-size:12;-fx-font-weight:bold;");
                 sedeBox.getChildren().add(lblHora);
 
-                // Contenedor que se envuelve cuando no hay espacio suficiente
                 javafx.scene.layout.FlowPane fila = new javafx.scene.layout.FlowPane();
                 fila.setHgap(8);
                 fila.setVgap(4);
                 fila.setAlignment(Pos.CENTER_LEFT);
                 fila.setStyle("-fx-background-color:transparent;");
 
-                // ordenar por hora
                 List<FuncionDisponibleDTO> ordenadas = sedeEntry.getValue().stream()
                         .sorted(java.util.Comparator.comparing(FuncionDisponibleDTO::getHora))
                         .collect(Collectors.toList());
-
-                // construir pills solo con la hora en formato am/pm
+                        
                 for (FuncionDisponibleDTO f : ordenadas) {
-                    String pillText = fmt.format(f.getHora()).toLowerCase(); // ej: 12:50pm
+                    String pillText = fmt.format(f.getHora()).toLowerCase();
                     Button b = new Button(pillText);
                     b.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff66;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 12 4 12;");
-                    // Guardar selección exacta de función
                     b.setOnAction(e -> seleccionarFuncion(f, b));
                     fila.getChildren().add(b);
                 }
@@ -276,7 +262,6 @@ public class ContenidoCarteleraController {
                 ciudadBox.getChildren().add(sedeBox);
             }
 
-            // Envolver cada bloque de ciudad en un contenedor centrado horizontalmente
             HBox wrapCity = new HBox(ciudadBox);
             wrapCity.setAlignment(Pos.CENTER);
             panelFunciones.getChildren().add(wrapCity);
@@ -439,10 +424,8 @@ public class ContenidoCarteleraController {
         try {
             if (trailerContainer == null) return;
             
-            // Limpiar contenido anterior
             trailerContainer.getChildren().clear();
             
-            // Obtener trailers de la base de datos
             DatabaseConfig db = new DatabaseConfig();
             PeliculaTrailerRepository trailerRepo = new PeliculaTrailerRepositoryJdbc(db);
             List<PeliculaTrailer> trailers = trailerRepo.obtenerTrailersPorPelicula(peliculaId);
@@ -450,10 +433,8 @@ public class ContenidoCarteleraController {
             String trailerUrl = null;
             
             if (!trailers.isEmpty()) {
-                // Usar solo el primer trailer de la lista
                 trailerUrl = trailers.get(0).getUrl();
             } else if (pelicula != null && pelicula.getTrailer() != null && !pelicula.getTrailer().trim().isEmpty()) {
-                // Si no hay trailers en la tabla PELICULA_TRAILER, usar el trailer principal de la película
                 trailerUrl = pelicula.getTrailer();
             }
             
@@ -475,11 +456,9 @@ public class ContenidoCarteleraController {
             
             trailerContainer.getChildren().clear();
             
-            // WebView súper simple - configuración mínima
             javafx.scene.web.WebView webView = new javafx.scene.web.WebView();
             webView.setPrefSize(600, 360);
             
-            // Convertir URL y cargar directamente
             String embedUrl = convertirUrlYouTubeAEmbed(url);
             webView.getEngine().load(embedUrl);
             
@@ -509,7 +488,6 @@ public class ContenidoCarteleraController {
         if (url == null || url.trim().isEmpty()) return url;
         
         try {
-            // Patrones comunes de URL de YouTube
             if (url.contains("youtube.com/watch?v=")) {
                 String videoId = url.substring(url.indexOf("v=") + 2);
                 if (videoId.contains("&")) {
@@ -523,7 +501,6 @@ public class ContenidoCarteleraController {
                 }
                 return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
             } else if (url.contains("youtube.com/embed/")) {
-                // Si ya está en formato embed, agregar parámetros
                 if (url.contains("?")) {
                     return url + "&controls=1&modestbranding=1&rel=0&enablejsapi=1";
                 } else {
@@ -534,6 +511,6 @@ public class ContenidoCarteleraController {
             e.printStackTrace();
         }
         
-        return url; // Devolver URL original si no se puede convertir
+        return url;
     }
 }

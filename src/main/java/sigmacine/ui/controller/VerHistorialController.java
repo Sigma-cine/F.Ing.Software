@@ -28,9 +28,7 @@ public class VerHistorialController {
     private VerHistorialService historialService;
     private String usuarioEmail;
 
-    // Constructor sin parámetros requerido por FXML
     public VerHistorialController() {
-        // Inicializar servicio por defecto
         try {
             DatabaseConfig dbConfig = new DatabaseConfig();
             UsuarioRepositoryJdbc usuarioRepo = new UsuarioRepositoryJdbc(dbConfig);
@@ -40,7 +38,6 @@ public class VerHistorialController {
         }
     }
 
-    // Constructor con parámetros (opcional - para inyección manual)
     public VerHistorialController(VerHistorialService historialService) {
         this.historialService = historialService;
     }
@@ -59,7 +56,6 @@ public class VerHistorialController {
 
     @FXML
     public void initialize() {
-        // Solo mantener el Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("historial");
@@ -156,7 +152,6 @@ public class VerHistorialController {
         posterView.setSmooth(true);
         posterView.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.6) , 6,0,0,2 );");
 
-        // intentar cargar poster a partir de un boleto asociado a la compra
         try {
             if (dto.getCompraId() != null && this.historialService != null && this.historialService.repo != null) {
                 var boletos = this.historialService.repo.obtenerBoletosPorCompra(dto.getCompraId());
@@ -176,16 +171,13 @@ public class VerHistorialController {
                 }
             }
         } catch (Exception ex) {
-            // no bloquear la UI por poster
         }
 
-        // Añadir imagen, detalles y botón "Ver detalle"
         Button btnDetalle = new Button("Ver detalle");
         btnDetalle.getStyleClass().add("primary-btn");
         btnDetalle.setOnAction(e -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/detalleCompra.fxml"));
-                // inyectar DTO y repositorio en el controller
                 loader.setControllerFactory(cls -> {
                     if (cls == sigmacine.ui.controller.DetalleCompraController.class) {
                         return new sigmacine.ui.controller.DetalleCompraController(dto, this.historialService.repo);
@@ -223,7 +215,6 @@ public class VerHistorialController {
             }
             java.net.URL res = getClass().getResource("/Images/" + r);
             if (res != null) return new Image(res.toExternalForm(), false);
-            // try as absolute URL / file
             java.io.File f = new java.io.File(ref);
             if (f.exists()) return new Image(f.toURI().toString(), false);
             return new Image(ref, true);

@@ -57,7 +57,6 @@ public class ControladorControlador {
             stage.setTitle("Sigma Cine - Cliente");
             stage.show();
 
-            // MOSTRAR EL POPUP DE CIUDAD ENCIMA DE LA VISTA PRINCIPAL
             mostrarPopupCiudad(usuario);
 
         } catch (Exception e) {
@@ -67,24 +66,21 @@ public class ControladorControlador {
 
     private void mostrarPopupCiudad(UsuarioDTO usuario) {
         try {
-            // Cargar el popup de ciudad existente
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/ciudad.fxml"));
             if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
             Parent popupRoot = loader.load();
             
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initOwner(stage); // El owner es la ventana principal
+            popupStage.initOwner(stage);
             popupStage.setTitle("Seleccionar Ciudad");
             popupStage.setScene(new Scene(popupRoot));
             popupStage.setResizable(false);
             
-            // Configurar el controlador del popup
             Object controller = loader.getController();
             if (controller instanceof CiudadController) {
                 CiudadController ciudadController = (CiudadController) controller;
                 ciudadController.setOnCiudadSelected(ciudad -> {
-                    // Cuando se selecciona una ciudad, actualizar la sesión
                     sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
                     popupStage.close();
                 });
@@ -94,7 +90,6 @@ public class ControladorControlador {
             
         } catch (Exception e) {
             e.printStackTrace();
-            // Si falla el popup, usar ciudad por defecto
             sigmacine.aplicacion.session.Session.setSelectedCity("Bogotá");
         }
     }
@@ -274,7 +269,7 @@ public class ControladorControlador {
             stage.setMaximized(true);
             stage.show();
         } catch (Exception e) {
-            throw new RuntimeException("Error cargando confiteria.fxml", e);
+            throw new RuntimeException("Error cargando menu.fxml", e);
         }
     }
 

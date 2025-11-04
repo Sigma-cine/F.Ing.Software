@@ -30,7 +30,6 @@ public class CarteleraController {
 
     @FXML
     private void initialize() {
-        // Solo mantener esto del Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("cartelera");

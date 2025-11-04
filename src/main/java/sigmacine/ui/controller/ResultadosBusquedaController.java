@@ -8,7 +8,6 @@ import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 import sigmacine.dominio.entity.Pelicula;
 import sigmacine.aplicacion.data.UsuarioDTO;
-import sigmacine.ui.controller.ControladorControlador;
 import java.util.List;
 import java.io.File;
 
@@ -46,7 +45,6 @@ public class ResultadosBusquedaController {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
             javafx.scene.Parent root = loader.load();
             javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
-            // initialize controller with current session so the user remains logged in
             try {
                 Object ctrl = loader.getController();
                 if (ctrl instanceof ClienteController) {
@@ -72,16 +70,13 @@ public class ResultadosBusquedaController {
         if (panelPeliculas == null) return;
         panelPeliculas.getChildren().clear();
         if (peliculas == null || peliculas.isEmpty()) {
-            // Mostrar mensaje amigable cuando no hay coincidencias
             Label msg = new Label("No hay coincidencias");
             msg.setStyle("-fx-text-fill: #ddd; -fx-font-size: 18px; -fx-font-weight: bold;");
-            // Centrar el mensaje dentro del panel
             panelPeliculas.setAlignment(Pos.CENTER);
             panelPeliculas.getChildren().add(msg);
             return;
         }
         for (Pelicula p : peliculas) {
-            // Card container
             VBox tarjeta = new VBox(6);
             tarjeta.setAlignment(Pos.TOP_LEFT);
             tarjeta.setPrefHeight(300);
