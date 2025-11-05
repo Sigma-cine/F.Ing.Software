@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
@@ -24,14 +25,19 @@ import sigmacine.dominio.entity.Pelicula;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
+import javafx.scene.shape.Rectangle;
 
 import java.util.List;
 import java.util.Set;
 import java.util.Locale;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+
+
+
 
 public class ClienteController {
 
-    @FXML private Button btnPromoVerMas;
     @FXML private Button btnCartelera;
     @FXML private Button btnConfiteria;
     @FXML private Button btnSigmaCard;
@@ -42,10 +48,6 @@ public class ClienteController {
     @FXML private Button btnIniciarSesion;
     @FXML private Button btnRegistrarse;
     @FXML private Label lblUserName;
-
-    @FXML private javafx.scene.layout.StackPane promoPane;
-    @FXML private ImageView imgPublicidad;
-    @FXML private Label lblPromo;
     @FXML private TextField txtBuscar;
     @FXML private javafx.scene.layout.StackPane content;
     @FXML private ChoiceBox<String> cbCiudad;
@@ -59,6 +61,15 @@ public class ClienteController {
     @FXML private Label lblCard3;
     @FXML private ImageView imgCard4;
     @FXML private Label lblCard4;
+    //publicidad y promociones
+    @FXML private javafx.scene.layout.StackPane promoPane;
+    @FXML private javafx.scene.image.ImageView promoImg;
+    @FXML private javafx.scene.layout.HBox dotsBox;
+
+    private final java.util.List<String> banners = java.util.List.of("banner_promo_1.png","banner_promo_2.png","banner_promo_3.png");
+    private final java.util.List<javafx.scene.image.Image> cache = new java.util.ArrayList<>();
+    private int bannerIdx = 0;
+    private javafx.animation.Timeline promoAuto;
 
     private UsuarioDTO usuario;
     private String ciudadSeleccionada;
@@ -122,18 +133,13 @@ public class ClienteController {
 
     @FXML
     private void initialize() {
+         initCarrusel();
         // Solo mantener el Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("inicio");
         }
-        
-        if (promoPane != null && imgPublicidad != null) {
-            imgPublicidad.fitWidthProperty().bind(promoPane.widthProperty());
-            imgPublicidad.setFitHeight(110);
-            imgPublicidad.setPreserveRatio(true);
-        }
-        
+    
         if (btnSeleccionarCiudad != null) {
             btnSeleccionarCiudad.setOnAction(e -> onSeleccionarCiudad());
         }
@@ -184,15 +190,115 @@ public class ClienteController {
             content.getChildren().addListener((ListChangeListener<Node>) (c -> updatePublicidadVisibility()));
         }
     }
+    // ===== Carrusel (métodos) =====
+        private void initCarrusel() {
+            if (promoPane == null || promoImg == null || dotsBox == null) return;
+
+            // --- Ajuste para banner FULL-WIDTH ---
+            promoImg.setPreserveRatio(true);
+            promoImg.setSmooth(true);
+
+            // Nos aseguramos de no tener bindings previos
+            promoImg.fitHeightProperty().unbind();
+            promoImg.fitWidthProperty().unbind();
+
+            // Escalar por ancho del contenedor (ocupa todo el ancho)
+            promoImg.fitWidthProperty().bind(promoPane.widthProperty());
+
+            // Recorte por alto (para que no “desborde” verticalmente)
+            Rectangle clip = new Rectangle();
+            clip.widthProperty().bind(promoPane.widthProperty());
+            clip.heightProperty().bind(promoPane.heightProperty());
+            promoPane.setClip(clip);
+
+            // Mantener centrado
+            javafx.scene.layout.StackPane.setAlignment(promoImg, javafx.geometry.Pos.CENTER);
+
+            // --- Precarga de imágenes ---
+            cache.clear();
+            for (String f : banners) cache.add(loadRes("/Images/" + f));
+            updateSlide(0);
+
+            // --- Dots ---
+            renderDots();
+
+            // --- Autoplay ---
+            promoAuto = new javafx.animation.Timeline(
+                    new javafx.animation.KeyFrame(javafx.util.Duration.seconds(5), e -> nextSlide())
+            );
+            promoAuto.setCycleCount(javafx.animation.Timeline.INDEFINITE);
+            promoAuto.play();
+
+            // Pausa con hover y navegación con teclado
+            promoPane.setOnMouseEntered(e -> promoAuto.pause());
+            promoPane.setOnMouseExited(e -> promoAuto.play());
+            promoPane.setFocusTraversable(true);
+            promoPane.setOnKeyPressed(e -> {
+                switch (e.getCode()) {
+                    case LEFT -> prevSlide();
+                    case RIGHT -> nextSlide();
+                }
+            });
+        }
+
+        private javafx.scene.image.Image loadRes(String path) {
+            try (var is = getClass().getResourceAsStream(path)) {
+                if (is == null) throw new IllegalArgumentException("Recurso no encontrado: " + path);
+                // Firma válida: (InputStream, requestedWidth, requestedHeight, preserveRatio, smooth)
+                return new javafx.scene.image.Image(is, 0, 0, true, true);
+            } catch (Exception ex) {
+                System.err.println("Error cargando " + path + ": " + ex.getMessage());
+                // Fallback: placeholder
+                var ph = getClass().getResourceAsStream("/Images/placeholder.jpg");
+                if (ph != null) return new javafx.scene.image.Image(ph, 0, 0, true, true);
+                // Último recurso: imagen vacía para no romper
+                return new javafx.scene.image.Image((java.io.InputStream) null);
+            }
+        }
+
+
+        private void renderDots() {
+            dotsBox.getChildren().clear();
+            for (int i = 0; i < banners.size(); i++) {
+                final int at = i;
+                var dot = new javafx.scene.control.Button();
+                dot.setFocusTraversable(false);
+                dot.getStyleClass().add("promo-dot");
+                dot.setMinSize(10,10);
+                dot.setMaxSize(10,10);
+                dot.setOnAction(e -> updateSlide(at));
+                dotsBox.getChildren().add(dot);
+            }
+            syncDots();
+        }
+
+        private void syncDots() {
+            var kids = dotsBox.getChildren();
+            for (int i = 0; i < kids.size(); i++) {
+                var n = kids.get(i);
+                n.getStyleClass().removeAll(java.util.List.of("active","inactive"));
+                n.getStyleClass().add(i == bannerIdx ? "active" : "inactive");
+            }
+        }
+
+        private void updateSlide(int newIndex) {
+            if (cache.isEmpty()) return;
+            bannerIdx = ((newIndex % cache.size()) + cache.size()) % cache.size();
+            promoImg.setImage(cache.get(bannerIdx));
+            syncDots();
+        }
+
+        @FXML public void nextSlide() { updateSlide(bannerIdx + 1); }
+        @FXML public void prevSlide() { updateSlide(bannerIdx - 1); }
+
+        public void disposeCarrusel() { if (promoAuto != null) promoAuto.stop(); }
+
 
     private void updatePublicidadVisibility() {
         try {
             boolean hasContent = content != null && !content.getChildren().isEmpty();
             boolean show = !hasContent;
-            if (imgPublicidad != null) {
-                imgPublicidad.setVisible(show);
-                imgPublicidad.setManaged(show);
-            }
+            
             if (promoPane != null) {
                 promoPane.setVisible(show);
                 promoPane.setManaged(show);
@@ -597,7 +703,7 @@ public class ClienteController {
             javafx.scene.Scene sc = null;
             if (promoPane != null) sc = promoPane.getScene();
             if (sc == null && content != null) sc = content.getScene();
-            if (sc == null && imgPublicidad != null) sc = imgPublicidad.getScene();
+            
             if (sc == null && txtBuscar != null) sc = txtBuscar.getScene();
             if (sc == null) return null;
 

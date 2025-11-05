@@ -30,6 +30,25 @@
 }
 .search:focused { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 2); }
 
+
+/* ======================= Publicidad======================= */
+/* Botones ‹ › */
+.promo-nav {
+  -fx-background-color: rgba(255,255,255,0.15);
+  -fx-text-fill: white;
+  -fx-background-radius: 999;
+  -fx-padding: 6 10 6 10;
+}
+
+/* Dots */
+.promo-dot { /* ya incluye el mínimo */
+  -fx-background-radius: 999;
+  -fx-background-color: rgba(255,255,255,0.35);
+}
+.promo-dot.active {
+  -fx-background-color: white;
+}
+
 /* ======================= Menú y textos ======================= */
 .context-menu { -fx-background-color: #121212; -fx-background-radius: 12; -fx-padding: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.2, 0, 4); }
 .menu-item > .label { -fx-text-fill: white; }
