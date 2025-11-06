@@ -1,4 +1,3 @@
-// RegisterController.java
 package sigmacine.ui.controller;
 
 import javafx.fxml.FXML;
@@ -7,8 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import sigmacine.aplicacion.facade.AuthFacade;
 import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -29,26 +26,21 @@ public class RegisterController {
 
     @FXML
     private void initialize() {
-        // Some FXMLs declare handlers via onAction without fx:id; as a robust fallback,
-        // after the scene is ready, search for buttons with the expected labels and attach handlers.
         Platform.runLater(() -> {
             try {
-                if (txtNombre == null) return; // nothing injected
+                if (txtNombre == null) return;
                 Parent root = txtNombre.getScene() != null ? txtNombre.getScene().getRoot() : null;
                 if (root == null) return;
 
                 Button bReg = findButtonByText(root, "Registrar");
                 if (bReg != null) {
-                    System.out.println("[DEBUG] Found Registrar button via traversal, wiring handler");
                     bReg.setOnAction(e -> onRegistrar());
                 }
                 Button bCan = findButtonByText(root, "Cancelar");
                 if (bCan != null) {
-                    System.out.println("[DEBUG] Found Cancelar button via traversal, wiring handler");
                     bCan.setOnAction(e -> onCancelar());
                 }
             } catch (Exception ex) {
-                System.err.println("[DEBUG] error wiring fallback buttons: " + ex.getMessage());
             }
         });
     }
@@ -102,7 +94,6 @@ public class RegisterController {
 
     @FXML
     public void onCancelar() {
-        System.out.println("[DEBUG] onCancelar invoked");
         if (coordinador != null) {
             sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
             guest.setId(0);
@@ -112,7 +103,6 @@ public class RegisterController {
         }
     }
 
-    /** Bind nodes from the given root if fields were not injected. */
     public void bindRoot(Parent root) {
         if (root == null) return;
         try {
@@ -133,10 +123,7 @@ public class RegisterController {
                 if (n instanceof Label) feedback = (Label) n;
             }
 
-            // Try to attach handlers if the FXML used onAction attributes that weren't wired
-            // (defensive: set handlers only if buttons are found by lookup)
             Node registrarBtn = root.lookup("[onAction='#onRegistrar']");
-            // Lookup by text as a fallback
             if (registrarBtn == null) {
                 for (Node cand : root.lookupAll(".button")) {
                     if (cand instanceof Button && "Registrar".equals(((Button)cand).getText())) {

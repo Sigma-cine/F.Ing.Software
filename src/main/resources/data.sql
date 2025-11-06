@@ -42,21 +42,32 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 (3, 'Godzilla x Kong: The New Empire', 'Acción, Ciencia ficción', 'PG-13', 115, 'Adam Wingard', 'Rebecca Hall, Brian Tyree Henry',
 'https://www.youtube.com/watch?v=qqj12z9f48E',
 'Kong y Godzilla se unen para luchar contra una amenaza colosal desconocida que se esconde en nuestro mundo.',
-'Próximamente', 'src\\main\\resources\\Images\\godzillavskong_poster.png', FALSE);
+'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
 
 
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=Way9Dexny3w');
+INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zL2Q9C0cK5s');
+INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
+INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (4, 3, 'https://www.youtube.com/watch?v=lV1OOlGwExM');
 
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(3, 'Entrada VIP',       25.00, '2025-01-01');
 
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(1, 'Combo Popcorn', 'Popcorn grande y refresco grande', 'COMIDA', 10.50, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Hot Dog',       'Hot Dog Clásico con papas',        'COMIDA',  8.75, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(3, 'Nachos',        'Nachos con queso y jalapeños',     'COMIDA',  9.25, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Agua',          'Botella de agua (500ml)',          'BEBIDA',  3.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Perro caliente',       'Hot Dog Clásico con papas', '/Images/Menu/Perro_caliente.png', 'Original', 'COMIDA',  8.75, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(5, 'Crispetas',     'Palomitas de maíz clásicas',       '/Images/Menu/Crispetas.png', 'Dulce,Salada,Mixta', 'COMIDA',  7.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(6, 'Gaseosa',       'Refresco pequeño (330ml)',         '/Images/Menu/Gaseosas.png', 'CocaCola,Manzana,Naranja', 'BEBIDA',  4.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(7, 'ICEE',          'Bebida ICEE (pequeña)',            '/Images/Menu/ICEE.png', 'Fresa,Mora_Azul,Limón', 'BEBIDA',  5.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(8, 'Chocolatas',    'Selección de chocolates y dulces',  '/Images/Menu/Chocolatas.png', 'Snickers,Jet,Jumbo,Hersheys', 'CONFITERIA', 6.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(9, 'Pipsas',        'Porción de pizza estilo cine',     '/Images/Menu/Pipsas.png', 'Queso,Peperoni,Mixta', 'COMIDA',  11.00, 'Disponible', TRUE);
+
+-- COMBOS
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(10, 'Shake Up Your Snacking', 'Tus palomitas, tus reglas', '/Images/Combos/Combo_shake_up_your_shaking.png', 'Original', 'COMBO', 14.99, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(11, 'Combo Nachos', 'Nachos con queso y hot dog clásico', '/Images/Combos/Combo_nachos.png', 'Original', 'COMBO', 12.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(12, 'Snack & Sip', 'Crispetas y bebida ilimitada', '/Images/Combos/Combo_snack_sip.png', 'Original', 'COMBO', 13.75, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(13, 'Combo Pitufos', 'Crispetas, vaso con pitufos y tu peluche favorito', '/Images/Combos/Combo_pitufos.png', 'Original', 'COMBO', 11.99, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(14, 'Gaseosas Exclusivas', 'Disfruta la mejor selección de bebidas', '/Images/Combos/Combo_gaseosas_exclusivas.png', 'CocaCola,Fanta,MrBig,Manzana,Limón', 'COMBO', 8.99, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(15, 'Combo Crispetas y Perro', 'Crispetas grandes, M&M, ICEE, gaseosa y hot dog clásico', '/Images/Combos/Combo_crispetas_perro.png', 'Original', 'COMBO', 15.50, 'Disponible', TRUE);
 
 -- Funciones en distintas ciudades y sedes
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(1,  '2025-09-15', '12:50', 'Activa', TIME '02:46:00', TRUE, 1, 1); -- Bogotá / Salitre Plaza
@@ -108,3 +119,161 @@ INSERT INTO COMPRA_PRODUCTO (COMPRA_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, 
 
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (2, 50.00, TRUE);
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (3,  0.00, TRUE);
+
+
+-- 2025-10-19 - Película 1 (Dune: Part Two)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(17, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 1),
+(18, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 2),
+(19, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 3),
+(20, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 4),
+(21, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 5),
+(22, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 6),
+(23, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 7),
+(24, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 8),
+(25, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1, 9),
+(26, '2025-10-19','13:00','Activa', TIME '02:46:00', TRUE, 1,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(27, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 1),
+(28, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 2),
+(29, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 3),
+(30, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 4),
+(31, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 5),
+(32, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 6),
+(33, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 7),
+(34, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 8),
+(35, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1, 9),
+(36, '2025-10-19','16:00','Activa', TIME '02:46:00', TRUE, 1,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(37, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 1),
+(38, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 2),
+(39, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 3),
+(40, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 4),
+(41, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 5),
+(42, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 6),
+(43, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 7),
+(44, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 8),
+(45, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1, 9),
+(46, '2025-10-19','19:00','Activa', TIME '02:46:00', TRUE, 1,10);
+
+-- 2025-10-19 - Película 2 (Joker)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(47, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 1),
+(48, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 2),
+(49, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 3),
+(50, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 4),
+(51, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 5),
+(52, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 6),
+(53, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 7),
+(54, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 8),
+(55, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2, 9),
+(56, '2025-10-19','13:00','Activa', TIME '02:02:00', TRUE, 2,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(57, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 1),
+(58, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 2),
+(59, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 3),
+(60, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 4),
+(61, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 5),
+(62, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 6),
+(63, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 7),
+(64, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 8),
+(65, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2, 9),
+(66, '2025-10-19','16:00','Activa', TIME '02:02:00', TRUE, 2,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(67, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 1),
+(68, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 2),
+(69, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 3),
+(70, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 4),
+(71, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 5),
+(72, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 6),
+(73, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 7),
+(74, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 8),
+(75, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2, 9),
+(76, '2025-10-19','19:00','Activa', TIME '02:02:00', TRUE, 2,10);
+
+-- 2025-10-20 - Película 1 (Dune: Part Two)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(77, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 1),
+(78, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 2),
+(79, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 3),
+(80, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 4),
+(81, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 5),
+(82, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 6),
+(83, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 7),
+(84, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 8),
+(85, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1, 9),
+(86, '2025-10-20','13:00','Activa', TIME '02:46:00', TRUE, 1,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(87, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 1),
+(88, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 2),
+(89, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 3),
+(90, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 4),
+(91, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 5),
+(92, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 6),
+(93, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 7),
+(94, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 8),
+(95, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1, 9),
+(96, '2025-10-20','16:00','Activa', TIME '02:46:00', TRUE, 1,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(97, '2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 1),
+(98, '2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 2),
+(99, '2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 3),
+(100,'2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 4),
+(101,'2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 5),
+(102,'2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 6),
+(103,'2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 7),
+(104,'2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 8),
+(105,'2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1, 9),
+(106,'2025-10-20','19:00','Activa', TIME '02:46:00', TRUE, 1,10);
+
+-- 2025-10-20 - Película 2 (Joker)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(107,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 1),
+(108,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 2),
+(109,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 3),
+(110,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 4),
+(111,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 5),
+(112,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 6),
+(113,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 7),
+(114,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 8),
+(115,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2, 9),
+(116,'2025-10-20','13:00','Activa', TIME '02:02:00', TRUE, 2,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(117,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 1),
+(118,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 2),
+(119,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 3),
+(120,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 4),
+(121,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 5),
+(122,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 6),
+(123,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 7),
+(124,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 8),
+(125,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2, 9),
+(126,'2025-10-20','16:00','Activa', TIME '02:02:00', TRUE, 2,10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(127,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 1),
+(128,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 2),
+(129,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 3),
+(130,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 4),
+(131,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 5),
+(132,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 6),
+(133,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 7),
+(134,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 8),
+(136,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 9),
+(135,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2,10);
+
+-- Funciones para Godzilla x Kong (PELICULA_ID = 3)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(200,'2025-10-19','14:30','Activa', TIME '01:55:00', TRUE, 3, 1),
+(201,'2025-10-19','17:15','Activa', TIME '01:55:00', TRUE, 3, 2),
+(202,'2025-10-19','20:00','Activa', TIME '01:55:00', TRUE, 3, 3),
+(203,'2025-10-20','15:00','Activa', TIME '01:55:00', TRUE, 3, 4),
+(204,'2025-10-20','18:30','Activa', TIME '01:55:00', TRUE, 3, 5),
+(205,'2025-10-20','21:15','Activa', TIME '01:55:00', TRUE, 3, 6);

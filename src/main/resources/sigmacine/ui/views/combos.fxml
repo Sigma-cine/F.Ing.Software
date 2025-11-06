@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="sigmacine.ui.controller.CombosController" styleClass="page-root" stylesheets="@sigma.css" prefWidth="1280" prefHeight="720">
+    <top>
+        <fx:include source="barra.fxml"/>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="menu-scroll" vbarPolicy="ALWAYS">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="20">
+                    <padding>
+                        <Insets top="20" right="40" bottom="40" left="40" />
+                    </padding>
+                    <GridPane fx:id="gridCombos" hgap="32" vgap="32" alignment="TOP_CENTER">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="540" prefWidth="540" />
+                            <ColumnConstraints minWidth="540" prefWidth="540" />
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -6,7 +6,7 @@ import sigmacine.aplicacion.service.RegistroService;
 public class AuthFacade {
 
     private final LoginService loginService;
-     private final RegistroService registroService;
+    private final RegistroService registroService;
 
     public AuthFacade(LoginService loginService) {
         this(loginService, null);

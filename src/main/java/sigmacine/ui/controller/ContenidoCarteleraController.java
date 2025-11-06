@@ -5,85 +5,70 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.stage.Modality;
-import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.geometry.Pos;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.data.FuncionDisponibleDTO;
 import sigmacine.dominio.entity.Pelicula;
+import sigmacine.dominio.entity.PeliculaTrailer;
 import sigmacine.dominio.repository.FuncionRepository;
+import sigmacine.dominio.repository.PeliculaTrailerRepository;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.FuncionRepositoryJdbc;
-import sigmacine.aplicacion.session.Session;
-import sigmacine.infraestructura.configDataBase.DatabaseConfig;
-import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
-import sigmacine.aplicacion.service.VerHistorialService;
+import sigmacine.infraestructura.persistencia.jdbc.PeliculaTrailerRepositoryJdbc;
 
 import java.io.File;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Set;
-// (duplicate import removed)
-import sigmacine.ui.controller.ControladorControlador;
+import java.util.stream.Collectors;
+import java.time.format.DateTimeFormatter;
 
 public class ContenidoCarteleraController {
 
-    @FXML private Button btnCarteleraTop;
     @FXML private Button btnBack;
-
-    // Session-related topbar controls (copied from pagina_inicial.fxml)
-    @FXML private MenuButton menuPerfil;
-    @FXML private Button btnIniciarSesion;
-    @FXML private Button btnRegistrarse;
-    @FXML private Label lblUserName;
-    @FXML private MenuItem miCerrarSesion;
-    @FXML private MenuItem miHistorial;
     @FXML private TextArea txtSinopsis;
     @FXML private Label lblSinopsisTitulo;
     @FXML private Label lblTituloPelicula;
     @FXML private VBox panelFunciones;
     @FXML private Button btnComprar;
     @FXML private Label lblGenero, lblClasificacion, lblDuracion, lblDirector, lblReparto;
-    @FXML private GridPane gridSala;
-    @FXML private Label lblResumen, lblTitulo, lblHoraPill;
-    @FXML private ListView<String> lvFunciones;
     @FXML private ImageView imgPoster;
-    @FXML private Button btnContinuar;
-
     @FXML private StackPane trailerContainer;
     @FXML private ScrollPane spCenter;
     @FXML private VBox detalleRoot;
+    @FXML private HBox dayTabs;
 
     private Pelicula pelicula;
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
-    // optional back navigation state (currently not used)
-    // private List<Pelicula> backPeliculas;
-    // private String backTexto;
-    // back navigation placeholders (reserved for future use)
-
     private ClienteController host;
+    
     public void setHost(ClienteController host) { this.host = host; }
-
 
     @FXML
     private void initialize() {
-        if (trailerContainer != null && trailerContainer.getChildren().isEmpty()) {
-            trailerContainer.setMouseTransparent(true);
-            trailerContainer.setPickOnBounds(false);
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("detalle");
+        }
+        
+        if (trailerContainer != null) {
+            trailerContainer.setMouseTransparent(false);
+            trailerContainer.setPickOnBounds(true);
         }
         if (spCenter != null) spCenter.setPannable(false);
 
@@ -98,204 +83,6 @@ public class ContenidoCarteleraController {
 
             btnComprar.setOnAction(e -> onComprarTickets());
         }
-        // Wire historial menu action (open as modal from detail page)
-        if (miHistorial != null) {
-            miHistorial.setOnAction(e -> onVerHistorial());
-        }
-        if (btnRegistrarse != null) {
-            btnRegistrarse.setOnAction(e -> onRegistrarse());
-        }
-        // session UI setup
-        try { refreshSessionUI(); } catch (Exception ignore) {}
-        if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> {
-            try {
-                // Prefer to delegate to the app coordinator so AuthFacade is injected
-                if (this.coordinador != null) {
-                    this.coordinador.mostrarLogin();
-                    refreshSessionUI();
-                    return;
-                }
-                // Try global coordinator instance if one was registered
-                try {
-                    ControladorControlador global = ControladorControlador.getInstance();
-                    if (global != null) {
-                        global.mostrarLogin();
-                        refreshSessionUI();
-                        return;
-                    }
-                } catch (Throwable ignore) {}
-
-                // Fallback: load login.fxml manually but try to set AuthFacade if available
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
-                Parent root = loader.load();
-                Object ctrl = loader.getController();
-                Stage dialog = new Stage();
-                dialog.initModality(Modality.APPLICATION_MODAL);
-                dialog.initOwner(btnIniciarSesion.getScene().getWindow());
-                if (ctrl instanceof LoginController) {
-                    LoginController lc = (LoginController) ctrl;
-                    try {
-                        ControladorControlador global = ControladorControlador.getInstance();
-                        if (global != null) {
-                            lc.setCoordinador(global);
-                            // set AuthFacade if available via getter
-                            try {
-                                sigmacine.aplicacion.facade.AuthFacade af = global.getAuthFacade();
-                                if (af != null) lc.setAuthFacade(af);
-                            } catch (Throwable ignore) {}
-                        }
-                    } catch (Throwable ignore) {}
-
-                    // Ensure that after successful login we don't navigate away from the
-                    // detail view: instead close the dialog and refresh the session UI.
-                    lc.setOnSuccess(() -> {
-                        try { dialog.close(); } catch (Exception ignore) {}
-                        try { refreshSessionUI(); } catch (Exception ignore) {}
-                    });
-                }
-                dialog.setScene(new Scene(root));
-                dialog.showAndWait();
-            } catch (Exception ex) { ex.printStackTrace(); }
-        });
-    if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); refreshSessionUI(); });
-    }
-
-    // duplicate onBrandClick/onVerHistorial/refreshSessionUI removed
-
-    @FXML
-    private void onBrandClick() {
-        try {
-            Stage stage = (Stage) (btnBack != null ? btnBack.getScene().getWindow() : btnCarteleraTop.getScene().getWindow());
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-            Parent root = loader.load();
-            Object ctrl = loader.getController();
-            if (ctrl instanceof ClienteController) {
-                ClienteController c = (ClienteController) ctrl;
-                c.setCoordinador(this.coordinador);
-                c.init(this.usuario);
-            }
-            Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 1000;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w, h));
-            stage.setTitle("Sigma Cine");
-            stage.setMaximized(true);
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    private void onVerHistorial() {
-        // Require login like in ClienteController
-    if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
-            javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-            a.setTitle("Acceso denegado");
-            a.setHeaderText(null);
-            a.setContentText("Debes iniciar sesión para ver tu historial de compras.");
-            a.showAndWait();
-            return;
-        }
-        try {
-            // Build service and controller
-            DatabaseConfig dbConfig = new DatabaseConfig();
-            UsuarioRepositoryJdbc usuarioRepo = new UsuarioRepositoryJdbc(dbConfig);
-            VerHistorialService historialService = new VerHistorialService(usuarioRepo);
-
-            // Load full-screen history view (not a modal)
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCompras.fxml"));
-            VerHistorialController historialController = new VerHistorialController(historialService);
-            // Inject email if available
-            try {
-                if (this.usuario != null && this.usuario.getEmail() != null) {
-                    historialController.setUsuarioEmail(this.usuario.getEmail());
-                } else {
-                    // fallback to session current user if available
-                    sigmacine.aplicacion.data.UsuarioDTO cur = sigmacine.aplicacion.session.Session.getCurrent();
-                    if (cur != null && cur.getEmail() != null) historialController.setUsuarioEmail(cur.getEmail());
-                }
-            } catch (Exception ignore) {}
-            loader.setController(historialController);
-
-            Parent root = loader.load();
-            // Replace current window scene to navigate fully
-            Stage stage = null;
-            try { stage = (Stage) (btnBack != null ? btnBack.getScene().getWindow() : (menuPerfil != null ? menuPerfil.getScene().getWindow() : null)); } catch (Exception ignore) {}
-            if (stage != null) {
-                Scene current = stage.getScene();
-                double w = current != null ? current.getWidth() : 1000;
-                double h = current != null ? current.getHeight() : 700;
-                stage.setScene(new Scene(root, w, h));
-                stage.setTitle("Historial de compras");
-                stage.setMaximized(true);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public void refreshSessionUI() {
-        try {
-            var current = sigmacine.aplicacion.session.Session.getCurrent();
-            boolean logged = sigmacine.aplicacion.session.Session.isLoggedIn();
-            if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(!logged); btnIniciarSesion.setManaged(!logged); }
-            if (btnRegistrarse != null) { btnRegistrarse.setVisible(!logged); btnRegistrarse.setManaged(!logged); }
-            if (lblUserName != null) { lblUserName.setVisible(logged); lblUserName.setManaged(logged); lblUserName.setText(logged && current != null ? current.getNombre() : ""); }
-            if (menuPerfil != null) { menuPerfil.setVisible(logged); menuPerfil.setManaged(logged); }
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    @FXML
-    private void onCartelera() {
-        try {
-            // Navegar a la vista de cartelera completa
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/cartelera.fxml"));
-            Parent root = loader.load();
-            try {
-                Object ctrl = loader.getController();
-                if (ctrl instanceof sigmacine.ui.controller.CarteleraController) {
-                    sigmacine.ui.controller.CarteleraController c = (sigmacine.ui.controller.CarteleraController) ctrl;
-                    c.setCoordinador(this.coordinador);
-                    c.setUsuario(this.usuario);
-                }
-            } catch (Exception ignore) {}
-            Stage stage = (Stage) btnCarteleraTop.getScene().getWindow();
-            Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 900;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
-            stage.setTitle("Sigma Cine - Cartelera");
-            stage.setMaximized(true);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void onRegistrarse() {
-        try {
-            // si ya hay sesión, no permitir registrar
-            if (sigmacine.aplicacion.session.Session.isLoggedIn()) {
-                javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-                a.setTitle("Ya has iniciado sesión");
-                a.setHeaderText(null);
-                a.setContentText("Cierra sesión si deseas registrar una nueva cuenta.");
-                a.showAndWait();
-                return;
-            }
-            if (this.coordinador != null) {
-                this.coordinador.mostrarRegistro();
-                return;
-            }
-            // intentar usar coordinador global
-            try {
-                ControladorControlador global = ControladorControlador.getInstance();
-                if (global != null) { global.mostrarRegistro(); return; }
-            } catch (Throwable ignore) {}
-
-            // Fallback: no hay coordinador — informar al usuario
-            javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-            a.setTitle("Registro");
-            a.setHeaderText(null);
-            a.setContentText("No fue posible abrir el registro en este contexto.");
-            a.showAndWait();
-        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     @FXML
@@ -324,10 +111,6 @@ public class ContenidoCarteleraController {
         }
     }
 
-    public void setBackResults(List<Pelicula> peliculas, String textoBuscado) {
-        // reserved for future: maintain a reference to go back to results page
-    }
-
     public void setPelicula(Pelicula p) {
         this.pelicula = p;
         if (p == null) return;
@@ -345,7 +128,7 @@ public class ContenidoCarteleraController {
         }
 
         if (lblSinopsisTitulo != null) lblSinopsisTitulo.setText("SINOPSIS — " + safe(p.getTitulo(), "N/D"));
-    if (lblTituloPelicula != null) lblTituloPelicula.setText(safe(p.getTitulo(), "N/D"));
+        if (lblTituloPelicula != null) lblTituloPelicula.setText(safe(p.getTitulo(), "N/D"));
         if (lblGenero != null) lblGenero.setText(safe(p.getGenero(), "N/D"));
         if (lblClasificacion != null) lblClasificacion.setText(safe(p.getClasificacion(), "N/D"));
         int dur = p.getDuracion();
@@ -354,18 +137,37 @@ public class ContenidoCarteleraController {
         if (lblReparto != null) lblReparto.setText(safe(p.getReparto(), ""));
         if (txtSinopsis != null) txtSinopsis.setText(safe(p.getSinopsis()));
 
-        // Cargar funciones por ciudad/sede/sala
+        cargarTrailers(p.getId());
+
+        cargarFunciones();
+    }
+
+    private void cargarFunciones() {
+        if (pelicula == null) return;
+        
         try {
             if (panelFunciones != null) {
                 panelFunciones.getChildren().clear();
                 DatabaseConfig db = new DatabaseConfig();
                 FuncionRepository repo = new FuncionRepositoryJdbc(db);
-                List<FuncionDisponibleDTO> funciones = repo.listarPorPelicula(p.getId());
+                List<FuncionDisponibleDTO> funciones = repo.listarPorPelicula(pelicula.getId());
                 String city = Session.getSelectedCity();
                 if (city != null && !city.isBlank()) {
                     funciones = funciones.stream()
                             .filter(f -> city.equalsIgnoreCase(f.getCiudad()))
                             .toList();
+                }
+                buildDayTabsFrom(funciones);
+                java.time.LocalDate selected = getSelectedDay();
+                if (selected == null) {
+                    java.time.LocalDate first = funciones.stream().map(FuncionDisponibleDTO::getFecha)
+                            .sorted()
+                            .findFirst().orElse(null);
+                    setSelectedDay(first);
+                }
+                if (getSelectedDay() != null) {
+                    java.time.LocalDate d = getSelectedDay();
+                    funciones = funciones.stream().filter(f -> d.equals(f.getFecha())).toList();
                 }
                 renderFunciones(funciones);
             }
@@ -378,6 +180,7 @@ public class ContenidoCarteleraController {
     private static String safe(String s) {
         return (s == null || s.trim().equalsIgnoreCase("null")) ? "" : s.trim();
     }
+    
     private static String safe(String s, String alt) {
         String t = safe(s);
         return t.isEmpty() ? alt : t;
@@ -407,67 +210,103 @@ public class ContenidoCarteleraController {
     }
 
     private void renderFunciones(List<FuncionDisponibleDTO> funciones) {
+        panelFunciones.getChildren().clear();
+        try { panelFunciones.setAlignment(Pos.CENTER); } catch (Exception ignore) {}
         if (funciones == null || funciones.isEmpty()) return;
 
-        String currentCiudad = null;
-        String currentSede = null;
-        VBox sedeBox = null;
-        VBox ciudadBox = null;
-
+        Map<String, Map<String, Set<FuncionDisponibleDTO>>> porCiudad = new LinkedHashMap<>();
         for (FuncionDisponibleDTO f : funciones) {
-            if (!f.getCiudad().equals(currentCiudad)) {
-                currentCiudad = f.getCiudad();
-                currentSede = null;
-                ciudadBox = new VBox(6);
-                Label lblCiudad = new Label(currentCiudad);
-                lblCiudad.setStyle("-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:16;");
-                ciudadBox.getChildren().add(lblCiudad);
-                panelFunciones.getChildren().add(ciudadBox);
-            }
-
-            if (!f.getSede().equals(currentSede)) {
-                currentSede = f.getSede();
-                Label lblSede = new Label(currentSede);
-                lblSede.setStyle("-fx-text-fill:#e5e7eb;-fx-font-weight:bold;-fx-font-size:14;");
-                sedeBox = new VBox(4);
-                sedeBox.getChildren().add(lblSede);
-                if (ciudadBox != null) ciudadBox.getChildren().add(sedeBox);
-            }
-
-            // fila de horas por sala
-            HBox fila = new HBox(6);
-            fila.setStyle("-fx-background-color:transparent;");
-            String pillText = String.format("%s — Sala %d %s", f.getHora().toString(), f.getNumeroSala(), f.getTipoSala());
-            Button b = new Button(pillText);
-            b.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff66;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 10 4 10;");
-            b.setOnAction(e -> seleccionarFuncionPill(pillText));
-            fila.getChildren().add(b);
-            if (sedeBox != null) sedeBox.getChildren().add(fila);
+            porCiudad.computeIfAbsent(f.getCiudad(), k -> new LinkedHashMap<>())
+                    .computeIfAbsent(f.getSede(), k -> new LinkedHashSet<>())
+                    .add(f);
         }
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("h:mma", Locale.ENGLISH);
+
+        for (var ciudadEntry : porCiudad.entrySet()) {
+            VBox ciudadBox = new VBox(8);
+            try { ciudadBox.setAlignment(Pos.TOP_LEFT); } catch (Exception ignore) {}
+            Label lblCiudad = new Label(ciudadEntry.getKey());
+            lblCiudad.setStyle("-fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:16; -fx-alignment:center;");
+            ciudadBox.getChildren().add(lblCiudad);
+
+            for (var sedeEntry : ciudadEntry.getValue().entrySet()) {
+                VBox sedeBox = new VBox(4);
+                try { sedeBox.setAlignment(Pos.TOP_LEFT); } catch (Exception ignore) {}
+                Label lblSede = new Label(sedeEntry.getKey());
+                lblSede.setStyle("-fx-text-fill:#e5e7eb;-fx-font-weight:bold;-fx-font-size:14; -fx-alignment:center;");
+                sedeBox.getChildren().add(lblSede);
+
+                Label lblHora = new Label("HORA");
+                lblHora.setStyle("-fx-text-fill:#aaaaaa;-fx-font-size:12;-fx-font-weight:bold;");
+                sedeBox.getChildren().add(lblHora);
+
+                javafx.scene.layout.FlowPane fila = new javafx.scene.layout.FlowPane();
+                fila.setHgap(8);
+                fila.setVgap(4);
+                fila.setAlignment(Pos.CENTER_LEFT);
+                fila.setStyle("-fx-background-color:transparent;");
+
+                List<FuncionDisponibleDTO> ordenadas = sedeEntry.getValue().stream()
+                        .sorted(java.util.Comparator.comparing(FuncionDisponibleDTO::getHora))
+                        .collect(Collectors.toList());
+                        
+                for (FuncionDisponibleDTO f : ordenadas) {
+                    String pillText = fmt.format(f.getHora()).toLowerCase();
+                    Button b = new Button(pillText);
+                    b.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff66;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 12 4 12;");
+                    b.setOnAction(e -> seleccionarFuncion(f, b));
+                    fila.getChildren().add(b);
+                }
+                sedeBox.getChildren().add(fila);
+                ciudadBox.getChildren().add(sedeBox);
+            }
+
+            HBox wrapCity = new HBox(ciudadBox);
+            wrapCity.setAlignment(Pos.CENTER);
+            panelFunciones.getChildren().add(wrapCity);
+        }
+    }
+
+    private String selectedFuncionText;
+    private Long selectedFuncionId;
+    private Button selectedHoraButton;
+    
+    private void seleccionarFuncion(FuncionDisponibleDTO f, Button sourceBtn) {
+        this.selectedFuncionId = f.getFuncionId();
+        String texto = java.time.format.DateTimeFormatter.ofPattern("h:mma", java.util.Locale.ENGLISH)
+                .format(f.getHora()).toLowerCase();
+        seleccionarFuncionPill(texto);
+        try {
+            if (selectedHoraButton != null) {
+                selectedHoraButton.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff66;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 12 4 12;");
+            }
+            selectedHoraButton = sourceBtn;
+            if (selectedHoraButton != null) {
+                selectedHoraButton.setStyle("-fx-background-color:#8A2F24;-fx-text-fill:white;-fx-background-radius:20;-fx-border-radius:20;-fx-padding:4 12 4 12;");
+            }
+        } catch (Exception ignore) {}
     }
 
     private void seleccionarFuncionPill(String texto) {
-        if (lvFunciones != null) {
-            if (!lvFunciones.getItems().contains(texto)) {
-                lvFunciones.getItems().add(texto);
-            }
-            lvFunciones.getSelectionModel().select(texto);
-        }
-        if (lblHoraPill != null) lblHoraPill.setText(texto);
+        selectedFuncionText = texto;
     }
-
-    @FXML private void onComprarTickets(javafx.event.ActionEvent e) { onComprarTickets(); }
 
     @FXML
     private void onComprarTickets() {
         try {
+            if (selectedFuncionText == null || selectedFuncionText.isBlank()) {
+                var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                a.setHeaderText("Selecciona una hora");
+                a.setContentText("Primero elige una función (sede/hora) antes de continuar.");
+                a.showAndWait();
+                return;
+            }
+
             if (isEmbedded()) {
-                String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
-                        ? lblTitulo.getText() : "Película";
-                String hora = (lvFunciones != null && lvFunciones.getSelectionModel() != null
-                        && lvFunciones.getSelectionModel().getSelectedItem() != null)
-                        ? lvFunciones.getSelectionModel().getSelectedItem()
-                        : "1:10 pm";
+                String titulo = (lblTituloPelicula != null && !lblTituloPelicula.getText().isBlank())
+                        ? lblTituloPelicula.getText() : "Película";
+                String hora = selectedFuncionText;
 
                 Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
                 Set<String> accesibles = Set.of("E3","E4","E5","E6");
@@ -476,12 +315,9 @@ public class ContenidoCarteleraController {
                 return;
             }
 
-            String titulo = (lblTitulo != null && lblTitulo.getText() != null && !lblTitulo.getText().isBlank())
-                    ? lblTitulo.getText() : "Película";
-            String hora = (lvFunciones != null && lvFunciones.getSelectionModel() != null
-                    && lvFunciones.getSelectionModel().getSelectedItem() != null)
-                    ? lvFunciones.getSelectionModel().getSelectedItem()
-                    : "1:10 pm";
+            String titulo = (lblTituloPelicula != null && !lblTituloPelicula.getText().isBlank())
+                    ? lblTituloPelicula.getText() : "Película";
+            String hora = selectedFuncionText;
 
             URL url = getClass().getResource("/sigmacine/ui/views/asientos.fxml");
             if (url == null) {
@@ -498,7 +334,7 @@ public class ContenidoCarteleraController {
             AsientosController ctrl = loader.getController();
             Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
             Set<String> accesibles = Set.of("E3","E4","E5","E6");
-            ctrl.setFuncion(titulo, hora, ocupados, accesibles);
+            ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId);
 
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
                     ? pelicula.getPosterUrl() : null;
@@ -526,6 +362,54 @@ public class ContenidoCarteleraController {
         }
     }
 
+    private void buildDayTabsFrom(List<FuncionDisponibleDTO> funciones) {
+        if (dayTabs == null) return;
+        dayTabs.getChildren().clear();
+        if (funciones == null || funciones.isEmpty()) return;
+
+        List<java.time.LocalDate> fechas = funciones.stream()
+                .map(FuncionDisponibleDTO::getFecha)
+                .distinct()
+                .sorted()
+                .limit(5)
+                .toList();
+
+        int idx = 0;
+        for (java.time.LocalDate d : fechas) {
+            String text = d.getMonth().toString().substring(0,3).toUpperCase() + " " + d.getDayOfMonth();
+            Button tab = new Button(text);
+            tab.getStyleClass().add("day-tab");
+            final int tabIndex = idx;
+            tab.setOnAction(e -> {
+                setSelectedDay(d);
+                cargarFunciones(); // Solo actualizar funciones, no toda la película
+                updateDayTabStyles(tabIndex);
+            });
+            dayTabs.getChildren().add(tab);
+            idx++;
+        }
+
+        if (getSelectedDay() == null && !fechas.isEmpty()) {
+            setSelectedDay(fechas.get(0));
+            updateDayTabStyles(0);
+        }
+    }
+
+    private void updateDayTabStyles(int selectedIdx) {
+        if (dayTabs == null) return;
+        for (int i = 0; i < dayTabs.getChildren().size(); i++) {
+            var n = dayTabs.getChildren().get(i);
+            if (n instanceof Button b) {
+                if (i == selectedIdx) b.setStyle("-fx-background-color:#8A2F24;-fx-text-fill:white;-fx-background-radius:10;" );
+                else b.setStyle("-fx-background-color:transparent;-fx-border-color:#ffffff22;-fx-text-fill:#ddd;-fx-background-radius:10;-fx-border-radius:10;");
+            }
+        }
+    }
+
+    private java.time.LocalDate selectedDay;
+    private void setSelectedDay(java.time.LocalDate d) { this.selectedDay = d; }
+    private java.time.LocalDate getSelectedDay() { return this.selectedDay; }
+
     private boolean isEmbedded() {
         try {
             return host != null
@@ -534,5 +418,99 @@ public class ContenidoCarteleraController {
         } catch (Throwable t) {
             return false;
         }
+    }
+
+    private void cargarTrailers(int peliculaId) {
+        try {
+            if (trailerContainer == null) return;
+            
+            trailerContainer.getChildren().clear();
+            
+            DatabaseConfig db = new DatabaseConfig();
+            PeliculaTrailerRepository trailerRepo = new PeliculaTrailerRepositoryJdbc(db);
+            List<PeliculaTrailer> trailers = trailerRepo.obtenerTrailersPorPelicula(peliculaId);
+            
+            String trailerUrl = null;
+            
+            if (!trailers.isEmpty()) {
+                trailerUrl = trailers.get(0).getUrl();
+            } else if (pelicula != null && pelicula.getTrailer() != null && !pelicula.getTrailer().trim().isEmpty()) {
+                trailerUrl = pelicula.getTrailer();
+            }
+            
+            if (trailerUrl != null && !trailerUrl.trim().isEmpty()) {
+                cargarTrailerEnWebView(trailerUrl);
+            } else {
+                mostrarMensajeNoTrailer();
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensajeNoTrailer();
+        }
+    }
+    
+    private void cargarTrailerEnWebView(String url) {
+        try {
+            if (trailerContainer == null) return;
+            
+            trailerContainer.getChildren().clear();
+            
+            javafx.scene.web.WebView webView = new javafx.scene.web.WebView();
+            webView.setPrefSize(600, 360);
+            
+            String embedUrl = convertirUrlYouTubeAEmbed(url);
+            webView.getEngine().load(embedUrl);
+            
+            trailerContainer.getChildren().add(webView);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarMensajeError();
+        }
+    }
+    
+    private void mostrarMensajeNoTrailer() {
+        trailerContainer.getChildren().clear();
+        Label lblNoTrailer = new Label("No hay trailer disponible para esta película");
+        lblNoTrailer.setStyle("-fx-text-fill: #999; -fx-font-size: 14;");
+        trailerContainer.getChildren().add(lblNoTrailer);
+    }
+    
+    private void mostrarMensajeError() {
+        trailerContainer.getChildren().clear();
+        Label lblError = new Label("Error al cargar el trailer");
+        lblError.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 14;");
+        trailerContainer.getChildren().add(lblError);
+    }
+    
+    private String convertirUrlYouTubeAEmbed(String url) {
+        if (url == null || url.trim().isEmpty()) return url;
+        
+        try {
+            if (url.contains("youtube.com/watch?v=")) {
+                String videoId = url.substring(url.indexOf("v=") + 2);
+                if (videoId.contains("&")) {
+                    videoId = videoId.substring(0, videoId.indexOf("&"));
+                }
+                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+            } else if (url.contains("youtu.be/")) {
+                String videoId = url.substring(url.lastIndexOf("/") + 1);
+                if (videoId.contains("?")) {
+                    videoId = videoId.substring(0, videoId.indexOf("?"));
+                }
+                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+            } else if (url.contains("youtube.com/embed/")) {
+                if (url.contains("?")) {
+                    return url + "&controls=1&modestbranding=1&rel=0&enablejsapi=1";
+                } else {
+                    return url + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return url;
     }
 }

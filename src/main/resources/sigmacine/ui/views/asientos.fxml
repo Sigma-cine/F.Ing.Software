@@ -16,45 +16,7 @@
 
     <!-- ===== TOP BAR ===== -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="12" BorderPane.alignment="CENTER" styleClass="topbar">
-            <children>
-                <Label text="SIGMA CINE" styleClass="brand" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;"/>
-
-                <Button fx:id="btnCartelera"  text="Cartelera"  styleClass="toplink"/>
-                <Button fx:id="btnConfiteria" text="Confitería" styleClass="toplink"/>
-                <Button fx:id="btnSigmaCard"  text="Sigma Card" styleClass="toplink"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <TextField fx:id="txtBuscar" promptText="Buscar" prefWidth="200" styleClass="search"/>
-                <Button fx:id="btnBuscar" text="Buscar" onAction="#onBuscarTop"/>
-
-                <Button fx:id="btnCart" text="Cart" styleClass="toplink"/>
-
-                <!-- Controles de sesión -->
-                <Button fx:id="btnIniciarSesion" text="Iniciar sesión" styleClass="toplink"/>
-                <Label fx:id="lblUserName" text="" styleClass="toplink" visible="false"/>
-                <Button fx:id="btnRegistrarse" text="Registrarse" styleClass="toplink"/>
-
-                <!-- Menú de perfil -->
-                <MenuButton fx:id="menuPerfil" text="" styleClass="icon-btn">
-                    <items>
-                        <MenuItem text="Mi Cuenta"/>
-                        <MenuItem text="Buscar Tiquetes"/>
-                        <MenuItem text="Confitería"/>
-                        <MenuItem text="Promociones"/>
-                        <MenuItem text="Información Personal"/>
-                        <MenuItem text="SigmaCard"/>
-                        <MenuItem fx:id="miHistorial" text="Historial de compras"/>
-                        <MenuItem text="Notificaciones"/>
-                        <MenuItem text="Cartelera"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión"/>
-                    </items>
-                </MenuButton>
-            </children>
-            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
-        </HBox>
+        <fx:include source="barra.fxml"/>
     </top>
 
     <!-- ===== CENTRO ===== -->
@@ -98,13 +60,13 @@
                             <!-- Cabecera -->
                             <HBox spacing="12" alignment="CENTER_LEFT">
                                 <children>
-                                    <StackPane prefWidth="56" prefHeight="56"
+                                    <StackPane prefWidth="220" prefHeight="320"
                                                style="-fx-background-color:#222; -fx-background-radius:8;">
-                                        <ImageView fx:id="imgPoster" fitWidth="56" fitHeight="56" preserveRatio="true"/>
+                                        <ImageView fx:id="imgPoster" fitWidth="200" fitHeight="300" preserveRatio="true"/>
                                     </StackPane>
                                     <VBox spacing="6">
                                         <children>
-                                            <Label fx:id="lblTitulo" text="Película" style="-fx-text-fill:#fff; -fx-font-weight:bold;">
+                                            <Label fx:id="lblTitulo" text="Película" style="-fx-text-fill:#fff; -fx-font-weight:bold;" wrapText="true" maxWidth="200">
                                                 <font><Font size="16"/></font>
                                             </Label>
                                             <Label fx:id="lblHoraPill" text="1:10 pm" styleClass="pill"/>

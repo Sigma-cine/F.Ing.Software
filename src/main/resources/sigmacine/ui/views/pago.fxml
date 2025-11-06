@@ -8,10 +8,6 @@
             prefWidth="480" prefHeight="520"
             style="-fx-background-color:#000; -fx-padding:24;" >
 
-    <fx:define>
-        <ToggleGroup fx:id="group" />
-    </fx:define>
-
     <top>
         <VBox spacing="6">
             <children>
@@ -31,15 +27,15 @@
                     <children>
                         <Label text="TOTAL" style="-fx-text-fill:#fff; -fx-font-weight:bold;" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Label fx:id="lblTotal" style="-fx-text-fill:#fff; -fx-font-weight:bold;" text="$0.00" />
+                        <Label fx:id="lblTotal" style="-fx-text-fill:#fff; -fx-font-weight:bold;" text="0.00" />
                     </children>
                 </HBox>
 
                 <Label text="Método de pago" style="-fx-text-fill:#bbb; -fx-font-weight:bold;" />
                 <VBox spacing="8">
                     <children>
-                        <RadioButton fx:id="rbCredito" text="Tarjeta de crédito" toggleGroup="$group" selected="true" style="-fx-text-fill:#ddd;" />
-                        <RadioButton fx:id="rbDebito" text="Tarjeta débito" toggleGroup="$group" style="-fx-text-fill:#ddd;" />
+                        <RadioButton fx:id="rbCredito" text="Tarjeta de crédito" selected="true" style="-fx-text-fill:#ddd;" />
+                        <RadioButton fx:id="rbDebito" text="Tarjeta débito" style="-fx-text-fill:#ddd;" />
                     </children>
                 </VBox>
 

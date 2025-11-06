@@ -25,7 +25,6 @@ public class CiudadController {
             btnSeleccionarCiudad.setOnAction(e -> {
                 String ciudad = cbCiudad.getValue();
                 if (onCiudadSelected != null) onCiudadSelected.accept(ciudad);
-                // close popup
                 Stage s = (Stage) btnSeleccionarCiudad.getScene().getWindow();
                 s.close();
             });

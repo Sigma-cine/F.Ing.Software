@@ -10,9 +10,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>17</java.version>
+    <java.version>21</java.version>
     <javafx.version>21.0.4</javafx.version>
-    <!-- Cambia según tu SO: win | linux | mac | mac-aarch64 -->
+    <!--para que sirva en diferentes SO -->
     <javafx.platform>win</javafx.platform>
   </properties>
 
@@ -23,8 +23,7 @@
       <artifactId>h2</artifactId>
       <version>2.3.232</version>
     </dependency>
-
-    <!-- BCrypt para PasswordHash.matches(...) -->
+    
     <dependency>
       <groupId>org.mindrot</groupId>
       <artifactId>jbcrypt</artifactId>
@@ -51,32 +50,42 @@
       <version>${javafx.version}</version>
       <classifier>${javafx.platform}</classifier>
     </dependency>
+    <!-- JUnit Jupiter for tests -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.10.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.10.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
-      <!-- Java 17 -->
+      <!-- Java 21 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>17</release>
+          <release>21</release>
         </configuration>
       </plugin>
 
-        <plugin>
+         <plugin>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-maven-plugin</artifactId>
             <version>0.0.8</version>
             <configuration>
                 <mainClass>sigmacine.ui.App</mainClass>
             </configuration>
-        </plugin>
+         </plugin>
 
-      <!-- Exec:
-           1) mvn exec:java         -> TestConexion (H2)
-           2) mvn exec:java@run-ui  -> App JavaFX -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -103,8 +112,46 @@
               <classpathScope>runtime</classpathScope>
             </configuration>
           </execution>
+          <execution>
+            <id>simulate-purchase</id>
+            <goals>
+              <goal>java</goal>
+            </goals>
+            <configuration>
+              <mainClass>sigmacine.tools.PurchaseSimulator</mainClass>
+              <classpathScope>runtime</classpathScope>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
+
+             
+  <!-- Use modern Surefire to run JUnit 5 tests -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
+      </plugin>
+
+    <!-- Para el % de coverage de las pruebas .-->
+             <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
     </plugins>
   </build>
 </project>

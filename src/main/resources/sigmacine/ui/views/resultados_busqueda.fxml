@@ -9,9 +9,8 @@
 <?import javafx.scene.layout.Region?>
 
 <StackPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ResultadosBusquedaController" style="-fx-background-color: #000000;">
-    <!-- Use StackPane so the inner VBox can be centered in the window instead of pinned to top-left -->
     <children>
-        <VBox alignment="CENTER" spacing="20" maxWidth="1000.0" style="-fx-padding: 30;">
+    <VBox alignment="CENTER" spacing="8" maxWidth="1200.0" style="-fx-padding: 10 30 30 30;">
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
                 <children>
                     <Label styleClass="brand" text="SIGMA CINE" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;" />
@@ -20,9 +19,9 @@
             </HBox>
             <Label fx:id="lblTituloResultados" text="Resultados de búsqueda" style="-fx-font-size: 28px; -fx-text-fill: #fff; -fx-font-weight: bold;" />
             <Label fx:id="lblTextoBuscado" text="" style="-fx-font-size: 20px; -fx-text-fill: #ccc;" />
-            <ScrollPane fitToWidth="true" prefHeight="360" style="-fx-padding: 10; -fx-background-color: transparent;">
+            <ScrollPane fitToWidth="true" prefHeight="720" VBox.vgrow="ALWAYS" style="-fx-padding: 6; -fx-background-color: transparent;">
                 <content>
-                    <VBox fx:id="panelPeliculas" spacing="16" alignment="TOP_CENTER" style="-fx-padding: 10; -fx-pref-width: 840;" />
+                    <VBox fx:id="panelPeliculas" spacing="16" alignment="TOP_CENTER" style="-fx-padding: 10; -fx-pref-width: 1000;" />
                 </content>
             </ScrollPane>
             <Button fx:id="btnVolver" text="Volver a inicio" style="-fx-background-color: #993726; -fx-text-fill: #fff; -fx-font-weight: bold; -fx-background-radius: 30; -fx-font-size: 16px; -fx-padding: 10 30 10 30;" />

@@ -36,10 +36,13 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 U.ROL,
                 A.NOMBRE  AS NOMBRE_ADMIN,
                 C.NOMBRE  AS NOMBRE_CLIENTE,
-                C.FECHA_REGISTRO
+                C.FECHA_REGISTRO,
+                SC.SALDO   AS SIGMA_SALDO,
+                SC.ESTADO  AS SIGMA_ESTADO
             FROM USUARIO U
             LEFT JOIN ADMIN   A ON A.ID = U.ID
             LEFT JOIN CLIENTE C ON C.ID = U.ID
+            LEFT JOIN SIGMA_CARD SC ON SC.ID = U.ID
             WHERE U.EMAIL = ?
             FETCH FIRST 1 ROWS ONLY
         """;
@@ -54,6 +57,30 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 return mapUsuario(rs);
             }
         } catch (SQLException e) {
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            // Si falta la tabla SIGMA_CARD u otra tabla relacionada, hacemos un fallback a una consulta simple
+            if (msg.contains("table") && msg.contains("not found")) {
+                System.err.println("UsuarioRepositoryJdbc: tabla relacionada no encontrada al buscar por email; realizando consulta simple sin joins");
+                final String simpleSql = "SELECT U.ID, U.EMAIL, U.CONTRASENA, U.ROL FROM USUARIO U WHERE U.EMAIL = ? FETCH FIRST 1 ROWS ONLY";
+                try (Connection con2 = db.getConnection();
+                     PreparedStatement ps2 = con2.prepareStatement(simpleSql)) {
+                    ps2.setString(1, email.value());
+                    try (ResultSet rs2 = ps2.executeQuery()) {
+                        if (!rs2.next()) return null;
+                        int id = rs2.getInt("ID");
+                        Email em = new Email(rs2.getString("EMAIL"));
+                        PasswordHash ph = new PasswordHash(rs2.getString("CONTRASENA"));
+                        Usuario.Rol rol = normalizarRol(rs2.getString("ROL"));
+                        if (rol == Usuario.Rol.ADMIN) {
+                            return Usuario.crearAdmin(id, em, ph, "");
+                        } else {
+                            return Usuario.crearCliente(id, em, ph, "", null);
+                        }
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException("Error consultando USUARIO por email (fallback)", ex);
+                }
+            }
             throw new RuntimeException("Error consultando USUARIO por email", e);
         }
     }
@@ -86,6 +113,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
         final String nextIdSql     = "SELECT COALESCE(MAX(ID),0)+1 AS NEXT_ID FROM USUARIO";
         final String insertUsuario = "INSERT INTO USUARIO (ID, EMAIL, CONTRASENA, ROL) VALUES (?, ?, ?, 'CLIENTE')";
         final String insertCliente = "INSERT INTO CLIENTE (ID, NOMBRE, FECHA_REGISTRO) VALUES (?, ?, CURRENT_DATE)";
+    final String insertSigma = "INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (?, 0.00, TRUE)";
 
         try (Connection con = db.getConnection()) {
             con.setAutoCommit(false);
@@ -98,7 +126,8 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 }
 
                 try (PreparedStatement psU = con.prepareStatement(insertUsuario);
-                    PreparedStatement psC = con.prepareStatement(insertCliente)) {
+                    PreparedStatement psC = con.prepareStatement(insertCliente);
+                    PreparedStatement psS = con.prepareStatement(insertSigma)) {
 
                     psU.setLong(1, id);
                     psU.setString(2, email.value());
@@ -108,6 +137,9 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                     psC.setLong(1, id);
                     psC.setString(2, nombre);
                     psC.executeUpdate();
+
+                    psS.setLong(1, id);
+                    psS.executeUpdate();
                 }
 
                 con.commit();
@@ -137,7 +169,17 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
             String nombreCliente = rs.getString("NOMBRE_CLIENTE");
             Date f = rs.getDate("FECHA_REGISTRO");    // LocalDate si viene de DB, si no, null
             java.time.LocalDate fecha = (f != null) ? f.toLocalDate() : null;
-            return Usuario.crearCliente(id, email, ph, nombreCliente, fecha);
+            java.math.BigDecimal sigmaSaldo = rs.getBigDecimal("SIGMA_SALDO");
+            Boolean sigmaEstado = rs.getObject("SIGMA_ESTADO", Boolean.class);
+            if (sigmaSaldo != null) {
+                sigmacine.dominio.entity.SigmaCard sc = new sigmacine.dominio.entity.SigmaCard((long) id, sigmaSaldo);
+                if (sigmaEstado != null && !sigmaEstado) {
+                    try { sc.desactivar(); } catch (Exception ignore) {}
+                }
+                return Usuario.crearCliente(id, email, ph, nombreCliente, fecha, sc);
+            } else {
+                return Usuario.crearCliente(id, email, ph, nombreCliente, fecha);
+            }
         }
     }
 
@@ -155,7 +197,8 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
 
     @Override
     public List<HistorialCompraDTO> verHistorial(String emailPlano) {
-                final String sql = """
+        // diagnostics removed
+        final String sql = """
         SELECT
             co.ID AS COMPRA_ID,
             co.FECHA AS COMPRA_FECHA,
@@ -189,12 +232,20 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
 
             try (ResultSet rs = ps.executeQuery()) {
                 var lista = new ArrayList<HistorialCompraDTO>();
+                var ids = new ArrayList<Long>();
                 while (rs.next()) {
                     lista.add(CompraMapper.mapHistorial(rs));
+                    ids.add(rs.getObject("COMPRA_ID", Long.class));
                 }
+                // compras found for user
                 return lista;
             }
         } catch (SQLException e) {
+            String msg = e.getMessage() != null ? e.getMessage().toLowerCase() : "";
+            if (msg.contains("table") && msg.contains("not found")) {
+                System.err.println("UsuarioRepositoryJdbc: tabla faltante al consultar historial, devolviendo lista vacía");
+                return new ArrayList<>();
+            }
             throw new RuntimeException("Error consultando historial de compras del usuario " + emailPlano, e);
         }
     }
@@ -211,19 +262,22 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 + "WHERE b.COMPRA_ID = ?";
 
         try (Connection con = db.getConnection();
-             PreparedStatement ps = con.prepareStatement(sqlBoletos)) {
+            PreparedStatement ps = con.prepareStatement(sqlBoletos)) {
             ps.setLong(1, compraId);
             try (ResultSet rs = ps.executeQuery()) {
                 var lista = new ArrayList<Boleto>();
                 while (rs.next()) {
                     Boleto b = new Boleto();
-                    b.setId(rs.getObject("ID", Long.class));
-                    // build asiento string from SILLA (fila + numero) if available
+                    Long bId = rs.getObject("ID", Long.class);
+                    b.setId(bId);
                     String fila = rs.getString("FILA");
                     Integer nro = rs.getObject("SILLA_NUMERO", Integer.class);
                     String asiento = null;
                     if (fila != null || nro != null) {
                         asiento = (fila != null ? fila : "") + (nro != null ? String.valueOf(nro) : "");
+                    }
+                    if (asiento == null || asiento.isBlank()) {
+                        asiento = "Sin asignar";
                     }
                     b.setAsiento(asiento);
                     java.math.BigDecimal precioBd = rs.getBigDecimal("PRECIO_FINAL");

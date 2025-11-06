@@ -14,13 +14,11 @@ public final class CompraMapper {
 
     private CompraMapper() {}
 
-    // Tu mapeo existente a dominio (lo conservo intacto)
     public static Compra map(ResultSet rs, Usuario cliente) throws SQLException {
         Long id = rs.getLong("COMPRA_ID");
         return new Compra(id, cliente);
     }
 
-    // Nuevo: mapeo para historial
     public static HistorialCompraDTO mapHistorial(ResultSet rs) throws SQLException {
         Long compraId = rs.getObject("COMPRA_ID", Long.class);
 

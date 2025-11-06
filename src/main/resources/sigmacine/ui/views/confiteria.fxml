@@ -10,49 +10,7 @@
 <BorderPane prefHeight="517.0" prefWidth="883.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ConfiteriaController">
 
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
-            <children>
-
-                <!-- Logo -->
-                <Label styleClass="brand" text="SIGMA CINE" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;"/>
-
-                <!-- Links -->
-                <Button styleClass="toplink" text="Cartelera" />
-                <Button styleClass="toplink" text="Confitería" />
-                <Button styleClass="toplink" text="Sigma Card" />
-
-                <!-- Separador flexible -->
-                <Region HBox.hgrow="ALWAYS" />
-
-                <!-- Buscador -->
-                <TextField prefWidth="200" promptText="Buscar" styleClass="search" />
-                
-                <Button styleClass="toplink" text="Cart" />
-      
-                                  
-                        
-                                        <!-- Perfil -->
-                <MenuButton styleClass="toplink" text="👤">
-                    <items>
-                        <MenuItem text="Mi Cuenta" />
-                        <MenuItem text="Buscar Tiquetes" />
-                        <MenuItem text="Confitería" />
-                        <MenuItem text="Promociones" />
-                        <MenuItem text="Información Personal" />
-                        <MenuItem text="SigmaCard" />
-                        <MenuItem text="Historial de compras" />
-                        <MenuItem text="Notificaciones" />
-                        <MenuItem text="Cartelera" />
-                        <SeparatorMenuItem />
-                        <MenuItem text="Cerrar Sesión" />
-                    </items>
-                </MenuButton>
-
-            </children>
-            <padding>
-                <Insets bottom="8" left="16" right="16" top="8" />
-            </padding>
-        </HBox>
+         <fx:include source="barra.fxml"/>
     </top>
 
     <center>
@@ -60,7 +18,7 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="695.0" prefWidth="875.0">
                     <children>
-                        <GridPane gridLinesVisible="true" layoutX="-5.0" layoutY="66.0" prefHeight="613.0" prefWidth="882.0">
+                        <GridPane layoutX="-5.0" layoutY="66.0" prefHeight="613.0" prefWidth="882.0">
                             <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="290.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="334.0" minWidth="10.0" prefWidth="327.0" />

@@ -16,84 +16,47 @@
 
     <!-- ===== TOP BAR ===== -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="12" BorderPane.alignment="CENTER" styleClass="topbar">
-            <children>
-                <Label text="SIGMA CINE" styleClass="brand" onMouseClicked="#onBrandClick" style="-fx-cursor: hand;"/>
-
-                <Button fx:id="btnCartelera"  text="Cartelera"  styleClass="toplink"/>
-                <Button fx:id="btnConfiteria" text="Confitería" styleClass="toplink"/>
-                <Button fx:id="btnSigmaCard"  text="Sigma Card" styleClass="toplink"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <TextField fx:id="txtBuscar" promptText="Buscar" prefWidth="200" styleClass="search"/>
-                <Button fx:id="btnBuscar" text="Buscar" onAction="#onBuscarTop"/>
-
-                <Button fx:id="btnCart" text="Cart" styleClass="toplink"/>
-
-                <!-- Controles de sesión -->
-                <Button fx:id="btnIniciarSesion" text="Iniciar sesión" styleClass="toplink"/>
-                <Label fx:id="lblUserName" text="" styleClass="toplink" visible="false"/>
-                <Button fx:id="btnRegistrarse" text="Registrarse" styleClass="toplink"/>
-
-                <!-- Menú de perfil -->
-                <MenuButton fx:id="menuPerfil" text="" styleClass="icon-btn">
-                    <items>
-                        <MenuItem text="Mi Cuenta"/>
-                        <MenuItem text="Buscar Tiquetes"/>
-                        <MenuItem text="Confitería"/>
-                        <MenuItem text="Promociones"/>
-                        <MenuItem text="Información Personal"/>
-                        <MenuItem text="SigmaCard"/>
-                        <MenuItem fx:id="miHistorial" text="Historial de compras"/>
-                        <MenuItem text="Notificaciones"/>
-                        <MenuItem text="Cartelera"/>
-                        <SeparatorMenuItem/>
-                        <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión"/>
-                    </items>
-                </MenuButton>
-            </children>
-            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
-        </HBox>
+        <fx:include source="barra.fxml"/>
     </top>
 
     <!-- ===== CENTRO EN VBOX (promo + content + cards) ===== -->
     <center>
         <VBox spacing="0">
 
-            <!-- Promo (franja + imagen + título + botón) -->
-            <StackPane fx:id="promoPane"
-                       prefHeight="110.0" minHeight="110.0" maxHeight="110.0"
-                       style="-fx-background-color:#993726;">
-                <children>
-                    <ImageView fx:id="imgPublicidad"
-                               fitHeight="110.0"
-                               preserveRatio="true"
-                               pickOnBounds="true"
-                               StackPane.alignment="CENTER">
-                        <image>
-                            <Image url="/Images/publicidad.png"/>
-                        </image>
-                    </ImageView>
+                  <StackPane fx:id="promoPane"
+                   prefHeight="250.0" minHeight="250.0" maxHeight="250.0"
+                   maxWidth="Infinity"
+                   style="-fx-background-color:#742f24;">
+            <children>
+                <!-- Imagen del carrusel -->
+                <ImageView fx:id="promoImg"
+                           preserveRatio="true" smooth="true" pickOnBounds="false"
+                           StackPane.alignment="CENTER"/>
 
-                    <Label fx:id="lblPromo"
-                           text="Promoción"
-                           style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"
-                           StackPane.alignment="TOP_LEFT"
-                           translateX="33" translateY="10">
-                        <font><Font name="System Bold" size="13.0"/></font>
-                    </Label>
-
-                    <Button fx:id="btnPromoVerMas"
-                            text="Ver más"
-                            prefWidth="75.0" prefHeight="30.0"
-                            style="-fx-background-color:#993726; -fx-background-radius:14; -fx-text-fill:#ffffff; -fx-font-weight:bold;"
-                            StackPane.alignment="BOTTOM_LEFT"
-                            translateX="32" translateY="-8">
-                        <font><Font size="10.0"/></font>
-                    </Button>
-                </children>
-            </StackPane>
+                <!-- Flechas y dots -->
+                <BorderPane mouseTransparent="false">
+                    <left>
+                        <Button text="‹" onAction="#prevSlide"
+                                focusTraversable="false"
+                                maxHeight="50" minWidth="40" mnemonicParsing="false"
+                                styleClass="promo-nav"/>
+                    </left>
+                    <right>
+                        <Button text="›" onAction="#nextSlide"
+                                focusTraversable="false"
+                                maxHeight="50" minWidth="40" mnemonicParsing="false"
+                                styleClass="promo-nav"/>
+                    </right>
+                    <bottom>
+                        <HBox fx:id="dotsBox" alignment="CENTER" spacing="6">
+                            <padding>
+                                <Insets top="10" right="10" bottom="10" left="10"/>
+                            </padding>
+                        </HBox>
+                    </bottom>
+                </BorderPane>
+            </children>
+        </StackPane>
 
             <!-- Contenedor dinámico para vistas (colapsa cuando está vacío) -->
             <StackPane fx:id="content" VBox.vgrow="ALWAYS" pickOnBounds="false"/>
