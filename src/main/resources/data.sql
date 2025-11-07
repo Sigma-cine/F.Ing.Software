@@ -45,6 +45,7 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
 
 
+-- Trailers adicionales para las películas
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
