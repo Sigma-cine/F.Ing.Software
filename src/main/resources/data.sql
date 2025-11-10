@@ -54,6 +54,9 @@ INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (4, 3, 'https://www.y
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(3, 'Entrada VIP',       25.00, '2025-01-01');
+-- Inserciones faltantes para respetar claves foráneas (agregadas para evitar errores FK en COMPRA_PRODUCTO)
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(1, 'Combo Inicial', 'Combo inicial de bienvenida', '/Images/Menu/Producto1.png', 'Original', 'COMBO', 10.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Snack pequeño', 'Snack pequeño para compra rápida', '/Images/Menu/Snack_pequeño.png', 'Original', 'CONFITERIA', 3.00, 'Disponible', TRUE);
 
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Perro caliente',       'Hot Dog Clásico con papas', '/Images/Menu/Perro_caliente.png', 'Original', 'COMIDA',  8.75, 'Disponible', TRUE);
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(5, 'Crispetas',     'Palomitas de maíz clásicas',       '/Images/Menu/Crispetas.png', 'Dulce,Salada,Mixta', 'COMIDA',  7.50, 'Disponible', TRUE);

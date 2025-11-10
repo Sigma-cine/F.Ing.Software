@@ -11,7 +11,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>21</java.version>
-    <javafx.version>21.0.4</javafx.version>
+    <javafx.version>22.0.2</javafx.version>
     <!--para que sirva en diferentes SO -->
     <javafx.platform>win</javafx.platform>
   </properties>
@@ -99,6 +99,9 @@
             <configuration>
               <mainClass>sigmacine.infraestructura.configDataBase.TestConexion</mainClass>
               <classpathScope>runtime</classpathScope>
+              <vmArgs>
+                <vmArg>--enable-native-access=javafx.graphics,javafx.web,javafx.media</vmArg>
+              </vmArgs>
             </configuration>
           </execution>
 
@@ -110,6 +113,9 @@
             <configuration>
               <mainClass>sigmacine.ui.App</mainClass>
               <classpathScope>runtime</classpathScope>
+              <vmArgs>
+                <vmArg>--enable-native-access=javafx.graphics,javafx.web,javafx.media</vmArg>
+              </vmArgs>
             </configuration>
           </execution>
           <execution>
@@ -120,6 +126,9 @@
             <configuration>
               <mainClass>sigmacine.tools.PurchaseSimulator</mainClass>
               <classpathScope>runtime</classpathScope>
+              <vmArgs>
+                <vmArg>--enable-native-access=javafx.graphics,javafx.web,javafx.media</vmArg>
+              </vmArgs>
             </configuration>
           </execution>
         </executions>
@@ -130,6 +139,10 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.1.2</version>
+        <configuration>
+          <!-- Permitir acceso nativo de JavaFX durante tests para evitar warnings y futuros bloqueos -->
+          <argLine>--enable-native-access=javafx.graphics,javafx.web,javafx.media</argLine>
+        </configuration>
       </plugin>
 
     <!-- Para el % de coverage de las pruebas .-->
