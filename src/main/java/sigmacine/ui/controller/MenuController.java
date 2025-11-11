@@ -31,30 +31,26 @@ public class MenuController implements Initializable {
 
     @FXML private GridPane gridMenu;
     @FXML private TextField txtBuscar;
-    @FXML private Button btnVerCarrito;
     @FXML private Button btnVerCombos;
 
     private UsuarioDTO usuario;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Solo mantener el Singleton para marcar la página activa
-        BarraController barraController = BarraController.getInstance();
-        if (barraController != null) {
-            // Ensure the top navigation bar (BarraController) marks Confitería active when showing the menu
-            try {
-                var barra = BarraController.getInstance();
-                if (barra != null) barra.marcarBotonActivo("confiteria");
-            } catch (Exception ignore) {}
-            
-            barraController.marcarBotonActivo("combos");
-        }
         if (txtBuscar != null) txtBuscar.setOnAction(e -> loadProducts(txtBuscar.getText()));
-        if (btnVerCarrito != null) btnVerCarrito.setOnAction(e -> toggleCarrito());
         if (btnVerCombos != null) btnVerCombos.setOnAction(e -> showCombos());
         if (gridMenu != null) gridMenu.getStyleClass().add("menu-grid");
         loadProducts(null);
         
-        
+        // Marcar el botón activo después de que la vista esté completamente cargada
+        javafx.application.Platform.runLater(() -> {
+            BarraController barraController = BarraController.getInstance();
+            if (barraController != null) {
+                System.out.println("✓ MenuController: BarraController encontrado, marcando 'confiteria'");
+                barraController.marcarBotonActivo("confiteria");
+            } else {
+                System.out.println("✗ MenuController: BarraController NO encontrado (getInstance retornó null)");
+            }
+        });
     }
 
     public void setUsuario(UsuarioDTO u) { this.usuario = u; }
@@ -73,19 +69,6 @@ public class MenuController implements Initializable {
         } catch (Exception ex) { 
             ex.printStackTrace(); 
         }
-    }
-
-    private void toggleCarrito() {
-        try {
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCarrito.fxml"));
-            var root = loader.load();
-            var stage = new javafx.stage.Stage();
-            stage.initOwner(gridMenu.getScene().getWindow());
-            stage.initModality(javafx.stage.Modality.NONE);
-            stage.setResizable(false);
-            stage.setScene(new javafx.scene.Scene((Parent) root));
-            stage.show();
-        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     private void loadProducts(String filter) {

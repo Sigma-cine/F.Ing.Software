@@ -281,7 +281,7 @@ public class ControladorControlador {
             if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
             Parent root = loader.load();
             
-            configurarBarraEnVista(root);
+            configurarBarraEnVista(root, "confiteria");
             
             stage.setTitle("Sigma Cine - Confitería");
             javafx.scene.Scene current = stage.getScene();
@@ -374,9 +374,17 @@ public class ControladorControlador {
     }
 
     private void configurarBarraEnVista(Parent root) {
+        configurarBarraEnVista(root, null);
+    }
+    
+    private void configurarBarraEnVista(Parent root, String botonActivo) {
         try {
             BarraController barraController = obtenerBarraController(root);
+            if (barraController != null && botonActivo != null) {
+                barraController.marcarBotonActivo(botonActivo);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
