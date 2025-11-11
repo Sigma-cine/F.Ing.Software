@@ -344,8 +344,9 @@ public class BarraController {
     private void onLogoClick(MouseEvent event) {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            coordinador.mostrarPaginaInicial();
-            resetearEstilosBotones();
+            // Ir a cartelera en lugar de página inicial vacía
+            coordinador.mostrarCartelera();
+            marcarBotonActivo("cartelera");
         }
     }
 

@@ -41,14 +41,13 @@ public class MenuController implements Initializable {
         if (gridMenu != null) gridMenu.getStyleClass().add("menu-grid");
         loadProducts(null);
         
-        // Marcar el botón activo después de que la vista esté completamente cargada
         javafx.application.Platform.runLater(() -> {
             BarraController barraController = BarraController.getInstance();
             if (barraController != null) {
-                System.out.println("✓ MenuController: BarraController encontrado, marcando 'confiteria'");
+                System.out.println("MenuController: BarraController encontrado, marcando 'confiteria'");
                 barraController.marcarBotonActivo("confiteria");
             } else {
-                System.out.println("✗ MenuController: BarraController NO encontrado (getInstance retornó null)");
+                System.out.println("MenuController: BarraController NO encontrado (getInstance retornó null)");
             }
         });
     }
@@ -119,18 +118,28 @@ public class MenuController implements Initializable {
     javafx.scene.layout.HBox selectors = new javafx.scene.layout.HBox(12);
     selectors.setAlignment(javafx.geometry.Pos.CENTER);
     selectors.getStyleClass().add("menu-selectors");
-    
+    selectors.setMaxWidth(520);
+    selectors.setSpacing(20);
+    selectors.setPickOnBounds(false);
     final IntegerProperty quantity = new SimpleIntegerProperty(1);
     javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
     javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("+");
+    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("*");
     
     btnMinus.getStyleClass().add("qty-btn");
     btnPlus.getStyleClass().add("qty-btn");
     lblQty.getStyleClass().add("qty-label");
     
-    btnMinus.setStyle("-fx-text-fill: #222222;");
-    btnPlus.setStyle("-fx-text-fill: #222222;");
+    // Forzar que el texto se vea con fuente System
+    btnMinus.setStyle("-fx-font-family: 'System'; -fx-font-size: 18px;");
+    btnPlus.setStyle("-fx-font-family: 'System'; -fx-font-size: 18px;");
+
+    btnMinus.setMinWidth(45);
+    btnMinus.setPrefWidth(45);
+    btnPlus.setMinWidth(45);
+    btnPlus.setPrefWidth(45);
+    btnMinus.setPickOnBounds(false);
+    btnPlus.setPickOnBounds(false);
     
     btnMinus.setOnAction(e -> {
         if (quantity.get() > 1) {
@@ -149,6 +158,10 @@ public class MenuController implements Initializable {
     javafx.scene.layout.HBox qtyBox = new javafx.scene.layout.HBox(8);
     qtyBox.setAlignment(javafx.geometry.Pos.CENTER);
     qtyBox.getStyleClass().add("qty-selector");
+    qtyBox.setPickOnBounds(false);
+    qtyBox.setMinWidth(160);
+    qtyBox.setPrefWidth(160);
+    qtyBox.setMaxWidth(160);
     qtyBox.getChildren().addAll(btnMinus, lblQty, btnPlus);
 
     javafx.scene.control.ComboBox<String> cbOpt = new javafx.scene.control.ComboBox<>();
@@ -166,11 +179,23 @@ public class MenuController implements Initializable {
 
     cbOpt.getStyleClass().add("menu-select");
     cbOpt.setPrefWidth(180);
+    cbOpt.setMaxWidth(180); 
+    cbOpt.setMinWidth(180);
+    
     selectors.getChildren().addAll(qtyBox, cbOpt);
 
     Button add = new Button("Agregar al carrito");
     add.getStyleClass().addAll("buy-btn", "menu-add-btn");
     add.setOnAction(e -> {
+        if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+            alert.setTitle("Iniciar Sesión Requerido");
+            alert.setHeaderText("Debe iniciar sesión");
+            alert.setContentText("Para agregar productos al carrito debe iniciar sesión primero.");
+            alert.showAndWait();
+            return;
+        }
+        
         String selectedSabor = null;
         try { selectedSabor = cbOpt.getSelectionModel().getSelectedItem(); } catch (Exception ignore) {}
         int qty = quantity.get();
@@ -180,6 +205,21 @@ public class MenuController implements Initializable {
             ? new CompraProductoDTO(p.id, itemName + " (" + selectedSabor + ")", qty, p.precio, selectedSabor)
             : new CompraProductoDTO(p.id, itemName, qty, p.precio);
         CarritoService.getInstance().addItem(dto);
+        
+        javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        confirmacion.setTitle("Producto añadido al carrito");
+        confirmacion.setHeaderText("¡Producto agregado correctamente!");
+        
+        String mensaje = qty == 1 
+            ? "Se añadió 1 " + itemName + " al carrito"
+            : "Se añadieron " + qty + " " + itemName + " al carrito";
+        
+        if (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original")) {
+            mensaje += "\nSabor: " + selectedSabor;
+        }
+        
+        confirmacion.setContentText(mensaje);
+        confirmacion.showAndWait();
     });
 
     VBox box = new VBox(10, imgFrame, titleBox, desc, selectors, add);

@@ -27,7 +27,7 @@ public class CompraBoletoJUnitTest {
         var repo = new CompraRepositoryJdbc(db);
         var svc = new CompraService(repo);
 
-        CompraProductoDTO prod = new CompraProductoDTO(1L, "Combo Popcorn", 1, new BigDecimal("10.50"));
+        CompraProductoDTO prod = new CompraProductoDTO(4L, "Snack pequeño", 1, new BigDecimal("3.00"));
         CompraProductoDTO boleto1 = new CompraProductoDTO(null, 1L, "Boleto A1", 1, new BigDecimal("12.00"), "A1");
         CompraProductoDTO boleto2 = new CompraProductoDTO(null, 1L, "Boleto A2", 1, new BigDecimal("12.00"), "A2");
 

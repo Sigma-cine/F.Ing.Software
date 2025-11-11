@@ -1,4 +1,4 @@
-﻿package sigmacine.dominio.entity;
+package sigmacine.dominio.entity;
 
 import java.sql.Date;
 import java.sql.Time;
