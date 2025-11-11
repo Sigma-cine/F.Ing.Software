@@ -14,7 +14,6 @@ public class Compra {
     private LocalDate fecha;
     private Pago pago;
 
-    // Constructor que inicializa una nueva compra con un cliente
     public Compra(Long id, Usuario cliente) {
         this.id = id;
         this.cliente = cliente;
@@ -36,7 +35,6 @@ public class Compra {
         this.total += producto.getPrecio();
     }
     
-    // Método para asociar un pago a la compra
     public void setPago(Pago pago) {
         if (pago == null) {
             throw new IllegalArgumentException("El pago no puede ser nulo.");

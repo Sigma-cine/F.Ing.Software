@@ -11,9 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Region;
 import sigmacine.aplicacion.service.VerHistorialService;
 import sigmacine.aplicacion.data.HistorialCompraDTO;
+import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
 
 public class VerHistorialController {
     
@@ -23,24 +23,25 @@ public class VerHistorialController {
     @FXML
     private Button btnVolver;
     
-    @FXML
-    private javafx.scene.layout.HBox localTopbar;
-    
-    private ClienteController clienteController;
     private javafx.scene.Scene previousScene;
     
-    private final VerHistorialService historialService;
+    private VerHistorialService historialService;
     private String usuarioEmail;
+
+    public VerHistorialController() {
+        try {
+            DatabaseConfig dbConfig = new DatabaseConfig();
+            UsuarioRepositoryJdbc usuarioRepo = new UsuarioRepositoryJdbc(dbConfig);
+            this.historialService = new VerHistorialService(usuarioRepo);
+        } catch (Exception e) {
+            System.err.println("Error inicializando VerHistorialService: " + e.getMessage());
+        }
+    }
 
     public VerHistorialController(VerHistorialService historialService) {
         this.historialService = historialService;
-        // constructor - diagnostics removed
     }
     
-    public void setClienteController(ClienteController controller) {
-        this.clienteController = controller;
-    }
-
     public void setPreviousScene(javafx.scene.Scene scene) {
         this.previousScene = scene;
     }
@@ -55,106 +56,20 @@ public class VerHistorialController {
 
     @FXML
     public void initialize() {
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("historial");
+        }
+        
         if (btnVolver != null) {
             btnVolver.setOnAction(e -> onVolverAInicio());
         }
         if (comprasContainer != null) {
             comprasContainer.getChildren().clear(); 
             cargarHistorialDeCompras();
-            javafx.application.Platform.runLater(() -> limpiarNodosPromocionales());
-        }
-
-        try {
-            if (localTopbar != null && comprasContainer != null && comprasContainer.getScene() != null) {
-                var root = comprasContainer.getScene().getRoot();
-                boolean sceneHasTopbar = root.lookup(".topbar") != null;
-                if (sceneHasTopbar) {
-                    localTopbar.setVisible(false);
-                    localTopbar.setManaged(false);
-                }
-            }
-        } catch (Exception ignore) {}
-    }
-
-    @FXML
-    private void onBrandClick() {
-        try {
-            javafx.stage.Stage stage = null;
-            if (btnVolver != null && btnVolver.getScene() != null) {
-                stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
-            } else if (comprasContainer != null && comprasContainer.getScene() != null) {
-                stage = (javafx.stage.Stage) comprasContainer.getScene().getWindow();
-            }
-            if (stage != null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-                javafx.scene.Parent root = loader.load();
-                try {
-                    Object ctrl = loader.getController();
-                    if (ctrl instanceof ClienteController) {
-                        ClienteController c = (ClienteController) ctrl;
-                        var current = sigmacine.aplicacion.session.Session.getCurrent();
-                        if (current != null) c.init(current);
-                    }
-                } catch (Exception ignore) {}
-                javafx.scene.Scene currentScene = stage.getScene();
-                double w = currentScene != null ? currentScene.getWidth() : 1000;
-                double h = currentScene != null ? currentScene.getHeight() : 700;
-                stage.setScene(new javafx.scene.Scene(root, w, h));
-                stage.setTitle("Sigma Cine");
-                stage.setMaximized(true);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 
-    private void limpiarNodosPromocionales() {
-        try {
-            if (comprasContainer == null) return;
-            var scene = comprasContainer.getScene();
-            if (scene == null) return;
-            var root = scene.getRoot();
-            eliminarRecursivo(root);
-        } catch (Exception e) {
-            System.err.println("Advertencia: no se pudo limpiar nodos promocionales: " + e.getMessage());
-        }
-    }
-
-    private void eliminarRecursivo(javafx.scene.Parent parent) {
-        if (parent == null) return;
-        if (parent instanceof javafx.scene.layout.Pane) {
-            javafx.scene.layout.Pane pane = (javafx.scene.layout.Pane) parent;
-            java.util.List<javafx.scene.Node> copia = new java.util.ArrayList<>(pane.getChildren());
-            for (javafx.scene.Node n : copia) {
-                boolean removed = false;
-                if (n instanceof javafx.scene.control.Button) {
-                    javafx.scene.control.Button b = (javafx.scene.control.Button) n;
-                    String t = b.getText();
-                    if (t != null && t.trim().equalsIgnoreCase("Ver más")) {
-                        pane.getChildren().remove(n);
-                        removed = true;
-                    }
-                }
-                if (!removed && n instanceof javafx.scene.control.Label) {
-                    javafx.scene.control.Label lab = (javafx.scene.control.Label) n;
-                    String lt = lab.getText();
-                    if (lt != null && lt.trim().equalsIgnoreCase("Label")) {
-                        pane.getChildren().remove(n);
-                        removed = true;
-                    }
-                }
-                if (!removed && n instanceof javafx.scene.Parent) {
-                    eliminarRecursivo((javafx.scene.Parent) n);
-                }
-            }
-        } else {
-            java.util.List<javafx.scene.Node> children = parent.getChildrenUnmodifiable();
-            for (javafx.scene.Node n : children) {
-                if (n instanceof javafx.scene.Parent) eliminarRecursivo((javafx.scene.Parent) n);
-            }
-        }
-    }
-    
     private void cargarHistorialDeCompras() {
         if (usuarioEmail == null || usuarioEmail.isEmpty()) {
             comprasContainer.getChildren().add(new Label("Error: Email de usuario no disponible para la búsqueda."));
@@ -193,7 +108,7 @@ public class VerHistorialController {
         HBox tarjeta = new HBox(20);
         tarjeta.setPadding(new javafx.geometry.Insets(10, 15, 10, 15));
         tarjeta.setPrefHeight(150);
-    tarjeta.getStyleClass().addAll("tarjeta-compra", "card-wrap", "centered-container");
+        tarjeta.getStyleClass().addAll("tarjeta-compra", "card-wrap", "centered-container");
         
         VBox detalles = new VBox(6);
         Label tituloLbl = new Label(titulo);
@@ -204,8 +119,7 @@ public class VerHistorialController {
         ubicacionLbl.getStyleClass().add("small-muted");
         detalles.getChildren().add(ubicacionLbl);
 
-    // Mostrar fecha si está disponible
-    String fechaText = fechaHora;
+        String fechaText = fechaHora;
         Label fechaLbl = new Label("Fecha/Hora: " + fechaText);
         fechaLbl.getStyleClass().add("small-muted");
         detalles.getChildren().add(fechaLbl);
@@ -238,7 +152,6 @@ public class VerHistorialController {
         posterView.setSmooth(true);
         posterView.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.6) , 6,0,0,2 );");
 
-        // intentar cargar poster a partir de un boleto asociado a la compra
         try {
             if (dto.getCompraId() != null && this.historialService != null && this.historialService.repo != null) {
                 var boletos = this.historialService.repo.obtenerBoletosPorCompra(dto.getCompraId());
@@ -258,16 +171,13 @@ public class VerHistorialController {
                 }
             }
         } catch (Exception ex) {
-            // no bloquear la UI por poster
         }
 
-        // Añadir imagen, detalles y botón "Ver detalle"
         Button btnDetalle = new Button("Ver detalle");
         btnDetalle.getStyleClass().add("primary-btn");
         btnDetalle.setOnAction(e -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/detalleCompra.fxml"));
-                // inyectar DTO y repositorio en el controller
                 loader.setControllerFactory(cls -> {
                     if (cls == sigmacine.ui.controller.DetalleCompraController.class) {
                         return new sigmacine.ui.controller.DetalleCompraController(dto, this.historialService.repo);
@@ -305,7 +215,6 @@ public class VerHistorialController {
             }
             java.net.URL res = getClass().getResource("/Images/" + r);
             if (res != null) return new Image(res.toExternalForm(), false);
-            // try as absolute URL / file
             java.io.File f = new java.io.File(ref);
             if (f.exists()) return new Image(f.toURI().toString(), false);
             return new Image(ref, true);
@@ -314,7 +223,6 @@ public class VerHistorialController {
     
     @FXML
     private void onVolverAInicio() {
-        // always go to the main page (pagina_inicial.fxml)
         try {
             var scene = btnVolver != null ? btnVolver.getScene() : (comprasContainer != null ? comprasContainer.getScene() : null);
             if (scene != null && scene.getWindow() instanceof javafx.stage.Stage) {

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="sigmacine.ui.controller.MenuController" styleClass="page-root" stylesheets="@sigma.css">
+    <top>
+        <VBox spacing="6" BorderPane.alignment="CENTER">
+            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
+                <Label text="Nuestro Menú" styleClass="section-title" />
+                <Button text="Ver combos" fx:id="btnVerCombos" styleClass="primary-btn" />
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField fx:id="txtBuscar" promptText="Buscar" styleClass="search" />
+            </HBox>
+            <Separator />
+        </VBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="menu-scroll">
+            <content>
+                <GridPane fx:id="gridMenu" hgap="24" vgap="24" alignment="TOP_CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50" />
+                        <ColumnConstraints percentWidth="50" />
+                    </columnConstraints>
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12" />
+                    </padding>
+                </GridPane>
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="12">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12" />
+            </padding>
+            <Button text="Ver carrito" fx:id="btnVerCarrito" />
+        </HBox>
+    </bottom>
+</BorderPane>

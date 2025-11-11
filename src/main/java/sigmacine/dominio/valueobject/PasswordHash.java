@@ -19,7 +19,6 @@ public final class PasswordHash {
             try { return BCrypt.checkpw(plain, hash); }
             catch (IllegalArgumentException ex) { return false; }
         }
-        // Fallback temporal: texto plano
         return plain.equals(hash);
     }
 }

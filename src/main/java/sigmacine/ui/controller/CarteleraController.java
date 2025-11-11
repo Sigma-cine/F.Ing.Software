@@ -6,8 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,14 +22,7 @@ public class CarteleraController {
     private ControladorControlador coordinador;
     private UsuarioDTO usuario;
 
-    @FXML private Button btnIniciarSesion;
-    @FXML private Button btnRegistrarse;
-    @FXML private Label lblUserName;
-    @FXML private MenuButton menuPerfil;
-    @FXML private MenuItem miCerrarSesion;
-    @FXML private MenuItem miHistorial;
     @FXML private TextField txtBuscar;
-
     @FXML private javafx.scene.layout.FlowPane gridPeliculas;
 
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
@@ -39,12 +30,16 @@ public class CarteleraController {
 
     @FXML
     private void initialize() {
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("cartelera");
+        }
+        
         try {
             DatabaseConfig db = new DatabaseConfig();
             PeliculaRepositoryJdbc repo = new PeliculaRepositoryJdbc(db);
             List<Pelicula> todas = repo.buscarTodas();
             renderPeliculas(todas);
-            wireTopbar();
         } catch (Exception ex) {
             if (gridPeliculas != null) gridPeliculas.getChildren().add(new Label("Error cargando cartelera: " + ex.getMessage()));
             ex.printStackTrace();
@@ -107,27 +102,6 @@ public class CarteleraController {
     }
 
     @FXML
-    private void onBrandClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-            Parent root = loader.load();
-            Object ctrl = loader.getController();
-            if (ctrl instanceof ClienteController) {
-                ClienteController c = (ClienteController) ctrl;
-                c.setCoordinador(this.coordinador);
-                c.init(this.usuario);
-            }
-            Stage stage = (Stage) gridPeliculas.getScene().getWindow();
-            Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 1000;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w, h));
-            stage.setTitle("Sigma Cine");
-            stage.setMaximized(true);
-        } catch (Exception ex) { ex.printStackTrace(); }
-    }
-
-    @FXML
     private void onBuscarTop() {
         try {
             String texto = txtBuscar != null ? txtBuscar.getText() : "";
@@ -154,6 +128,9 @@ public class CarteleraController {
     }
 
     private void wireTopbar() {
+        // Este método requiere componentes UI específicos en el FXML (btnIniciarSesion, btnRegistrarse, etc.)
+        // que no están disponibles en este controlador actualmente
+        /*
         try {
             boolean logged = sigmacine.aplicacion.session.Session.isLoggedIn();
             if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(!logged); btnIniciarSesion.setManaged(!logged); }
@@ -167,7 +144,6 @@ public class CarteleraController {
             if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); wireTopbar(); });
             if (miHistorial != null) miHistorial.setOnAction(e -> {
                 try {
-                    System.out.println("[CarteleraController] miHistorial clicked, preparing historial view...");
                     if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
                         javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                         a.setTitle("Acceso denegado"); a.setHeaderText(null); a.setContentText("Debes iniciar sesión para ver tu historial de compras."); a.showAndWait(); return;
@@ -196,6 +172,7 @@ public class CarteleraController {
                 } catch (Exception ex) { ex.printStackTrace(); }
             });
         } catch (Exception ex) { ex.printStackTrace(); }
+        */
     }
 
     private void abrirDetalle(Pelicula p) {
@@ -210,7 +187,6 @@ public class CarteleraController {
                 VerDetallePeliculaController c = (VerDetallePeliculaController) ctrl;
                 try { c.setCoordinador(this.coordinador); } catch (Exception ignore) {}
                 try { c.setUsuario(this.usuario); } catch (Exception ignore) {}
-                try { c.refreshSessionUI(); } catch (Exception ignore) {}
                 c.setPelicula(p);
             }
 

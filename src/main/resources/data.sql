@@ -65,6 +65,7 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
 
 
+-- Trailers adicionales para las películas
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
@@ -74,10 +75,23 @@ INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada Genera
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(3, 'Entrada VIP',       25.00, '2025-01-01');
 
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(1, 'Combo Popcorn', 'Popcorn grande y refresco grande', 'COMIDA', 10.50, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Hot Dog',       'Hot Dog Clásico con papas',        'COMIDA',  8.75, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(3, 'Nachos',        'Nachos con queso y jalapeños',     'COMIDA',  9.25, 'Disponible', TRUE);
-INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Agua',          'Botella de agua (500ml)',          'BEBIDA',  3.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(1, 'Combo Inicial', 'Combo inicial de bienvenida', '/Images/Menu/Producto1.png', 'Original', 'COMBO', 10.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Snack pequeño', 'Snack pequeño para compra rápida', '/Images/Menu/Snack_pequeño.png', 'Original', 'CONFITERIA', 3.00, 'Disponible', TRUE);
+
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Perro caliente',       'Hot Dog Clásico con papas', '/Images/Menu/Perro_caliente.png', 'Original', 'COMIDA',  8.75, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(5, 'Crispetas',     'Palomitas de maíz clásicas',       '/Images/Menu/Crispetas.png', 'Dulce,Salada,Mixta', 'COMIDA',  7.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(6, 'Gaseosa',       'Refresco pequeño (330ml)',         '/Images/Menu/Gaseosas.png', 'CocaCola,Manzana,Naranja', 'BEBIDA',  4.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(7, 'ICEE',          'Bebida ICEE (pequeña)',            '/Images/Menu/ICEE.png', 'Fresa,Mora_Azul,Limón', 'BEBIDA',  5.00, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(8, 'Chocolatas',    'Selección de chocolates y dulces',  '/Images/Menu/Chocolatas.png', 'Snickers,Jet,Jumbo,Hersheys', 'CONFITERIA', 6.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(9, 'Pipsas',        'Porción de pizza estilo cine',     '/Images/Menu/Pipsas.png', 'Queso,Peperoni,Mixta', 'COMIDA',  11.00, 'Disponible', TRUE);
+
+-- COMBOS
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(10, 'Shake Up Your Snacking', 'Tus palomitas, tus reglas', '/Images/Combos/Combo_shake_up_your_shaking.png', 'Original', 'COMBO', 14.99, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(11, 'Combo Nachos', 'Nachos con queso y hot dog clásico', '/Images/Combos/Combo_nachos.png', 'Original', 'COMBO', 12.50, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(12, 'Snack & Sip', 'Crispetas y bebida ilimitada', '/Images/Combos/Combo_snack_sip.png', 'Original', 'COMBO', 13.75, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(13, 'Combo Pitufos', 'Crispetas, vaso con pitufos y tu peluche favorito', '/Images/Combos/Combo_pitufos.png', 'Original', 'COMBO', 11.99, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(14, 'Gaseosas Exclusivas', 'Disfruta la mejor selección de bebidas', '/Images/Combos/Combo_gaseosas_exclusivas.png', 'CocaCola,Fanta,MrBig,Manzana,Limón', 'COMBO', 8.99, 'Disponible', TRUE);
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(15, 'Combo Crispetas y Perro', 'Crispetas grandes, M&M, ICEE, gaseosa y hot dog clásico', '/Images/Combos/Combo_crispetas_perro.png', 'Original', 'COMBO', 15.50, 'Disponible', TRUE);
 
 -- Funciones en distintas ciudades y sedes
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(1,  '2025-09-15', '12:50', 'Activa', TIME '02:46:00', TRUE, 1, 1); -- Bogotá / Salitre Plaza
@@ -130,14 +144,6 @@ INSERT INTO COMPRA_PRODUCTO (COMPRA_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, 
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (2, 50.00, TRUE);
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (3,  0.00, TRUE);
 
--- -----------------------------------------------------------------------------
--- Bulk funciones adicionales: muchas funciones por película y por sede/sala
--- Fechas: 2025-10-19 y 2025-10-20
--- Horarios: 13:00, 16:00, 19:00
--- Películas: (1) Dune: Part Two (duración 02:46:00), (2) Joker (duración 02:02:00)
--- Salas: 1..10 (todas las definidas en SEDE/SALA)
--- Nota: IDs continúan a partir de 16 (último ID usado arriba)
--- -----------------------------------------------------------------------------
 
 -- 2025-10-19 - Película 1 (Dune: Part Two)
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES

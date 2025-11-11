@@ -1,4 +1,3 @@
-// RegisterController.java
 package sigmacine.ui.controller;
 
 import javafx.fxml.FXML;
@@ -7,8 +6,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import sigmacine.aplicacion.facade.AuthFacade;
 import javafx.application.Platform;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -44,7 +41,6 @@ public class RegisterController {
                     bCan.setOnAction(e -> onCancelar());
                 }
             } catch (Exception ex) {
-                // swallow wiring errors silently; UI will still work via fx:id/onAction bindings
             }
         });
     }
@@ -71,7 +67,6 @@ public class RegisterController {
 
     @FXML
     public void onRegistrar() {
-        System.out.println("[DEBUG] onRegistrar invoked");
         String nombre = txtNombre.getText().trim();
         String email  = txtEmail.getText().trim();
         String pass   = txtPassword.getText();

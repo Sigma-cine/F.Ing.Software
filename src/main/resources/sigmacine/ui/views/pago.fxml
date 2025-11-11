@@ -8,8 +8,6 @@
             prefWidth="480" prefHeight="520"
             style="-fx-background-color:#000; -fx-padding:24;" >
 
-    <!-- ToggleGroup will be created in the controller to avoid FXML KeyPath parsing issues -->
-
     <top>
         <VBox spacing="6">
             <children>

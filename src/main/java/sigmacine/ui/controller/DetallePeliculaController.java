@@ -19,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 
-
 public class DetallePeliculaController {
 
     @FXML private ImageView imgPoster;
@@ -28,11 +27,7 @@ public class DetallePeliculaController {
     @FXML private javafx.scene.layout.StackPane trailerContainer;
     @FXML private javafx.scene.layout.HBox trailerButtons;
     @FXML private Label lblTituloPelicula;
-    @FXML private VBox panelFunciones;
     @FXML private Button btnComprar;
-    @FXML private Button btnRegresarBusqueda;
-    @FXML private Button btnRegresarHome;
-
     @FXML private Label lblGenero, lblClasificacion, lblDuracion, lblDirector, lblReparto;
 
     private Pelicula pelicula;
@@ -46,9 +41,13 @@ public class DetallePeliculaController {
 
     @FXML
     private void initialize() {
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("detalle");
+        }
+        
         if (btnComprar != null) {
             btnComprar.setOnAction(e -> {
-                // Navegar a la vista de contenidoCartelera para elegir función y asientos
                 try {
                     var url = getClass().getResource("/sigmacine/ui/views/contenidoCartelera.fxml");
                     if (url == null) {
@@ -84,40 +83,6 @@ public class DetallePeliculaController {
                 }
             });
         }
-        if (btnRegresarBusqueda != null) {
-            btnRegresarBusqueda.setOnAction(e -> {
-                try {
-                    var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/resultados_busqueda.fxml"));
-                    javafx.scene.Parent root = loader.load();
-                    ResultadosBusquedaController ctrl = loader.getController();
-                    if (this.backResults != null) {
-                        ctrl.setResultados(this.backResults, this.backTexto != null ? this.backTexto : "");
-                    }
-                    javafx.stage.Stage stage = (javafx.stage.Stage) btnRegresarBusqueda.getScene().getWindow();
-                    javafx.scene.Scene current = stage.getScene();
-                    double w = current != null ? current.getWidth() : 900;
-                    double h = current != null ? current.getHeight() : 600;
-                    stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-        }
-        if (btnRegresarHome != null) {
-            btnRegresarHome.setOnAction(e -> {
-                try {
-                    var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-                    javafx.scene.Parent root = loader.load();
-                    javafx.stage.Stage stage = (javafx.stage.Stage) btnRegresarHome.getScene().getWindow();
-                    javafx.scene.Scene current = stage.getScene();
-                    double w = current != null ? current.getWidth() : 900;
-                    double h = current != null ? current.getHeight() : 600;
-                    stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-        }
     }
 
     public void setPelicula(Pelicula p) {
@@ -149,7 +114,7 @@ public class DetallePeliculaController {
         lblDuracion.setText(dur > 0 ? dur + " min" : "N/D");
 
         lblDirector.setText(safe(p.getDirector(), "N/D"));
-    lblReparto.setText(safe(p.getReparto()));
+        lblReparto.setText(safe(p.getReparto()));
 
         // Sinopsis
         txtSinopsis.setText(safe(p.getSinopsis()));
@@ -237,7 +202,6 @@ public class DetallePeliculaController {
             ex.printStackTrace();
         }
     }
-
 
     private static String safe(String s) {
         return (s == null || s.trim().equalsIgnoreCase("null")) ? "" : s.trim();

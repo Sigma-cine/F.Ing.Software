@@ -13,19 +13,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Servicio de carrito en memoria.
- * - API observable basada en DTOs para la vista (getItems, addItem, getTotal, addListener).
- * - Métodos legados (addBoleto/addProducto/getBoletos/getProductos) mantienen compatibilidad
- *   mapeando internamente a la lista observable para que la UI se actualice.
- */
 public class CarritoService {
     private static final CarritoService INSTANCE = new CarritoService();
 
-    // Lista observable usada por la UI (verCarrito.fxml)
     private final ObservableList<CompraProductoDTO> items = FXCollections.observableArrayList();
 
-    // Listas legadas para compatibilidad con código existente
     private final List<Boleto> boletos = new ArrayList<>();
     private final List<Producto> productos = new ArrayList<>();
 
@@ -33,7 +25,6 @@ public class CarritoService {
 
     public static CarritoService getInstance() { return INSTANCE; }
 
-    // ---- API nueva basada en DTO ----
     public ObservableList<CompraProductoDTO> getItems() { return items; }
 
     public void addItem(CompraProductoDTO item) {
@@ -56,12 +47,10 @@ public class CarritoService {
     }
 
     public void addListener(ListChangeListener<? super CompraProductoDTO> l) { items.addListener(l); }
-
-    // ---- API LEGADA: mantiene compatibilidad y alimenta la lista observable ----
+    
     public synchronized void addBoleto(Boleto b) {
         if (b == null) throw new IllegalArgumentException("Boleto nulo");
         boletos.add(b);
-        // Mapear a DTO visible para el overlay (precio en unidades monetarias)
         BigDecimal precio = BigDecimal.valueOf(b.getPrecio()).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
         String nombre = "Boleto: " + safe(b.getPelicula()) + (b.getHorario() != null ? (" — " + b.getHorario()) : "");
         items.add(new CompraProductoDTO(null, nombre, 1, precio));

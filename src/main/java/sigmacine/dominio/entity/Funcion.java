@@ -4,7 +4,11 @@ import java.sql.Date;
 import java.sql.Time;
 
 public class Funcion {
+
     private long id;
+    private List<Pelicula> trailers;
+    private Pelicula pelicula;
+    private Sala sala;
     private Date fecha;
     private Time hora;
     private String estado;

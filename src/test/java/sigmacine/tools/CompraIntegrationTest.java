@@ -51,9 +51,7 @@ public class CompraIntegrationTest {
         var repo = new CompraRepositoryJdbc(db);
         var svc = new CompraService(repo);
 
-        // Product
         CompraProductoDTO prod = new CompraProductoDTO(1L, "Combo Popcorn", 1, new BigDecimal("10.50"));
-        // Boleto (funcionId must exist in data.sql)
         CompraProductoDTO boleto = new CompraProductoDTO(null, 1L, "Boleto prueba", 1, new BigDecimal("12.00"), "A1");
 
         List<CompraProductoDTO> items = new ArrayList<>();

@@ -5,15 +5,15 @@ import java.sql.*;
 public class TestConexion {
     public static void main(String[] args) {
         try {
-            DatabaseConfig db = new DatabaseConfig();               
+            DatabaseConfig db = new DatabaseConfig();
 
-            try (Connection conn = db.getConnection()) {          
-                ScriptLoader.runScripts(conn);     
+            try (Connection conn = db.getConnection()) {
+                ScriptLoader.runScripts(conn);
 
                 System.out.println("Conectado a: " + conn.getMetaData().getURL());
 
                 try (Statement st = conn.createStatement();
-                     ResultSet rs = st.executeQuery("SELECT 1")) {
+                    ResultSet rs = st.executeQuery("SELECT 1")) {
                     rs.next();
                     System.out.println("SELECT 1 -> " + rs.getInt(1));
                 }

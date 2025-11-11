@@ -44,7 +44,8 @@ public class App extends Application {
         UsuarioRepository repo = new UsuarioRepositoryJdbc(db);
         LoginService loginService = new LoginService(repo);
         RegistroService registroService = new RegistroService(repo);
-        AuthFacade authFacade = new AuthFacade(loginService, registroService);
+
+        AuthFacade authFacade = new AuthFacade(loginService, registroService); 
 
         ControladorControlador coordinador = new ControladorControlador(stage, authFacade);
 
@@ -54,6 +55,7 @@ public class App extends Application {
         container.put(sigmacine.aplicacion.service.LoginService.class, loginService);
         container.put(sigmacine.aplicacion.service.RegistroService.class, registroService);
         container.put(sigmacine.aplicacion.facade.AuthFacade.class, authFacade);
+
 
         PeliculaRepositoryJdbc peliculaRepo = new PeliculaRepositoryJdbc(db);
         container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
@@ -78,6 +80,16 @@ public class App extends Application {
         GestionFuncionesService gestionFuncionesService = new GestionFuncionesService(funcAdminRepo);
         container.put(GestionFuncionesService.class, gestionFuncionesService);
 
+
+        
+    /*    var peliculaRepo = new PeliculaRepositoryJdbc(db);
+        container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
+        var compraRepo = new CompraRepositoryJdbc(db);
+        container.put(CompraRepositoryJdbc.class, compraRepo);
+        var compraService = new CompraService(compraRepo);
+        container.put(CompraService.class, compraService);
+        container.put(CarritoService.class, CarritoService.getInstance());*/
+
         Callback<Class<?>, Object> controllerFactory = (Class<?> clazz) -> {
             try {
                 for (Constructor<?> ctor : clazz.getConstructors()) {
@@ -91,11 +103,17 @@ public class App extends Application {
                                 candidate = e.getValue();
                                 break;
                             }
+
                         }
-                        if (candidate == null) { ok = false; break; }
+                        if (candidate == null) { 
+                            ok = false; 
+                            break; 
+                        }
                         args[i] = candidate;
                     }
-                    if (ok) return ctor.newInstance(args);
+                    if (ok) {
+                        return ctor.newInstance(args);
+                    }
                 }
                 return clazz.getDeclaredConstructor().newInstance();
             } catch (Exception ex) {
@@ -103,15 +121,16 @@ public class App extends Application {
             }
         };
 
-        coordinador.setControllerFactory(controllerFactory);
 
+        coordinador.setControllerFactory(controllerFactory);
+        
         try {
             java.util.prefs.Preferences prefs = java.util.prefs.Preferences.userNodeForPackage(sigmacine.ui.controller.ControladorControlador.class);
             if (prefs.getBoolean("cityPopupShown", false)) {
                 prefs.remove("cityPopupShown");
             }
         } catch (Exception ignored) {}
-
+        
         sigmacine.aplicacion.data.UsuarioDTO guest = new sigmacine.aplicacion.data.UsuarioDTO();
         guest.setId(0);
         guest.setEmail("");

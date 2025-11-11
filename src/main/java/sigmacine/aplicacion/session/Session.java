@@ -3,7 +3,8 @@ package sigmacine.aplicacion.session;
 import sigmacine.aplicacion.data.UsuarioDTO;
 
 /**
- * Simple application session holder. Not persisted across runs.
+ * Acá se guarda la sesión actual del usuario. Es durante toda la ejecución de la aplicación. 
+ * Ejemplo: cuando sale el nombre del usuario en la barra superior.
  */
 public final class Session {
     private static UsuarioDTO current;

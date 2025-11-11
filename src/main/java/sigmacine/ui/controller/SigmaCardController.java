@@ -26,6 +26,10 @@ public class SigmaCardController {
 
 	@FXML
 	private void initialize() {
+		BarraController barraController = BarraController.getInstance();
+		if (barraController != null) {
+			barraController.marcarBotonActivo("sigmacard");
+		}
 		if (btnRegistrarme != null) btnRegistrarme.setOnAction(e -> onRegistrarme());
 		if (btnRecargar != null) btnRecargar.setOnAction(e -> onRecargar());
 		if (btnVerMonto != null) btnVerMonto.setOnAction(e -> onVerMonto());
@@ -157,7 +161,6 @@ public class SigmaCardController {
 	public static void openModal(javafx.stage.Window owner) {
 		javafx.application.Platform.runLater(() -> {
 			try {
-				System.out.println("[SigmaCard] openModal called, owner=" + owner);
 				java.net.URL url = SigmaCardController.class.getResource("/sigmacine/ui/views/SigmaCard.fxml");
 				if (url == null) {
 					javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "No se encontró SigmaCard.fxml");
@@ -192,7 +195,6 @@ public class SigmaCardController {
 	public static void openAsScene(javafx.stage.Stage stage) {
 		if (stage == null) return;
 		try {
-			System.out.println("[SigmaCard] openAsScene called, stage=" + stage);
 			java.net.URL url = SigmaCardController.class.getResource("/sigmacine/ui/views/SigmaCard.fxml");
 			if (url == null) {
 				javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR, "No se encontró SigmaCard.fxml");

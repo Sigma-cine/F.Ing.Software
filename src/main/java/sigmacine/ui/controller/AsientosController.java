@@ -23,18 +23,7 @@ public class AsientosController implements Initializable {
     @FXML private GridPane gridSala;
     @FXML private Label lblResumen;
 
-    @FXML private Button btnCartelera;
-    @FXML private Button btnConfiteria;
-    @FXML private Button btnSigmaCard;
-    @FXML private Button btnCart;
-    @FXML private Button btnIniciarSesion;
-    @FXML private Button btnRegistrarse;
-    @FXML private Label  lblUserName;
-    @FXML private MenuButton menuPerfil;
-    @FXML private MenuItem miCerrarSesion;
-    @FXML private MenuItem miHistorial;
     @FXML private TextField txtBuscar;
-    @FXML private Button btnBuscar;
 
     @FXML private Label lblTitulo;
     @FXML private Label lblHoraPill;
@@ -51,6 +40,8 @@ public class AsientosController implements Initializable {
 
     private String titulo = "Película";
     private String hora   = "1:10 pm";
+    private String ciudad = "";  // Ciudad de la función
+    private String sede = "";    // Sede/centro comercial de la función
     private Image poster;
     private Long funcionId; // ID de la función seleccionada
 
@@ -64,32 +55,19 @@ public class AsientosController implements Initializable {
 
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
-    public void setUsuario(UsuarioDTO u) { this.usuario = u; refreshSessionUI(); }
+    public void setUsuario(UsuarioDTO u) { this.usuario = u; }
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        if (btnCartelera != null) btnCartelera.setOnAction(e -> goCartelera());
-        if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
-    if (btnSigmaCard != null) btnSigmaCard.setOnAction(e -> onSigmaCardTop());
-        if (btnCart != null) btnCart.setOnAction(e -> toggleCartPopup());
-        if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> {
-            if (sigmacine.aplicacion.session.Session.isLoggedIn()) return; // ya logueado
-            if (coordinador != null) { coordinador.mostrarLogin(); refreshSessionUI(); }
-            else onIniciarSesion();
-        });
-        if (btnRegistrarse != null) btnRegistrarse.setOnAction(e -> {
-            if (sigmacine.aplicacion.session.Session.isLoggedIn()) return; // no permitir si ya está logueado
-            if (coordinador != null) coordinador.mostrarRegistro();
-            else onRegistrarse();
-        });
-        if (btnRegistrarse != null) btnRegistrarse.setOnAction(e -> onRegistrarse());
-        if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); refreshSessionUI(); });
-        if (miHistorial != null) miHistorial.setOnAction(e -> onVerHistorial());
-        if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> onIniciarSesion());
+        // Solo mantener el Singleton para marcar la página activa
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("asientos");
+        }
+        
         if (txtBuscar != null) {
             txtBuscar.setOnKeyPressed(ev -> { if (ev.getCode() == KeyCode.ENTER) doSearch(txtBuscar.getText()); });
-            if (btnBuscar != null) btnBuscar.setOnAction(e -> doSearch(txtBuscar.getText()));
         }
 
         // Demo si nadie setea función
@@ -107,11 +85,14 @@ public class AsientosController implements Initializable {
 
         poblarGrilla();
         actualizarResumen();
-        refreshSessionUI();
     }
 
-    @FXML private void onBrandClick() { goHome(); }
     @FXML private void onBuscarTop() { doSearch(txtBuscar != null ? txtBuscar.getText() : ""); }
+
+    @FXML
+    private void onCarritoTop() {
+        toggleCartPopup();
+    }
 
     @FXML
     private void onSigmaCardTop() {
@@ -171,7 +152,7 @@ public class AsientosController implements Initializable {
 
     private void onIniciarSesion() {
         if (sigmacine.aplicacion.session.Session.isLoggedIn()) return;
-        if (coordinador != null) { coordinador.mostrarLogin(); refreshSessionUI(); return; }
+        if (coordinador != null) { coordinador.mostrarLogin(); return; }
         try {
             var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
             Parent root = loader.load();
@@ -181,7 +162,7 @@ public class AsientosController implements Initializable {
             var ctrl = loader.getController();
             if (ctrl instanceof LoginController lc) {
                 try { ControladorControlador global = ControladorControlador.getInstance(); if (global != null) { lc.setCoordinador(global); lc.setAuthFacade(global.getAuthFacade()); } } catch (Throwable ignore) {}
-                lc.setOnSuccess(() -> { try { dialog.close(); } catch (Exception ignore) {} refreshSessionUI(); });
+                lc.setOnSuccess(() -> { try { dialog.close(); } catch (Exception ignore) {} });
             }
             dialog.setScene(new Scene(root));
             dialog.showAndWait();
@@ -210,7 +191,6 @@ public class AsientosController implements Initializable {
                 var cur = sigmacine.aplicacion.session.Session.getCurrent();
                 if (cur != null && cur.getEmail() != null && !cur.getEmail().isBlank()) controller.setUsuarioEmail(cur.getEmail());
             }
-            System.out.println("[AsientosController] opening historial view...");
             loader.setControllerFactory(cls -> {
                 if (cls == sigmacine.ui.controller.VerHistorialController.class) return controller;
                 try { return cls.getDeclaredConstructor().newInstance(); } catch (Exception ex) { throw new RuntimeException(ex); }
@@ -252,15 +232,6 @@ public class AsientosController implements Initializable {
         }
     }
 
-    private void refreshSessionUI() {
-        boolean logged = sigmacine.aplicacion.session.Session.isLoggedIn();
-        var u = sigmacine.aplicacion.session.Session.getCurrent();
-        if (lblUserName != null) { lblUserName.setVisible(logged); lblUserName.setManaged(logged); lblUserName.setText(logged && u != null ? (u.getNombre() != null ? u.getNombre() : "") : ""); }
-        if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(!logged); btnIniciarSesion.setManaged(!logged); }
-        if (btnRegistrarse  != null) btnRegistrarse.setDisable(logged);
-        if (menuPerfil != null) { menuPerfil.setVisible(logged); menuPerfil.setManaged(logged); }
-    }
-
     private void poblarGrilla() {
         gridSala.getChildren().clear();
         seatByCode.clear();
@@ -292,7 +263,7 @@ public class AsientosController implements Initializable {
                             seleccion.remove(code);
                         }
                         actualizarResumen();
-                        sincronizarAsientosConCarrito();
+                        // NO sincronizar con carrito aquí, solo actualizar visualmente
                     });
                 }
 
@@ -336,18 +307,57 @@ public class AsientosController implements Initializable {
     }
 
     private void sincronizarAsientosConCarrito() {
+        // Limpiar asientos anteriores del carrito
         if (!asientoItems.isEmpty()) {
             for (var dto : asientoItems) {
                 carrito.removeItem(dto);
             }
             asientoItems.clear();
         }
-        if (seleccion.isEmpty()) return;
+        
+        if (seleccion.isEmpty()) {
+            return;
+        }
+        
+        // Añadir todos los asientos seleccionados al carrito
         for (String code : seleccion.stream().sorted().toList()) {
-            String nombre = "Asiento " + code + " - " + (titulo != null ? titulo : "Película") + (hora != null ? " (" + hora + ")" : "");
+            // Crear nombre más descriptivo con película, sede, hora y asiento
+            StringBuilder nombreBuilder = new StringBuilder();
+            nombreBuilder.append("Asiento ").append(code);
+            
+            if (titulo != null && !titulo.isBlank()) {
+                nombreBuilder.append(" - ").append(titulo);
+            }
+            
+            if (sede != null && !sede.isBlank()) {
+                nombreBuilder.append(" - ").append(sede);
+            } else if (ciudad != null && !ciudad.isBlank()) {
+                nombreBuilder.append(" - ").append(ciudad);
+            }
+            
+            if (hora != null && !hora.isBlank()) {
+                nombreBuilder.append(" (").append(hora).append(")");
+            }
+            
+            String nombre = nombreBuilder.toString();
             var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
             carrito.addItem(dto);
             asientoItems.add(dto);
+        }
+        
+        // Mostrar mensaje de confirmación cuando se confirman los asientos
+        if (!seleccion.isEmpty()) {
+            javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            confirmacion.setTitle("Asientos añadidos al carrito");
+            confirmacion.setHeaderText("¡Asientos confirmados!");
+            
+            String mensaje = seleccion.size() == 1 
+                ? "Se añadió 1 asiento al carrito:\n" + seleccion.iterator().next()
+                : "Se añadieron " + seleccion.size() + " asientos al carrito:\n" + 
+                  String.join(", ", seleccion.stream().sorted().toList());
+            
+            confirmacion.setContentText(mensaje);
+            confirmacion.showAndWait();
         }
     }
 
@@ -356,8 +366,20 @@ public class AsientosController implements Initializable {
                         java.util.Set<String> ocupados,
                         java.util.Set<String> accesibles,
                         Long funcionId) {
+        setFuncion(titulo, hora, ocupados, accesibles, funcionId, "", "");
+    }
+
+    public void setFuncion(String titulo,
+                        String hora,
+                        java.util.Set<String> ocupados,
+                        java.util.Set<String> accesibles,
+                        Long funcionId,
+                        String ciudad,
+                        String sede) {
         if (titulo != null) this.titulo = titulo;
         if (hora   != null) this.hora   = hora;
+        if (ciudad != null) this.ciudad = ciudad;
+        if (sede   != null) this.sede   = sede;
         this.funcionId = funcionId;
 
         this.ocupados.clear();
@@ -372,7 +394,11 @@ public class AsientosController implements Initializable {
 
         if (lblTitulo != null)   lblTitulo.setText(this.titulo);
         if (lblHoraPill != null) lblHoraPill.setText(this.hora);
-        if (gridSala != null) { poblarGrilla(); actualizarResumen(); }
+        if (gridSala != null) { 
+            poblarGrilla(); 
+            sincronizarConCarritoExistente(); // Verificar asientos ya en carrito
+            actualizarResumen(); 
+        }
 
         if ((this.poster == null || imgPoster == null || imgPoster.getImage() == null) && this.titulo != null && !this.titulo.isBlank()) {
             try {
@@ -515,7 +541,20 @@ public class AsientosController implements Initializable {
 
     @FXML
     private void onContinuar() {
-
+        // Ahora es cuando sincronizamos los asientos con el carrito
+        if (seleccion.isEmpty()) {
+            javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+            alerta.setTitle("Selección requerida");
+            alerta.setHeaderText("No hay asientos seleccionados");
+            alerta.setContentText("Por favor selecciona al menos un asiento antes de continuar.");
+            alerta.showAndWait();
+            return;
+        }
+        
+        // Sincronizar con el carrito y mostrar confirmación
+        sincronizarAsientosConCarrito();
+        
+        // Ya no navegamos automáticamente a pago - el usuario puede ir al carrito o continuar comprando
     }
 
     private Set<String> shiftAccesiblesToFirstRowPlus2(Set<String> entrada) {
@@ -556,18 +595,50 @@ public class AsientosController implements Initializable {
                     if (ev.getCode() == KeyCode.ESCAPE) cartStage.close();
                 });
             }
-            if (btnCart != null && btnCart.getScene() != null) {
-                javafx.geometry.Bounds b = btnCart.localToScreen(btnCart.getBoundsInLocal());
-                if (b != null) {
-                    cartStage.setX(b.getMaxX() - 600);
-                    cartStage.setY(b.getMaxY() + 8);
-                }
+            // Posicionar el carrito en una ubicación fija cerca de la ventana principal
+            if (gridSala != null && gridSala.getScene() != null && gridSala.getScene().getWindow() != null) {
+                javafx.stage.Window owner = gridSala.getScene().getWindow();
+                cartStage.setX(owner.getX() + owner.getWidth() - 650);
+                cartStage.setY(owner.getY() + 100);
             }
             cartStage.show();
             cartStage.toFront();
         } catch (Exception ex) {
             ex.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "No se pudo abrir el carrito: " + ex.getMessage()).showAndWait();
+        }
+    }
+
+    /**
+     * Sincroniza el estado visual de los asientos con los que ya están en el carrito
+     * para evitar duplicados cuando el usuario vuelve a entrar a la pantalla.
+     */
+    private void sincronizarConCarritoExistente() {
+        // Limpiar la selección y lista de asientos actuales
+        seleccion.clear();
+        asientoItems.clear();
+        
+        // Verificar qué asientos de esta función ya están en el carrito
+        var itemsCarrito = carrito.getItems();
+        for (var item : itemsCarrito) {
+            // Verificar si este item es un asiento de la función actual
+            if (item.getFuncionId() != null && 
+                item.getAsiento() != null && 
+                item.getFuncionId().equals(this.funcionId)) {
+                
+                String codigoAsiento = item.getAsiento();
+                
+                // Marcar este asiento como seleccionado
+                seleccion.add(codigoAsiento);
+                asientoItems.add(item);
+                
+                // Actualizar el estado visual del botón correspondiente
+                ToggleButton boton = seatByCode.get(codigoAsiento);
+                if (boton != null) {
+                    boton.setSelected(true);
+                    setSeatState(boton, SeatState.SELECTED);
+                }
+            }
         }
     }
 }
