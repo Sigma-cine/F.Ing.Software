@@ -23,18 +23,7 @@ public class AsientosController implements Initializable {
     @FXML private GridPane gridSala;
     @FXML private Label lblResumen;
 
-    @FXML private Button btnCartelera;
-    @FXML private Button btnConfiteria;
-    @FXML private Button btnSigmaCard;
-    @FXML private Button btnCart;
-    @FXML private Button btnIniciarSesion;
-    @FXML private Button btnRegistrarse;
-    @FXML private Label  lblUserName;
-    @FXML private MenuButton menuPerfil;
-    @FXML private MenuItem miCerrarSesion;
-    @FXML private MenuItem miHistorial;
     @FXML private TextField txtBuscar;
-    @FXML private Button btnBuscar;
 
     @FXML private Label lblTitulo;
     @FXML private Label lblHoraPill;
@@ -66,32 +55,19 @@ public class AsientosController implements Initializable {
 
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
-    public void setUsuario(UsuarioDTO u) { this.usuario = u; refreshSessionUI(); }
+    public void setUsuario(UsuarioDTO u) { this.usuario = u; }
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        if (btnCartelera != null) btnCartelera.setOnAction(e -> goCartelera());
-        if (btnConfiteria != null) btnConfiteria.setOnAction(e -> {});
-    if (btnSigmaCard != null) btnSigmaCard.setOnAction(e -> onSigmaCardTop());
-        if (btnCart != null) btnCart.setOnAction(e -> toggleCartPopup());
-        if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> {
-            if (sigmacine.aplicacion.session.Session.isLoggedIn()) return; // ya logueado
-            if (coordinador != null) { coordinador.mostrarLogin(); refreshSessionUI(); }
-            else onIniciarSesion();
-        });
-        if (btnRegistrarse != null) btnRegistrarse.setOnAction(e -> {
-            if (sigmacine.aplicacion.session.Session.isLoggedIn()) return; // no permitir si ya está logueado
-            if (coordinador != null) coordinador.mostrarRegistro();
-            else onRegistrarse();
-        });
-        if (btnRegistrarse != null) btnRegistrarse.setOnAction(e -> onRegistrarse());
-        if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); refreshSessionUI(); });
-        if (miHistorial != null) miHistorial.setOnAction(e -> onVerHistorial());
-        if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> onIniciarSesion());
+        // Solo mantener el Singleton para marcar la página activa
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("asientos");
+        }
+        
         if (txtBuscar != null) {
             txtBuscar.setOnKeyPressed(ev -> { if (ev.getCode() == KeyCode.ENTER) doSearch(txtBuscar.getText()); });
-            if (btnBuscar != null) btnBuscar.setOnAction(e -> doSearch(txtBuscar.getText()));
         }
 
         // Demo si nadie setea función
@@ -109,10 +85,8 @@ public class AsientosController implements Initializable {
 
         poblarGrilla();
         actualizarResumen();
-        refreshSessionUI();
     }
 
-    @FXML private void onBrandClick() { goHome(); }
     @FXML private void onBuscarTop() { doSearch(txtBuscar != null ? txtBuscar.getText() : ""); }
 
     @FXML
@@ -251,15 +225,6 @@ public class AsientosController implements Initializable {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
-
-    private void refreshSessionUI() {
-        boolean logged = sigmacine.aplicacion.session.Session.isLoggedIn();
-        var u = sigmacine.aplicacion.session.Session.getCurrent();
-        if (lblUserName != null) { lblUserName.setVisible(logged); lblUserName.setManaged(logged); lblUserName.setText(logged && u != null ? (u.getNombre() != null ? u.getNombre() : "") : ""); }
-        if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(!logged); btnIniciarSesion.setManaged(!logged); }
-        if (btnRegistrarse  != null) btnRegistrarse.setDisable(logged);
-        if (menuPerfil != null) { menuPerfil.setVisible(logged); menuPerfil.setManaged(logged); }
     }
 
     private void poblarGrilla() {

@@ -40,13 +40,11 @@ public class DetalleCompraController {
         lblTotal.setText(dto.getTotal() != null ? String.format("%.2f", dto.getTotal().doubleValue()) : "0.00");
         lblSede.setText(dto.getSedeCiudad() != null ? dto.getSedeCiudad() : "N/A");
         lblFuncion.setText((dto.getFuncionFecha() != null ? dto.getFuncionFecha().toString() : "-") + " " + (dto.getFuncionHora() != null ? dto.getFuncionHora().toString() : ""));
-        // intentar cargar detalles reales desde el repositorio si está disponible
         if (repo != null && dto.getCompraId() != null) {
             List<Boleto> boletos = repo.obtenerBoletosPorCompra(dto.getCompraId());
             List<CompraProductoDTO> productos = repo.obtenerProductosPorCompra(dto.getCompraId());
             lblBoletos.setText(String.valueOf(boletos.size()));
             lblProductos.setText(String.valueOf(productos.size()));
-            // renderizar detalles en las listas
             if (boletosList != null) {
                 boletosList.getChildren().clear();
                 for (Boleto b : boletos) {

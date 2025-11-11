@@ -17,11 +17,9 @@ public class Boleto {
         this.precio = precio;
     }
 
-    // Constructor vacío para uso de frameworks o mapeo manual
     public Boleto() {
     }
 
-    // Setters para permitir construcción por pasos
     public void setId(Long id) { this.id = id; }
     public void setPelicula(String pelicula) { this.pelicula = pelicula; }
     public void setSala(String sala) { this.sala = sala; }
@@ -31,6 +29,9 @@ public class Boleto {
 
     public String getPelicula() {
         return pelicula;
+    }
+    public Long getId() {
+        return id;
     }
 
     public String getSala() {

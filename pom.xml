@@ -10,9 +10,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>17</java.version>
-    <javafx.version>21.0.4</javafx.version>
-    <!-- Cambia según tu SO: win | linux | mac | mac-aarch64 -->
+    <java.version>21</java.version>
+    <javafx.version>22.0.2</javafx.version>
+    <!--para que sirva en diferentes SO -->
     <javafx.platform>win</javafx.platform>
   </properties>
 
@@ -23,8 +23,7 @@
       <artifactId>h2</artifactId>
       <version>2.3.232</version>
     </dependency>
-
-    <!-- BCrypt para PasswordHash.matches(...) -->
+    
     <dependency>
       <groupId>org.mindrot</groupId>
       <artifactId>jbcrypt</artifactId>
@@ -68,13 +67,13 @@
 
   <build>
     <plugins>
-      <!-- Java 17 -->
+      <!-- Java 21 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>17</release>
+          <release>21</release>
         </configuration>
       </plugin>
 
@@ -100,6 +99,9 @@
             <configuration>
               <mainClass>sigmacine.infraestructura.configDataBase.TestConexion</mainClass>
               <classpathScope>runtime</classpathScope>
+              <vmArgs>
+                <vmArg>--enable-native-access=javafx.graphics,javafx.web,javafx.media</vmArg>
+              </vmArgs>
             </configuration>
           </execution>
 
@@ -111,6 +113,9 @@
             <configuration>
               <mainClass>sigmacine.ui.App</mainClass>
               <classpathScope>runtime</classpathScope>
+              <vmArgs>
+                <vmArg>--enable-native-access=javafx.graphics,javafx.web,javafx.media</vmArg>
+              </vmArgs>
             </configuration>
           </execution>
           <execution>
@@ -121,30 +126,30 @@
             <configuration>
               <mainClass>sigmacine.tools.PurchaseSimulator</mainClass>
               <classpathScope>runtime</classpathScope>
+              <vmArgs>
+                <vmArg>--enable-native-access=javafx.graphics,javafx.web,javafx.media</vmArg>
+              </vmArgs>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
              
-    <!-- JUnit Platform Surefire Provider.-->
-             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.0.0</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
+  <!-- Use modern Surefire to run JUnit 5 tests -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <!-- Permitir acceso nativo de JavaFX durante tests para evitar warnings y futuros bloqueos -->
+          <argLine>--enable-native-access=javafx.graphics,javafx.web,javafx.media</argLine>
+        </configuration>
+      </plugin>
 
     <!-- Para el % de coverage de las pruebas .-->
              <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <goals>

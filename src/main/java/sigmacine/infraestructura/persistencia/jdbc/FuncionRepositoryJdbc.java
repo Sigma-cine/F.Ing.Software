@@ -28,7 +28,7 @@ public class FuncionRepositoryJdbc implements FuncionRepository {
                 "WHERE f.PELICULA_ID = ? " +
                 "ORDER BY se.CIUDAD, se.NOMBRE, f.FECHA, f.HORA";
         try (Connection cn = db.getConnection();
-             PreparedStatement ps = cn.prepareStatement(sql)) {
+            PreparedStatement ps = cn.prepareStatement(sql)) {
             ps.setLong(1, peliculaId);
             try (ResultSet rs = ps.executeQuery()) {
                 List<FuncionDisponibleDTO> out = new ArrayList<>();

@@ -26,6 +26,10 @@ public class SigmaCardController {
 
 	@FXML
 	private void initialize() {
+		BarraController barraController = BarraController.getInstance();
+		if (barraController != null) {
+			barraController.marcarBotonActivo("sigmacard");
+		}
 		if (btnRegistrarme != null) btnRegistrarme.setOnAction(e -> onRegistrarme());
 		if (btnRecargar != null) btnRecargar.setOnAction(e -> onRecargar());
 		if (btnVerMonto != null) btnVerMonto.setOnAction(e -> onVerMonto());

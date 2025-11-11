@@ -15,13 +15,13 @@ public class HistorialCompraDTO {
     private int cantProductos;
 
     public HistorialCompraDTO(Long compraId,
-                              LocalDate compraFecha,
-                              BigDecimal total,
-                              String sedeCiudad,
-                              LocalDate funcionFecha,
-                              LocalTime funcionHora,
-                              int cantBoletos,
-                              int cantProductos) {
+                            LocalDate compraFecha,
+                            BigDecimal total,
+                            String sedeCiudad,
+                            LocalDate funcionFecha,
+                            LocalTime funcionHora,
+                            int cantBoletos,
+                            int cantProductos) {
         this.compraId = compraId;
         this.compraFecha = compraFecha;
         this.total = total;
@@ -41,7 +41,6 @@ public class HistorialCompraDTO {
     public int getCantBoletos() { return cantBoletos; }
     public int getCantProductos() { return cantProductos; }
 
-    // opcional: toString para debug
     @Override public String toString() {
         return "HistorialCompraDTO{id=%d, fecha=%s, total=%s, sede=%s, func=%s %s, boletos=%d, productos=%d}"
                 .formatted(compraId, compraFecha, total, sedeCiudad,

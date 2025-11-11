@@ -21,44 +21,7 @@
 
 <BorderPane prefHeight="600.0" prefWidth="960.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.VerDetallePeliculaController">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="topbar">
-            <children>
-                <Button fx:id="btnBack" onAction="#onVolver" styleClass="toplink" text="← Volver" />
-                <Label onMouseClicked="#onBrandClick" style="-fx-cursor: hand;" styleClass="brand" text="SIGMA CINE" />
-                <Button fx:id="btnCarteleraTop" onAction="#onCartelera" styleClass="toplink" text="Cartelera" />
-                <Button styleClass="toplink" text="Confitería" />
-                <Button styleClass="toplink" text="Sigma Card" />
-                <Region HBox.hgrow="ALWAYS" />
-                <TextField prefWidth="200" promptText="Buscar" styleClass="search" />
-                <VBox fx:id="carritoPanel" spacing="16">
-                    <children>
-                        <Button styleClass="toplink" text="Cart" />
-                    </children>
-                </VBox>
-                <Button fx:id="btnIniciarSesion" styleClass="toplink" text="Iniciar sesión" />
-                <Label fx:id="lblUserName" styleClass="toplink" text="" visible="false" />
-                <Button fx:id="btnRegistrarse" styleClass="toplink" text="Registrarse" />
-
-                <MenuButton fx:id="menuPerfil" styleClass="icon-btn" text="👤">
-                    <items>
-                        <MenuItem text="Mi Cuenta" />
-                        <MenuItem text="Buscar Tiquetes" />
-                        <MenuItem text="Confitería" />
-                        <MenuItem text="Promociones" />
-                        <MenuItem text="Información Personal" />
-                        <MenuItem text="SigmaCard" />
-                        <MenuItem fx:id="miHistorial" text="Historial de compras" />
-                        <MenuItem text="Notificaciones" />
-                        <MenuItem text="Cartelera" />
-                        <SeparatorMenuItem />
-                        <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
-                    </items>
-                </MenuButton>
-            </children>
-            <padding>
-                <Insets bottom="8" left="16" right="16" top="8" />
-            </padding>
-        </HBox>
+        <fx:include source="barra.fxml"/>
     </top>
 
     <center>
