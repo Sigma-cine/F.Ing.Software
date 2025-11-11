@@ -7,6 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 import sigmacine.aplicacion.data.UsuarioDTO;
@@ -64,32 +65,53 @@ public class ControladorControlador {
         }
     }
 
-    private void mostrarPopupCiudad(UsuarioDTO usuario) {
+        private void mostrarPopupCiudad(UsuarioDTO usuario) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/ciudad.fxml"));
-            if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/sigmacine/ui/views/ciudad.fxml")
+            );
+            if (controllerFactory != null) {
+                loader.setControllerFactory(controllerFactory);
+            }
             Parent popupRoot = loader.load();
-            
-            Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initOwner(stage);
-            popupStage.setTitle("Seleccionar Ciudad");
-            popupStage.setScene(new Scene(popupRoot));
+
+            // === Stage sin decoraciones y transparente ===
+            Stage popupStage = new Stage(StageStyle.TRANSPARENT);
+            if (stage != null) {
+                popupStage.initOwner(stage);
+                popupStage.initModality(Modality.WINDOW_MODAL);
+            } else {
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+            }
             popupStage.setResizable(false);
-            
+
+            // Scene transparente para respetar el overlay del FXML
+            Scene scene = new Scene(popupRoot);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            popupStage.setScene(scene);
+
+            // Esc para cerrar (opcional)
+            scene.setOnKeyPressed(ev -> {
+                switch (ev.getCode()) {
+                    case ESCAPE -> popupStage.close();
+                    default -> { }
+                }
+            });
+
+            // Callback del controlador
             Object controller = loader.getController();
-            if (controller instanceof CiudadController) {
-                CiudadController ciudadController = (CiudadController) controller;
+            if (controller instanceof CiudadController ciudadController) {
                 ciudadController.setOnCiudadSelected(ciudad -> {
                     sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
                     popupStage.close();
                 });
             }
-            
+
             popupStage.showAndWait();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
+            // Fallback sensato si algo falla
             sigmacine.aplicacion.session.Session.setSelectedCity("Bogotá");
         }
     }
