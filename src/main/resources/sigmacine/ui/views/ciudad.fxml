@@ -30,7 +30,7 @@
                        </ImageView>
    
                        <!-- TARJETA -->
-                       <VBox maxWidth="640" prefHeight="250.0" prefWidth="562.0" spacing="0" style="-fx-background-color: rgba(255,255,255,0.98);                                  -fx-background-radius: 22;                                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 20, 0.18, 0, 6);">
+                       <VBox maxWidth="640" prefHeight="250.0" prefWidth="562.0" spacing="0" style="-fx-background-color: #8B2E21;                                  -fx-background-radius: 22;                                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 20, 0.18, 0, 6);">
       <children>
       
                               <!-- CABECERA (zona de arrastre) -->
@@ -57,7 +57,7 @@
                               <!-- CUERPO -->
                               <VBox alignment="CENTER" prefHeight="193.0" prefWidth="551.0" spacing="18" style="-fx-padding: 26 28 32 28;">
                                   <children>
-                                      <Label style="-fx-text-fill: #333333;" text="Elige la ciudad para personalizar cartelera y promociones." wrapText="true">
+                                      <Label style="-fx-text-fill: #ffffffff;" text="Elige la ciudad para personalizar cartelera y promociones." wrapText="true">
                                           <font>
                                     <Font size="13.5" />
                                  </font>
