@@ -6,6 +6,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
+import javafx.geometry.Bounds;
+import javafx.stage.Popup;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.aplicacion.service.CarritoService;
@@ -204,16 +206,13 @@ public class BarraController {
     }
 
     private void configurarCarritoDropdown() {
-        carritoDropdown = new ContextMenu();
-        carritoDropdown.setStyle("-fx-pref-width: 300; -fx-padding: 10;");
-        
-        // Actualizar el contenido cada vez que se abre
+        // Configurar para mostrar popup FXML debajo del botón
         btnCart.setOnAction(e -> {
-            actualizarCarritoDropdown();
-            carritoDropdown.show(btnCart, Side.BOTTOM, 0, 0);
+            mostrarCarritoPopup();
         });
     }
     
+    /* Función comentada - ahora usamos popup FXML
     private void actualizarCarritoDropdown() {
         carritoDropdown.getItems().clear();
         
@@ -273,6 +272,7 @@ public class BarraController {
         botonItem.setHideOnClick(false);
         carritoDropdown.getItems().add(botonItem);
     }
+    */
 
     private void navegarACartelera() {
         ControladorControlador coordinador = ControladorControlador.getInstance();
@@ -296,18 +296,53 @@ public class BarraController {
     }
 
     private void navegarACarrito() {
+        // Función comentada - ahora usamos mostrarCarritoPopup()
         // Este método ya no se necesita porque el clic se maneja en configurarCarritoDropdown()
         // pero lo mantenemos para compatibilidad
+        /*
         actualizarCarritoDropdown();
         if (carritoDropdown != null) {
             carritoDropdown.show(btnCart, Side.BOTTOM, 0, 0);
         }
+        */
     }
 
     private void navegarACarritoCompleto() {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCarritoCompleto();
+        }
+    }
+
+    private void mostrarCarritoPopup() {
+        try {
+            // Cargar el FXML del carrito
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
+            try (java.io.InputStream in = getClass().getResourceAsStream("/sigmacine/ui/views/verCarrito.fxml")) {
+                if (in == null) {
+                    System.err.println("No se pudo encontrar verCarrito.fxml");
+                    return;
+                }
+                javafx.scene.Parent carritoRoot = loader.load(in);
+                
+                // Crear un popup
+                javafx.stage.Popup popup = new javafx.stage.Popup();
+                popup.getContent().add(carritoRoot);
+                popup.setAutoHide(true);
+                popup.setHideOnEscape(true);
+                
+                // Obtener la posición del botón del carrito
+                javafx.geometry.Bounds bounds = btnCart.localToScreen(btnCart.getBoundsInLocal());
+                
+                // Mostrar el popup debajo del botón del carrito
+                popup.show(btnCart.getScene().getWindow(), 
+                          bounds.getMinX() - 250,  // Ajustar posición horizontal
+                          bounds.getMaxY() + 5);   // Debajo del botón con un pequeño margen
+                
+            }
+        } catch (Exception ex) {
+            System.err.println("Error al mostrar popup del carrito: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
