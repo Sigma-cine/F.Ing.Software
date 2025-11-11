@@ -12,10 +12,7 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.facade.AuthFacade;
-
-import sigmacine.ui.controller.admin.AgregarSalaController;
 import sigmacine.aplicacion.session.Session;
-import java.util.prefs.Preferences;
 
 public class ControladorControlador {
 
@@ -76,7 +73,6 @@ public class ControladorControlador {
             }
             Parent popupRoot = loader.load();
 
-            // === Stage sin decoraciones y transparente ===
             Stage popupStage = new Stage(StageStyle.TRANSPARENT);
             if (stage != null) {
                 popupStage.initOwner(stage);
@@ -86,12 +82,10 @@ public class ControladorControlador {
             }
             popupStage.setResizable(false);
 
-            // Scene transparente para respetar el overlay del FXML
             Scene scene = new Scene(popupRoot);
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
             popupStage.setScene(scene);
 
-            // Esc para cerrar (opcional)
             scene.setOnKeyPressed(ev -> {
                 switch (ev.getCode()) {
                     case ESCAPE -> popupStage.close();
@@ -99,7 +93,6 @@ public class ControladorControlador {
                 }
             });
 
-            // Callback del controlador
             Object controller = loader.getController();
             if (controller instanceof CiudadController ciudadController) {
                 ciudadController.setOnCiudadSelected(ciudad -> {
@@ -112,7 +105,6 @@ public class ControladorControlador {
 
         } catch (Exception e) {
             e.printStackTrace();
-            // Fallback sensato si algo falla
             sigmacine.aplicacion.session.Session.setSelectedCity("Bogotá");
         }
     }
@@ -340,7 +332,15 @@ public class ControladorControlador {
             if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
             Parent root = loader.load();
             
-            configurarBarraEnVista(root);
+            VerHistorialController controller = loader.getController();
+            if (controller != null) {
+                sigmacine.aplicacion.data.UsuarioDTO usuario = sigmacine.aplicacion.session.Session.getCurrent();
+                if (usuario != null && usuario.getEmail() != null) {
+                    controller.setUsuarioEmail(usuario.getEmail());
+                }
+            }
+            
+            configurarBarraEnVista(root, "historial");
             
             stage.setTitle("Sigma Cine - Historial de Compras");
             javafx.scene.Scene current = stage.getScene();
@@ -350,10 +350,9 @@ public class ControladorControlador {
             stage.setMaximized(true);
             stage.show();
         } catch (Exception e) {
-            throw new RuntimeException("Error cargando historial_compras.fxml", e);
+            throw new RuntimeException("Error cargando historial de compras", e);
         }
     }
-
 
     public void mostrarMiCuenta() {
         try {
@@ -370,7 +369,6 @@ public class ControladorControlador {
             stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
             stage.setMaximized(true);
             stage.show();
-
         } catch (Exception e) {
             throw new RuntimeException("Error cargando mi_cuenta.fxml", e);
         }
@@ -479,5 +477,4 @@ public void mostrarCarritoCompleto() {
         throw new RuntimeException("Error cargando verCarrito.fxml", e);
     }
     }
-
 }

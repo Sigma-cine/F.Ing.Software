@@ -64,12 +64,19 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 'Kong y Godzilla se unen para luchar contra una amenaza colosal desconocida que se esconde en nuestro mundo.',
 'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
 
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(4, 'Los Pitufos', 'Animación, Comedia, Aventura', 'PG', 90, 'Raja Gosnell', 'Hank Azaria, Neil Patrick Harris, Jayma Mays',
+'https://www.youtube.com/watch?v=iRFrC5dFNls',
+'Un grupo de pequeños seres azules de tres manzanas de altura huyen de su pueblo natal después de que el malvado hechicero Gargamel los descubre, y terminan en el Central Park de Nueva York.',
+'En Cartelera', 'src\\main\\resources\\Images\\LosPitufos.jpg', TRUE);
+
 
 -- Trailers adicionales para las películas
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
 INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (4, 3, 'https://www.youtube.com/watch?v=lV1OOlGwExM');
+INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (5, 4, 'https://www.youtube.com/watch?v=H0K8PoJrcLU');
 
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
@@ -114,6 +121,16 @@ INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(14, '2025-09-15', '19:10', 'Activa', TIME '02:46:00', TRUE, 1, 9);
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(15, '2025-09-15', '21:30', 'Activa', TIME '02:46:00', TRUE, 1, 9);
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(16, '2025-09-15', '20:30', 'Activa', TIME '02:02:00', TRUE, 2, 10); -- El Tesoro
+
+-- Funciones para Los Pitufos (película 4) - 2025-11-11
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(200, '2025-11-11', '10:00', 'Activa', TIME '01:30:00', TRUE, 4, 1); -- Bogotá / Salitre Plaza
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(201, '2025-11-11', '14:00', 'Activa', TIME '01:30:00', TRUE, 4, 2);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(202, '2025-11-11', '16:30', 'Activa', TIME '01:30:00', TRUE, 4, 3);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(203, '2025-11-11', '11:00', 'Activa', TIME '01:30:00', TRUE, 4, 4); -- Bogotá / Gran Estación
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(204, '2025-11-11', '15:00', 'Activa', TIME '01:30:00', TRUE, 4, 5);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(205, '2025-11-11', '10:30', 'Activa', TIME '01:30:00', TRUE, 4, 8); -- Medellín / Viva Envigado
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(206, '2025-11-11', '17:00', 'Activa', TIME '01:30:00', TRUE, 4, 9);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(207, '2025-11-11', '12:00', 'Activa', TIME '01:30:00', TRUE, 4, 10); -- Medellín / El Tesoro
 
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(1, 'A', 1, 'Reclinable', TRUE, 1);
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(2, 'A', 2, 'Reclinable', TRUE, 1);
