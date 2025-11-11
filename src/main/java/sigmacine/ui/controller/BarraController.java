@@ -8,6 +8,8 @@ import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
+import sigmacine.aplicacion.service.CarritoService;
+import sigmacine.aplicacion.data.CompraProductoDTO;
 
 public class BarraController {
 
@@ -64,8 +66,6 @@ public class BarraController {
 
         btnBuscar.setOnAction(e -> realizarBusqueda());
         txtBuscar.setOnAction(e -> realizarBusqueda());
-
-        btnCart.setOnAction(e -> navegarACarrito());
 
         btnRegistrarse.setOnAction(e -> {
             if (!Session.isLoggedIn()) {
@@ -207,13 +207,60 @@ public class BarraController {
         carritoDropdown = new ContextMenu();
         carritoDropdown.setStyle("-fx-pref-width: 300; -fx-padding: 10;");
         
+        // Actualizar el contenido cada vez que se abre
+        btnCart.setOnAction(e -> {
+            actualizarCarritoDropdown();
+            carritoDropdown.show(btnCart, Side.BOTTOM, 0, 0);
+        });
+    }
+    
+    private void actualizarCarritoDropdown() {
+        carritoDropdown.getItems().clear();
+        
         Label titulo = new Label("Carrito de Compras");
         titulo.setStyle("-fx-font-size: 14; -fx-padding: 5 0 10 0;");
         
         Separator separator = new Separator();
         
-        Label vacio = new Label("Tu carrito está vacío");
-        vacio.setStyle("-fx-padding: 15 0; -fx-text-fill: #666; -fx-alignment: center;");
+        CustomMenuItem tituloItem = new CustomMenuItem(titulo, false);
+        CustomMenuItem separatorItem = new CustomMenuItem(separator, false);
+        tituloItem.setHideOnClick(false);
+        separatorItem.setHideOnClick(false);
+        
+        carritoDropdown.getItems().addAll(tituloItem, separatorItem);
+        
+        // Obtener items del carrito real
+        CarritoService carrito = CarritoService.getInstance();
+        var items = carrito.getItems();
+        
+        if (items.isEmpty()) {
+            Label vacio = new Label("Tu carrito está vacío");
+            vacio.setStyle("-fx-padding: 15 0; -fx-text-fill: #666; -fx-alignment: center;");
+            CustomMenuItem vacioItem = new CustomMenuItem(vacio, false);
+            vacioItem.setHideOnClick(false);
+            carritoDropdown.getItems().add(vacioItem);
+        } else {
+            // Mostrar cada item del carrito
+            for (CompraProductoDTO item : items) {
+                String texto = String.format("%s x%d - $%.2f", 
+                    item.getNombre() != null ? item.getNombre() : "Item", 
+                    item.getCantidad(),
+                    item.getPrecioUnitario().doubleValue() * item.getCantidad());
+                
+                Label lblItem = new Label(texto);
+                lblItem.setStyle("-fx-padding: 3 0; -fx-text-fill: #333;");
+                CustomMenuItem itemMenu = new CustomMenuItem(lblItem, false);
+                itemMenu.setHideOnClick(false);
+                carritoDropdown.getItems().add(itemMenu);
+            }
+            
+            // Mostrar total
+            Label total = new Label(String.format("Total: $%.2f", carrito.getTotal().doubleValue()));
+            total.setStyle("-fx-padding: 10 0 5 0; -fx-font-weight: bold;");
+            CustomMenuItem totalItem = new CustomMenuItem(total, false);
+            totalItem.setHideOnClick(false);
+            carritoDropdown.getItems().add(totalItem);
+        }
         
         Button btnVerCarrito = new Button("Ver carrito completo");
         btnVerCarrito.setStyle("-fx-background-color: #8A2F24; -fx-text-fill: white; -fx-pref-width: 100%;");
@@ -222,17 +269,9 @@ public class BarraController {
             navegarACarritoCompleto();
         });
         
-        CustomMenuItem tituloItem = new CustomMenuItem(titulo, false);
-        CustomMenuItem separatorItem = new CustomMenuItem(separator, false);
-        CustomMenuItem vacioItem = new CustomMenuItem(vacio, false);
         CustomMenuItem botonItem = new CustomMenuItem(btnVerCarrito, false);
-        
-        tituloItem.setHideOnClick(false);
-        separatorItem.setHideOnClick(false);
-        vacioItem.setHideOnClick(false);
         botonItem.setHideOnClick(false);
-        
-        carritoDropdown.getItems().addAll(tituloItem, separatorItem, vacioItem, botonItem);
+        carritoDropdown.getItems().add(botonItem);
     }
 
     private void navegarACartelera() {
@@ -257,6 +296,9 @@ public class BarraController {
     }
 
     private void navegarACarrito() {
+        // Este método ya no se necesita porque el clic se maneja en configurarCarritoDropdown()
+        // pero lo mantenemos para compatibilidad
+        actualizarCarritoDropdown();
         if (carritoDropdown != null) {
             carritoDropdown.show(btnCart, Side.BOTTOM, 0, 0);
         }

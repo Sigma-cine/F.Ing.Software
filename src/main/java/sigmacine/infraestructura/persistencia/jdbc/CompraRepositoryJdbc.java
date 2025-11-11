@@ -243,7 +243,6 @@ public class CompraRepositoryJdbc implements CompraRepository {
                 }
 
                 con.commit();
-                System.out.println("[CompraRepositoryJdbc] Compra guardada: COMPRA_ID=" + compraId + ", PAGO_ID=" + pagoId + ", ITEMS=" + items.size());
                 return compraId;
 
             } catch (SQLException | RuntimeException ex) {

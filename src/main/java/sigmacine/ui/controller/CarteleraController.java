@@ -127,6 +127,54 @@ public class CarteleraController {
         } catch (Exception ex) { ex.printStackTrace(); }
     }
 
+    private void wireTopbar() {
+        // Este método requiere componentes UI específicos en el FXML (btnIniciarSesion, btnRegistrarse, etc.)
+        // que no están disponibles en este controlador actualmente
+        /*
+        try {
+            boolean logged = sigmacine.aplicacion.session.Session.isLoggedIn();
+            if (btnIniciarSesion != null) { btnIniciarSesion.setVisible(!logged); btnIniciarSesion.setManaged(!logged); }
+            if (btnRegistrarse != null) { btnRegistrarse.setVisible(!logged); btnRegistrarse.setManaged(!logged); }
+            if (lblUserName != null) { lblUserName.setVisible(logged); lblUserName.setManaged(logged); lblUserName.setText(logged && sigmacine.aplicacion.session.Session.getCurrent()!=null ? sigmacine.aplicacion.session.Session.getCurrent().getNombre() : ""); }
+            if (menuPerfil != null) { menuPerfil.setVisible(logged); menuPerfil.setManaged(logged); }
+
+            if (btnIniciarSesion != null) btnIniciarSesion.setOnAction(e -> {
+                try { if (this.coordinador != null) this.coordinador.mostrarLogin(); } catch (Exception ex) { ex.printStackTrace(); }
+            });
+            if (miCerrarSesion != null) miCerrarSesion.setOnAction(e -> { sigmacine.aplicacion.session.Session.clear(); wireTopbar(); });
+            if (miHistorial != null) miHistorial.setOnAction(e -> {
+                try {
+                    if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
+                        javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                        a.setTitle("Acceso denegado"); a.setHeaderText(null); a.setContentText("Debes iniciar sesión para ver tu historial de compras."); a.showAndWait(); return;
+                    }
+                    sigmacine.infraestructura.configDataBase.DatabaseConfig db = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
+                    sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc usuarioRepo = new sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc(db);
+                    sigmacine.aplicacion.service.VerHistorialService historialService = new sigmacine.aplicacion.service.VerHistorialService(usuarioRepo);
+                    javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCompras.fxml"));
+                    var controller = new VerHistorialController(historialService);
+                    var cur = sigmacine.aplicacion.session.Session.getCurrent();
+                    if (cur != null && cur.getEmail()!=null) controller.setUsuarioEmail(cur.getEmail());
+                    // capturar escena actual para permitir volver
+                    javafx.scene.Scene prev = null;
+                    try { prev = gridPeliculas != null && gridPeliculas.getScene() != null ? gridPeliculas.getScene() : null; } catch (Exception ignore) {}
+                    try { controller.setPreviousScene(prev); } catch (Exception ignore) {}
+                    // use controller factory to avoid NPEs when FXML expects injections
+                    loader.setControllerFactory(cls -> {
+                        if (cls == sigmacine.ui.controller.VerHistorialController.class) return controller;
+                        try { return cls.getDeclaredConstructor().newInstance(); } catch (Exception ex) { throw new RuntimeException(ex); }
+                    });
+                    javafx.scene.Parent root = loader.load();
+                    Stage stage = (Stage) gridPeliculas.getScene().getWindow();
+                    Scene current = stage.getScene();
+                    double w = current != null ? current.getWidth() : 1000; double h = current != null ? current.getHeight() : 700;
+                    stage.setScene(new Scene(root, w, h)); stage.setTitle("Historial de compras"); stage.setMaximized(true);
+                } catch (Exception ex) { ex.printStackTrace(); }
+            });
+        } catch (Exception ex) { ex.printStackTrace(); }
+        */
+    }
+
     private void abrirDetalle(Pelicula p) {
         try {
             var url = getClass().getResource("/sigmacine/ui/views/verdetallepelicula.fxml");

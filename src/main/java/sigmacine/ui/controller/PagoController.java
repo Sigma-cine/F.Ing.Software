@@ -97,12 +97,27 @@ public class PagoController {
 
         try {
             List<CompraProductoDTO> items = new ArrayList<>(carrito.getItems());
+            String totalCompra = carrito.getTotal().toString(); // Guardar el total antes de limpiar
             Long compraId = compraService.confirmarCompraProductos(user.getId(), items, metodo);
-            mostrarAlerta(Alert.AlertType.INFORMATION, "Pago exitoso",
-                    compraId != null ? "Compra realizada. ID=" + compraId : "Compra realizada.");
-            carrito.clear();
-            Stage st = (Stage) btnPagar.getScene().getWindow();
-            st.close();
+            
+            // Mostrar alerta de confirmación simple
+            if (compraId != null) {
+                // Primero limpiamos el carrito
+                carrito.clear();
+                
+                // Mostrar alerta de éxito
+                mostrarAlerta(Alert.AlertType.INFORMATION, "¡Pago Exitoso!", 
+                    "Tu compra ha sido procesada correctamente.\nID de compra: " + compraId + 
+                    "\nTotal pagado: $" + totalCompra);
+                
+                // Finalmente cerramos la ventana de pago
+                Stage st = (Stage) btnPagar.getScene().getWindow();
+                st.close();
+            } else {
+                mostrarAlerta(Alert.AlertType.WARNING, "Pago procesado", 
+                    "La compra fue procesada pero no se pudo obtener el ID de confirmación.");
+            }
+            
         } catch (Exception ex) {
             System.err.println("[PagoController] Error al guardar la compra: " + ex.getMessage());
             mostrarAlerta(Alert.AlertType.ERROR, "Error al procesar pago",

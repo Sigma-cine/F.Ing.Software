@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml version="1.0" encoding="UTF-8"?><?xml version="1.0" encoding="UTF-8"?><?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<?import javafx.scene.control.*?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ConfirmacionCompraController" spacing="20" alignment="CENTER" style="-fx-padding: 30; -fx-background-color: #1a1a1a;">
+
+    <Label text="¡Compra Exitosa!" style="-fx-text-fill: #4CAF50; -fx-font-size: 24px; -fx-font-weight: bold;" /><?import javafx.scene.control.*?>
+
+    <Label fx:id="lblMensajeConfirmacion" text="Tu compra ha sido procesada correctamente" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+
+    <Label fx:id="lblCompraId" text="ID: 12345" style="-fx-text-fill: white; -fx-font-size: 14px;" /><?import javafx.scene.layout.*?><?import javafx.scene.control.*?><?import javafx.geometry.Insets?>
+
+    <Label fx:id="lblFecha" text="Fecha: 04/11/2025" style="-fx-text-fill: white; -fx-font-size: 14px;" />
+
+    <Label fx:id="lblTotal" text="Total: $0" style="-fx-text-fill: #4CAF50; -fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <FlowPane fx:id="paneBoletas" hgap="10" vgap="10" alignment="CENTER" />
+
+    <Button fx:id="btnVolverInicio" text="Volver al Inicio" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;" /><BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ConfirmacionCompraController" style="-fx-background-color: linear-gradient(to bottom, #1a1a1a, #000000);"><?import javafx.scene.layout.*?><?import javafx.scene.control.*?>
+
+</VBox>
+    <top>
+
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 30;"><?import javafx.scene.image.*?>
+
+            <Label text="¡Compra Exitosa!" style="-fx-text-fill: #4CAF50; -fx-font-size: 32px; -fx-font-weight: bold;" />
+
+            <Label fx:id="lblMensajeConfirmacion" text="Tu compra ha sido procesada correctamente" style="-fx-text-fill: white; -fx-font-size: 18px;" /><BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ConfirmacionCompraController"><?import javafx.scene.layout.*?>
+
+        </VBox>
+
+    </top>    <center><?import javafx.scene.text.*?>
+
+    
+
+    <center>        <VBox>
+
+        <VBox spacing="30" style="-fx-padding: 30;" alignment="CENTER">
+
+            <VBox spacing="15" style="-fx-background-color: #2a2a2a; -fx-background-radius: 15; -fx-padding: 25;" alignment="CENTER">            <Label text="Compra Exitosa" /><BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.ConfirmacionCompraController" prefWidth="800" prefHeight="600" style="-fx-background-color: linear-gradient(to bottom, #1a1a1a, #000000);">
+
+                <Label text="Resumen de Compra" style="-fx-text-fill: #4CAF50; -fx-font-size: 22px; -fx-font-weight: bold;" />
+
+                <Label fx:id="lblCompraId" text="ID: 12345" style="-fx-text-fill: white; -fx-font-size: 16px;" />            <Label fx:id="lblMensajeConfirmacion" text="Tu compra ha sido procesada" />
+
+                <Label fx:id="lblFecha" text="Fecha: 04/11/2025" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+
+                <Label fx:id="lblTotal" text="Total: $0" style="-fx-text-fill: #4CAF50; -fx-font-size: 20px; -fx-font-weight: bold;" />            <Label fx:id="lblCompraId" text="ID: 12345" />    <top>
+
+            </VBox>
+
+                        <Label fx:id="lblFecha" text="Fecha: 04/11/2025" />        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 20;">
+
+            <VBox spacing="15" alignment="CENTER">
+
+                <Label text="Tus Boletas" style="-fx-text-fill: #4CAF50; -fx-font-size: 22px; -fx-font-weight: bold;" />            <Label fx:id="lblTotal" text="Total: $0" />            <children>
+
+                <FlowPane fx:id="paneBoletas" hgap="15" vgap="15" alignment="CENTER" />
+
+            </VBox>            <FlowPane fx:id="paneBoletas" />                <Label text="¡Compra Exitosa!" style="-fx-text-fill: #4CAF50; -fx-font-size: 28px; -fx-font-weight: bold;" />
+
+        </VBox>
+
+    </center>            <Button fx:id="btnVolverInicio" text="Volver al Inicio" />                <Label fx:id="lblMensajeConfirmacion" text="Tu compra ha sido procesada correctamente" style="-fx-text-fill: white; -fx-font-size: 16px;" />
+
+    
+
+    <bottom>        </VBox>                <Separator style="-fx-background-color: #444;" />
+
+        <HBox spacing="20" alignment="CENTER" style="-fx-padding: 30;">
+
+            <Button fx:id="btnVolverInicio" text="Volver al Inicio" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 15 30; -fx-font-size: 16px;" />    </center>            </children>
+
+        </HBox>
+
+    </bottom></BorderPane>        </VBox>
+
+</BorderPane>    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background: transparent; -fx-background-color: transparent;">
+            <content>
+                <VBox spacing="20" style="-fx-padding: 20;">
+                    <children>
+                        <!-- Resumen de compra -->
+                        <VBox spacing="10" style="-fx-background-color: #2a2a2a; -fx-background-radius: 10; -fx-padding: 15;">
+                            <children>
+                                <Label text="Resumen de Compra" style="-fx-text-fill: #4CAF50; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                                <HBox spacing="10">
+                                    <children>
+                                        <Label text="ID de Compra:" style="-fx-text-fill: #bbb; -fx-font-weight: bold;" />
+                                        <Label fx:id="lblCompraId" text="12345" style="-fx-text-fill: white;" />
+                                    </children>
+                                </HBox>
+                                <HBox spacing="10">
+                                    <children>
+                                        <Label text="Fecha:" style="-fx-text-fill: #bbb; -fx-font-weight: bold;" />
+                                        <Label fx:id="lblFecha" text="15/09/2025" style="-fx-text-fill: white;" />
+                                    </children>
+                                </HBox>
+                                <HBox spacing="10">
+                                    <children>
+                                        <Label text="Total Pagado:" style="-fx-text-fill: #bbb; -fx-font-weight: bold;" />
+                                        <Label fx:id="lblTotal" text="$45.000" style="-fx-text-fill: #4CAF50; -fx-font-weight: bold; -fx-font-size: 16px;" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <Separator style="-fx-background-color: #444;" />
+
+                        <!-- Boletas -->
+                        <VBox spacing="15">
+                            <children>
+                                <Label text="Tus Boletas" style="-fx-text-fill: #4CAF50; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                                <FlowPane fx:id="paneBoletas" hgap="15" vgap="15" alignment="CENTER">
+                                    <!-- Las boletas se generarán dinámicamente -->
+                                </FlowPane>
+                            </children>
+                        </VBox>
+
+                        <Separator style="-fx-background-color: #444;" />
+
+                        <!-- Código QR -->
+                        <VBox fx:id="vboxQR" spacing="10" alignment="CENTER">
+                            <children>
+                                <Label text="Código QR de tus boletas" style="-fx-text-fill: #4CAF50; -fx-font-size: 16px; -fx-font-weight: bold;" />
+                                <ImageView fx:id="imgQR" fitWidth="150" fitHeight="150" preserveRatio="true" />
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20;">
+            <children>
+                <Button fx:id="btnDescargarBoletas" text="Descargar Boletas" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20;" />
+                <Button fx:id="btnVerHistorial" text="Ver Mi Historial" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20;" />
+                <Button fx:id="btnVolverInicio" text="Volver al Inicio" style="-fx-background-color: #666; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 10 20;" />
+            </children>
+        </HBox>
+    </bottom>
+
+</BorderPane>

@@ -1,5 +1,6 @@
 package sigmacine.ui.controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,6 +22,8 @@ import sigmacine.dominio.entity.Pelicula;
 import sigmacine.dominio.entity.PeliculaTrailer;
 import sigmacine.dominio.repository.FuncionRepository;
 import sigmacine.dominio.repository.PeliculaTrailerRepository;
+import sigmacine.aplicacion.service.SillaService;
+import sigmacine.infraestructura.persistencia.jdbc.SillaRepositoryJdbc;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.FuncionRepositoryJdbc;
@@ -32,7 +35,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.time.format.DateTimeFormatter;
@@ -81,7 +83,9 @@ public class ContenidoCarteleraController {
             btnComprar.toFront();
             if (btnComprar.getParent() != null) btnComprar.getParent().toFront();
 
-            btnComprar.setOnAction(e -> onComprarTickets());
+            btnComprar.setOnAction(e -> {
+                onComprarTickets();
+            });
         }
     }
 
@@ -214,11 +218,17 @@ public class ContenidoCarteleraController {
         try { panelFunciones.setAlignment(Pos.CENTER); } catch (Exception ignore) {}
         if (funciones == null || funciones.isEmpty()) return;
 
-        Map<String, Map<String, Set<FuncionDisponibleDTO>>> porCiudad = new LinkedHashMap<>();
+        // Agrupar por ciudad -> sede y acumular horas únicas por sede
+        // Para evitar duplicados de hora, usaremos un Map con clave compuesta
+        Map<String, Map<String, Map<String, FuncionDisponibleDTO>>> porCiudad = new LinkedHashMap<>();
         for (FuncionDisponibleDTO f : funciones) {
-            porCiudad.computeIfAbsent(f.getCiudad(), k -> new LinkedHashMap<>())
-                    .computeIfAbsent(f.getSede(), k -> new LinkedHashSet<>())
-                    .add(f);
+            String ciudad = f.getCiudad();
+            String sede = f.getSede();
+            String horaKey = f.getHora().toString(); // Usar hora como clave única
+            
+            porCiudad.computeIfAbsent(ciudad, k -> new LinkedHashMap<>())
+                    .computeIfAbsent(sede, k -> new LinkedHashMap<>())
+                    .put(horaKey, f); // put sobrescribe si ya existe, manteniendo solo una función por hora
         }
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("h:mma", Locale.ENGLISH);
@@ -247,7 +257,8 @@ public class ContenidoCarteleraController {
                 fila.setAlignment(Pos.CENTER_LEFT);
                 fila.setStyle("-fx-background-color:transparent;");
 
-                List<FuncionDisponibleDTO> ordenadas = sedeEntry.getValue().stream()
+                // ordenar por hora y tomar solo los valores únicos
+                List<FuncionDisponibleDTO> ordenadas = sedeEntry.getValue().values().stream()
                         .sorted(java.util.Comparator.comparing(FuncionDisponibleDTO::getHora))
                         .collect(Collectors.toList());
                         
@@ -270,10 +281,12 @@ public class ContenidoCarteleraController {
 
     private String selectedFuncionText;
     private Long selectedFuncionId;
+    private FuncionDisponibleDTO selectedFuncion; // Objeto completo de la función seleccionada
     private Button selectedHoraButton;
     
     private void seleccionarFuncion(FuncionDisponibleDTO f, Button sourceBtn) {
         this.selectedFuncionId = f.getFuncionId();
+        this.selectedFuncion = f; // Guardar el objeto completo
         String texto = java.time.format.DateTimeFormatter.ofPattern("h:mma", java.util.Locale.ENGLISH)
                 .format(f.getHora()).toLowerCase();
         seleccionarFuncionPill(texto);
@@ -295,29 +308,134 @@ public class ContenidoCarteleraController {
     @FXML
     private void onComprarTickets() {
         try {
-            if (selectedFuncionText == null || selectedFuncionText.isBlank()) {
+            // Verificar si el usuario ha iniciado sesión usando Session global
+            boolean isLoggedIn = sigmacine.aplicacion.session.Session.isLoggedIn();
+            
+            if (!isLoggedIn) {
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                alert.setTitle("Iniciar Sesión Requerido");
+                alert.setHeaderText("Debe iniciar sesión");
+                alert.setContentText("Para comprar boletos debe iniciar sesión primero. ¿Desea ir a la pantalla de login?");
+                
+                // Agregar botones personalizados
+                javafx.scene.control.ButtonType btnIrLogin = new javafx.scene.control.ButtonType("Ir a Login");
+                javafx.scene.control.ButtonType btnCancelar = new javafx.scene.control.ButtonType("Cancelar", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(btnIrLogin, btnCancelar);
+                
+                var result = alert.showAndWait();
+                
+                if (result.isPresent() && result.get() == btnIrLogin) {
+                    // Usar el mismo patrón del botón iniciar sesión que ya funciona
+                    try {
+                        if (this.coordinador != null) {
+                            // En lugar de usar coordinador.mostrarLogin() directamente, crearemos nuestro propio diálogo
+                            // para tener control total del callback
+                        }
+                        
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
+                        Parent root = loader.load();
+                        Object ctrl = loader.getController();
+                        Stage dialog = new Stage();
+                        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+                        dialog.initOwner(btnComprar.getScene().getWindow());
+                        
+                        if (ctrl instanceof LoginController) {
+                            LoginController lc = (LoginController) ctrl;
+                            
+                            // SÍ configurar dependencias para que funcione el login
+                            try {
+                                ControladorControlador global = ControladorControlador.getInstance();
+                                if (global != null) {
+                                    lc.setCoordinador(global);
+                                    try {
+                                        sigmacine.aplicacion.facade.AuthFacade af = global.getAuthFacade();
+                                        if (af != null) lc.setAuthFacade(af);
+                                    } catch (Throwable ignore) {}
+                                }
+                            } catch (Throwable ignore) {}
+
+                            // Configurar callback personalizado que anula cualquier otro comportamiento
+                            lc.setOnSuccess(() -> {
+                                try { 
+                                    dialog.close(); 
+                                } catch (Exception ignore) {}
+                                
+                                // Ejecutar en el siguiente ciclo del hilo de JavaFX para asegurar que el diálogo se cierre
+                                Platform.runLater(() -> {
+                                    try {
+                                        continuarConCompra();
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                });
+                            });
+                        }
+                        dialog.setScene(new javafx.scene.Scene(root));
+                        dialog.setTitle("Iniciar Sesión - Sigma Cine");
+                        dialog.showAndWait();
+                        
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                return;
+            }
+            
+            continuarConCompra();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            a.setHeaderText("Error abriendo Asientos");
+            a.setContentText(String.valueOf(ex));
+            a.showAndWait();
+        }
+    }
+
+    private void continuarConCompra() {
+        try {
+            // Debe haber una función seleccionada
+            String seleccion = selectedFuncionText;
+            
+            if (seleccion == null || seleccion.isBlank()) {
                 var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                 a.setHeaderText("Selecciona una hora");
                 a.setContentText("Primero elige una función (sede/hora) antes de continuar.");
                 a.showAndWait();
                 return;
             }
+            if (selectedFuncionId == null) {
 
+            }
             if (isEmbedded()) {
-                String titulo = (lblTituloPelicula != null && !lblTituloPelicula.getText().isBlank())
-                        ? lblTituloPelicula.getText() : "Película";
-                String hora = selectedFuncionText;
+                String titulo = "Película"; // fallback por defecto
+                
+                // Intentar obtener el título de múltiples fuentes
+                if (pelicula != null && pelicula.getTitulo() != null && !pelicula.getTitulo().isBlank()) {
+                    titulo = pelicula.getTitulo(); // Primer intento: del objeto película
+                } else if (lblTituloPelicula != null && lblTituloPelicula.getText() != null && !lblTituloPelicula.getText().isBlank()) {
+                    titulo = lblTituloPelicula.getText(); // Segundo intento: del label
+                }
+                
+                String hora = seleccion;
 
-                Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
-                Set<String> accesibles = Set.of("E3","E4","E5","E6");
+                // Obtener asientos ocupados y accesibles desde la base de datos
+                Set<String> ocupados = obtenerAsientosOcupados(selectedFuncionId);
+                Set<String> accesibles = obtenerAsientosAccesibles(selectedFuncionId);
 
                 host.mostrarAsientos(titulo, hora, ocupados, accesibles);
                 return;
             }
 
-            String titulo = (lblTituloPelicula != null && !lblTituloPelicula.getText().isBlank())
-                    ? lblTituloPelicula.getText() : "Película";
-            String hora = selectedFuncionText;
+            String titulo = "Película"; // fallback por defecto
+            
+            // Intentar obtener el título de múltiples fuentes
+            if (pelicula != null && pelicula.getTitulo() != null && !pelicula.getTitulo().isBlank()) {
+                titulo = pelicula.getTitulo(); // Primer intento: del objeto película
+            } else if (lblTituloPelicula != null && lblTituloPelicula.getText() != null && !lblTituloPelicula.getText().isBlank()) {
+                titulo = lblTituloPelicula.getText(); // Segundo intento: del label
+            }
+            
+            String hora = seleccion;
 
             URL url = getClass().getResource("/sigmacine/ui/views/asientos.fxml");
             if (url == null) {
@@ -332,9 +450,17 @@ public class ContenidoCarteleraController {
             Parent root = loader.load();
 
             AsientosController ctrl = loader.getController();
-            Set<String> ocupados   = Set.of("B3","B4","C7","E2","F8");
-            Set<String> accesibles = Set.of("E3","E4","E5","E6");
-            ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId);
+            
+            // Obtener asientos ocupados y accesibles desde la base de datos
+            Set<String> ocupados = obtenerAsientosOcupados(selectedFuncionId);
+            Set<String> accesibles = obtenerAsientosAccesibles(selectedFuncionId);
+            
+            // Obtener información de ciudad y sede de la función seleccionada
+            String ciudad = selectedFuncion != null ? selectedFuncion.getCiudad() : "";
+            String sede = selectedFuncion != null ? selectedFuncion.getSede() : "";
+            
+            // Pasar información completa incluyendo ciudad y sede
+            ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId, ciudad, sede);
 
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
                     ? pelicula.getPosterUrl() : null;
@@ -512,5 +638,47 @@ public class ContenidoCarteleraController {
         }
         
         return url;
+    }
+    
+    /**
+     * Obtiene los asientos ocupados para una función específica desde la base de datos.
+     */
+    private Set<String> obtenerAsientosOcupados(Long funcionId) {
+        if (funcionId == null) {
+            // Datos por defecto si no hay función seleccionada
+            return Set.of("B3", "B4", "C7", "E2", "F8");
+        }
+        
+        try {
+            DatabaseConfig dbConfig = new DatabaseConfig();
+            SillaRepositoryJdbc sillaRepo = new SillaRepositoryJdbc(dbConfig);
+            SillaService sillaService = new SillaService(sillaRepo);
+            return sillaService.obtenerAsientosOcupados(funcionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // En caso de error, usar datos por defecto para no bloquear la UI
+            return Set.of("B3", "B4", "C7", "E2", "F8");
+        }
+    }
+    
+    /**
+     * Obtiene los asientos accesibles para una función específica desde la base de datos.
+     */
+    private Set<String> obtenerAsientosAccesibles(Long funcionId) {
+        if (funcionId == null) {
+            // Datos por defecto si no hay función seleccionada
+            return Set.of("E3", "E4", "E5", "E6");
+        }
+        
+        try {
+            DatabaseConfig dbConfig = new DatabaseConfig();
+            SillaRepositoryJdbc sillaRepo = new SillaRepositoryJdbc(dbConfig);
+            SillaService sillaService = new SillaService(sillaRepo);
+            return sillaService.obtenerAsientosAccesibles(funcionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // En caso de error, usar datos por defecto
+            return Set.of("E3", "E4", "E5", "E6");
+        }
     }
 }
