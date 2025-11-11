@@ -12,8 +12,9 @@ import javafx.stage.Modality;
 import javafx.util.Callback;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.facade.AuthFacade;
-import sigmacine.aplicacion.session.Session;
 
+import sigmacine.ui.controller.admin.AgregarSalaController;
+import sigmacine.aplicacion.session.Session;
 import java.util.prefs.Preferences;
 
 public class ControladorControlador {
@@ -353,6 +354,7 @@ public class ControladorControlador {
         }
     }
 
+
     public void mostrarMiCuenta() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/mi_cuenta.fxml"));
@@ -368,6 +370,7 @@ public class ControladorControlador {
             stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
             stage.setMaximized(true);
             stage.show();
+
         } catch (Exception e) {
             throw new RuntimeException("Error cargando mi_cuenta.fxml", e);
         }
@@ -476,4 +479,5 @@ public void mostrarCarritoCompleto() {
         throw new RuntimeException("Error cargando verCarrito.fxml", e);
     }
     }
+
 }

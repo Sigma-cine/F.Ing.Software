@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane
+        prefHeight="400.0"
+        prefWidth="600.0"
+        style="-fx-background-color: #000000;"
+        xmlns="http://javafx.com/javafx"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="com.sigmacine.controller.AgregarItemController">
+
+    <top>
+        <BorderPane prefHeight="45.0" style="-fx-padding: 20; -fx-background-color: #993726;" BorderPane.alignment="CENTER">
+            <left>
+                <Text fill="WHITE" text="Agregar item confitería" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font name="System Bold" size="22.0" />
+                    </font>
+                </Text>
+            </left>
+        </BorderPane>
+    </top>
+
+    <center>
+        <GridPane style="-fx-padding: 20;" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="297.6" />
+                <ColumnConstraints prefWidth="262.4" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints prefHeight="30.0" />
+                <RowConstraints prefHeight="30.0" />
+                <RowConstraints prefHeight="30.0" />
+                <RowConstraints prefHeight="30.0" />
+                <RowConstraints prefHeight="30.0" />
+                <RowConstraints prefHeight="47.8" />
+                <RowConstraints prefHeight="35.0" />
+            </rowConstraints>
+
+            <children>
+                <Text fill="WHITE" text="Nombre del Item:">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+
+                <TextField fx:id="txtNombreItem" prefHeight="26.0" prefWidth="270.0" GridPane.rowIndex="1" />
+
+                <Text fill="WHITE" text="Extensión del Item:" GridPane.rowIndex="2">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+
+                <ComboBox fx:id="comboExtension" prefHeight="26.0" prefWidth="270.0" GridPane.rowIndex="3" />
+
+                <Text fill="WHITE" text="Agregar Extensión Item:" GridPane.rowIndex="4">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+
+                <TextField fx:id="txtAgregarExtension" prefHeight="26.0" prefWidth="270.0" GridPane.rowIndex="5" />
+
+                <Text fill="WHITE" text="Agregar Imagen:" GridPane.columnIndex="1">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Text>
+
+                <Button fx:id="btnAdjuntarFoto" mnemonicParsing="false"
+                        prefHeight="26.0" prefWidth="116.0"
+                        style="-fx-background-color: #993726; -fx-background-radius: 10;"
+                        text="Adjuntar Foto" textFill="WHITE"
+                        GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>
+
+                <Button fx:id="btnAgregarExtension" mnemonicParsing="false"
+                        prefHeight="26.0" prefWidth="146.0"
+                        style="-fx-background-color: #993726; -fx-background-radius: 10;"
+                        text="Agregar extensión" textFill="WHITE"
+                        GridPane.rowIndex="6">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>
+
+                <Button fx:id="btnAgregarItem" mnemonicParsing="false"
+                        prefHeight="26.0" prefWidth="122.0"
+                        style="-fx-background-color: #993726; -fx-background-radius: 10;"
+                        text="Agregar item" textFill="WHITE"
+                        GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+                </Button>
+            </children>
+        </GridPane>
+    </center>
+</BorderPane>
