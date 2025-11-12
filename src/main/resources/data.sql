@@ -8,7 +8,6 @@ DELETE FROM COMPRA;
 DELETE FROM SILLA;
 DELETE FROM FUNCION;
 DELETE FROM SALA;
-DELETE FROM PELICULA_TRAILER;
 DELETE FROM PELICULA;
 DELETE FROM PRODUCTO;
 DELETE FROM TARIFA;
@@ -66,17 +65,10 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (4, 'Los Pitufos', 'Animación, Comedia, Aventura', 'PG', 90, 'Raja Gosnell', 'Hank Azaria, Neil Patrick Harris, Jayma Mays',
-'https://www.youtube.com/watch?v=iRFrC5dFNls',
+'/videos/pitufos_trailer.mp4',
 'Un grupo de pequeños seres azules de tres manzanas de altura huyen de su pueblo natal después de que el malvado hechicero Gargamel los descubre, y terminan en el Central Park de Nueva York.',
 'En Cartelera', 'src\\main\\resources\\Images\\LosPitufos.jpg', TRUE);
 
-
--- Trailers adicionales para las películas
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (4, 3, 'https://www.youtube.com/watch?v=lV1OOlGwExM');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (5, 4, 'https://www.youtube.com/watch?v=H0K8PoJrcLU');
 
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
