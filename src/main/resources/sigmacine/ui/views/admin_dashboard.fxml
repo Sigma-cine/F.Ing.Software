@@ -32,8 +32,11 @@
                     onAction="#abrirGestionFunciones"
                     style="-fx-background-color:#993726; -fx-text-fill:white; -fx-background-radius:10;"/>
 
-            <Button text="Gestionar productos"/>
-            <Button text="Reportes"/>
+            <Button text="Gestionar productos"
+                onAction="#abrirGestionProductos"
+                style="-fx-background-color:#993726; -fx-text-fill:white; -fx-background-radius:10;" />
+            <Button text="Reportes"
+                style="-fx-background-color:#993726; -fx-text-fill:white; -fx-background-radius:10;" />
             <Separator/>
 
             <Button text="Gestionar película"

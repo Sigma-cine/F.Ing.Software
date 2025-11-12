@@ -20,10 +20,13 @@ import javafx.util.Callback;
 import sigmacine.dominio.repository.admi.FuncionAdminRepository;
 // Inyecciones de administrador
 import sigmacine.dominio.repository.admi.PeliculaAdminRepository;
+import sigmacine.dominio.repository.admi.ProductoAdminRepository;
 import sigmacine.infraestructura.persistencia.jdbc.admi.FuncionAdminRepositoryJdbc;
 import sigmacine.infraestructura.persistencia.jdbc.admi.PeliculaAdminRepositoryJdbc;
+import sigmacine.infraestructura.persistencia.jdbc.admi.ProductoAdminRepositoryJdbc;
 import sigmacine.aplicacion.service.admi.GestionFuncionesService;
 import sigmacine.aplicacion.service.admi.GestionPeliculasService;
+import sigmacine.aplicacion.service.admi.GestionProductosService;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -80,8 +83,12 @@ public class App extends Application {
         GestionFuncionesService gestionFuncionesService = new GestionFuncionesService(funcAdminRepo);
         container.put(GestionFuncionesService.class, gestionFuncionesService);
 
+        ProductoAdminRepository prodAdminRepo = new ProductoAdminRepositoryJdbc(db);
+        container.put(ProductoAdminRepository.class, prodAdminRepo);
 
-        
+        GestionProductosService gestionProductosService = new GestionProductosService(prodAdminRepo);
+        container.put(GestionProductosService.class, gestionProductosService);
+
     /*    var peliculaRepo = new PeliculaRepositoryJdbc(db);
         container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
         var compraRepo = new CompraRepositoryJdbc(db);

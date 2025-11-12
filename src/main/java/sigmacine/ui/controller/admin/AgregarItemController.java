@@ -1,92 +1,78 @@
 package sigmacine.ui.controller.admin;
 
-
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import sigmacine.aplicacion.data.FuncionDisponibleDTO;
+import sigmacine.aplicacion.data.ProductoDTO;
+import sigmacine.aplicacion.service.admi.GestionPeliculasService;
+import sigmacine.aplicacion.service.admi.GestionProductosService;
+
 import java.io.File;
+import java.util.List;
 
 public class AgregarItemController {
 
-    @FXML
-    private TextField nombreItemField;
+  @FXML
+  private TableView<ProductoDTO> tblProductos;
+  @FXML
+  private TableColumn<ProductoDTO, String> colId;
+  @FXML
+  private TableColumn<ProductoDTO, String> colProducto;
+  @FXML
+  private TableColumn<ProductoDTO, String> colDescripcion;
+  @FXML
+  private TableColumn<ProductoDTO, String> colSabores;
+  @FXML
+  private TableColumn<ProductoDTO, String> colTipo;
+  @FXML
+  private TableColumn<ProductoDTO, String> colPrecio;
+  @FXML
+  private TableColumn<ProductoDTO, String> colEstado;
 
-    @FXML
-    private ComboBox<String> extensionComboBox;
+  private final ObservableList<ProductoDTO> modelo = FXCollections.observableArrayList();
 
-    @FXML
-    private TextField nuevaExtensionField;
+  private GestionProductosService gestionProductosService;
 
-    @FXML
-    private Button adjuntarFotoButton;
+  public void setGestionProductosService(GestionProductosService servicio) {
+    this.gestionProductosService = servicio;
+    onListarTodos();
+  }
 
-    @FXML
-    private Button agregarExtensionButton;
+  public AgregarItemController(GestionProductosService service) {
+    if (service == null)
+      throw new IllegalArgumentException("GestionProductosService nulo");
 
-    @FXML
-    private Button agregarItemButton;
+    this.gestionProductosService = service;
+  }
 
-    @FXML
-    private Label mensajeLabel;
+  @FXML
+  public void initialize() {
+    tblProductos.setItems(modelo);
 
-    private File imagenSeleccionada;
+    colId.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(c.getValue().getProductoId())));
 
-    @FXML
-    public void initialize() {
-        // Inicializar ComboBox con las extensiones predefinidas
-        extensionComboBox.getItems().addAll("Tamaño", "Sabor", "Adiciones", "Toppings");
+    colProducto.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombreProducto()));
+    colDescripcion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescripcionProducto()));
+    colSabores.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSabores()));
+    colTipo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTipo()));
+    colPrecio.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPrecioLista().toString()));
+    colEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado()));
+
+    onListarTodos();
+  }
+
+  @FXML
+  public void onListarTodos() {
+    if (gestionProductosService == null) {
+      System.out.println("gestion es nulo");
+      return;
     }
-
-    @FXML
-    private void onAdjuntarFoto() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Seleccionar imagen");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Archivos de imagen", "*.png", "*.jpg", "*.jpeg")
-        );
-        File file = fileChooser.showOpenDialog(null);
-        if (file != null) {
-            imagenSeleccionada = file;
-            mensajeLabel.setText("Imagen seleccionada: " + file.getName());
-            mensajeLabel.setStyle("-fx-text-fill: lightgreen;");
-        }
-    }
-
-    @FXML
-    private void onAgregarExtension() {
-        String nuevaExtension = nuevaExtensionField.getText().trim();
-        if (!nuevaExtension.isEmpty()) {
-            extensionComboBox.getItems().add(nuevaExtension);
-            nuevaExtensionField.clear();
-            mensajeLabel.setText("Extensión agregada correctamente.");
-            mensajeLabel.setStyle("-fx-text-fill: lightgreen;");
-        } else {
-            mensajeLabel.setText("Debe ingresar un nombre para la extensión.");
-            mensajeLabel.setStyle("-fx-text-fill: red;");
-        }
-    }
-
-    @FXML
-    private void onAgregarItem() {
-        String nombre = nombreItemField.getText().trim();
-        String extension = extensionComboBox.getValue();
-
-        if (nombre.isEmpty() || extension == null || imagenSeleccionada == null) {
-            mensajeLabel.setText("Por favor complete todos los campos y agregue una imagen.");
-            mensajeLabel.setStyle("-fx-text-fill: red;");
-            return;
-        }
-
-        // Aquí podrías llamar al servicio que guarda el item en la base de datos.
-        // Por ahora solo mostramos el mensaje de éxito.
-        mensajeLabel.setText("¡Item agregado correctamente!");
-        mensajeLabel.setStyle("-fx-text-fill: lightgreen;");
-
-        // Limpiar campos
-        nombreItemField.clear();
-        extensionComboBox.getSelectionModel().clearSelection();
-        imagenSeleccionada = null;
-    }
+    List<ProductoDTO> lista = gestionProductosService.listarTodas();
+    if (tblProductos != null)
+      tblProductos.setItems(FXCollections.observableArrayList(lista));
+  }
 }
