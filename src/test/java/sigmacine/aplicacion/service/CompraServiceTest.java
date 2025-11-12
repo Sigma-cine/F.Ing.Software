@@ -47,4 +47,16 @@ public class CompraServiceTest {
         CompraProductoDTO malo = new CompraProductoDTO(1L, "X", -2, new BigDecimal("1.00"));
         assertThrows(IllegalArgumentException.class, () -> svc.confirmarCompraProductos(1, List.of(malo), "m"));
     }
+
+    @Test
+    public void confirmarCompraBoletoValido() {
+        StubRepo repo = new StubRepo();
+        CompraService svc = new CompraService(repo);
+        CompraProductoDTO boleto = new CompraProductoDTO(null, 10L, "Boleto Función", 1, new BigDecimal("5.00"));
+        
+        Long res = svc.confirmarCompraProductos(1, List.of(boleto), "efectivo");
+        
+        assertEquals(9999L, res);
+        assertEquals(new BigDecimal("5.00"), repo.lastTotal);
+    }
 }
