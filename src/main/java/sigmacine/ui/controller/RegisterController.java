@@ -15,6 +15,8 @@ public class RegisterController {
     @FXML private TextField txtNombre;
     @FXML private TextField txtEmail;
     @FXML private PasswordField txtPassword;
+    @FXML private TextField txtPasswordVisible;
+    @FXML private Button togglePasswordBtn;
     @FXML private Label feedback;
 
     private final AuthFacade auth;
@@ -26,6 +28,29 @@ public class RegisterController {
 
     @FXML
     private void initialize() {
+        // Configurar el botón de mostrar/ocultar contraseña
+        if (togglePasswordBtn != null && txtPassword != null && txtPasswordVisible != null) {
+            // Sincronizar los textos
+            txtPassword.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (!txtPasswordVisible.getText().equals(newVal)) {
+                    txtPasswordVisible.setText(newVal);
+                }
+            });
+            txtPasswordVisible.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (!txtPassword.getText().equals(newVal)) {
+                    txtPassword.setText(newVal);
+                }
+            });
+            
+            // Acción del botón
+            togglePasswordBtn.setOnAction(e -> {
+                boolean showPassword = !txtPasswordVisible.isVisible();
+                txtPassword.setVisible(!showPassword);
+                txtPasswordVisible.setVisible(showPassword);
+                togglePasswordBtn.setText(showPassword ? "🔒" : "👁");
+            });
+        }
+        
         Platform.runLater(() -> {
             try {
                 if (txtNombre == null) return;
