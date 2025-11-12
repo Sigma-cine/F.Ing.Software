@@ -8,7 +8,6 @@ DELETE FROM COMPRA;
 DELETE FROM SILLA;
 DELETE FROM FUNCION;
 DELETE FROM SALA;
-DELETE FROM PELICULA_TRAILER;
 DELETE FROM PELICULA;
 DELETE FROM PRODUCTO;
 DELETE FROM TARIFA;
@@ -48,35 +47,28 @@ INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(10, 1, 120, 
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (1, 'Dune: Part Two', 'Ciencia ficción', 'PG-13', 166, 'Denis Villeneuve', 'Timothée Chalamet, Zendaya',
-'https://www.youtube.com/watch?v=Way9Dexny3w',
+'/videos/dune_trailer.mp4',
 'Sigue el viaje mítico de Paul Atreides mientras se une a Chani y los Fremen en una guerra de venganza contra los conspiradores que destruyeron a su familia.',
 'En Cartelera', 'src\\main\\resources\\Images\\dune_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (2, 'Joker', 'Thriller psicológico', 'R', 122, 'Todd Phillips', 'Joaquin Phoenix, Robert De Niro',
-'https://www.youtube.com/watch?v=zL2Q9C0cK5s',
+'/videos/joker_trailer.mp4',
 'Un comediante fracasado desciende a la locura y se convierte en una figura icónica del crimen.',
 'En Cartelera', 'src\\main\\resources\\Images\\joker_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (3, 'Godzilla x Kong: The New Empire', 'Acción, Ciencia ficción', 'PG-13', 115, 'Adam Wingard', 'Rebecca Hall, Brian Tyree Henry',
-'https://www.youtube.com/watch?v=qqj12z9f48E',
+'/videos/godzillavskong_trailer.mp4',
 'Kong y Godzilla se unen para luchar contra una amenaza colosal desconocida que se esconde en nuestro mundo.',
 'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (4, 'Los Pitufos', 'Animación, Comedia, Aventura', 'PG', 90, 'Raja Gosnell', 'Hank Azaria, Neil Patrick Harris, Jayma Mays',
-'https://www.youtube.com/watch?v=iRFrC5dFNls',
+'/videos/pitufos_trailer.mp4',
 'Un grupo de pequeños seres azules de tres manzanas de altura huyen de su pueblo natal después de que el malvado hechicero Gargamel los descubre, y terminan en el Central Park de Nueva York.',
 'En Cartelera', 'src\\main\\resources\\Images\\LosPitufos.jpg', TRUE);
 
-
--- Trailers adicionales para las películas
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (4, 3, 'https://www.youtube.com/watch?v=lV1OOlGwExM');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (5, 4, 'https://www.youtube.com/watch?v=H0K8PoJrcLU');
 
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');

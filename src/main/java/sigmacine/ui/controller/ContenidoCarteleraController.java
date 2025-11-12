@@ -16,18 +16,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.data.FuncionDisponibleDTO;
 import sigmacine.dominio.entity.Pelicula;
-import sigmacine.dominio.entity.PeliculaTrailer;
 import sigmacine.dominio.repository.FuncionRepository;
-import sigmacine.dominio.repository.PeliculaTrailerRepository;
 import sigmacine.aplicacion.service.SillaService;
 import sigmacine.infraestructura.persistencia.jdbc.SillaRepositoryJdbc;
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.FuncionRepositoryJdbc;
-import sigmacine.infraestructura.persistencia.jdbc.PeliculaTrailerRepositoryJdbc;
 
 import java.io.File;
 import java.net.URL;
@@ -59,7 +59,22 @@ public class ContenidoCarteleraController {
     private ControladorControlador coordinador;
     private ClienteController host;
     
+    // Variables para reproducción de video
+    private MediaPlayer mediaPlayer;
+    private MediaView mediaView;
+    
     public void setHost(ClienteController host) { this.host = host; }
+    
+    private void limpiarReproductor() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
+        if (mediaView != null) {
+            mediaView = null;
+        }
+    }
 
     @FXML
     private void initialize() {
@@ -116,6 +131,9 @@ public class ContenidoCarteleraController {
     }
 
     public void setPelicula(Pelicula p) {
+        // Limpiar reproductor anterior
+        limpiarReproductor();
+        
         this.pelicula = p;
         if (p == null) return;
 
@@ -548,19 +566,15 @@ public class ContenidoCarteleraController {
 
     private void cargarTrailers(int peliculaId) {
         try {
-            if (trailerContainer == null) return;
+            if (trailerContainer == null) {
+                return;
+            }
             
             trailerContainer.getChildren().clear();
             
-            DatabaseConfig db = new DatabaseConfig();
-            PeliculaTrailerRepository trailerRepo = new PeliculaTrailerRepositoryJdbc(db);
-            List<PeliculaTrailer> trailers = trailerRepo.obtenerTrailersPorPelicula(peliculaId);
-            
+            // Obtener URL del trailer directamente de la película
             String trailerUrl = null;
-            
-            if (!trailers.isEmpty()) {
-                trailerUrl = trailers.get(0).getUrl();
-            } else if (pelicula != null && pelicula.getTrailer() != null && !pelicula.getTrailer().trim().isEmpty()) {
+            if (pelicula != null && pelicula.getTrailer() != null && !pelicula.getTrailer().trim().isEmpty()) {
                 trailerUrl = pelicula.getTrailer();
             }
             
@@ -582,16 +596,49 @@ public class ContenidoCarteleraController {
             
             trailerContainer.getChildren().clear();
             
-            javafx.scene.web.WebView webView = new javafx.scene.web.WebView();
-            webView.setPrefSize(600, 360);
+            // Detener reproductor anterior si existe
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.dispose();
+            }
             
-            String embedUrl = convertirUrlYouTubeAEmbed(url);
-            webView.getEngine().load(embedUrl);
+            // Verificar que la URL no sea nula o vacía
+            if (url == null || url.trim().isEmpty()) {
+                mostrarMensajeVideoNoDisponible();
+                return;
+            }
             
-            trailerContainer.getChildren().add(webView);
+            // Intentar encontrar el recurso
+            java.net.URL resourceUrl = getClass().getResource(url);
+            
+            if (resourceUrl == null) {
+                mostrarMensajeVideoNoDisponible();
+                return;
+            }
+            
+            // Crear MediaPlayer con el archivo local
+            Media media = new Media(resourceUrl.toExternalForm());
+            
+            mediaPlayer = new MediaPlayer(media);
+            mediaView = new MediaView(mediaPlayer);
+            
+            // Configurar el MediaPlayer para que siempre inicie desde el principio
+            mediaPlayer.setOnReady(() -> {
+                mediaPlayer.seek(javafx.util.Duration.ZERO);
+                mediaPlayer.stop(); // Asegurar que esté detenido al cargar
+            });
+            
+            // Configurar el MediaView
+            mediaView.setFitWidth(600);
+            mediaView.setFitHeight(360);
+            mediaView.setPreserveRatio(true);
+            
+            // Crear controles personalizados
+            VBox videoContainer = crearVideoConControles();
+            
+            trailerContainer.getChildren().add(videoContainer);
             
         } catch (Exception e) {
-            e.printStackTrace();
             mostrarMensajeError();
         }
     }
@@ -603,41 +650,78 @@ public class ContenidoCarteleraController {
         trailerContainer.getChildren().add(lblNoTrailer);
     }
     
+    private VBox crearVideoConControles() {
+        VBox container = new VBox(10);
+        container.setAlignment(Pos.CENTER);
+        container.setStyle("-fx-background-color: #1a1a1a; -fx-background-radius: 10; -fx-padding: 15;");
+        
+        // Añadir el MediaView
+        container.getChildren().add(mediaView);
+        
+        // Crear controles
+        HBox controles = new HBox(15);
+        controles.setAlignment(Pos.CENTER);
+        
+        Button btnPlay = new Button("▶");
+        Button btnPause = new Button("⏸");
+        Button btnStop = new Button("⏹");
+        
+        // Estilo de los botones
+        String estiloBoton = "-fx-background-color: #8A2F24; -fx-text-fill: white; " +
+                           "-fx-font-size: 12; -fx-background-radius: 5; " +
+                           "-fx-padding: 8 15 8 15; -fx-cursor: hand;";
+        
+        btnPlay.setStyle(estiloBoton);
+        btnPause.setStyle(estiloBoton);
+        btnStop.setStyle(estiloBoton);
+        
+        // Eventos de los botones
+        btnPlay.setOnAction(e -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.play();
+            }
+        });
+        
+        btnPause.setOnAction(e -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.pause();
+            }
+        });
+        
+        btnStop.setOnAction(e -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.seek(javafx.util.Duration.ZERO); // Volver al inicio
+            }
+        });
+        
+        controles.getChildren().addAll(btnPlay, btnPause, btnStop);
+        container.getChildren().add(controles);
+        
+        return container;
+    }
+    
+    private void mostrarMensajeVideoNoDisponible() {
+        trailerContainer.getChildren().clear();
+        
+        Label lblError = new Label("Video no disponible");
+        lblError.setStyle("-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;");
+        
+        Label lblInfo = new Label("El trailer para esta película no está disponible localmente.");
+        lblInfo.setStyle("-fx-text-fill: #8A2F24; -fx-font-size: 12; -fx-text-alignment: center;");
+        
+        VBox mensajeBox = new VBox(10);
+        mensajeBox.setAlignment(Pos.CENTER);
+        mensajeBox.getChildren().addAll(lblError, lblInfo);
+        
+        trailerContainer.getChildren().add(mensajeBox);
+    }
+    
     private void mostrarMensajeError() {
         trailerContainer.getChildren().clear();
         Label lblError = new Label("Error al cargar el trailer");
         lblError.setStyle("-fx-text-fill: #ff6b6b; -fx-font-size: 14;");
         trailerContainer.getChildren().add(lblError);
-    }
-    
-    private String convertirUrlYouTubeAEmbed(String url) {
-        if (url == null || url.trim().isEmpty()) return url;
-        
-        try {
-            if (url.contains("youtube.com/watch?v=")) {
-                String videoId = url.substring(url.indexOf("v=") + 2);
-                if (videoId.contains("&")) {
-                    videoId = videoId.substring(0, videoId.indexOf("&"));
-                }
-                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
-            } else if (url.contains("youtu.be/")) {
-                String videoId = url.substring(url.lastIndexOf("/") + 1);
-                if (videoId.contains("?")) {
-                    videoId = videoId.substring(0, videoId.indexOf("?"));
-                }
-                return "https://www.youtube.com/embed/" + videoId + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
-            } else if (url.contains("youtube.com/embed/")) {
-                if (url.contains("?")) {
-                    return url + "&controls=1&modestbranding=1&rel=0&enablejsapi=1";
-                } else {
-                    return url + "?controls=1&modestbranding=1&rel=0&enablejsapi=1";
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return url;
     }
     
     /**
