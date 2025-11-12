@@ -845,13 +845,13 @@ private void startMoviesAutoplay(double seconds) {
     private void abrirDetallePelicula(Pelicula p) {
         if (p == null) return;
         try {
-            var url = getClass().getResource("/sigmacine/ui/views/contenidoCartelera.fxml");
-            if (url == null) throw new IllegalStateException("No se encontró contenidoCartelera.fxml");
+            var url = getClass().getResource("/sigmacine/ui/views/verdetallepelicula.fxml");
+            if (url == null) throw new IllegalStateException("No se encontró verdetallepelicula.fxml");
 
             FXMLLoader loader = new FXMLLoader(url);
             Parent rootDetalle = loader.load();
 
-            ContenidoCarteleraController ctrl = loader.getController();
+            VerDetallePeliculaController ctrl = loader.getController();
             try { ctrl.setCoordinador(this.coordinador); } catch (Exception ignore) {}
             try { ctrl.setUsuario(this.usuario); } catch (Exception ignore) {}
             ctrl.setPelicula(p);

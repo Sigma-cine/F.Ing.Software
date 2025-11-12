@@ -2,6 +2,7 @@ package sigmacine.ui;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import java.sql.Connection;
 
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
@@ -29,7 +30,9 @@ public class App extends Application {
 
         DatabaseConfig db = new DatabaseConfig();
         try (var conn = db.getConnection()) {
+            System.out.println("🔧 Ejecutando scripts de base de datos...");
             ScriptLoader.runScripts(conn);
+            
         } catch (Exception e) {
             System.err.println("No se pudieron ejecutar los scripts iniciales: " + e.getMessage());
             e.printStackTrace();
