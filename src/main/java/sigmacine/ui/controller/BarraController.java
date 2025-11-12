@@ -39,6 +39,7 @@ public class BarraController {
     @FXML
     public void initialize() {
         instance = this;
+        System.out.println("✓ BarraController inicializado - instance configurada");
         configurarEventos();
         actualizarEstadoSesion();
         configurarCarritoDropdown();
@@ -378,18 +379,18 @@ public class BarraController {
     private void onLogoClick(MouseEvent event) {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            coordinador.mostrarPaginaInicial();
-            resetearEstilosBotones();
+            // Ir a cartelera en lugar de página inicial vacía
+            coordinador.mostrarCartelera();
+            marcarBotonActivo("cartelera");
         }
     }
 
     private void realizarBusqueda() {
         String textoBusqueda = txtBuscar.getText().trim();
-        if (!textoBusqueda.isEmpty()) {
-            ControladorControlador coordinador = ControladorControlador.getInstance();
-            if (coordinador != null) {
-                coordinador.mostrarResultadosBusqueda(textoBusqueda);
-            }
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) {
+            // Si está vacío, muestra todas las películas; si tiene texto, filtra
+            coordinador.mostrarResultadosBusqueda(textoBusqueda);
         }
     }
 

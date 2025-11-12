@@ -13,7 +13,32 @@ public class FuncionDisponibleDTO {
     private String sede;
     private int numeroSala;
     private String tipoSala;
+    private long salaId;
 
+    public FuncionDisponibleDTO(){
+        this.funcionId=0;
+        this.peliculaId=0;
+        this.fecha=null;
+        this.hora=null;
+        this.ciudad="";
+        this.sede="";
+        this.numeroSala=0;
+        this.tipoSala="";
+        this.salaId=0;
+    }
+
+    public FuncionDisponibleDTO(long funcionId, long peliculaId, LocalDate fecha, LocalTime hora,
+                                String ciudad, String sede, int numeroSala, String tipoSala, long salaId) {
+        this.funcionId = funcionId;
+        this.peliculaId = peliculaId;
+        this.fecha = fecha;
+        this.hora = hora;
+        this.ciudad = ciudad;
+        this.sede = sede;
+        this.numeroSala = numeroSala;
+        this.tipoSala = tipoSala;
+        this.salaId=salaId;
+    }
     public FuncionDisponibleDTO(long funcionId, long peliculaId, LocalDate fecha, LocalTime hora,
                                 String ciudad, String sede, int numeroSala, String tipoSala) {
         this.funcionId = funcionId;
@@ -34,6 +59,19 @@ public class FuncionDisponibleDTO {
     public String getSede() { return sede; }
     public int getNumeroSala() { return numeroSala; }
     public String getTipoSala() { return tipoSala; }
+
+    public long getSalaId() { return salaId; }
+
+    public void setFuncionId(long funcionId){ this.funcionId=funcionId; }
+    public void setFecha(LocalDate fecha){ this.fecha=fecha; }
+    public void setHora(LocalTime hora){ this.hora=hora; }
+    public void setSalaId(long salaId){ this.salaId=salaId; }
+    public void setNumeroSala(int numeroSala){ this.numeroSala=numeroSala; }
+    public void setTipoSala(String tipoSala){ this.tipoSala=tipoSala; }
+    public void setSede(String sede){ this.sede=sede; }
+    public void setCiudad(String ciudad){ this.ciudad=ciudad; }
+    public void setPeliculaId(long peliculaId){ this.peliculaId=peliculaId; }
+
 
     @Override
     public boolean equals(Object obj) {
@@ -68,4 +106,5 @@ public class FuncionDisponibleDTO {
                 ", tipoSala='" + tipoSala + '\'' +
                 '}';
     }
+
 }

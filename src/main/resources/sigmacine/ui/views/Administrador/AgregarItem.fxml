@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane prefHeight="680.0" prefWidth="1200.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.admin.AgregarItemController">
+
+    <top>
+        <BorderPane style="-fx-padding: 20; -fx-background-color: #993726;" BorderPane.alignment="CENTER">
+            <left>
+                <Text fill="WHITE" text="Administrar Productos" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font name="System Bold" size="22.0" />
+                    </font>
+                </Text>
+            </left>
+        </BorderPane>
+    </top>
+   <center>
+      <VBox spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <TableView fx:id="tblProductos" prefHeight="311.0" prefWidth="1176.0">
+              <columns>
+                <TableColumn fx:id="colId" prefWidth="150.0" text="ID" />
+                  <TableColumn fx:id="colProducto" prefWidth="150.0" text="Producto" />
+                <TableColumn minWidth="0.0" prefWidth="0.0" text="Nombre" />
+                  <TableColumn fx:id="colDescripcion" prefWidth="329.0" text="Descripcion" />
+                  <TableColumn fx:id="colSabores" minWidth="0.0" prefWidth="239.0" text="Sabores" />
+                  <TableColumn fx:id="colTipo" prefWidth="149.0" text="Tipo" />
+                  <TableColumn fx:id="colPrecio" prefWidth="164.0" text="Precio" />
+                  <TableColumn fx:id="colEstado" prefWidth="144.0" text="Estado" />
+              </columns>
+            </TableView>
+            <TitledPane animated="false" text="Gestión de Productos">
+               <content>
+                  <GridPane hgap="10.0" style="-fx-background-color: #111; -fx-padding: 16; -fx-background-radius: 8;" vgap="10.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" prefWidth="180.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="370.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" prefWidth="210.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" prefWidth="370.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints prefHeight="30.0" />
+                      <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="ID (edición)" textFill="WHITE" />
+                        <Label text="Producto" textFill="WHITE" GridPane.rowIndex="1" />
+                        <Label text="Descripción" textFill="WHITE" GridPane.rowIndex="2" />
+                        <Label text="Sabores" textFill="WHITE" GridPane.columnIndex="2" />
+                        <Label text="Tipo" textFill="WHITE" GridPane.rowIndex="3" />
+                        <Label text="Precio" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Label text="Estado" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <TextField prefHeight="25.0" prefWidth="340.0" promptText="vacio/0 = crear" GridPane.columnIndex="1" />
+                        <TextField prefHeight="25.0" prefWidth="340.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="364.0" promptText="Descripción del producto" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
+                        <TextField maxWidth="-Infinity" minWidth="50.0" prefHeight="25.0" prefWidth="228.0" promptText="Tipo del producto" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField prefHeight="25.0" prefWidth="340.0" promptText="Sabores del producto" GridPane.columnIndex="3" />
+                        <ComboBox prefHeight="25.0" prefWidth="189.0" promptText="Disponible/No disponible" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <TextField maxWidth="-Infinity" prefHeight="25.0" prefWidth="232.0" promptText="\$000.00" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnSpan="4" GridPane.rowIndex="4">
+                           <children>
+                              <Button mnemonicParsing="false" style="-fx-background-color: #333;" text="Nuevo" textFill="WHITE" />
+                              <Button mnemonicParsing="false" style="-fx-background-color: #993726;" text="Crear" textFill="WHITE" />
+                              <Button mnemonicParsing="false" style="-fx-background-color: #993726;" text="Actualizar" textFill="WHITE" />
+                              <Button alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" style="-fx-background-color: #993726;" text="Eliminar" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </GridPane>
+               </content>
+            </TitledPane>
+         </children>
+         <padding>
+            <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+         </padding>
+      </VBox>
+   </center>
+   <bottom>
+      <HBox style="-fx-background-color: #111; -fx-padding: 8;" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Estado:" textFill="WHITE" />
+         </children></HBox>
+   </bottom>
+</BorderPane>

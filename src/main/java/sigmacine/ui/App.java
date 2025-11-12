@@ -18,6 +18,16 @@ import sigmacine.infraestructura.persistencia.jdbc.CompraRepositoryJdbc;
 import sigmacine.aplicacion.service.CompraService;
 import sigmacine.aplicacion.service.CarritoService;
 import javafx.util.Callback;
+import sigmacine.dominio.repository.admi.FuncionAdminRepository;
+// Inyecciones de administrador
+import sigmacine.dominio.repository.admi.PeliculaAdminRepository;
+import sigmacine.dominio.repository.admi.ProductoAdminRepository;
+import sigmacine.infraestructura.persistencia.jdbc.admi.FuncionAdminRepositoryJdbc;
+import sigmacine.infraestructura.persistencia.jdbc.admi.PeliculaAdminRepositoryJdbc;
+import sigmacine.infraestructura.persistencia.jdbc.admi.ProductoAdminRepositoryJdbc;
+import sigmacine.aplicacion.service.admi.GestionFuncionesService;
+import sigmacine.aplicacion.service.admi.GestionPeliculasService;
+import sigmacine.aplicacion.service.admi.GestionProductosService;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -40,6 +50,7 @@ public class App extends Application {
         UsuarioRepository repo = new UsuarioRepositoryJdbc(db);
         LoginService loginService = new LoginService(repo);
         RegistroService registroService = new RegistroService(repo);
+
         AuthFacade authFacade = new AuthFacade(loginService, registroService); 
 
         ControladorControlador coordinador = new ControladorControlador(stage, authFacade);
@@ -50,14 +61,44 @@ public class App extends Application {
         container.put(sigmacine.aplicacion.service.LoginService.class, loginService);
         container.put(sigmacine.aplicacion.service.RegistroService.class, registroService);
         container.put(sigmacine.aplicacion.facade.AuthFacade.class, authFacade);
-        
-        var peliculaRepo = new PeliculaRepositoryJdbc(db);
+
+
+        PeliculaRepositoryJdbc peliculaRepo = new PeliculaRepositoryJdbc(db);
+        container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
+
+        CompraRepositoryJdbc compraRepo = new CompraRepositoryJdbc(db);
+        container.put(CompraRepositoryJdbc.class, compraRepo);
+
+        CompraService compraService = new CompraService(compraRepo);
+        container.put(CompraService.class, compraService);
+
+        container.put(CarritoService.class, CarritoService.getInstance());
+
+        PeliculaAdminRepository adminRepo = new PeliculaAdminRepositoryJdbc(db);
+        container.put(PeliculaAdminRepository.class, adminRepo);
+
+        GestionPeliculasService gestionPeliculasService = new GestionPeliculasService(peliculaRepo, adminRepo);
+        container.put(GestionPeliculasService.class, gestionPeliculasService);
+
+        FuncionAdminRepository funcAdminRepo = new FuncionAdminRepositoryJdbc(db);
+        container.put(FuncionAdminRepository.class, funcAdminRepo);
+
+        GestionFuncionesService gestionFuncionesService = new GestionFuncionesService(funcAdminRepo);
+        container.put(GestionFuncionesService.class, gestionFuncionesService);
+
+        ProductoAdminRepository prodAdminRepo = new ProductoAdminRepositoryJdbc(db);
+        container.put(ProductoAdminRepository.class, prodAdminRepo);
+
+        GestionProductosService gestionProductosService = new GestionProductosService(prodAdminRepo);
+        container.put(GestionProductosService.class, gestionProductosService);
+
+    /*    var peliculaRepo = new PeliculaRepositoryJdbc(db);
         container.put(PeliculaRepositoryJdbc.class, peliculaRepo);
         var compraRepo = new CompraRepositoryJdbc(db);
         container.put(CompraRepositoryJdbc.class, compraRepo);
         var compraService = new CompraService(compraRepo);
         container.put(CompraService.class, compraService);
-        container.put(CarritoService.class, CarritoService.getInstance());
+        container.put(CarritoService.class, CarritoService.getInstance());*/
 
         Callback<Class<?>, Object> controllerFactory = (Class<?> clazz) -> {
             try {
@@ -72,6 +113,7 @@ public class App extends Application {
                                 candidate = e.getValue();
                                 break;
                             }
+
                         }
                         if (candidate == null) { 
                             ok = false; 
@@ -88,6 +130,7 @@ public class App extends Application {
                 throw new RuntimeException("No se pudo instanciar controlador: " + clazz.getName(), ex);
             }
         };
+
 
         coordinador.setControllerFactory(controllerFactory);
         

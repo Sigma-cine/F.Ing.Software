@@ -419,10 +419,13 @@
   -fx-min-width: 35 !important;
   -fx-pref-width: 35 !important;
   -fx-alignment: center !important;
+  -fx-font-family: 'System', 'Arial', sans-serif !important;
 }
 
 .qty-btn .text {
   -fx-fill: #222222 !important;
+  -fx-font-family: 'System', 'Arial', sans-serif !important;
+}
 }
 
 .qty-btn:hover {

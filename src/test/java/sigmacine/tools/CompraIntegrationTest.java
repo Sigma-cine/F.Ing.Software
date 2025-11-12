@@ -26,7 +26,7 @@ public class CompraIntegrationTest {
         var repo = new CompraRepositoryJdbc(db);
         var svc = new CompraService(repo);
 
-        CompraProductoDTO item = new CompraProductoDTO(1L, "Combo Popcorn", 1, new BigDecimal("10.50"));
+        CompraProductoDTO item = new CompraProductoDTO(4L, "Snack pequeño", 1, new BigDecimal("3.00"));
         List<CompraProductoDTO> items = new ArrayList<>();
         items.add(item);
 
@@ -51,7 +51,7 @@ public class CompraIntegrationTest {
         var repo = new CompraRepositoryJdbc(db);
         var svc = new CompraService(repo);
 
-        CompraProductoDTO prod = new CompraProductoDTO(1L, "Combo Popcorn", 1, new BigDecimal("10.50"));
+        CompraProductoDTO prod = new CompraProductoDTO(4L, "Snack pequeño", 1, new BigDecimal("3.00"));
         CompraProductoDTO boleto = new CompraProductoDTO(null, 1L, "Boleto prueba", 1, new BigDecimal("12.00"), "A1");
 
         List<CompraProductoDTO> items = new ArrayList<>();
