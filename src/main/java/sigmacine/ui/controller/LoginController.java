@@ -12,6 +12,8 @@ public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
+    @FXML private TextField passwordFieldVisible;
+    @FXML private Button togglePasswordBtn;
     @FXML private Button loginButton;
     @FXML private Hyperlink registrarLink;
     @FXML private Label feedback;
@@ -32,6 +34,29 @@ public class LoginController {
         }
         if (loginButton != null) loginButton.setOnAction(e -> { onLogin(); });
         if (registrarLink != null) registrarLink.setOnAction(e -> { if (coordinador != null) coordinador.mostrarRegistro(); });
+        
+        // Configurar el botón de mostrar/ocultar contraseña
+        if (togglePasswordBtn != null && passwordField != null && passwordFieldVisible != null) {
+            // Sincronizar los textos
+            passwordField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (!passwordFieldVisible.getText().equals(newVal)) {
+                    passwordFieldVisible.setText(newVal);
+                }
+            });
+            passwordFieldVisible.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (!passwordField.getText().equals(newVal)) {
+                    passwordField.setText(newVal);
+                }
+            });
+            
+            // Acción del botón
+            togglePasswordBtn.setOnAction(e -> {
+                boolean showPassword = !passwordFieldVisible.isVisible();
+                passwordField.setVisible(!showPassword);
+                passwordFieldVisible.setVisible(showPassword);
+                togglePasswordBtn.setText(showPassword ? "🔒" : "👁");
+            });
+        }
     }
     @FXML
 public void onIrARegistro() {

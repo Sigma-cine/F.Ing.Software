@@ -83,6 +83,16 @@
             <version>0.0.8</version>
             <configuration>
                 <mainClass>sigmacine.ui.App</mainClass>
+                <options>
+                    <option>--add-opens=java.base/java.lang=ALL-UNNAMED</option>
+                    <option>--add-opens=java.base/sun.misc=ALL-UNNAMED</option>
+                    <option>--add-opens=java.base/java.nio=ALL-UNNAMED</option>
+                    <option>--add-opens=java.base/jdk.internal.misc=ALL-UNNAMED</option>
+                    <option>--add-exports=java.base/sun.nio.ch=ALL-UNNAMED</option>
+                    <option>--enable-native-access=javafx.graphics,javafx.media,ALL-UNNAMED</option>
+                    <option>-Djava.util.logging.config.file=logging.properties</option>
+                    <option>-XX:+IgnoreUnrecognizedVMOptions</option>
+                </options>
             </configuration>
          </plugin>
 

@@ -1,44 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="960.0" prefWidth="600.0" styleClass="dark-bg" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="510.0" prefWidth="857.0" styleClass="dark-bg" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <StackPane BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="TOP_CENTER" layoutX="260.0" layoutY="108.0" prefHeight="295.0" prefWidth="338.0" spacing="12.0" style="-fx-padding: 0;" styleClass="auth-card">
+            <!-- Centered auth card: same structure as login -->
+            <VBox StackPane.alignment="CENTER" alignment="CENTER" spacing="0.0" style="-fx-padding: 0; -fx-max-width: 420px;" styleClass="auth-card centered">
                <children>
-                  <Pane prefHeight="43.0" prefWidth="370.0" style="-fx-background-color: #8B2E21; -fx-background-radius: 15 15 0 0;">
+                  <!-- Header inside the card -->
+                  <HBox alignment="CENTER" prefHeight="52.0" style="-fx-background-color: #8B2E21; -fx-background-radius: 15 15 0 0; -fx-padding: 8 12;">
                      <children>
-                        <Label contentDisplay="CENTER" layoutX="116.0" layoutY="11.0" style="-fx-text-fill: #ffffff; -fx-font-weight: bold;" text="Registrarse">
+                        <Label text="Registrarse" style="-fx-text-fill: #ffffff; -fx-font-weight: bold;">
                            <font>
                               <Font size="17.0" />
                            </font>
                         </Label>
                      </children>
-                  </Pane>
-                  <Pane prefHeight="243.0" prefWidth="338.0">
+                  </HBox>
+
+                  <!-- Content area: use a VBox with padding to layout fields cleanly -->
+                  <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 16; -fx-background-radius: 0 0 15 15; -fx-background-color: -fx-background;">
                      <children>
-                        <HBox alignment="CENTER" spacing="6" />
-                        <Button layoutX="48.0" layoutY="182.0" onAction="#onRegistrar" styleClass="primary-btn" text="Registrar" />
-                        <Button layoutX="190.0" layoutY="182.0" onAction="#onCancelar" styleClass="primary-btn" text="Cancelar" />
-                        <HBox alignment="CENTER" layoutX="19.0" layoutY="-10.0" spacing="10" />
-                        <Label layoutX="21.0" layoutY="-4.0" styleClass="field-label" text="Nombre completo" />
-                        <TextField fx:id="txtNombre" layoutX="20.0" layoutY="26.0" prefWidth="300" promptText="Nombre completo" styleClass="input" />
-                        <PasswordField fx:id="txtPassword" layoutX="20.0" layoutY="130.0" prefWidth="300" promptText="Contraseña" styleClass="input" />
-                        <TextField fx:id="txtEmail" layoutX="20.0" layoutY="78.0" prefWidth="300" promptText="Correo" styleClass="input" />
-                        <Label layoutX="21.0" layoutY="48.0" styleClass="field-label" text="Correo" />
-                        <Label layoutX="21.0" layoutY="100.0" styleClass="field-label" text="Contraseña" />
+                        <VBox alignment="CENTER_LEFT" spacing="6.0" style="-fx-pref-width: 100%;">
+                           <children>
+                              <Label styleClass="field-label" text="Nombre completo" />
+                              <TextField fx:id="txtNombre" prefHeight="30.0" promptText="Nombre completo" styleClass="input" />
+                              <Label styleClass="field-label" text="Correo" />
+                              <TextField fx:id="txtEmail" prefHeight="30.0" promptText="Correo" styleClass="input" />
+                              <Label styleClass="field-label" text="Contraseña" />
+                              <StackPane>
+                                 <children>
+                                    <PasswordField fx:id="txtPassword" prefHeight="30.0" promptText="Contraseña" styleClass="input" StackPane.alignment="CENTER_LEFT" />
+                                    <TextField fx:id="txtPasswordVisible" prefHeight="30.0" promptText="Contraseña" styleClass="input" visible="false" StackPane.alignment="CENTER_LEFT" />
+                                    <Button fx:id="togglePasswordBtn" text="👁" styleClass="icon-btn" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 18px; -fx-text-fill: #8B2E21; -fx-padding: 0 8 0 8;" StackPane.alignment="CENTER_RIGHT" />
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </VBox>
+
+                        <Label fx:id="feedback" text="" />
+
+                        <HBox alignment="CENTER" spacing="12.0">
+                           <children>
+                              <Button onAction="#onRegistrar" styleClass="primary-btn" text="Registrar" minWidth="110" />
+                              <Button onAction="#onCancelar" styleClass="primary-btn" text="Cancelar" minWidth="110" />
+                           </children>
+                        </HBox>
                      </children>
-                     <Label fx:id="feedback" layoutX="12.0" layoutY="152.0" prefHeight="24.0" prefWidth="317.0" text="" />
-                  </Pane>
+                  </VBox>
                </children>
             </VBox>
          </children>
-      </Pane>
+      </StackPane>
    </center>
 </BorderPane>
