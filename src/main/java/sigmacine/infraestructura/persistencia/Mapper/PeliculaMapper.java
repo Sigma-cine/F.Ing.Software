@@ -40,6 +40,11 @@ public class PeliculaMapper {
             p.setReparto(reparto);
         }
 
+        String trailer = rs.getString("TRAILER");
+        if (trailer != null) {
+            p.setTrailer(trailer);
+        }
+
         return p;
     }
     

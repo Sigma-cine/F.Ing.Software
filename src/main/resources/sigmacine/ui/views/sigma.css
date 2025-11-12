@@ -40,6 +40,15 @@
   -fx-padding: 6 10 6 10;
 }
 
+.movie-card {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 4);
+}
+.movie-card:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
 /* Dots */
 .promo-dot { /* ya incluye el mínimo */
   -fx-background-radius: 999;
@@ -410,10 +419,13 @@
   -fx-min-width: 35 !important;
   -fx-pref-width: 35 !important;
   -fx-alignment: center !important;
+  -fx-font-family: 'System', 'Arial', sans-serif !important;
 }
 
 .qty-btn .text {
   -fx-fill: #222222 !important;
+  -fx-font-family: 'System', 'Arial', sans-serif !important;
+}
 }
 
 .qty-btn:hover {

@@ -24,7 +24,7 @@ public class PeliculaRepositoryJdbc implements PeliculaRepository {
 
     @Override
     public List<Pelicula> buscarPorTitulo(String q) {
-        String sql = "SELECT ID,TITULO,GENERO,CLASIFICACION,DURACION,DIRECTOR,ESTADO,POSTER_URL,SINOPSIS,REPARTO " +
+        String sql = "SELECT ID,TITULO,GENERO,CLASIFICACION,DURACION,DIRECTOR,ESTADO,POSTER_URL,SINOPSIS,REPARTO,TRAILER " +
                     "FROM PELICULA WHERE UPPER(TITULO) LIKE UPPER(?)";
         try (Connection cn = db.getConnection();
             PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -49,7 +49,7 @@ public class PeliculaRepositoryJdbc implements PeliculaRepository {
 
     @Override
     public List<Pelicula> buscarPorGenero(String genero){
-    String sql = "SELECT ID,TITULO,GENERO,CLASIFICACION,DURACION,DIRECTOR,ESTADO,POSTER_URL,SINOPSIS,REPARTO " +
+    String sql = "SELECT ID,TITULO,GENERO,CLASIFICACION,DURACION,DIRECTOR,ESTADO,POSTER_URL,SINOPSIS,REPARTO,TRAILER " +
             "FROM PELICULA WHERE UPPER(GENERO) LIKE UPPER(?)";
         try (Connection cn = db.getConnection();
             PreparedStatement ps = cn.prepareStatement(sql)) {
@@ -74,7 +74,7 @@ public class PeliculaRepositoryJdbc implements PeliculaRepository {
     
     @Override
     public List<Pelicula> buscarTodas(){
-    String sql = "SELECT ID,TITULO,GENERO,CLASIFICACION,DURACION,DIRECTOR,ESTADO,POSTER_URL,SINOPSIS,REPARTO " +
+    String sql = "SELECT ID,TITULO,GENERO,CLASIFICACION,DURACION,DIRECTOR,ESTADO,POSTER_URL,SINOPSIS,REPARTO,TRAILER " +
             "FROM PELICULA";
         try (Connection cn = db.getConnection();
             PreparedStatement ps = cn.prepareStatement(sql);

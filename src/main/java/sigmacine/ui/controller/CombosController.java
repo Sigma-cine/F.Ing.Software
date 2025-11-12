@@ -130,10 +130,32 @@ public class CombosController implements Initializable {
         Button add = new Button("Agregar al carrito");
         add.getStyleClass().addAll("buy-btn", "menu-add-btn");
         add.setOnAction(e -> {
+            // Verificar si el usuario ha iniciado sesión
+            if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                alert.setTitle("Iniciar Sesión Requerido");
+                alert.setHeaderText("Debe iniciar sesión");
+                alert.setContentText("Para agregar combos al carrito debe iniciar sesión primero.");
+                alert.showAndWait();
+                return;
+            }
+            
             int qty = quantity.get();
             String itemName = combo.nombre;
             var dto = new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
             CarritoService.getInstance().addItem(dto);
+            
+            // Mostrar confirmación
+            javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            confirmacion.setTitle("Combo añadido al carrito");
+            confirmacion.setHeaderText("¡Combo agregado correctamente!");
+            
+            String mensaje = qty == 1 
+                ? "Se añadió 1 " + itemName + " al carrito"
+                : "Se añadieron " + qty + " " + itemName + " al carrito";
+            
+            confirmacion.setContentText(mensaje);
+            confirmacion.showAndWait();
         });
 
         // Center quantity selector and add button together

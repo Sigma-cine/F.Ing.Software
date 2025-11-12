@@ -6,8 +6,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
+import javafx.geometry.Bounds;
+import javafx.stage.Popup;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
+import sigmacine.aplicacion.service.CarritoService;
+import sigmacine.aplicacion.data.CompraProductoDTO;
 
 public class BarraController {
 
@@ -35,6 +39,7 @@ public class BarraController {
     @FXML
     public void initialize() {
         instance = this;
+        System.out.println("✓ BarraController inicializado - instance configurada");
         configurarEventos();
         actualizarEstadoSesion();
         configurarCarritoDropdown();
@@ -64,8 +69,6 @@ public class BarraController {
 
         btnBuscar.setOnAction(e -> realizarBusqueda());
         txtBuscar.setOnAction(e -> realizarBusqueda());
-
-        btnCart.setOnAction(e -> navegarACarrito());
 
         btnRegistrarse.setOnAction(e -> {
             if (!Session.isLoggedIn()) {
@@ -204,16 +207,60 @@ public class BarraController {
     }
 
     private void configurarCarritoDropdown() {
-        carritoDropdown = new ContextMenu();
-        carritoDropdown.setStyle("-fx-pref-width: 300; -fx-padding: 10;");
+        // Configurar para mostrar popup FXML debajo del botón
+        btnCart.setOnAction(e -> {
+            mostrarCarritoPopup();
+        });
+    }
+    
+    /* Función comentada - ahora usamos popup FXML
+    private void actualizarCarritoDropdown() {
+        carritoDropdown.getItems().clear();
         
         Label titulo = new Label("Carrito de Compras");
         titulo.setStyle("-fx-font-size: 14; -fx-padding: 5 0 10 0;");
         
         Separator separator = new Separator();
         
-        Label vacio = new Label("Tu carrito está vacío");
-        vacio.setStyle("-fx-padding: 15 0; -fx-text-fill: #666; -fx-alignment: center;");
+        CustomMenuItem tituloItem = new CustomMenuItem(titulo, false);
+        CustomMenuItem separatorItem = new CustomMenuItem(separator, false);
+        tituloItem.setHideOnClick(false);
+        separatorItem.setHideOnClick(false);
+        
+        carritoDropdown.getItems().addAll(tituloItem, separatorItem);
+        
+        // Obtener items del carrito real
+        CarritoService carrito = CarritoService.getInstance();
+        var items = carrito.getItems();
+        
+        if (items.isEmpty()) {
+            Label vacio = new Label("Tu carrito está vacío");
+            vacio.setStyle("-fx-padding: 15 0; -fx-text-fill: #666; -fx-alignment: center;");
+            CustomMenuItem vacioItem = new CustomMenuItem(vacio, false);
+            vacioItem.setHideOnClick(false);
+            carritoDropdown.getItems().add(vacioItem);
+        } else {
+            // Mostrar cada item del carrito
+            for (CompraProductoDTO item : items) {
+                String texto = String.format("%s x%d - $%.2f", 
+                    item.getNombre() != null ? item.getNombre() : "Item", 
+                    item.getCantidad(),
+                    item.getPrecioUnitario().doubleValue() * item.getCantidad());
+                
+                Label lblItem = new Label(texto);
+                lblItem.setStyle("-fx-padding: 3 0; -fx-text-fill: #333;");
+                CustomMenuItem itemMenu = new CustomMenuItem(lblItem, false);
+                itemMenu.setHideOnClick(false);
+                carritoDropdown.getItems().add(itemMenu);
+            }
+            
+            // Mostrar total
+            Label total = new Label(String.format("Total: $%.2f", carrito.getTotal().doubleValue()));
+            total.setStyle("-fx-padding: 10 0 5 0; -fx-font-weight: bold;");
+            CustomMenuItem totalItem = new CustomMenuItem(total, false);
+            totalItem.setHideOnClick(false);
+            carritoDropdown.getItems().add(totalItem);
+        }
         
         Button btnVerCarrito = new Button("Ver carrito completo");
         btnVerCarrito.setStyle("-fx-background-color: #8A2F24; -fx-text-fill: white; -fx-pref-width: 100%;");
@@ -222,18 +269,11 @@ public class BarraController {
             navegarACarritoCompleto();
         });
         
-        CustomMenuItem tituloItem = new CustomMenuItem(titulo, false);
-        CustomMenuItem separatorItem = new CustomMenuItem(separator, false);
-        CustomMenuItem vacioItem = new CustomMenuItem(vacio, false);
         CustomMenuItem botonItem = new CustomMenuItem(btnVerCarrito, false);
-        
-        tituloItem.setHideOnClick(false);
-        separatorItem.setHideOnClick(false);
-        vacioItem.setHideOnClick(false);
         botonItem.setHideOnClick(false);
-        
-        carritoDropdown.getItems().addAll(tituloItem, separatorItem, vacioItem, botonItem);
+        carritoDropdown.getItems().add(botonItem);
     }
+    */
 
     private void navegarACartelera() {
         ControladorControlador coordinador = ControladorControlador.getInstance();
@@ -257,15 +297,53 @@ public class BarraController {
     }
 
     private void navegarACarrito() {
+        // Función comentada - ahora usamos mostrarCarritoPopup()
+        // Este método ya no se necesita porque el clic se maneja en configurarCarritoDropdown()
+        // pero lo mantenemos para compatibilidad
+        /*
+        actualizarCarritoDropdown();
         if (carritoDropdown != null) {
             carritoDropdown.show(btnCart, Side.BOTTOM, 0, 0);
         }
+        */
     }
 
     private void navegarACarritoCompleto() {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCarritoCompleto();
+        }
+    }
+
+    private void mostrarCarritoPopup() {
+        try {
+            // Cargar el FXML del carrito
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
+            try (java.io.InputStream in = getClass().getResourceAsStream("/sigmacine/ui/views/verCarrito.fxml")) {
+                if (in == null) {
+                    System.err.println("No se pudo encontrar verCarrito.fxml");
+                    return;
+                }
+                javafx.scene.Parent carritoRoot = loader.load(in);
+                
+                // Crear un popup
+                javafx.stage.Popup popup = new javafx.stage.Popup();
+                popup.getContent().add(carritoRoot);
+                popup.setAutoHide(true);
+                popup.setHideOnEscape(true);
+                
+                // Obtener la posición del botón del carrito
+                javafx.geometry.Bounds bounds = btnCart.localToScreen(btnCart.getBoundsInLocal());
+                
+                // Mostrar el popup debajo del botón del carrito
+                popup.show(btnCart.getScene().getWindow(), 
+                          bounds.getMinX() - 250,  // Ajustar posición horizontal
+                          bounds.getMaxY() + 5);   // Debajo del botón con un pequeño margen
+                
+            }
+        } catch (Exception ex) {
+            System.err.println("Error al mostrar popup del carrito: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -301,18 +379,18 @@ public class BarraController {
     private void onLogoClick(MouseEvent event) {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            coordinador.mostrarPaginaInicial();
-            resetearEstilosBotones();
+            // Ir a cartelera en lugar de página inicial vacía
+            coordinador.mostrarCartelera();
+            marcarBotonActivo("cartelera");
         }
     }
 
     private void realizarBusqueda() {
         String textoBusqueda = txtBuscar.getText().trim();
-        if (!textoBusqueda.isEmpty()) {
-            ControladorControlador coordinador = ControladorControlador.getInstance();
-            if (coordinador != null) {
-                coordinador.mostrarResultadosBusqueda(textoBusqueda);
-            }
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) {
+            // Si está vacío, muestra todas las películas; si tiene texto, filtra
+            coordinador.mostrarResultadosBusqueda(textoBusqueda);
         }
     }
 

@@ -1,3 +1,22 @@
+DELETE FROM RESERVA_SILLA;
+DELETE FROM BOLETO_SILLA;
+DELETE FROM COMPRA_PRODUCTO;
+DELETE FROM PAGO;
+DELETE FROM BOLETO;
+DELETE FROM RESERVA;
+DELETE FROM COMPRA;
+DELETE FROM SILLA;
+DELETE FROM FUNCION;
+DELETE FROM SALA;
+DELETE FROM PELICULA;
+DELETE FROM PRODUCTO;
+DELETE FROM TARIFA;
+DELETE FROM SEDE;
+DELETE FROM SIGMA_CARD;
+DELETE FROM CLIENTE;
+DELETE FROM ADMIN;
+DELETE FROM USUARIO;
+
 INSERT INTO USUARIO (ID, EMAIL, CONTRASENA, ROL) VALUES(1, 'admin@sigma.com', 'admin_pass','ADMIN');
 INSERT INTO USUARIO (ID, EMAIL, CONTRASENA, ROL) VALUES(2, 'cliente1@correo.com', 'cliente1_pass', 'CLIENTE');
 INSERT INTO USUARIO (ID, EMAIL, CONTRASENA, ROL) VALUES(3, 'cliente2@correo.com', 'cliente2_pass', 'CLIENTE');
@@ -28,31 +47,34 @@ INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(10, 1, 120, 
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (1, 'Dune: Part Two', 'Ciencia ficción', 'PG-13', 166, 'Denis Villeneuve', 'Timothée Chalamet, Zendaya',
-'https://www.youtube.com/watch?v=Way9Dexny3w',
+'/videos/dune_trailer.mp4',
 'Sigue el viaje mítico de Paul Atreides mientras se une a Chani y los Fremen en una guerra de venganza contra los conspiradores que destruyeron a su familia.',
 'En Cartelera', 'src\\main\\resources\\Images\\dune_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (2, 'Joker', 'Thriller psicológico', 'R', 122, 'Todd Phillips', 'Joaquin Phoenix, Robert De Niro',
-'https://www.youtube.com/watch?v=zL2Q9C0cK5s',
+'/videos/joker_trailer.mp4',
 'Un comediante fracasado desciende a la locura y se convierte en una figura icónica del crimen.',
 'En Cartelera', 'src\\main\\resources\\Images\\joker_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (3, 'Godzilla x Kong: The New Empire', 'Acción, Ciencia ficción', 'PG-13', 115, 'Adam Wingard', 'Rebecca Hall, Brian Tyree Henry',
-'https://www.youtube.com/watch?v=qqj12z9f48E',
+'/videos/godzillavskong_trailer.mp4',
 'Kong y Godzilla se unen para luchar contra una amenaza colosal desconocida que se esconde en nuestro mundo.',
 'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
 
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(4, 'Los Pitufos', 'Animación, Comedia, Aventura', 'PG', 90, 'Raja Gosnell', 'Hank Azaria, Neil Patrick Harris, Jayma Mays',
+'/videos/pitufos_trailer.mp4',
+'Un grupo de pequeños seres azules de tres manzanas de altura huyen de su pueblo natal después de que el malvado hechicero Gargamel los descubre, y terminan en el Central Park de Nueva York.',
+'En Cartelera', 'src\\main\\resources\\Images\\LosPitufos.jpg', TRUE);
 
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (1, 1, 'https://www.youtube.com/watch?v=U2Qp5pL3ovA');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (2, 1, 'https://www.youtube.com/watch?v=OtroTrailerDune');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (3, 2, 'https://www.youtube.com/watch?v=zAGVQLHvwOY');
-INSERT INTO PELICULA_TRAILER (ID, PELICULA_ID, URL) VALUES (4, 3, 'https://www.youtube.com/watch?v=lV1OOlGwExM');
 
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(2, 'Entrada General 3D', 18.00, '2025-01-01');
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(3, 'Entrada VIP',       25.00, '2025-01-01');
+
+INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(4, 'Snack pequeño', 'Snack pequeño para compra rápida', '/Images/Menu/Snack_pequeño.png', 'Original', 'CONFITERIA', 3.00, 'Disponible', TRUE);
 
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(2, 'Perro caliente',       'Hot Dog Clásico con papas', '/Images/Menu/Perro_caliente.png', 'Original', 'COMIDA',  8.75, 'Disponible', TRUE);
 INSERT INTO PRODUCTO (ID, NOMBRE, DESCRIPCION, IMAGEN_URL, SABORES, TIPO, PRECIO_LISTA, ESTADO, ESTADO_BOOL) VALUES(5, 'Crispetas',     'Palomitas de maíz clásicas',       '/Images/Menu/Crispetas.png', 'Dulce,Salada,Mixta', 'COMIDA',  7.50, 'Disponible', TRUE);
@@ -91,6 +113,16 @@ INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(15, '2025-09-15', '21:30', 'Activa', TIME '02:46:00', TRUE, 1, 9);
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(16, '2025-09-15', '20:30', 'Activa', TIME '02:02:00', TRUE, 2, 10); -- El Tesoro
 
+-- Funciones para Los Pitufos (película 4) - 2025-11-11
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(200, '2025-11-11', '10:00', 'Activa', TIME '01:30:00', TRUE, 4, 1); -- Bogotá / Salitre Plaza
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(201, '2025-11-11', '14:00', 'Activa', TIME '01:30:00', TRUE, 4, 2);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(202, '2025-11-11', '16:30', 'Activa', TIME '01:30:00', TRUE, 4, 3);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(203, '2025-11-11', '11:00', 'Activa', TIME '01:30:00', TRUE, 4, 4); -- Bogotá / Gran Estación
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(204, '2025-11-11', '15:00', 'Activa', TIME '01:30:00', TRUE, 4, 5);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(205, '2025-11-11', '10:30', 'Activa', TIME '01:30:00', TRUE, 4, 8); -- Medellín / Viva Envigado
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(206, '2025-11-11', '17:00', 'Activa', TIME '01:30:00', TRUE, 4, 9);
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(207, '2025-11-11', '12:00', 'Activa', TIME '01:30:00', TRUE, 4, 10); -- Medellín / El Tesoro
+
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(1, 'A', 1, 'Reclinable', TRUE, 1);
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(2, 'A', 2, 'Reclinable', TRUE, 1);
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(3, 'B', 1, 'Reclinable', TRUE, 1);
@@ -98,9 +130,9 @@ INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(4, 'A', 
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(5, 'A', 2, 'Estandar',   TRUE, 2);
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(6, 'B', 1, 'Estandar',   TRUE, 3);
 
-INSERT INTO COMPRA (ID, TOTAL, FECHA, CLIENTE_ID) VALUES(1, 49.50, '2025-09-15', 2);
+INSERT INTO COMPRA (ID, TOTAL, FECHA, CLIENTE_ID) VALUES(1, 39.00, '2025-09-15', 2);
 
-INSERT INTO PAGO (ID, METODO, MONTO, ESTADO, ESTADO_BOOL, FECHA, COMPRA_ID) VALUES(1, 'Tarjeta de crédito', 49.50, 'Completado', TRUE, '2025-09-15', 1);
+INSERT INTO PAGO (ID, METODO, MONTO, ESTADO, ESTADO_BOOL, FECHA, COMPRA_ID) VALUES(1, 'Tarjeta de crédito', 39.00, 'Completado', TRUE, '2025-09-15', 1);
 
 INSERT INTO RESERVA (ID, CODIGO, FECHA_VENCIMIENTO, ESTADO, ESTADO_BOOL, PRECIO_FINAL, CLIENTE_ID, FUNCION_ID) VALUES(1, 'RSV-001', '2025-09-15', 'Pendiente', TRUE, 30.00, 2, 1);
 
@@ -114,7 +146,6 @@ INSERT INTO RESERVA_SILLA (RESERVA_ID, SILLA_ID) VALUES (1, 3);
 INSERT INTO BOLETO_SILLA (BOLETO_ID, SILLA_ID) VALUES (1, 1);
 INSERT INTO BOLETO_SILLA (BOLETO_ID, SILLA_ID) VALUES (2, 4);
 
-INSERT INTO COMPRA_PRODUCTO (COMPRA_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, SUBTOTAL) VALUES(1, 1, 1, 10.50, 10.50);
 INSERT INTO COMPRA_PRODUCTO (COMPRA_ID, PRODUCTO_ID, CANTIDAD, PRECIO_UNITARIO, SUBTOTAL) VALUES(1, 4, 3,  3.00,  9.00);
 
 INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (2, 50.00, TRUE);
@@ -271,9 +302,9 @@ INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID
 
 -- Funciones para Godzilla x Kong (PELICULA_ID = 3)
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
-(200,'2025-10-19','14:30','Activa', TIME '01:55:00', TRUE, 3, 1),
-(201,'2025-10-19','17:15','Activa', TIME '01:55:00', TRUE, 3, 2),
-(202,'2025-10-19','20:00','Activa', TIME '01:55:00', TRUE, 3, 3),
-(203,'2025-10-20','15:00','Activa', TIME '01:55:00', TRUE, 3, 4),
-(204,'2025-10-20','18:30','Activa', TIME '01:55:00', TRUE, 3, 5),
-(205,'2025-10-20','21:15','Activa', TIME '01:55:00', TRUE, 3, 6);
+(300,'2025-10-19','14:30','Activa', TIME '01:55:00', TRUE, 3, 1),
+(301,'2025-10-19','17:15','Activa', TIME '01:55:00', TRUE, 3, 2),
+(302,'2025-10-19','20:00','Activa', TIME '01:55:00', TRUE, 3, 3),
+(303,'2025-10-20','15:00','Activa', TIME '01:55:00', TRUE, 3, 4),
+(304,'2025-10-20','18:30','Activa', TIME '01:55:00', TRUE, 3, 5),
+(305,'2025-10-20','21:15','Activa', TIME '01:55:00', TRUE, 3, 6);

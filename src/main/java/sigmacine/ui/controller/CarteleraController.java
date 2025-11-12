@@ -87,16 +87,22 @@ public class CarteleraController {
         if (ref == null || ref.isBlank()) return null;
         try {
             String lower = ref.toLowerCase();
-            if (lower.startsWith("http://") || lower.startsWith("https://") || lower.startsWith("file:/")) {
-                return new Image(ref, true);
-            }
+            
+            // Primero intentar el método más rápido: recursos internos
             if (ref.contains("src\\main\\resources\\Images\\") || ref.contains("src/main/resources/Images/")) {
                 String fileName = ref.substring(Math.max(ref.lastIndexOf('\\'), ref.lastIndexOf('/')) + 1);
                 java.net.URL res = getClass().getResource("/Images/" + fileName);
-                if (res != null) return new Image(res.toExternalForm(), false);
+                if (res != null) return new Image(res.toExternalForm(), true); // carga en background
             }
+            
+            // Intentar como nombre de archivo directo en recursos
             java.net.URL res = getClass().getResource("/Images/" + ref);
-            if (res != null) return new Image(res.toExternalForm(), false);
+            if (res != null) return new Image(res.toExternalForm(), true); // carga en background
+            
+            // Solo si es una URL externa, intentar cargarla
+            if (lower.startsWith("http://") || lower.startsWith("https://") || lower.startsWith("file:/")) {
+                return new Image(ref, true); // carga en background
+            }
         } catch (Exception ignore) {}
         return null;
     }

@@ -19,21 +19,23 @@
         <fx:include source="barra.fxml"/>
     </top>
 
-    <!-- ===== CENTRO EN VBOX (promo + content + cards) ===== -->
-    <center>
-        <VBox spacing="0">
+<center>
+    <VBox spacing="0">
 
-                  <StackPane fx:id="promoPane"
+        <!-- ===== PROMO FULL-WIDTH ===== -->
+        <StackPane fx:id="promoPane"
                    prefHeight="250.0" minHeight="250.0" maxHeight="250.0"
                    maxWidth="Infinity"
                    style="-fx-background-color:#742f24;">
             <children>
-                <!-- Imagen del carrusel -->
+                <!-- Imagen banner (una sola vez) -->
                 <ImageView fx:id="promoImg"
-                           preserveRatio="true" smooth="true" pickOnBounds="false"
+                           preserveRatio="true"
+                           smooth="true"
+                           pickOnBounds="false"
                            StackPane.alignment="CENTER"/>
 
-                <!-- Flechas y dots -->
+                <!-- Navegación -->
                 <BorderPane mouseTransparent="false">
                     <left>
                         <Button text="‹" onAction="#prevSlide"
@@ -50,7 +52,7 @@
                     <bottom>
                         <HBox fx:id="dotsBox" alignment="CENTER" spacing="6">
                             <padding>
-                                <Insets top="10" right="10" bottom="10" left="10"/>
+                                <Insets top="6" right="10" bottom="6" left="10"/>
                             </padding>
                         </HBox>
                     </bottom>
@@ -58,76 +60,48 @@
             </children>
         </StackPane>
 
-            <!-- Contenedor dinámico para vistas (colapsa cuando está vacío) -->
-            <StackPane fx:id="content" VBox.vgrow="ALWAYS" pickOnBounds="false"/>
+        <!-- ===== CARRUSEL DE PELÍCULAS ===== -->
+        <StackPane fx:id="peliculasPane" style="-fx-background-color: transparent;">
+            <children>
+                <BorderPane>
+                    <left>
+                        <Button fx:id="btnPrevMovies"
+                                text="‹"
+                                onAction="#onPrevMovies"
+                                focusTraversable="false"
+                                minWidth="40"
+                                styleClass="promo-nav"/>
+                    </left>
+                    <center>
+                        <ScrollPane fx:id="peliculasScroll"
+                                    hbarPolicy="NEVER" vbarPolicy="NEVER"
+                                    fitToHeight="true" fitToWidth="false"
+                                    pannable="true"
+                                    style="-fx-background-color: transparent;">
+                            <content>
+                                <HBox fx:id="peliculasBox"
+                                      alignment="CENTER_LEFT"
+                                      spacing="16"
+                                      style="-fx-padding: 8 16 12 16;"/>
+                            </content>
+                        </ScrollPane>
+                    </center>
+                    <right>
+                        <Button fx:id="btnNextMovies"
+                                text="›"
+                                onAction="#onNextMovies"
+                                focusTraversable="false"
+                                minWidth="40"
+                                styleClass="promo-nav"/>
+                    </right>
+                </BorderPane>
+            </children>
+        </StackPane>
 
-            <!-- Cards del footer -->
-            <HBox fx:id="bottomCardsLayer"
-                  alignment="CENTER"
-                  prefHeight="191.0" prefWidth="606.0"
-                  style="-fx-background-color: transparent;">
-                <children>
-                    <GridPane fx:id="footerGrid" alignment="CENTER" prefHeight="172.0" prefWidth="602.0">
-                        <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="167.8"/>
-                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="167.8"/>
-                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="167.8"/>
-                            <ColumnConstraints hgrow="SOMETIMES" prefWidth="167.8"/>
-                        </columnConstraints>
-                        <rowConstraints>
-                            <RowConstraints vgrow="SOMETIMES" prefHeight="114.0"/>
-                            <RowConstraints vgrow="SOMETIMES" prefHeight="41.8"/>
-                            <RowConstraints vgrow="SOMETIMES" prefHeight="62.6"/>
-                        </rowConstraints>
-                        <children>
-                            <!-- Fila 0: pósters -->
-                            <ImageView fx:id="imgCard1" fitHeight="115.0" fitWidth="149.0" pickOnBounds="true" preserveRatio="true"/>
-                            <ImageView fx:id="imgCard2" fitHeight="115.0" fitWidth="149.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1"/>
-                            <ImageView fx:id="imgCard3" fitHeight="115.0" fitWidth="149.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2"/>
-                            <ImageView fx:id="imgCard4" fitHeight="115.0" fitWidth="149.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3"/>
+        <!-- Contenedor dinámico para vistas -->
+        <StackPane fx:id="content" VBox.vgrow="ALWAYS" pickOnBounds="false"/>
 
-                            <!-- Fila 1: títulos -->
-                            <Label fx:id="lblCard1" style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"
-                                   GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
-                            <Label fx:id="lblCard2" style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"
-                                   GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
-                            <Label fx:id="lblCard3" style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"
-                                   GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
-                            <Label fx:id="lblCard4" style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"
-                                   GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1"/>
-
-                            <!-- Fila 2: botones Ver más -->
-                            <Button fx:id="btnCard1" onAction="#onCard1"
-                                    prefHeight="30.0" prefWidth="69.0"
-                                    style="-fx-background-color:#993726; -fx-background-radius:14; -fx-font-weight:bold; -fx-text-fill:#ffffff;"
-                                    text="Ver más" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                                <font><Font size="10.0"/></font>
-                            </Button>
-                            <Button fx:id="btnCard2" onAction="#onCard2"
-                                    prefHeight="30.0" prefWidth="69.0"
-                                    style="-fx-background-color:#993726; -fx-background-radius:14; -fx-font-weight:bold; -fx-text-fill:#ffffff;"
-                                    text="Ver más" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                                <font><Font size="10.0"/></font>
-                            </Button>
-                            <Button fx:id="btnCard3" onAction="#onCard3"
-                                    prefHeight="30.0" prefWidth="69.0"
-                                    style="-fx-background-color:#993726; -fx-background-radius:14; -fx-font-weight:bold; -fx-text-fill:#ffffff;"
-                                    text="Ver más" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                                <font><Font size="10.0"/></font>
-                            </Button>
-                            <Button fx:id="btnCard4" onAction="#onCard4"
-                                    prefHeight="30.0" prefWidth="69.0"
-                                    style="-fx-background-color:#993726; -fx-background-radius:14; -fx-font-weight:bold; -fx-text-fill:#ffffff;"
-                                    text="Ver más" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-                                <font><Font size="10.0"/></font>
-                            </Button>
-                        </children>
-                        <padding><Insets top="0" right="0" bottom="0" left="0"/></padding>
-                    </GridPane>
-                </children>
-                <padding><Insets top="0" right="0" bottom="8" left="0"/></padding>
-            </HBox>
-        </VBox>
-    </center>
-
+        <!-- Si aún conservas bottom/footer antiguo, elimínalo o déjalo fuera para evitar conflictos -->
+    </VBox>
+</center>
 </BorderPane>

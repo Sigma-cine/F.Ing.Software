@@ -4,14 +4,17 @@
 <?import javafx.geometry.*?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="sigmacine.ui.controller.MenuController" styleClass="page-root" stylesheets="@sigma.css">
     <top>
-        <VBox spacing="6" BorderPane.alignment="CENTER">
-            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
-                <Label text="Nuestro Menú" styleClass="section-title" />
-                <Button text="Ver combos" fx:id="btnVerCombos" styleClass="primary-btn" />
-                <Region HBox.hgrow="ALWAYS" />
-                <TextField fx:id="txtBuscar" promptText="Buscar" styleClass="search" />
-            </HBox>
-            <Separator />
+        <VBox>
+            <fx:include source="barra.fxml"/>
+            <VBox spacing="6" BorderPane.alignment="CENTER">
+                <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
+                    <Label text="Nuestro Menú" styleClass="section-title" />
+                    <Button text="Ver combos" fx:id="btnVerCombos" styleClass="primary-btn" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="txtBuscar" promptText="Buscar" styleClass="search" />
+                </HBox>
+                <Separator />
+            </VBox>
         </VBox>
     </top>
     <center>
@@ -29,12 +32,4 @@
             </content>
         </ScrollPane>
     </center>
-    <bottom>
-        <HBox alignment="CENTER_RIGHT" spacing="12">
-            <padding>
-                <Insets top="12" right="12" bottom="12" left="12" />
-            </padding>
-            <Button text="Ver carrito" fx:id="btnVerCarrito" />
-        </HBox>
-    </bottom>
 </BorderPane>

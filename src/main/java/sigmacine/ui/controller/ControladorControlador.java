@@ -7,13 +7,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.Modality;
 import javafx.util.Callback;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.facade.AuthFacade;
 import sigmacine.aplicacion.session.Session;
-
-import java.util.prefs.Preferences;
 
 public class ControladorControlador {
 
@@ -64,30 +63,46 @@ public class ControladorControlador {
         }
     }
 
-    private void mostrarPopupCiudad(UsuarioDTO usuario) {
+        private void mostrarPopupCiudad(UsuarioDTO usuario) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/ciudad.fxml"));
-            if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/sigmacine/ui/views/ciudad.fxml")
+            );
+            if (controllerFactory != null) {
+                loader.setControllerFactory(controllerFactory);
+            }
             Parent popupRoot = loader.load();
-            
-            Stage popupStage = new Stage();
-            popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.initOwner(stage);
-            popupStage.setTitle("Seleccionar Ciudad");
-            popupStage.setScene(new Scene(popupRoot));
+
+            Stage popupStage = new Stage(StageStyle.TRANSPARENT);
+            if (stage != null) {
+                popupStage.initOwner(stage);
+                popupStage.initModality(Modality.WINDOW_MODAL);
+            } else {
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+            }
             popupStage.setResizable(false);
-            
+
+            Scene scene = new Scene(popupRoot);
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            popupStage.setScene(scene);
+
+            scene.setOnKeyPressed(ev -> {
+                switch (ev.getCode()) {
+                    case ESCAPE -> popupStage.close();
+                    default -> { }
+                }
+            });
+
             Object controller = loader.getController();
-            if (controller instanceof CiudadController) {
-                CiudadController ciudadController = (CiudadController) controller;
+            if (controller instanceof CiudadController ciudadController) {
                 ciudadController.setOnCiudadSelected(ciudad -> {
                     sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
                     popupStage.close();
                 });
             }
-            
+
             popupStage.showAndWait();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             sigmacine.aplicacion.session.Session.setSelectedCity("Bogotá");
@@ -259,7 +274,7 @@ public class ControladorControlador {
             if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
             Parent root = loader.load();
             
-            configurarBarraEnVista(root);
+            configurarBarraEnVista(root, "confiteria");
             
             stage.setTitle("Sigma Cine - Confitería");
             javafx.scene.Scene current = stage.getScene();
@@ -317,7 +332,15 @@ public class ControladorControlador {
             if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
             Parent root = loader.load();
             
-            configurarBarraEnVista(root);
+            VerHistorialController controller = loader.getController();
+            if (controller != null) {
+                sigmacine.aplicacion.data.UsuarioDTO usuario = sigmacine.aplicacion.session.Session.getCurrent();
+                if (usuario != null && usuario.getEmail() != null) {
+                    controller.setUsuarioEmail(usuario.getEmail());
+                }
+            }
+            
+            configurarBarraEnVista(root, "historial");
             
             stage.setTitle("Sigma Cine - Historial de Compras");
             javafx.scene.Scene current = stage.getScene();
@@ -327,7 +350,7 @@ public class ControladorControlador {
             stage.setMaximized(true);
             stage.show();
         } catch (Exception e) {
-            throw new RuntimeException("Error cargando historial_compras.fxml", e);
+            throw new RuntimeException("Error cargando historial de compras", e);
         }
     }
 
@@ -352,9 +375,17 @@ public class ControladorControlador {
     }
 
     private void configurarBarraEnVista(Parent root) {
+        configurarBarraEnVista(root, null);
+    }
+    
+    private void configurarBarraEnVista(Parent root, String botonActivo) {
         try {
             BarraController barraController = obtenerBarraController(root);
+            if (barraController != null && botonActivo != null) {
+                barraController.marcarBotonActivo(botonActivo);
+            }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

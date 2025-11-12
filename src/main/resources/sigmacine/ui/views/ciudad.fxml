@@ -1,30 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.CiudadController">
+<BorderPane prefHeight="488.0" prefWidth="701.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.CiudadController">
+
     <center>
-        <StackPane prefHeight="235.0" prefWidth="262.0" style="-fx-background-color: black; -fx-background-radius: 15; -fx-padding: 20;" BorderPane.alignment="CENTER">
+        <!-- Overlay oscuro (también se usa como fallback de arrastre) -->
+        <StackPane fx:id="rootOverlay" prefHeight="365.0" prefWidth="648.0" style="-fx-background-color: rgba(0,0,0,0.86); -fx-padding: 32;" BorderPane.alignment="CENTER">
             <children>
-                <VBox alignment="CENTER" prefHeight="253.0" prefWidth="263.0">
-                    <children>
-                        <Pane prefHeight="43.0" prefWidth="263.0" style="-fx-background-color: #8B2E21; -fx-background-radius: 15 15 0 0;">
-                            <children>
-                                <Label style="-fx-text-fill: #ffffff; -fx-font-weight: bold;" text="Selecciona Ciudad">
-                                    <font><Font size="17.0" /></font>
-                                </Label>
-                            </children>
-                        </Pane>
-                        <VBox prefHeight="213.0" prefWidth="263.0" alignment="CENTER" spacing="16.0" style="-fx-background-color: white; -fx-padding: 20;">
-                            <children>
-                                <ChoiceBox fx:id="cbCiudad" prefWidth="180.0" />
-                                <Button fx:id="btnSeleccionarCiudad" mnemonicParsing="false" prefHeight="37.0" prefWidth="142.0" style="-fx-background-color: #8B2E21; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-padding: 8 20 8 20;" text="Seleccionar" />
-                            </children>
-                        </VBox>
-                    </children>
+
+                <VBox alignment="CENTER" spacing="18">
+   <children>
+   
+                       <!-- LOGO (clic = confirmar y cerrar) -->
+                       <ImageView fx:id="logoImage" fitHeight="40.0" onMouseClicked="#onLogoClick" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                               <!-- src/main/resources/Images/logo.png -->
+                               <Image url="@/Images/logo.png" />
+                           </image>
+                       </ImageView>
+   
+                       <!-- TARJETA -->
+                       <VBox maxWidth="640" prefHeight="250.0" prefWidth="562.0" spacing="0" style="-fx-background-color: #8B2E21;                                  -fx-background-radius: 22;                                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 20, 0.18, 0, 6);">
+      <children>
+      
+                              <!-- CABECERA (zona de arrastre) -->
+                              <HBox fx:id="headerBar" alignment="CENTER_LEFT" style="-fx-background-color: #8B2E21;                                      -fx-background-radius: 22 22 0 0;                                      -fx-padding: 14 16;">
+                                  <children>
+                                      <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="Selecciona tu ciudad">
+                                          <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                      </Label>
+      
+                                      <!-- separador flexible -->
+                                      <Region HBox.hgrow="ALWAYS" />
+      
+                                      <!-- Botón ✕ -->
+                                      <Button fx:id="btnCerrar" focusTraversable="false" style="-fx-background-color: transparent;                                                -fx-text-fill: white;                                                -fx-font-size: 15;                                                -fx-font-weight: bold;" text="✕">
+                                          <padding>
+                                    <Insets bottom="4" left="6" right="6" top="4" />
+                                 </padding>
+                                      </Button>
+                                  </children>
+                              </HBox>
+      
+                              <!-- CUERPO -->
+                              <VBox alignment="CENTER" prefHeight="193.0" prefWidth="551.0" spacing="18" style="-fx-padding: 26 28 32 28;">
+                                  <children>
+                                      <Label style="-fx-text-fill: #ffffffff;" text="Elige la ciudad para personalizar cartelera y promociones." wrapText="true">
+                                          <font>
+                                    <Font size="13.5" />
+                                 </font>
+                                      </Label>
+      
+                                      <ChoiceBox fx:id="cbCiudad" prefWidth="380.0" style="-fx-background-radius: 12;" />
+      
+                                      <Button fx:id="btnSeleccionarCiudad" maxWidth="420.0" mnemonicParsing="false" prefHeight="48.0" style="-fx-background-color: #8B2E21;                                                -fx-text-fill: white;                                                -fx-font-weight: bold;                                                -fx-background-radius: 14;" text="Seleccionar">
+                                          <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                      </Button>
+                                  </children>
+                              </VBox>
+      </children>
+                       </VBox>
+   </children>
                 </VBox>
+
             </children>
         </StackPane>
     </center>
