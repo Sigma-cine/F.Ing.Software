@@ -622,6 +622,12 @@ public class ContenidoCarteleraController {
             mediaPlayer = new MediaPlayer(media);
             mediaView = new MediaView(mediaPlayer);
             
+            // Configurar el MediaPlayer para que siempre inicie desde el principio
+            mediaPlayer.setOnReady(() -> {
+                mediaPlayer.seek(javafx.util.Duration.ZERO);
+                mediaPlayer.stop(); // Asegurar que esté detenido al cargar
+            });
+            
             // Configurar el MediaView
             mediaView.setFitWidth(600);
             mediaView.setFitHeight(360);
@@ -656,9 +662,9 @@ public class ContenidoCarteleraController {
         HBox controles = new HBox(15);
         controles.setAlignment(Pos.CENTER);
         
-        Button btnPlay = new Button("▶ Play");
-        Button btnPause = new Button("⏸ Pause");
-        Button btnStop = new Button("⏹ Stop");
+        Button btnPlay = new Button("▶");
+        Button btnPause = new Button("⏸");
+        Button btnStop = new Button("⏹");
         
         // Estilo de los botones
         String estiloBoton = "-fx-background-color: #8A2F24; -fx-text-fill: white; " +
@@ -685,6 +691,7 @@ public class ContenidoCarteleraController {
         btnStop.setOnAction(e -> {
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
+                mediaPlayer.seek(javafx.util.Duration.ZERO); // Volver al inicio
             }
         });
         
