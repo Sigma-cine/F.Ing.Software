@@ -85,16 +85,16 @@ public class MenuController implements Initializable {
 
     private VBox buildProductBox(ProductItem p) {
     ImageView iv = new ImageView();
-    iv.setFitWidth(524);
-    iv.setFitHeight(204);
+    iv.setFitWidth(520);
+    iv.setFitHeight(252);
     iv.setPreserveRatio(false);
         iv.setSmooth(true);
         if (p.image != null) iv.setImage(p.image);
 
         javafx.scene.layout.StackPane imgFrame = new javafx.scene.layout.StackPane();
         imgFrame.getStyleClass().add("menu-image-frame");
-    imgFrame.setPrefWidth(540);
-    imgFrame.setPrefHeight(220);
+    imgFrame.setPrefWidth(536);
+    imgFrame.setPrefHeight(268);
         imgFrame.getChildren().add(iv);
 
     javafx.scene.control.Label titleName = new javafx.scene.control.Label(p.nombre != null ? p.nombre : "");
