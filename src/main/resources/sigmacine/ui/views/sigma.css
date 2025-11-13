@@ -193,8 +193,8 @@
 }
 .menu-item .menu-image-frame {
   -fx-background-color: transparent;
-  -fx-border-color: #c77adf;
-  -fx-border-width: 8;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
   -fx-background-radius: 8;
   -fx-border-radius: 8;
   -fx-padding: 0;
@@ -213,7 +213,7 @@
 .menu-scroll { -fx-background-color: transparent; }
 .menu-grid { -fx-hgap: 24; -fx-vgap: 24; -fx-padding: 12; }
 .menu-item { -fx-background-color: transparent; -fx-padding: 8; }
-.menu-image-frame { -fx-border-color: #d9a9e6; -fx-border-width: 6; -fx-border-radius: 6; -fx-padding: 0; -fx-background-color: linear-gradient(#f4e8f8,#f0e0f6); }
+.menu-image-frame { -fx-border-color: transparent; -fx-border-width: 0; -fx-border-radius: 6; -fx-padding: 0; -fx-background-color: transparent; }
 .menu-title { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-font-size: 20px; -fx-padding: 8 0 4 0; }
 .menu-desc { -fx-text-fill: #ddd; -fx-font-size: 12px; }
 .menu-price { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-padding: 6 0 8 0; }
@@ -223,7 +223,7 @@
 .menu-select .combo-box { -fx-background-color: #e6e6e6; }
 .menu-select .list-cell { -fx-text-fill: #222; }
 
-.menu-image-frame { -fx-border-color: #c77adf; -fx-border-width: 8; -fx-border-radius: 8; -fx-padding: 0; -fx-background-color: transparent; }
+.menu-image-frame { -fx-border-color: transparent; -fx-border-width: 0; -fx-border-radius: 8; -fx-padding: 0; -fx-background-color: transparent; }
 
 .page-root { -fx-background-color: #0b0b0b; }
 .section-title { -fx-font-size: 36px; -fx-text-fill: #ffffff; -fx-font-weight: bold; }
@@ -284,13 +284,13 @@
 }
 
 .menu-image-frame {
-  -fx-border-width: 6;
-  -fx-border-color: #c77adf;
+  -fx-border-width: 0;
+  -fx-border-color: transparent;
   -fx-border-radius: 6;
   -fx-padding: 0;
   -fx-background-color: transparent;
-  border-width: 6;
-  border-color: #c77adf;
+  border-width: 0;
+  border-color: transparent;
   background-color: transparent;
   padding: 0;
 }
@@ -425,7 +425,6 @@
 .qty-btn .text {
   -fx-fill: #222222 !important;
   -fx-font-family: 'System', 'Arial', sans-serif !important;
-}
 }
 
 .qty-btn:hover {

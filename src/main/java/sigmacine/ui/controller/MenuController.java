@@ -124,13 +124,12 @@ public class MenuController implements Initializable {
     final IntegerProperty quantity = new SimpleIntegerProperty(1);
     javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
     javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("*");
+    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("x");
     
     btnMinus.getStyleClass().add("qty-btn");
     btnPlus.getStyleClass().add("qty-btn");
     lblQty.getStyleClass().add("qty-label");
     
-    // Forzar que el texto se vea con fuente System
     btnMinus.setStyle("-fx-font-family: 'System'; -fx-font-size: 18px;");
     btnPlus.setStyle("-fx-font-family: 'System'; -fx-font-size: 18px;");
 
