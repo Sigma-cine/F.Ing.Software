@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Label;
@@ -330,26 +331,32 @@ public class ContenidoCarteleraController {
             boolean isLoggedIn = sigmacine.aplicacion.session.Session.isLoggedIn();
             
             if (!isLoggedIn) {
-                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                // Crear alert personalizado con los estilos de la app
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Iniciar Sesión Requerido");
                 alert.setHeaderText("Debe iniciar sesión");
-                alert.setContentText("Para comprar boletos debe iniciar sesión primero. ¿Desea ir a la pantalla de login?");
+                alert.setContentText("Para comprar boletos debe iniciar sesión primero.");
                 
-                // Agregar botones personalizados
-                javafx.scene.control.ButtonType btnIrLogin = new javafx.scene.control.ButtonType("Ir a Login");
-                javafx.scene.control.ButtonType btnCancelar = new javafx.scene.control.ButtonType("Cancelar", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-                alert.getButtonTypes().setAll(btnIrLogin, btnCancelar);
+                // Aplicar CSS personalizado
+                javafx.scene.control.DialogPane dialogPane = alert.getDialogPane();
+                try {
+                    dialogPane.getStylesheets().add(
+                        getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                    );
+                } catch (Exception e) {
+                    System.err.println("No se pudo cargar sigma.css: " + e.getMessage());
+                }
+                
+                // Usar botones personalizados
+                ButtonType btnIniciarSesion = new ButtonType("Iniciar Sesión");
+                ButtonType btnCancelar = new ButtonType("Cancelar", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+                alert.getButtonTypes().setAll(btnIniciarSesion, btnCancelar);
                 
                 var result = alert.showAndWait();
                 
-                if (result.isPresent() && result.get() == btnIrLogin) {
+                if (result.isPresent() && result.get() == btnIniciarSesion) {
                     // Usar el mismo patrón del botón iniciar sesión que ya funciona
                     try {
-                        if (this.coordinador != null) {
-                            // En lugar de usar coordinador.mostrarLogin() directamente, crearemos nuestro propio diálogo
-                            // para tener control total del callback
-                        }
-                        
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
                         Parent root = loader.load();
                         Object ctrl = loader.getController();
@@ -396,15 +403,25 @@ public class ContenidoCarteleraController {
                         ex.printStackTrace();
                     }
                 }
+                // Si se cancela, simplemente se cierra el alert (no hacemos nada más)
                 return;
             }
             
             continuarConCompra();
         } catch (Exception ex) {
             ex.printStackTrace();
-            var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            a.setTitle("Error");
             a.setHeaderText("Error abriendo Asientos");
-            a.setContentText(String.valueOf(ex));
+            a.setContentText("Ocurrió un error: " + ex.getMessage());
+            
+            // Aplicar CSS personalizado
+            try {
+                a.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                );
+            } catch (Exception ignore) {}
+            
             a.showAndWait();
         }
     }
@@ -416,8 +433,17 @@ public class ContenidoCarteleraController {
             
             if (seleccion == null || seleccion.isBlank()) {
                 var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+                a.setTitle("Mensaje");
                 a.setHeaderText("Selecciona una hora");
                 a.setContentText("Primero elige una función (sede/hora) antes de continuar.");
+                
+                // Aplicar CSS personalizado
+                try {
+                    a.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                    );
+                } catch (Exception ignore) {}
+                
                 a.showAndWait();
                 return;
             }

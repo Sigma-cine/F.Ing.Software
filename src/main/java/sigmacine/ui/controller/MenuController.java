@@ -192,6 +192,14 @@ public class MenuController implements Initializable {
             alert.setTitle("Iniciar Sesión Requerido");
             alert.setHeaderText("Debe iniciar sesión");
             alert.setContentText("Para agregar productos al carrito debe iniciar sesión primero.");
+            
+            // Aplicar CSS personalizado
+            try {
+                alert.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                );
+            } catch (Exception ignore) {}
+            
             alert.showAndWait();
             return;
         }
@@ -209,6 +217,13 @@ public class MenuController implements Initializable {
         javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
         confirmacion.setTitle("Producto añadido al carrito");
         confirmacion.setHeaderText("¡Producto agregado correctamente!");
+        
+        // Aplicar CSS personalizado
+        try {
+            confirmacion.getDialogPane().getStylesheets().add(
+                getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+            );
+        } catch (Exception ignore) {}
         
         String mensaje = qty == 1 
             ? "Se añadió 1 " + itemName + " al carrito"

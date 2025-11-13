@@ -347,7 +347,7 @@ public class AsientosController implements Initializable {
         
         // Mostrar mensaje de confirmación cuando se confirman los asientos
         if (!seleccion.isEmpty()) {
-            javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
             confirmacion.setTitle("Asientos añadidos al carrito");
             confirmacion.setHeaderText("¡Asientos confirmados!");
             
@@ -357,7 +357,31 @@ public class AsientosController implements Initializable {
                   String.join(", ", seleccion.stream().sorted().toList());
             
             confirmacion.setContentText(mensaje);
-            confirmacion.showAndWait();
+            
+            // Aplicar CSS personalizado
+            try {
+                confirmacion.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                );
+            } catch (Exception ignore) {}
+            
+            // Crear botones personalizados
+            javafx.scene.control.ButtonType btnSeguirComprando = new javafx.scene.control.ButtonType("Seguir Comprando", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+            javafx.scene.control.ButtonType btnIrCarrito = new javafx.scene.control.ButtonType("Ir al Carrito");
+            confirmacion.getButtonTypes().setAll(btnSeguirComprando, btnIrCarrito);
+            
+            var resultado = confirmacion.showAndWait();
+            
+            if (resultado.isPresent() && resultado.get() == btnIrCarrito) {
+                // Abrir el carrito
+                try {
+                    openCartPopup();
+                } catch (Exception ex) {
+                    System.err.println("Error abriendo carrito: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+            // Si elige "Seguir Comprando", simplemente se cierra el dialog
         }
     }
 
