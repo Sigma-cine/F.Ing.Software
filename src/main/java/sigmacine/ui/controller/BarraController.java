@@ -275,6 +275,9 @@ public class BarraController {
     */
 
     private void navegarACartelera() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCartelera();
@@ -282,6 +285,9 @@ public class BarraController {
     }
 
     private void navegarAConfiteria() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarConfiteria();
@@ -289,6 +295,9 @@ public class BarraController {
     }
 
     private void navegarASigmaCard() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarSigmaCard();
@@ -308,6 +317,9 @@ public class BarraController {
     }
 
     private void navegarACarritoCompleto() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCarritoCompleto();
@@ -347,6 +359,9 @@ public class BarraController {
     }
 
     private void navegarAHistorial() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarHistorialCompras();
@@ -354,6 +369,9 @@ public class BarraController {
     }
 
     private void navegarARegistro() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarRegistro();
@@ -361,6 +379,9 @@ public class BarraController {
     }
 
     private void navegarALogin() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarLogin();
@@ -376,6 +397,9 @@ public class BarraController {
 
     @FXML
     private void onLogoClick(MouseEvent event) {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             // Verificar si hay sesión activa
@@ -392,6 +416,9 @@ public class BarraController {
     }
 
     private void realizarBusqueda() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         String textoBusqueda = txtBuscar.getText().trim();
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {

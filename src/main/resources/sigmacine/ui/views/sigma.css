@@ -383,14 +383,16 @@
 
 .menu-select .combo-box-base .arrow-button {
   -fx-background-color: transparent !important;
-  -fx-padding: 0 8 0 0 !important;
+  -fx-padding: 0 !important;
+  -fx-pref-width: 0 !important;
+  -fx-max-width: 0 !important;
 }
 
 .menu-select .combo-box-base .arrow {
-  -fx-background-color: #222222 !important;
-  -fx-shape: "M 0 0 L 4 4 L 8 0 Z" !important;
-  -fx-scale-shape: true !important;
-  -fx-padding: 4 !important;
+  -fx-background-color: transparent !important;
+  -fx-shape: "" !important;
+  -fx-scale-shape: false !important;
+  -fx-padding: 0 !important;
 }
 
 .menu-select .combo-box-base .text {

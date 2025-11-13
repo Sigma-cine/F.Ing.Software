@@ -95,9 +95,35 @@ public class CombosController implements Initializable {
     desc.setMaxWidth(520);
 
         final IntegerProperty quantity = new SimpleIntegerProperty(1);
-        javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
+        
+        // Crear botones con imágenes
+        javafx.scene.control.Button btnMinus = new javafx.scene.control.Button();
+        javafx.scene.control.Button btnPlus = new javafx.scene.control.Button();
+        
+        try {
+            // Imagen para botón menos
+            javafx.scene.image.ImageView minusIcon = new javafx.scene.image.ImageView();
+            minusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/minus.png")));
+            minusIcon.setFitWidth(16);
+            minusIcon.setFitHeight(16);
+            minusIcon.setPreserveRatio(true);
+            btnMinus.setGraphic(minusIcon);
+            
+            // Imagen para botón más
+            javafx.scene.image.ImageView plusIcon = new javafx.scene.image.ImageView();
+            plusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/plus.png")));
+            plusIcon.setFitWidth(16);
+            plusIcon.setFitHeight(16);
+            plusIcon.setPreserveRatio(true);
+            btnPlus.setGraphic(plusIcon);
+            
+        } catch (Exception e) {
+            // Si las imágenes fallan, usar texto como fallback
+            btnMinus.setText("-");
+            btnPlus.setText("+");
+        }
+        
         javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-        javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("x");
 
         btnMinus.getStyleClass().add("qty-btn");
         btnPlus.getStyleClass().add("qty-btn");
