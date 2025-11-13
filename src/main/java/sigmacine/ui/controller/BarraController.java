@@ -39,7 +39,6 @@ public class BarraController {
     @FXML
     public void initialize() {
         instance = this;
-        System.out.println("✓ BarraController inicializado - instance configurada");
         configurarEventos();
         actualizarEstadoSesion();
         configurarCarritoDropdown();
@@ -377,21 +376,15 @@ public class BarraController {
 
     @FXML
     private void onLogoClick(MouseEvent event) {
-        System.out.println("[DEBUG] Logo SIGMA CINE clickeado");
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             // Verificar si hay sesión activa
             boolean haySession = Session.isLoggedIn();
             UsuarioDTO usuario = Session.getCurrent();
             
-            System.out.println("[DEBUG] Session.isLoggedIn(): " + haySession);
-            System.out.println("[DEBUG] Session.getCurrent(): " + (usuario != null ? "existe" : "null"));
-            
             if (haySession && usuario != null) {
-                System.out.println("[DEBUG] Llamando a mostrarHome()");
                 coordinador.mostrarHome(usuario);
             } else {
-                System.out.println("[DEBUG] Llamando a mostrarPaginaInicial()");
                 coordinador.mostrarPaginaInicial();
             }
             marcarBotonActivo("inicio");

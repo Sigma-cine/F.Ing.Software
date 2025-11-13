@@ -71,19 +71,19 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (5, 'Barbie', 'Comedia, Fantasía, Romance', 'PG-13', 114, 'Greta Gerwig', 'Margot Robbie, Ryan Gosling',
-'/videos/BARBIE Tráiler Español Latino (2023) - ONE Media Español (1080p, h264).mp4',
+'/videos/BarbieTrailer.mp4',
 'Barbie vive en Barbieland donde todo es perfecto. Sin embargo, cuando tiene pensamientos sobre la muerte, decide aventurarse en el mundo real.',
 'En Cartelera', 'Posters/Barbie.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (6, 'Frozen 2', 'Animación, Aventura, Fantasía', 'PG', 103, 'Chris Buck, Jennifer Lee', 'Kristen Bell, Idina Menzel, Josh Gad',
-'/videos/Frozen 2 de Disney  Nuevo Tráiler Oficial en español  HD - Disney España (1080p, h264).mp4',
+'/videos/Frozen2Trailer.mp4',
 'Elsa escucha una misteriosa voz llamándola. Junto a Anna, Kristoff, Olaf y Sven, emprende un viaje épico para descubrir el origen de sus poderes y salvar su reino.',
 'En Cartelera', 'Posters/Frozen2.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (7, 'Interstellar', 'Ciencia ficción, Drama, Aventura', 'PG-13', 169, 'Christopher Nolan', 'Matthew McConaughey, Anne Hathaway, Jessica Chastain',
-'/videos/Interstellar - Tráiler final en español HD - Warner Bros. Pictures España (1080p, h264).mp4',
+'/videos/InterestellarTrailer.mp4',
 'Un grupo de exploradores viaja a través de un agujero de gusano en el espacio en un intento de asegurar la supervivencia de la humanidad.',
 'En Cartelera', 'Posters/Interestellar.jpg', TRUE);
 
@@ -95,7 +95,7 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (9, 'No Se Aceptan Devoluciones', 'Comedia, Drama', 'PG-13', 122, 'Eugenio Derbez', 'Eugenio Derbez, Karla Souza, Jessica Lindsey',
-'/videos/NO SE ACEPTAN DEVOLUCIONES - Tráiler Oficial España - Estreno en cines el 30 de abril - Filmax (1080p, h264).mp4',
+'/videos/NoSeAceptanDevolucionesTrailer.mp4',
 'Un playboy empedernido ve su vida cambiar cuando una mujer del pasado le deja una bebé diciendo que es su hija. Cuando aprende a amarla, la madre reaparece para reclamarla.',
 'En Cartelera', 'Posters/NoSeAceptanDevoluciones.jpg', TRUE);
 
@@ -113,19 +113,19 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (12, 'Teen Beach Movie', 'Musical, Comedia, Romance', 'G', 110, 'Jeffrey Hornaday', 'Ross Lynch, Maia Mitchell, Grace Phipps',
-'/videos/TEEN BEACH MOVIE (Trailer español) - Cine Fantasia (720p, h264).mp4',
+'/videos/TeenBeachMovieTrailer.mp4',
 'Dos adolescentes se transportan mágicamente dentro de una película musical de playa de los años 60 donde deben encontrar la forma de regresar a casa.',
 'En Cartelera', 'Posters/teenbeachmovie.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (13, 'Violet Evergarden: Eternity and the Auto Memory Doll', 'Animación, Drama, Fantasía', 'PG-13', 90, 'Haruka Fujita', 'Yui Ishikawa, Minako Kotobuki',
-'/videos/Violet Evergarden – Eternity and the Auto Memory Doll   In Cinemas December 5 - Crunchyroll Store Australia (1080p, h264).mp4',
+'/videos/VioletEvergardenTrailer.mp4',
 'Violet Evergarden ayuda a una joven noble a prepararse para su debut en sociedad, mientras ambas descubren el verdadero significado del amor y la familia.',
 'En Cartelera', 'Posters/VioletEvergardenAutoMemoryDoll.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (14, 'WALL-E', 'Animación, Ciencia ficción, Romance', 'G', 98, 'Andrew Stanton', 'Ben Burtt, Elissa Knight, Jeff Garlin',
-'/videos/WALL•E  Tráiler Oficial  Disney · Pixar Oficial - Disney España (240p, h264).mp4',
+'/videos/Wall-ETrailer.mp4',
 'Un pequeño robot recolector de basura llamado WALL-E se embarca en una aventura espacial que decidirá el destino de la humanidad.',
 'En Cartelera', 'Posters/Wall-E.jpg', TRUE);
 

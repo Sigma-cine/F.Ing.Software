@@ -212,8 +212,6 @@ private void updateMovieButtons() {
             this.ciudadSeleccionada = ciudad;
         }
         
-        System.out.println("[DEBUG] ClienteController.init(usuario) - peliculasPane: " + (peliculasPane != null ? "existe" : "null"));
-        
         javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(150));
         pause.setOnFinished(e -> cargarPeliculasInicio());
         pause.play();
@@ -225,37 +223,29 @@ private void updateMovieButtons() {
         sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
         postersRequested = false;
         
-        System.out.println("[DEBUG] ClienteController.init(usuario, ciudad) - peliculasPane: " + (peliculasPane != null ? "existe" : "null"));
-        
         javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(150));
         pause.setOnFinished(e -> cargarPeliculasInicio());
         pause.play();
     }
             private void esperarYCargarPeliculas() {
-            System.out.println("esperarYCargarPeliculas() - postersRequested: " + postersRequested);
             if (postersRequested) return;
             postersRequested = true;
 
             StackPane anchor = (peliculasPane != null) ? peliculasPane : promoPane;
-            System.out.println("anchor seleccionado: " + (anchor == peliculasPane ? "peliculasPane" : anchor == promoPane ? "promoPane" : "null"));
 
             if (anchor != null && anchor.getScene() != null) {
-                System.out.println("anchor tiene scene, ejecutando cargarPeliculasInicio inmediatamente");
                 Platform.runLater(this::cargarPeliculasInicio);
                 return;
             }
             if (anchor != null) {
-                System.out.println("anchor existe pero no tiene scene, agregando listener");
                 anchor.sceneProperty().addListener((obs, oldScene, newScene) -> {
                     if (newScene != null) {
-                        System.out.println("Scene agregada, ejecutando cargarPeliculasInicio");
                         Platform.runLater(this::cargarPeliculasInicio);
                     }
                 });
                 return;
             }
             // Último recurso
-            System.out.println("Sin anchor, usando Thread con delay");
             new Thread(() -> {
                 try {
                     Thread.sleep(800);
@@ -789,15 +779,10 @@ private void advanceMovies(int dir) {
     }
 
     private void cargarPeliculasInicio() {
-    System.out.println("[DEBUG] cargarPeliculasInicio() INICIANDO");
-    System.out.println("[DEBUG] peliculasBox: " + (peliculasBox != null ? "existe" : "NULL"));
-    System.out.println("[DEBUG] peliculasPane: " + (peliculasPane != null ? "existe" : "NULL"));
     try {
         DatabaseConfig db = new DatabaseConfig();
         PeliculaRepositoryJdbc repo = new PeliculaRepositoryJdbc(db);
         List<Pelicula> peliculas = repo.buscarPorTitulo("");
-
-        System.out.println("[DEBUG] Peliculas encontradas: " + (peliculas != null ? peliculas.size() : "NULL"));
 
         if (peliculas == null || peliculas.isEmpty()) {
             if (peliculasBox != null) {
@@ -806,9 +791,7 @@ private void advanceMovies(int dir) {
             return;
         }
         construirCarruselPeliculas(peliculas);
-        System.out.println("[DEBUG] cargarPeliculasInicio() COMPLETADO");
     } catch (Exception ex) {
-        System.out.println("[ERROR] en cargarPeliculasInicio(): " + ex.getMessage());
         ex.printStackTrace();
         if (peliculasBox != null) peliculasBox.getChildren().setAll(new Label("Error cargando peliculas."));
        }

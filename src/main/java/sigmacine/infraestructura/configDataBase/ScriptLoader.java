@@ -12,7 +12,6 @@ public class ScriptLoader {
         try {
             runSqlFromClasspath(conn, "/schema.sql");
                 runSqlFromClasspath(conn, "/data.sql"); 
-                System.out.println("Scripts ejecutados correctamente"); 
             
             try (var ps = conn.prepareStatement("SELECT COUNT(*) AS CNT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('USUARIO','PELICULA','SIGMA_CARD')")) {
                 try (var rs = ps.executeQuery()) {
@@ -32,12 +31,11 @@ public class ScriptLoader {
                     }
                     private static void runSqlFromClasspath(Connection conn, String resourcePath) throws SQLException, IOException {
                         InputStream in = ScriptLoader.class.getResourceAsStream(resourcePath);
-                        if (in == null) { System.out.println("No se encontró " + resourcePath + " en resources (se omite).");
+                        if (in == null) {
                         return;
                         }
                         try (InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8))
                         { RunScript.execute(conn, reader);
-                            System.out.println("Ejecutado: " + resourcePath);
                         }
                     }
                 }
