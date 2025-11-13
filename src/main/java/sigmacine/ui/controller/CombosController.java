@@ -151,7 +151,7 @@ public class CombosController implements Initializable {
             int qty = quantity.get();
             String itemName = combo.nombre;
             var dto = new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
-            CarritoService.getInstance().addItem(dto);
+            CarritoService.getInstance().addItemConsolidated(dto);
             
             // Mostrar confirmación
             javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);

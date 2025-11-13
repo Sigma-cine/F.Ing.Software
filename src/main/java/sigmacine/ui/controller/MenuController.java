@@ -206,13 +206,37 @@ public class MenuController implements Initializable {
         
         String selectedSabor = null;
         try { selectedSabor = cbOpt.getSelectionModel().getSelectedItem(); } catch (Exception ignore) {}
+        
+        // Validar que se haya seleccionado un sabor si el producto tiene sabores disponibles
+        if (p.sabores != null && !p.sabores.trim().isEmpty()) {
+            if (selectedSabor == null || selectedSabor.trim().isEmpty()) {
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                alert.setTitle("Sabor Requerido");
+                alert.setHeaderText("Debe seleccionar un sabor");
+                alert.setContentText("Por favor selecciona un sabor antes de añadir el producto al carrito.");
+                
+                // Aplicar CSS personalizado
+                try {
+                    alert.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                    );
+                } catch (Exception ignore2) {}
+                
+                alert.showAndWait();
+                return;
+            }
+        }
+        
         int qty = quantity.get();
-
         String itemName = p.nombre;
-        var dto = (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original"))
+        
+        // Crear el DTO con o sin sabor
+        var dto = (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original") && !selectedSabor.trim().isEmpty())
             ? new CompraProductoDTO(p.id, itemName + " (" + selectedSabor + ")", qty, p.precio, selectedSabor)
             : new CompraProductoDTO(p.id, itemName, qty, p.precio);
-        CarritoService.getInstance().addItem(dto);
+        
+        // Añadir al carrito con lógica de consolidación
+        CarritoService.getInstance().addItemConsolidated(dto);
         
         javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
         confirmacion.setTitle("Producto añadido al carrito");
