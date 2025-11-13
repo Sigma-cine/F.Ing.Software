@@ -808,7 +808,7 @@ private Node buildMovieCard(Pelicula p) {
     verMas.setPrefWidth(84);
     verMas.setPrefHeight(28);
     verMas.setOnAction(e -> abrirDetallePelicula(p));
-    verMas.setStyle("-fx-background-color:#993726; -fx-background-radius:12; -fx-font-weight:bold; -fx-text-fill:#fff;");
+    verMas.setStyle("-fx-background-color:#8A2F24; -fx-background-radius:12; -fx-font-weight:bold; -fx-text-fill:#fff;");
 
     VBox card = new VBox(6, poster, titulo, verMas);
     card.setAlignment(javafx.geometry.Pos.TOP_CENTER);

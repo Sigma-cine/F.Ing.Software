@@ -159,7 +159,7 @@ public class ResultadosBusquedaController {
             javafx.scene.layout.HBox.setHgrow(btnPane, javafx.scene.layout.Priority.ALWAYS);
 
             javafx.scene.control.Button btnDetalle = new javafx.scene.control.Button("Ver detalle película");
-            btnDetalle.setStyle("-fx-background-color: #993726; -fx-text-fill: #fff; -fx-font-weight: bold; -fx-background-radius: 30;");
+            btnDetalle.setStyle("-fx-background-color: #8A2F24; -fx-text-fill: #fff; -fx-font-weight: bold; -fx-background-radius: 30;");
             btnDetalle.setOnAction(e -> mostrarDetallePelicula(p));
             btnPane.getChildren().add(btnDetalle);
 

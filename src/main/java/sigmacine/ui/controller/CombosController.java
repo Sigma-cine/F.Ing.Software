@@ -135,6 +135,14 @@ public class CombosController implements Initializable {
                 alert.setTitle("Iniciar Sesión Requerido");
                 alert.setHeaderText("Debe iniciar sesión");
                 alert.setContentText("Para agregar combos al carrito debe iniciar sesión primero.");
+                
+                // Aplicar CSS personalizado
+                try {
+                    alert.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                    );
+                } catch (Exception ignore) {}
+                
                 alert.showAndWait();
                 return;
             }
@@ -142,12 +150,19 @@ public class CombosController implements Initializable {
             int qty = quantity.get();
             String itemName = combo.nombre;
             var dto = new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
-            CarritoService.getInstance().addItem(dto);
+            CarritoService.getInstance().addItemConsolidated(dto);
             
             // Mostrar confirmación
             javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             confirmacion.setTitle("Combo añadido al carrito");
             confirmacion.setHeaderText("¡Combo agregado correctamente!");
+            
+            // Aplicar CSS personalizado
+            try {
+                confirmacion.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                );
+            } catch (Exception ignore) {}
             
             String mensaje = qty == 1 
                 ? "Se añadió 1 " + itemName + " al carrito"

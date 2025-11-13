@@ -78,13 +78,13 @@
 .chip:focused { -fx-border-color: #8A2F24; }
 .chip:pressed { -fx-background-color: #161616; }
 
-.buy-btn, .primary-btn, .pay-btn, .button.cta { -fx-background-color: #d24a39; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-cursor: hand; }
+.buy-btn, .primary-btn, .pay-btn, .button.cta { -fx-background-color: #8A2F24; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-cursor: hand; }
 .buy-btn { -fx-padding: 8 18; }
 .primary-btn { -fx-background-radius: 15; -fx-padding: 8 20; }
 .pay-btn { -fx-font-size: 16px; -fx-background-radius: 24; -fx-padding: 12 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.2, 0, 3); }
 .button.cta { -fx-background-radius: 18; -fx-padding: 10 18; }
-.buy-btn:hover, .primary-btn:hover, .pay-btn:hover, .button.cta:hover   { -fx-background-color: #9d3a2d; }
-.buy-btn:pressed, .primary-btn:pressed, .pay-btn:pressed, .button.cta:pressed { -fx-background-color: #74271e; }
+.buy-btn:hover, .primary-btn:hover, .pay-btn:hover, .button.cta:hover   { -fx-background-color: #8A2F24; }
+.buy-btn:pressed, .primary-btn:pressed, .pay-btn:pressed, .button.cta:pressed { -fx-background-color: #8A2F24; }
 .pay-btn:disabled, .button.cta:disabled { -fx-opacity: 0.5; -fx-effect: none; }
 
 /* ======================= Scrollbars ======================= */
@@ -147,7 +147,7 @@
 
 /* Estados por clase (usados por la grilla y espejo en la leyenda) */
 .seat--available   { -fx-background-color: transparent; -fx-border-color: #e0665a; -fx-border-width: 2; }
-.seat--selected    { -fx-background-color: #d24a39; -fx-border-color: transparent; }
+.seat--selected    { -fx-background-color: #8A2F24; -fx-border-color: transparent; }
 .seat--unavailable { -fx-background-color: #8b2c24; -fx-border-color: #8b2c24; }
 
 /* Accesibles: glow rojito permanente */
@@ -160,7 +160,7 @@
 /* Pseudoclases del toggle (grilla) */
 .toggle-button.seat:armed    { -fx-opacity: 0.95; }
 .toggle-button.seat:hover    { -fx-effect: dropshadow(gaussian, rgba(210,74,57,0.35), 8, 0.2, 0, 1); }
-.toggle-button.seat:selected { -fx-background-color: #d24a39; -fx-border-color: transparent; }
+.toggle-button.seat:selected { -fx-background-color: #8A2F24; -fx-border-color: transparent; }
 .toggle-button.seat:disabled { -fx-background-color: #8b2c24; -fx-border-color: #8b2c24; -fx-opacity: 1.0; }
 .toggle-button.seat:focused  { -fx-effect: dropshadow(gaussian, rgba(157,58,45,0.75), 10, 0.4, 0, 0); }
 
@@ -203,7 +203,7 @@
 .menu-title { -fx-text-fill: #222; -fx-font-weight: bold; -fx-font-size: 13px; }
 .menu-desc { -fx-text-fill: #444; -fx-font-size: 12px; }
 .menu-price { -fx-text-fill: #222; -fx-font-weight: bold; -fx-padding: 6 0 8 0; }
-.menu-add-btn { -fx-background-color: #d24a39; background-color: #d24a39; -fx-text-fill: white; color: white; -fx-border-color: transparent; border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 8 14; padding: 8 14; -fx-font-weight: bold; font-weight: bold; }
+.menu-add-btn { -fx-background-color: #8A2F24; background-color: #8A2F24; -fx-text-fill: white; color: white; -fx-border-color: transparent; border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 8 14; padding: 8 14; -fx-font-weight: bold; font-weight: bold; }
 .menu-add-btn:hover { -fx-background-color: #b33b2f; background-color: #b33b2f; }
 
 .page-root { -fx-background-color: #0D0D0D; }
@@ -217,7 +217,7 @@
 .menu-title { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-font-size: 20px; -fx-padding: 8 0 4 0; }
 .menu-desc { -fx-text-fill: #ddd; -fx-font-size: 12px; }
 .menu-price { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-padding: 6 0 8 0; }
-.buy-btn { -fx-background-color: #d24a39; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 18; }
+.buy-btn { -fx-background-color: #8A2F24; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 18; }
 
 .menu-select .combo-box-base, .menu-select { -fx-background-radius: 20; -fx-pref-width: 180; }
 .menu-select .combo-box { -fx-background-color: #e6e6e6; }
@@ -493,17 +493,17 @@
 }
 
 .menu-scroll .scroll-bar:vertical .thumb {
-  -fx-background-color: rgba(199, 122, 223, 0.6);
+  -fx-background-color: rgba(138, 47, 36, 0.6);
   -fx-background-radius: 6;
   -fx-background-insets: 0;
 }
 
 .menu-scroll .scroll-bar:vertical .thumb:hover {
-  -fx-background-color: rgba(199, 122, 223, 0.8);
+  -fx-background-color: rgba(138, 47, 36, 0.8);
 }
 
 .menu-scroll .scroll-bar:vertical .thumb:pressed {
-  -fx-background-color: rgba(199, 122, 223, 1.0);
+  -fx-background-color: rgba(138, 47, 36, 1.0);
 }
 
 .menu-scroll .scroll-bar:vertical .increment-button,
@@ -575,4 +575,135 @@
 /* Eliminar cualquier borde o sombra */
 .user-menu-btn .label {
     -fx-text-fill: white;
+}
+
+/* ======================= Alert/Dialog Styling ======================= */
+.dialog-pane {
+    -fx-background-color: #0D0D0D !important;
+    -fx-border-color: #8A2F24;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 15, 0.3, 0, 5);
+}
+
+/* Eliminar completamente cualquier vestigio del header de Windows */
+.dialog-pane .header-panel,
+.dialog-pane > .header-panel,
+.dialog-pane > *.header-panel,
+.dialog-pane .header-panel *,
+.alert .header-panel,
+.alert > .header-panel,
+.alert .dialog-pane .header-panel {
+    -fx-background-color: transparent !important;
+    -fx-background: transparent !important;
+    -fx-background-image: null !important;
+    -fx-background-insets: 0 !important;
+    -fx-background-radius: 0 !important;
+    -fx-border-color: transparent !important;
+    -fx-border-width: 0 !important;
+    -fx-padding: 0 !important;
+    -fx-pref-height: 0 !important;
+    -fx-min-height: 0 !important;
+    -fx-max-height: 0 !important;
+}
+
+/* Ocultar completamente el header si es necesario */
+.dialog-pane .header-panel {
+    -fx-opacity: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+    -fx-max-height: 0;
+    visibility: hidden;
+}
+
+/* Estilos para el título - moverlo al área de contenido */
+.dialog-pane .header-panel .label,
+.dialog-pane > .header-panel > .label,
+.dialog-pane > *.header-panel > *.label,
+.dialog-pane .content .label:first-child {
+    -fx-text-fill: white !important;
+    -fx-font-weight: bold !important;
+    -fx-font-size: 18px !important;
+    -fx-background-color: transparent !important;
+    -fx-background: transparent !important;
+    -fx-padding: 0 0 10 0 !important;
+}
+
+/* Área de contenido */
+.dialog-pane > .content,
+.dialog-pane > *.content,
+.dialog-pane .content {
+    -fx-background-color: transparent !important;
+    -fx-background: transparent !important;
+    -fx-padding: 15 0 10 0;
+}
+
+.dialog-pane .content .label,
+.dialog-pane > .content > .label,
+.dialog-pane > *.content > *.label {
+    -fx-text-fill: #CFCFCF !important;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+    -fx-background-color: transparent !important;
+    -fx-background: transparent !important;
+}
+
+/* Área de botones */
+.dialog-pane > .button-bar,
+.dialog-pane > *.button-bar,
+.dialog-pane .button-bar {
+    -fx-background-color: transparent !important;
+    -fx-background: transparent !important;
+    -fx-padding: 15 0 0 0;
+}
+
+.dialog-pane .button-bar .container,
+.dialog-pane > .button-bar > .container,
+.dialog-pane > *.button-bar > *.container {
+    -fx-background-color: transparent !important;
+    -fx-background: transparent !important;
+}
+
+/* Estilos de botones - usando los colores exactos de la app */
+.dialog-pane .button {
+    -fx-background-color: #8A2F24 !important;
+    -fx-text-fill: white !important;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+}
+
+.dialog-pane .button:hover {
+    -fx-background-color: #8A2F24 !important;
+}
+
+.dialog-pane .button:pressed {
+    -fx-background-color: #8A2F24 !important;
+}
+
+.dialog-pane .button:cancel-button {
+    -fx-background-color: transparent !important;
+    -fx-border-color: #8A2F24 !important;
+    -fx-border-width: 1 !important;
+    -fx-border-radius: 8 !important;
+    -fx-text-fill: #8A2F24 !important;
+}
+
+.dialog-pane .button:cancel-button:hover {
+    -fx-background-color: rgba(138, 47, 36, 0.1) !important;
+    -fx-text-fill: white !important;
+}
+
+.dialog-pane .button:cancel-button:pressed {
+    -fx-background-color: rgba(138, 47, 36, 0.2) !important;
+}
+
+/* Forzar que cualquier elemento hijo del dialog-pane tenga fondo transparente */
+.dialog-pane *:not(.button) {
+    -fx-background-color: transparent !important;
 }
