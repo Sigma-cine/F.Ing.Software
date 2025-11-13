@@ -366,9 +366,17 @@ public class AsientosController implements Initializable {
             } catch (Exception ignore) {}
             
             // Crear botones personalizados
-            javafx.scene.control.ButtonType btnSeguirComprando = new javafx.scene.control.ButtonType("Seguir Comprando", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-            javafx.scene.control.ButtonType btnIrCarrito = new javafx.scene.control.ButtonType("Ir al Carrito");
-            confirmacion.getButtonTypes().setAll(btnSeguirComprando, btnIrCarrito);
+            javafx.scene.control.ButtonType btnIrConfiteria = new javafx.scene.control.ButtonType("Ir a la confitería");
+            javafx.scene.control.ButtonType btnIrCarrito = new javafx.scene.control.ButtonType("Ir al carrito");
+            // Botón invisible para manejar la X
+            javafx.scene.control.ButtonType btnCerrar = new javafx.scene.control.ButtonType("", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+            confirmacion.getButtonTypes().setAll(btnIrConfiteria, btnIrCarrito, btnCerrar);
+            
+            // Ocultar el botón de cerrar después de que se muestre el diálogo
+            javafx.application.Platform.runLater(() -> {
+                confirmacion.getDialogPane().lookupButton(btnCerrar).setVisible(false);
+                confirmacion.getDialogPane().lookupButton(btnCerrar).setManaged(false);
+            });
             
             var resultado = confirmacion.showAndWait();
             
@@ -380,8 +388,25 @@ public class AsientosController implements Initializable {
                     System.err.println("Error abriendo carrito: " + ex.getMessage());
                     ex.printStackTrace();
                 }
+            } else if (resultado.isPresent() && resultado.get() == btnIrConfiteria) {
+                // Ir a la confitería
+                try {
+                    javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/menu.fxml"));
+                    javafx.scene.Parent root = loader.load();
+                    javafx.stage.Stage stage = (javafx.stage.Stage) btnContinuar.getScene().getWindow();
+                    stage.setTitle("Sigma Cine - Confitería");
+                    javafx.scene.Scene current = stage.getScene();
+                    double w = current != null ? current.getWidth() : 900;
+                    double h = current != null ? current.getHeight() : 600;
+                    stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
+                    stage.setMaximized(true);
+                    stage.show();
+                } catch (Exception ex) {
+                    System.err.println("Error navegando a confitería: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
             }
-            // Si elige "Seguir Comprando", simplemente se cierra el dialog
+            // Si hace clic en X (btnCerrar), simplemente se cierra el dialog
         }
     }
 

@@ -494,17 +494,17 @@
 }
 
 .menu-scroll .scroll-bar:vertical .thumb {
-  -fx-background-color: rgba(199, 122, 223, 0.6);
+  -fx-background-color: rgba(138, 47, 36, 0.6);
   -fx-background-radius: 6;
   -fx-background-insets: 0;
 }
 
 .menu-scroll .scroll-bar:vertical .thumb:hover {
-  -fx-background-color: rgba(199, 122, 223, 0.8);
+  -fx-background-color: rgba(138, 47, 36, 0.8);
 }
 
 .menu-scroll .scroll-bar:vertical .thumb:pressed {
-  -fx-background-color: rgba(199, 122, 223, 1.0);
+  -fx-background-color: rgba(138, 47, 36, 1.0);
 }
 
 .menu-scroll .scroll-bar:vertical .increment-button,
