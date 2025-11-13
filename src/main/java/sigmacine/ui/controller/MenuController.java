@@ -122,9 +122,37 @@ public class MenuController implements Initializable {
     selectors.setSpacing(20);
     selectors.setPickOnBounds(false);
     final IntegerProperty quantity = new SimpleIntegerProperty(1);
-    javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
+    
+    // Crear botones con imágenes
+    javafx.scene.control.Button btnMinus = new javafx.scene.control.Button();
     javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("x");
+    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button();
+    
+    // Configurar imagen para botón menos
+    try {
+        javafx.scene.image.ImageView minusIcon = new javafx.scene.image.ImageView();
+        minusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/minus.png")));
+        minusIcon.setFitWidth(16);
+        minusIcon.setFitHeight(16);
+        minusIcon.setPreserveRatio(true);
+        btnMinus.setGraphic(minusIcon);
+    } catch (Exception e) {
+        // Fallback a texto si no se encuentra la imagen
+        btnMinus.setText("−");
+    }
+    
+    // Configurar imagen para botón más
+    try {
+        javafx.scene.image.ImageView plusIcon = new javafx.scene.image.ImageView();
+        plusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/plus.png")));
+        plusIcon.setFitWidth(16);
+        plusIcon.setFitHeight(16);
+        plusIcon.setPreserveRatio(true);
+        btnPlus.setGraphic(plusIcon);
+    } catch (Exception e) {
+        // Fallback a texto si no se encuentra la imagen
+        btnPlus.setText("+");
+    }
     
     btnMinus.getStyleClass().add("qty-btn");
     btnPlus.getStyleClass().add("qty-btn");
@@ -181,7 +209,55 @@ public class MenuController implements Initializable {
     cbOpt.setMaxWidth(180); 
     cbOpt.setMinWidth(180);
     
-    selectors.getChildren().addAll(qtyBox, cbOpt);
+    // Deshabilitar completamente la interacción del ComboBox
+    cbOpt.setMouseTransparent(true);
+    cbOpt.setFocusTraversable(false);
+    cbOpt.setEditable(false);
+    
+    // Crear contenedor StackPane para superponer la imagen DENTRO del ComboBox
+    javafx.scene.layout.StackPane comboContainer = new javafx.scene.layout.StackPane();
+    comboContainer.setPrefWidth(180);
+    comboContainer.setMaxWidth(180);
+    
+    // Agregar ComboBox al contenedor
+    comboContainer.getChildren().add(cbOpt);
+    
+    try {
+        // Crear imagen clickeable que estará DENTRO del ComboBox
+        javafx.scene.image.ImageView comboIcon = new javafx.scene.image.ImageView();
+        comboIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/combobox.png")));
+        comboIcon.setFitWidth(16);
+        comboIcon.setFitHeight(16);
+        comboIcon.setPreserveRatio(true);
+        
+        // Posicionar la imagen dentro del área del ComboBox, lado derecho
+        javafx.scene.layout.StackPane.setAlignment(comboIcon, javafx.geometry.Pos.CENTER_RIGHT);
+        javafx.scene.layout.StackPane.setMargin(comboIcon, new javafx.geometry.Insets(0, 8, 0, 0));
+        
+        // Hacer la imagen clickeable para abrir el dropdown
+        comboIcon.setOnMouseClicked(e -> {
+            // Temporalmente habilitar el ComboBox para mostrar opciones
+            cbOpt.setMouseTransparent(false);
+            if (!cbOpt.isShowing()) {
+                cbOpt.show();
+            } else {
+                cbOpt.hide();
+            }
+            // Inmediatamente volver a deshabilitar
+            javafx.application.Platform.runLater(() -> cbOpt.setMouseTransparent(true));
+        });
+        
+        // Estilo visual para indicar que es clickeable
+        comboIcon.setStyle("-fx-cursor: hand;");
+        
+        // Agregar imagen al contenedor (se superpondrá DENTRO del ComboBox)
+        comboContainer.getChildren().add(comboIcon);
+        
+    } catch (Exception e) {
+        System.err.println("Error cargando imagen del ComboBox: " + e.getMessage());
+    }
+    
+    selectors.getChildren().addAll(qtyBox, comboContainer);
 
     Button add = new Button("Agregar al carrito");
     add.getStyleClass().addAll("buy-btn", "menu-add-btn");
