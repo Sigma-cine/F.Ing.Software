@@ -355,52 +355,9 @@ public class ContenidoCarteleraController {
                 var result = alert.showAndWait();
                 
                 if (result.isPresent() && result.get() == btnIniciarSesion) {
-                    // Usar el mismo patrón del botón iniciar sesión que ya funciona
-                    try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
-                        Parent root = loader.load();
-                        Object ctrl = loader.getController();
-                        Stage dialog = new Stage();
-                        dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-                        dialog.initOwner(btnComprar.getScene().getWindow());
-                        
-                        if (ctrl instanceof LoginController) {
-                            LoginController lc = (LoginController) ctrl;
-                            
-                            // SÍ configurar dependencias para que funcione el login
-                            try {
-                                ControladorControlador global = ControladorControlador.getInstance();
-                                if (global != null) {
-                                    lc.setCoordinador(global);
-                                    try {
-                                        sigmacine.aplicacion.facade.AuthFacade af = global.getAuthFacade();
-                                        if (af != null) lc.setAuthFacade(af);
-                                    } catch (Throwable ignore) {}
-                                }
-                            } catch (Throwable ignore) {}
-
-                            // Configurar callback personalizado que anula cualquier otro comportamiento
-                            lc.setOnSuccess(() -> {
-                                try { 
-                                    dialog.close(); 
-                                } catch (Exception ignore) {}
-                                
-                                // Ejecutar en el siguiente ciclo del hilo de JavaFX para asegurar que el diálogo se cierre
-                                Platform.runLater(() -> {
-                                    try {
-                                        continuarConCompra();
-                                    } catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
-                                });
-                            });
-                        }
-                        dialog.setScene(new javafx.scene.Scene(root));
-                        dialog.setTitle("Iniciar Sesión - Sigma Cine");
-                        dialog.showAndWait();
-                        
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    // Usar el coordinador para mostrar la pantalla completa de login
+                    if (coordinador != null) {
+                        coordinador.mostrarLogin();
                     }
                 }
                 // Si se cancela, simplemente se cierra el alert (no hacemos nada más)
