@@ -310,6 +310,44 @@ public class GestionFuncionesServiceTest {
         });
     }
 
+    @Test
+    public void validacionEstadoNuloSeAsignaActiva() {
+        FuncionFormDTO dto = crearDTO(0, "2025-12-01", "18:00", "02:00", 1L, 1L);
+        dto.estado = null;
+        
+        Funcion resultado = servicio.crear(dto);
+        
+        assertNotNull(resultado);
+    }
+
+    @Test
+    public void validacionEstadoVacioSeAsignaActiva() {
+        FuncionFormDTO dto = crearDTO(0, "2025-12-01", "18:00", "02:00", 1L, 1L);
+        dto.estado = "";
+        
+        Funcion resultado = servicio.crear(dto);
+        
+        assertNotNull(resultado);
+    }
+
+    @Test
+    public void toTimeConFormatoInvalido() {
+        FuncionFormDTO dto = crearDTO(0, "2025-12-01", "9:30", "02:00", 1L, 1L);
+        
+        assertThrows(RuntimeException.class, () -> {
+            servicio.crear(dto);
+        });
+    }
+
+    @Test
+    public void toTimeConFormatoLargo() {
+        FuncionFormDTO dto = crearDTO(0, "2025-12-01", "09:30:00", "02:00", 1L, 1L);
+        
+        Funcion resultado = servicio.crear(dto);
+        
+        assertNotNull(resultado);
+    }
+
     private FuncionFormDTO crearDTO(long id, String fecha, String hora, String duracion, long peliculaId, long salaId) {
         FuncionFormDTO dto = new FuncionFormDTO();
         dto.id = id;
