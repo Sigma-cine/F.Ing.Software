@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -17,13 +18,16 @@ import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CarteleraController {
     private ControladorControlador coordinador;
     private UsuarioDTO usuario;
+    private List<Pelicula> todasLasPeliculas;
 
     @FXML private TextField txtBuscar;
     @FXML private javafx.scene.layout.FlowPane gridPeliculas;
+    @FXML private ComboBox<String> cbGenero;
 
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
     public void setUsuario(UsuarioDTO u) { this.usuario = u; }
@@ -35,15 +39,63 @@ public class CarteleraController {
             barraController.marcarBotonActivo("cartelera");
         }
         
+        // Configurar ComboBox de géneros
+        if (cbGenero != null) {
+            cbGenero.getItems().addAll(
+                "Todos",
+                "Acción",
+                "Animación",
+                "Aventura",
+                "Ciencia ficción",
+                "Comedia",
+                "Drama",
+                "Fantasía",
+                "Musical",
+                "Romance",
+                "Superhéroes",
+                "Thriller psicológico"
+            );
+            cbGenero.setValue("Todos");
+            cbGenero.setOnAction(e -> filtrarPorGenero());
+        }
+        
         try {
             DatabaseConfig db = new DatabaseConfig();
             PeliculaRepositoryJdbc repo = new PeliculaRepositoryJdbc(db);
-            List<Pelicula> todas = repo.buscarTodas();
-            renderPeliculas(todas);
+            todasLasPeliculas = repo.buscarTodas();
+            renderPeliculas(todasLasPeliculas);
         } catch (Exception ex) {
             if (gridPeliculas != null) gridPeliculas.getChildren().add(new Label("Error cargando cartelera: " + ex.getMessage()));
             ex.printStackTrace();
         }
+    }
+    
+    private void filtrarPorGenero() {
+        if (todasLasPeliculas == null || cbGenero == null) return;
+        
+        String generoSeleccionado = cbGenero.getValue();
+        if (generoSeleccionado == null || generoSeleccionado.equals("Todos")) {
+            renderPeliculas(todasLasPeliculas);
+            return;
+        }
+        
+        List<Pelicula> filtradas = todasLasPeliculas.stream()
+            .filter(p -> {
+                String genero = p.getGenero();
+                if (genero == null) return false;
+                // Manejar géneros múltiples separados por comas
+                String[] generos = genero.split(",");
+                for (String g : generos) {
+                    if (g.trim().equalsIgnoreCase(generoSeleccionado.trim())) {
+                        return true;
+                    }
+                }
+                return false;
+            })
+            .collect(Collectors.toList());
+        
+        renderPeliculas(filtradas);
+
     }
 
     private void renderPeliculas(List<Pelicula> peliculas) {

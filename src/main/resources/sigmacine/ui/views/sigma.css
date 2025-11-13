@@ -477,6 +477,76 @@
   -fx-text-fill: #222222 !important;
 }
 
+/* ======================= Genre Filter ComboBox ======================= */
+#cbGenero {
+  -fx-background-color: #e9d7d3;
+  -fx-background-radius: 16;
+  -fx-pref-height: 36;
+  -fx-min-width: 200;
+}
+
+#cbGenero .combo-box-base {
+  -fx-background-color: #e9d7d3;
+  -fx-background-radius: 16;
+  -fx-padding: 6 12 6 16;
+  -fx-border-color: transparent;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0.2, 0, 1);
+}
+
+#cbGenero .combo-box-base:hover {
+  -fx-background-color: #f2cfc9;
+}
+
+#cbGenero .combo-box-base:focused {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 2);
+}
+
+#cbGenero .combo-box-base .text,
+#cbGenero .combo-box-base .list-cell {
+  -fx-text-fill: #1b1b1b;
+  -fx-font-size: 14px;
+  -fx-font-weight: normal;
+}
+
+#cbGenero .combo-box-base .arrow-button {
+  -fx-background-color: transparent;
+  -fx-padding: 0 8 0 0;
+}
+
+#cbGenero .combo-box-base .arrow {
+  -fx-background-color: #1b1b1b;
+  -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+  -fx-scale-shape: true;
+  -fx-padding: 4;
+}
+
+/* Popup del ComboBox de género */
+#cbGenero .combo-box-popup .list-view {
+  -fx-background-color: #f0f0f0;
+  -fx-border-color: #cccccc;
+  -fx-border-width: 1;
+  -fx-border-radius: 8;
+  -fx-background-radius: 8;
+  -fx-padding: 4;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 12, 0.2, 0, 4);
+}
+
+#cbGenero .combo-box-popup .list-view .list-cell {
+  -fx-background-color: transparent;
+  -fx-text-fill: #222222;
+  -fx-padding: 8 12;
+  -fx-background-radius: 6;
+}
+
+#cbGenero .combo-box-popup .list-view .list-cell:hover {
+  -fx-background-color: #e0e0e0;
+}
+
+#cbGenero .combo-box-popup .list-view .list-cell:selected {
+  -fx-background-color: #d0d0d0;
+  -fx-text-fill: #000000;
+}
+
 /* ======================= ScrollBar Styling ======================= */
 .menu-scroll > .viewport {
   -fx-background-color: transparent;
