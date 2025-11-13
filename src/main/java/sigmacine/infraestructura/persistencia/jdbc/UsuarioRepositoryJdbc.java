@@ -297,7 +297,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
 
     @Override
     public List<CompraProductoDTO> obtenerProductosPorCompra(Long compraId) {
-        final String sqlProductos = "SELECT cp.PRODUCTO_ID, pr.NOMBRE, cp.CANTIDAD, cp.PRECIO_UNITARIO "
+        final String sqlProductos = "SELECT cp.PRODUCTO_ID, pr.NOMBRE, cp.CANTIDAD, cp.PRECIO_UNITARIO, pr.IMAGEN_URL "
                 + "FROM COMPRA_PRODUCTO cp "
                 + "LEFT JOIN PRODUCTO pr ON pr.ID = cp.PRODUCTO_ID "
                 + "WHERE cp.COMPRA_ID = ?";
@@ -312,7 +312,10 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                     String nombre = rs.getString("NOMBRE");
                     int cant = rs.getInt("CANTIDAD");
                     java.math.BigDecimal precio = rs.getBigDecimal("PRECIO_UNITARIO");
-                    lista.add(new CompraProductoDTO(pid, nombre, cant, precio));
+                    String imagenUrl = rs.getString("IMAGEN_URL");
+                    CompraProductoDTO dto = new CompraProductoDTO(pid, nombre, cant, precio);
+                    dto.setImageUrl(imagenUrl);
+                    lista.add(dto);
                 }
                 return lista;
             }

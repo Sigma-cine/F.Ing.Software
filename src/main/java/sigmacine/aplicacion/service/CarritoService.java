@@ -31,6 +31,58 @@ public class CarritoService {
         if (item == null) return;
         items.add(item);
     }
+    
+    /**
+     * Añade un item al carrito, consolidando con items existentes si son iguales
+     */
+    public void addItemConsolidated(CompraProductoDTO newItem) {
+        if (newItem == null) return;
+        
+        // Buscar si ya existe un item igual (mismo nombre y precio)
+        for (CompraProductoDTO existingItem : items) {
+            if (areItemsEqual(existingItem, newItem)) {
+                // Item igual encontrado, sumar las cantidades
+                int newQuantity = existingItem.getCantidad() + newItem.getCantidad();
+                
+                // Crear un nuevo item con la cantidad consolidada
+                CompraProductoDTO consolidatedItem = new CompraProductoDTO(
+                    existingItem.getProductoId(),
+                    existingItem.getFuncionId(), 
+                    existingItem.getNombre(),
+                    newQuantity,
+                    existingItem.getPrecioUnitario(),
+                    existingItem.getSabor()
+                );
+                
+                // Reemplazar el item existente
+                int index = items.indexOf(existingItem);
+                items.set(index, consolidatedItem);
+                return;
+            }
+        }
+        
+        // No se encontró item igual, añadir como nuevo
+        items.add(newItem);
+    }
+    
+    /**
+     * Compara si dos items son iguales (mismo nombre y mismo precio unitario)
+     */
+    private boolean areItemsEqual(CompraProductoDTO item1, CompraProductoDTO item2) {
+        if (item1 == null || item2 == null) return false;
+        
+        // Comparar nombre (incluyendo sabor si lo tiene)
+        boolean namesEqual = (item1.getNombre() != null && item2.getNombre() != null) ?
+            item1.getNombre().equals(item2.getNombre()) :
+            item1.getNombre() == item2.getNombre();
+            
+        // Comparar precio unitario
+        boolean pricesEqual = (item1.getPrecioUnitario() != null && item2.getPrecioUnitario() != null) ?
+            item1.getPrecioUnitario().compareTo(item2.getPrecioUnitario()) == 0 :
+            item1.getPrecioUnitario() == item2.getPrecioUnitario();
+            
+        return namesEqual && pricesEqual;
+    }
 
     public void removeItem(CompraProductoDTO item) { if (item != null) items.remove(item); }
 

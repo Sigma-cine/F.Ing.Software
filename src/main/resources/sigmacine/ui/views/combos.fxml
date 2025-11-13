@@ -2,24 +2,30 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="sigmacine.ui.controller.CombosController" styleClass="page-root" stylesheets="@sigma.css" prefWidth="1280" prefHeight="720">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="sigmacine.ui.controller.CombosController" styleClass="page-root" stylesheets="@sigma.css">
     <top>
-        <fx:include source="barra.fxml"/>
+        <VBox>
+            <fx:include source="barra.fxml"/>
+            <VBox spacing="6" BorderPane.alignment="CENTER">
+                <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
+                    <Label text="Nuestros Combos" styleClass="section-title" />
+                </HBox>
+                <Separator />
+            </VBox>
+        </VBox>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" styleClass="menu-scroll" vbarPolicy="ALWAYS">
+        <ScrollPane fitToWidth="true" styleClass="menu-scroll">
             <content>
-                <VBox alignment="TOP_CENTER" spacing="20">
+                <GridPane fx:id="gridCombos" hgap="24" vgap="24" alignment="TOP_CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50" />
+                        <ColumnConstraints percentWidth="50" />
+                    </columnConstraints>
                     <padding>
-                        <Insets top="20" right="40" bottom="40" left="40" />
+                        <Insets top="12" right="12" bottom="12" left="12" />
                     </padding>
-                    <GridPane fx:id="gridCombos" hgap="32" vgap="32" alignment="TOP_CENTER">
-                        <columnConstraints>
-                            <ColumnConstraints minWidth="540" prefWidth="540" />
-                            <ColumnConstraints minWidth="540" prefWidth="540" />
-                        </columnConstraints>
-                    </GridPane>
-                </VBox>
+                </GridPane>
             </content>
         </ScrollPane>
     </center>

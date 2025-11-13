@@ -85,16 +85,16 @@ public class MenuController implements Initializable {
 
     private VBox buildProductBox(ProductItem p) {
     ImageView iv = new ImageView();
-    iv.setFitWidth(524);
-    iv.setFitHeight(204);
+    iv.setFitWidth(520);
+    iv.setFitHeight(252);
     iv.setPreserveRatio(false);
         iv.setSmooth(true);
         if (p.image != null) iv.setImage(p.image);
 
         javafx.scene.layout.StackPane imgFrame = new javafx.scene.layout.StackPane();
         imgFrame.getStyleClass().add("menu-image-frame");
-    imgFrame.setPrefWidth(540);
-    imgFrame.setPrefHeight(220);
+    imgFrame.setPrefWidth(536);
+    imgFrame.setPrefHeight(268);
         imgFrame.getChildren().add(iv);
 
     javafx.scene.control.Label titleName = new javafx.scene.control.Label(p.nombre != null ? p.nombre : "");
@@ -124,13 +124,12 @@ public class MenuController implements Initializable {
     final IntegerProperty quantity = new SimpleIntegerProperty(1);
     javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
     javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("*");
+    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("x");
     
     btnMinus.getStyleClass().add("qty-btn");
     btnPlus.getStyleClass().add("qty-btn");
     lblQty.getStyleClass().add("qty-label");
     
-    // Forzar que el texto se vea con fuente System
     btnMinus.setStyle("-fx-font-family: 'System'; -fx-font-size: 18px;");
     btnPlus.setStyle("-fx-font-family: 'System'; -fx-font-size: 18px;");
 
@@ -192,23 +191,62 @@ public class MenuController implements Initializable {
             alert.setTitle("Iniciar Sesión Requerido");
             alert.setHeaderText("Debe iniciar sesión");
             alert.setContentText("Para agregar productos al carrito debe iniciar sesión primero.");
+            
+            // Aplicar CSS personalizado
+            try {
+                alert.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                );
+            } catch (Exception ignore) {}
+            
             alert.showAndWait();
             return;
         }
         
         String selectedSabor = null;
         try { selectedSabor = cbOpt.getSelectionModel().getSelectedItem(); } catch (Exception ignore) {}
+        
+        // Validar que se haya seleccionado un sabor si el producto tiene sabores disponibles
+        if (p.sabores != null && !p.sabores.trim().isEmpty()) {
+            if (selectedSabor == null || selectedSabor.trim().isEmpty()) {
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+                alert.setTitle("Sabor Requerido");
+                alert.setHeaderText("Debe seleccionar un sabor");
+                alert.setContentText("Por favor selecciona un sabor antes de añadir el producto al carrito.");
+                
+                // Aplicar CSS personalizado
+                try {
+                    alert.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                    );
+                } catch (Exception ignore2) {}
+                
+                alert.showAndWait();
+                return;
+            }
+        }
+        
         int qty = quantity.get();
-
         String itemName = p.nombre;
-        var dto = (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original"))
+        
+        // Crear el DTO con o sin sabor
+        var dto = (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original") && !selectedSabor.trim().isEmpty())
             ? new CompraProductoDTO(p.id, itemName + " (" + selectedSabor + ")", qty, p.precio, selectedSabor)
             : new CompraProductoDTO(p.id, itemName, qty, p.precio);
-        CarritoService.getInstance().addItem(dto);
+        
+        // Añadir al carrito con lógica de consolidación
+        CarritoService.getInstance().addItemConsolidated(dto);
         
         javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
         confirmacion.setTitle("Producto añadido al carrito");
         confirmacion.setHeaderText("¡Producto agregado correctamente!");
+        
+        // Aplicar CSS personalizado
+        try {
+            confirmacion.getDialogPane().getStylesheets().add(
+                getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+            );
+        } catch (Exception ignore) {}
         
         String mensaje = qty == 1 
             ? "Se añadió 1 " + itemName + " al carrito"

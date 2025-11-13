@@ -10,7 +10,8 @@ public class CompraProductoDTO {
     private final String nombre;
     private final int cantidad;
     private final BigDecimal precioUnitario;
-    private String sabor; // opcional: sabor/variante seleccionada
+    private String sabor;
+    private String imageUrl;
 
     public CompraProductoDTO(Long productoId, String nombre, int cantidad, BigDecimal precioUnitario) {
         this.productoId = productoId;
@@ -19,6 +20,7 @@ public class CompraProductoDTO {
         this.nombre = nombre;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
+        this.imageUrl = null;
     }
 
     public CompraProductoDTO(Long productoId, String nombre, int cantidad, BigDecimal precioUnitario, String sabor) {
@@ -40,7 +42,6 @@ public class CompraProductoDTO {
         this.precioUnitario = precioUnitario;
     }
 
-    // Constructor including asiento (para boletos)
     public CompraProductoDTO(Long productoId, Long funcionId, String nombre, int cantidad, BigDecimal precioUnitario, String asiento) {
         this.productoId = productoId;
         this.funcionId = funcionId;
@@ -57,6 +58,11 @@ public class CompraProductoDTO {
     public int getCantidad() { return cantidad; }
     public BigDecimal getPrecioUnitario() { return precioUnitario; }
     public String getSabor() { return sabor; }
+    public String getImageUrl() { return imageUrl; }
+    
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     @Override
     public String toString() {

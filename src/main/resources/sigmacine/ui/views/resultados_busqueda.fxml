@@ -24,7 +24,7 @@
                     <VBox fx:id="panelPeliculas" spacing="16" alignment="TOP_CENTER" style="-fx-padding: 10; -fx-pref-width: 1000;" />
                 </content>
             </ScrollPane>
-            <Button fx:id="btnVolver" text="Volver a inicio" style="-fx-background-color: #993726; -fx-text-fill: #fff; -fx-font-weight: bold; -fx-background-radius: 30; -fx-font-size: 16px; -fx-padding: 10 30 10 30;" />
+            <Button fx:id="btnVolver" text="Volver a inicio" style="-fx-background-color: #8A2F24; -fx-text-fill: #fff; -fx-font-weight: bold; -fx-background-radius: 30; -fx-font-size: 16px; -fx-padding: 10 30 10 30;" />
         </VBox>
     </children>
 </StackPane>

@@ -39,7 +39,6 @@ public class BarraController {
     @FXML
     public void initialize() {
         instance = this;
-        System.out.println("✓ BarraController inicializado - instance configurada");
         configurarEventos();
         actualizarEstadoSesion();
         configurarCarritoDropdown();
@@ -50,7 +49,7 @@ public class BarraController {
     }
 
     private void configurarEventos() {
-        logoImage.setOnMouseClicked(this::onLogoClick);
+        // El evento del logo ya está configurado en el FXML con onMouseClicked="#onLogoClick"
 
         btnCartelera.setOnAction(e -> {
             navegarACartelera();
@@ -379,9 +378,16 @@ public class BarraController {
     private void onLogoClick(MouseEvent event) {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            // Ir a cartelera en lugar de página inicial vacía
-            coordinador.mostrarCartelera();
-            marcarBotonActivo("cartelera");
+            // Verificar si hay sesión activa
+            boolean haySession = Session.isLoggedIn();
+            UsuarioDTO usuario = Session.getCurrent();
+            
+            if (haySession && usuario != null) {
+                coordinador.mostrarHome(usuario);
+            } else {
+                coordinador.mostrarPaginaInicial();
+            }
+            marcarBotonActivo("inicio");
         }
     }
 

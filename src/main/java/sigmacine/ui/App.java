@@ -40,7 +40,6 @@ public class App extends Application {
 
         DatabaseConfig db = new DatabaseConfig();
         try (var conn = db.getConnection()) {
-            System.out.println("🔧 Ejecutando scripts de base de datos...");
             ScriptLoader.runScripts(conn);
             
         } catch (Exception e) {

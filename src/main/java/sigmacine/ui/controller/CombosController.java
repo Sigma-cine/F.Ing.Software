@@ -64,16 +64,16 @@ public class CombosController implements Initializable {
 
     private VBox buildComboBox(ComboItem combo) {
         ImageView iv = new ImageView();
-        iv.setFitWidth(524);
-        iv.setFitHeight(204);
+        iv.setFitWidth(520);
+        iv.setFitHeight(252);
         iv.setPreserveRatio(false);
         iv.setSmooth(true);
         if (combo.image != null) iv.setImage(combo.image);
 
         javafx.scene.layout.StackPane imgFrame = new javafx.scene.layout.StackPane();
         imgFrame.getStyleClass().add("menu-image-frame");
-        imgFrame.setPrefWidth(540);
-        imgFrame.setPrefHeight(220);
+        imgFrame.setPrefWidth(536);
+        imgFrame.setPrefHeight(268);
         imgFrame.getChildren().add(iv);
 
     javafx.scene.control.Label titleName = new javafx.scene.control.Label(combo.nombre != null ? combo.nombre : "");
@@ -94,11 +94,10 @@ public class CombosController implements Initializable {
     desc.setWrapText(true);
     desc.setMaxWidth(520);
 
-        // quantity selector
         final IntegerProperty quantity = new SimpleIntegerProperty(1);
         javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
         javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-        javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("+");
+        javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("x");
 
         btnMinus.getStyleClass().add("qty-btn");
         btnPlus.getStyleClass().add("qty-btn");
@@ -130,12 +129,20 @@ public class CombosController implements Initializable {
         Button add = new Button("Agregar al carrito");
         add.getStyleClass().addAll("buy-btn", "menu-add-btn");
         add.setOnAction(e -> {
-            // Verificar si el usuario ha iniciado sesión
+            
             if (!sigmacine.aplicacion.session.Session.isLoggedIn()) {
                 javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
                 alert.setTitle("Iniciar Sesión Requerido");
                 alert.setHeaderText("Debe iniciar sesión");
                 alert.setContentText("Para agregar combos al carrito debe iniciar sesión primero.");
+                
+                // Aplicar CSS personalizado
+                try {
+                    alert.getDialogPane().getStylesheets().add(
+                        getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                    );
+                } catch (Exception ignore) {}
+                
                 alert.showAndWait();
                 return;
             }
@@ -143,12 +150,19 @@ public class CombosController implements Initializable {
             int qty = quantity.get();
             String itemName = combo.nombre;
             var dto = new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
-            CarritoService.getInstance().addItem(dto);
+            CarritoService.getInstance().addItemConsolidated(dto);
             
             // Mostrar confirmación
             javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             confirmacion.setTitle("Combo añadido al carrito");
             confirmacion.setHeaderText("¡Combo agregado correctamente!");
+            
+            // Aplicar CSS personalizado
+            try {
+                confirmacion.getDialogPane().getStylesheets().add(
+                    getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                );
+            } catch (Exception ignore) {}
             
             String mensaje = qty == 1 
                 ? "Se añadió 1 " + itemName + " al carrito"

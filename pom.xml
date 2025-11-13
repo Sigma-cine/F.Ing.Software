@@ -83,6 +83,12 @@
             <version>0.0.8</version>
             <configuration>
                 <mainClass>sigmacine.ui.App</mainClass>
+                <options>
+                    <option>--add-opens=java.base/java.lang=ALL-UNNAMED</option>
+                    <option>--add-opens=java.base/sun.misc=ALL-UNNAMED</option>
+                    <option>--enable-native-access=javafx.graphics,javafx.media</option>
+                    <option>-XX:+IgnoreUnrecognizedVMOptions</option>
+                </options>
             </configuration>
          </plugin>
 
@@ -140,8 +146,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.1.2</version>
         <configuration>
-          <!-- Permitir acceso nativo de JavaFX durante tests para evitar warnings y futuros bloqueos -->
-          <argLine>--enable-native-access=javafx.graphics,javafx.web,javafx.media</argLine>
+          <!-- Combina argLine de Jacoco con opciones de JavaFX -->
+          <argLine>@{argLine} --enable-native-access=javafx.graphics,javafx.web,javafx.media</argLine>
         </configuration>
       </plugin>
 

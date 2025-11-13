@@ -118,7 +118,7 @@
                             <!-- Resumen + CTA -->
                             <Label fx:id="lblResumen" text="0 Sillas seleccionadas"
                                    style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
-                            <Button fx:id="btnContinuar" text="Continuar" onAction="#onContinuar"
+                            <Button fx:id="btnContinuar" text="Añadir al carrito" onAction="#onContinuar"
                                     maxWidth="Infinity" styleClass="cta"/>
                         </children>
                     </VBox>
