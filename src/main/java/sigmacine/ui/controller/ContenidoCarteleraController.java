@@ -132,6 +132,9 @@ public class ContenidoCarteleraController {
     }
 
     public void setPelicula(Pelicula p) {
+        // Detener cualquier trailer que se esté reproduciendo globalmente
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         // Limpiar reproductor anterior
         limpiarReproductor();
         
