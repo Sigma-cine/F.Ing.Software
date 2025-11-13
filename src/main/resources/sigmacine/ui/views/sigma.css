@@ -78,13 +78,13 @@
 .chip:focused { -fx-border-color: #8A2F24; }
 .chip:pressed { -fx-background-color: #161616; }
 
-.buy-btn, .primary-btn, .pay-btn, .button.cta { -fx-background-color: #d24a39; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-cursor: hand; }
+.buy-btn, .primary-btn, .pay-btn, .button.cta { -fx-background-color: #8A2F24; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-cursor: hand; }
 .buy-btn { -fx-padding: 8 18; }
 .primary-btn { -fx-background-radius: 15; -fx-padding: 8 20; }
 .pay-btn { -fx-font-size: 16px; -fx-background-radius: 24; -fx-padding: 12 24; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.2, 0, 3); }
 .button.cta { -fx-background-radius: 18; -fx-padding: 10 18; }
-.buy-btn:hover, .primary-btn:hover, .pay-btn:hover, .button.cta:hover   { -fx-background-color: #9d3a2d; }
-.buy-btn:pressed, .primary-btn:pressed, .pay-btn:pressed, .button.cta:pressed { -fx-background-color: #74271e; }
+.buy-btn:hover, .primary-btn:hover, .pay-btn:hover, .button.cta:hover   { -fx-background-color: #8A2F24; }
+.buy-btn:pressed, .primary-btn:pressed, .pay-btn:pressed, .button.cta:pressed { -fx-background-color: #8A2F24; }
 .pay-btn:disabled, .button.cta:disabled { -fx-opacity: 0.5; -fx-effect: none; }
 
 /* ======================= Scrollbars ======================= */
@@ -147,7 +147,7 @@
 
 /* Estados por clase (usados por la grilla y espejo en la leyenda) */
 .seat--available   { -fx-background-color: transparent; -fx-border-color: #e0665a; -fx-border-width: 2; }
-.seat--selected    { -fx-background-color: #d24a39; -fx-border-color: transparent; }
+.seat--selected    { -fx-background-color: #8A2F24; -fx-border-color: transparent; }
 .seat--unavailable { -fx-background-color: #8b2c24; -fx-border-color: #8b2c24; }
 
 /* Accesibles: glow rojito permanente */
@@ -160,7 +160,7 @@
 /* Pseudoclases del toggle (grilla) */
 .toggle-button.seat:armed    { -fx-opacity: 0.95; }
 .toggle-button.seat:hover    { -fx-effect: dropshadow(gaussian, rgba(210,74,57,0.35), 8, 0.2, 0, 1); }
-.toggle-button.seat:selected { -fx-background-color: #d24a39; -fx-border-color: transparent; }
+.toggle-button.seat:selected { -fx-background-color: #8A2F24; -fx-border-color: transparent; }
 .toggle-button.seat:disabled { -fx-background-color: #8b2c24; -fx-border-color: #8b2c24; -fx-opacity: 1.0; }
 .toggle-button.seat:focused  { -fx-effect: dropshadow(gaussian, rgba(157,58,45,0.75), 10, 0.4, 0, 0); }
 
@@ -203,7 +203,7 @@
 .menu-title { -fx-text-fill: #222; -fx-font-weight: bold; -fx-font-size: 13px; }
 .menu-desc { -fx-text-fill: #444; -fx-font-size: 12px; }
 .menu-price { -fx-text-fill: #222; -fx-font-weight: bold; -fx-padding: 6 0 8 0; }
-.menu-add-btn { -fx-background-color: #d24a39; background-color: #d24a39; -fx-text-fill: white; color: white; -fx-border-color: transparent; border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 8 14; padding: 8 14; -fx-font-weight: bold; font-weight: bold; }
+.menu-add-btn { -fx-background-color: #8A2F24; background-color: #8A2F24; -fx-text-fill: white; color: white; -fx-border-color: transparent; border-color: transparent; -fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 8 14; padding: 8 14; -fx-font-weight: bold; font-weight: bold; }
 .menu-add-btn:hover { -fx-background-color: #b33b2f; background-color: #b33b2f; }
 
 .page-root { -fx-background-color: #0D0D0D; }
@@ -217,7 +217,7 @@
 .menu-title { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-font-size: 20px; -fx-padding: 8 0 4 0; }
 .menu-desc { -fx-text-fill: #ddd; -fx-font-size: 12px; }
 .menu-price { -fx-text-fill: #fff; -fx-font-weight: bold; -fx-padding: 6 0 8 0; }
-.buy-btn { -fx-background-color: #d24a39; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 18; }
+.buy-btn { -fx-background-color: #8A2F24; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 8 18; }
 
 .menu-select .combo-box-base, .menu-select { -fx-background-radius: 20; -fx-pref-width: 180; }
 .menu-select .combo-box { -fx-background-color: #e6e6e6; }
@@ -669,7 +669,7 @@
 
 /* Estilos de botones - usando los colores exactos de la app */
 .dialog-pane .button {
-    -fx-background-color: #d24a39 !important;
+    -fx-background-color: #8A2F24 !important;
     -fx-text-fill: white !important;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
@@ -680,11 +680,11 @@
 }
 
 .dialog-pane .button:hover {
-    -fx-background-color: #9d3a2d !important;
+    -fx-background-color: #8A2F24 !important;
 }
 
 .dialog-pane .button:pressed {
-    -fx-background-color: #74271e !important;
+    -fx-background-color: #8A2F24 !important;
 }
 
 .dialog-pane .button:cancel-button {

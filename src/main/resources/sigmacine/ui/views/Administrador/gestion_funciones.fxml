@@ -9,7 +9,7 @@
             fx:controller="sigmacine.ui.controller.admin.GestionFuncionesController">
 
     <top>
-        <BorderPane prefHeight="80.0" style="-fx-background-color: #993726;" BorderPane.alignment="CENTER">
+        <BorderPane prefHeight="80.0" style="-fx-background-color: #8A2F24;" BorderPane.alignment="CENTER">
             <center>
                 <Label text="Administrar Funciones" textFill="WHITE">
                     <font><Font name="System Bold" size="22.0"/></font>
@@ -18,8 +18,8 @@
             <right>
                 <HBox spacing="10" style="-fx-padding: 10;">
                     <TextField fx:id="tfBuscar" promptText="Buscar por película, sala o estado" prefWidth="420"/>
-                    <Button text="Buscar" style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onBuscar"/>
-                    <Button text="Listar todas" style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onListarTodas"/>
+                    <Button text="Buscar" style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onBuscar"/>
+                    <Button text="Listar todas" style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onListarTodas"/>
                 </HBox>
             </right>
         </BorderPane>
@@ -72,9 +72,9 @@
 
                         <HBox spacing="10" GridPane.rowIndex="4" GridPane.columnSpan="4" alignment="CENTER_LEFT">
                             <Button text="Nuevo"      style="-fx-background-color: #333;"     textFill="WHITE" onAction="#onNuevo"/>
-                            <Button text="Crear"      style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onCrear"/>
-                            <Button text="Actualizar" style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onActualizar"/>
-                            <Button text="Eliminar"   style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onEliminar"/>
+                            <Button text="Crear"      style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onCrear"/>
+                            <Button text="Actualizar" style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onActualizar"/>
+                            <Button text="Eliminar"   style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onEliminar"/>
                         </HBox>
                     </GridPane>
                 </content>
