@@ -478,7 +478,7 @@ public class ContenidoCarteleraController {
             String sede = selectedFuncion != null ? selectedFuncion.getSede() : "";
             
             // Pasar información completa incluyendo ciudad y sede
-            ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId, ciudad, sede);
+            ctrl.setFuncion(titulo, hora, ocupados, accesibles);
 
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
                     ? pelicula.getPosterUrl() : null;
