@@ -63,4 +63,82 @@ public class SigmaCardServiceTest {
         assertNotNull(formateado);
         assertTrue(formateado.contains("0"));
     }
+
+    @Test
+    public void registrarCardConIdNulo() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        assertThrows(IllegalArgumentException.class, () -> svc.registrarCard(null, "1234"));
+    }
+
+    @Test
+    public void registrarCardConIdVacio() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        assertThrows(IllegalArgumentException.class, () -> svc.registrarCard("", "1234"));
+    }
+
+    @Test
+    public void registrarCardConIdConEspacios() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        assertTrue(svc.registrarCard("  123  ", "0000"));
+    }
+
+    @Test
+    public void recargarConIdInvalido() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        assertThrows(IllegalArgumentException.class, () -> 
+            svc.recargar("no-numerico", BigDecimal.valueOf(10)));
+    }
+
+    @Test
+    public void recargarConMontoNegativo() {
+        StubRepo repo = new StubRepo();
+        SigmaCardService svc = new SigmaCardService(repo);
+        // El repositorio podría validar esto, pero el servicio no lo hace
+        BigDecimal resultado = svc.recargar("1", BigDecimal.valueOf(-5));
+        assertEquals(BigDecimal.valueOf(5), resultado);
+    }
+
+    @Test
+    public void recargarConMontoCero() {
+        StubRepo repo = new StubRepo();
+        SigmaCardService svc = new SigmaCardService(repo);
+        BigDecimal resultado = svc.recargar("1", BigDecimal.ZERO);
+        assertEquals(BigDecimal.valueOf(10), resultado);
+    }
+
+    @Test
+    public void consultarSaldoConIdInvalido() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        assertThrows(IllegalArgumentException.class, () -> 
+            svc.consultarSaldo("abc"));
+    }
+
+    @Test
+    public void formatConValorGrande() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        String formateado = svc.format(new BigDecimal("1000000.50"));
+        assertNotNull(formateado);
+        assertTrue(formateado.contains("1") || formateado.contains("000"));
+    }
+
+    @Test
+    public void formatConValorDecimal() {
+        SigmaCardService svc = new SigmaCardService(new StubRepo());
+        String formateado = svc.format(new BigDecimal("123.45"));
+        assertNotNull(formateado);
+        assertTrue(formateado.contains("123") || formateado.contains("45"));
+    }
+
+    @Test
+    public void recargarActualizaSaldo() {
+        StubRepo repo = new StubRepo();
+        SigmaCardService svc = new SigmaCardService(repo);
+        
+        BigDecimal saldoInicial = svc.consultarSaldo("1");
+        svc.recargar("1", BigDecimal.valueOf(20));
+        BigDecimal saldoFinal = svc.consultarSaldo("1");
+        
+        assertEquals(saldoInicial.add(BigDecimal.valueOf(20)), saldoFinal);
+    }
 }
+

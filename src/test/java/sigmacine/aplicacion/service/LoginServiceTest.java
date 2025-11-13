@@ -70,4 +70,76 @@ public class LoginServiceTest {
         assertEquals(1, dto.getId());
         assertNull(dto.getFechaRegistro());
     }
+
+    @Test
+    public void autenticarConPasswordVacia() {
+        String plain = "secret";
+        String hash = BCrypt.hashpw(plain, BCrypt.gensalt(4));
+        PasswordHash ph = new PasswordHash(hash);
+        Usuario u = Usuario.crearCliente(1, new Email("user@test.com"), ph, "User", java.time.LocalDate.now());
+        
+        LoginService svc = new LoginService(new StubRepo(u));
+        var dto = svc.autenticar("user@test.com", "");
+        assertNull(dto);
+    }
+
+    @Test
+    public void autenticarConPasswordNula() {
+        String plain = "secret";
+        String hash = BCrypt.hashpw(plain, BCrypt.gensalt(4));
+        PasswordHash ph = new PasswordHash(hash);
+        Usuario u = Usuario.crearCliente(1, new Email("user@test.com"), ph, "User", java.time.LocalDate.now());
+        
+        LoginService svc = new LoginService(new StubRepo(u));
+        var dto = svc.autenticar("user@test.com", null);
+        assertNull(dto);
+    }
+
+    @Test
+    public void autenticarRetornaDatosCompletos() {
+        String plain = "password123";
+        String hash = BCrypt.hashpw(plain, BCrypt.gensalt(4));
+        PasswordHash ph = new PasswordHash(hash);
+        java.time.LocalDate fecha = java.time.LocalDate.of(2024, 1, 15);
+        Usuario u = Usuario.crearCliente(42, new Email("test@example.com"), ph, "Test User", fecha);
+        
+        LoginService svc = new LoginService(new StubRepo(u));
+        var dto = svc.autenticar("test@example.com", plain);
+        
+        assertNotNull(dto);
+        assertEquals(42, dto.getId());
+        assertEquals("test@example.com", dto.getEmail());
+        assertEquals("Test User", dto.getNombre());
+        assertEquals("CLIENTE", dto.getRol());
+        assertEquals("2024-01-15", dto.getFechaRegistro());
+    }
+
+    @Test
+    public void autenticarAdminRetornaRolCorrecto() {
+        String plain = "admin123";
+        String hash = BCrypt.hashpw(plain, BCrypt.gensalt(4));
+        PasswordHash ph = new PasswordHash(hash);
+        Usuario admin = Usuario.crearAdmin(1, new Email("admin@system.com"), ph, "Administrator");
+        
+        LoginService svc = new LoginService(new StubRepo(admin));
+        var dto = svc.autenticar("admin@system.com", plain);
+        
+        assertNotNull(dto);
+        assertEquals("ADMIN", dto.getRol());
+    }
+
+    @Test
+    public void autenticarConEmailVacio() {
+        LoginService svc = new LoginService(new StubRepo(null));
+        var dto = svc.autenticar("", "password");
+        assertNull(dto);
+    }
+
+    @Test
+    public void autenticarConEspaciosEnEmail() {
+        LoginService svc = new LoginService(new StubRepo(null));
+        var dto = svc.autenticar("  invalid email  ", "password");
+        assertNull(dto);
+    }
 }
+
