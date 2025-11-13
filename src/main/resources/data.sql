@@ -49,85 +49,85 @@ INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REP
 (1, 'Dune: Part Two', 'Ciencia ficción', 'PG-13', 166, 'Denis Villeneuve', 'Timothée Chalamet, Zendaya',
 '/videos/dune_trailer.mp4',
 'Sigue el viaje mítico de Paul Atreides mientras se une a Chani y los Fremen en una guerra de venganza contra los conspiradores que destruyeron a su familia.',
-'En Cartelera', '/Images/Posters/dune_poster.png', TRUE);
+'En Cartelera', 'Posters/dune_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (2, 'Joker', 'Thriller psicológico', 'R', 122, 'Todd Phillips', 'Joaquin Phoenix, Robert De Niro',
 '/videos/joker_trailer.mp4',
 'Un comediante fracasado desciende a la locura y se convierte en una figura icónica del crimen.',
-'En Cartelera', '/Images/Posters/joker_poster.png', TRUE);
+'En Cartelera', 'Posters/joker_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (3, 'Godzilla x Kong: The New Empire', 'Acción, Ciencia ficción', 'PG-13', 115, 'Adam Wingard', 'Rebecca Hall, Brian Tyree Henry',
 '/videos/godzillavskong_trailer.mp4',
 'Kong y Godzilla se unen para luchar contra una amenaza colosal desconocida que se esconde en nuestro mundo.',
-'En Cartelera', '/Images/Posters/godzillavskong_poster.png', TRUE);
+'En Cartelera', 'Posters/godzillavskong_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (4, 'Los Pitufos', 'Animación, Comedia, Aventura', 'PG', 90, 'Raja Gosnell', 'Hank Azaria, Neil Patrick Harris, Jayma Mays',
 '/videos/pitufos_trailer.mp4',
 'Un grupo de pequeños seres azules de tres manzanas de altura huyen de su pueblo natal después de que el malvado hechicero Gargamel los descubre, y terminan en el Central Park de Nueva York.',
-'En Cartelera', '/Images/Posters/LosPitufos.jpg', TRUE);
+'En Cartelera', 'Posters/LosPitufos.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (5, 'Barbie', 'Comedia, Fantasía, Romance', 'PG-13', 114, 'Greta Gerwig', 'Margot Robbie, Ryan Gosling',
 '/videos/BARBIE Tráiler Español Latino (2023) - ONE Media Español (1080p, h264).mp4',
 'Barbie vive en Barbieland donde todo es perfecto. Sin embargo, cuando tiene pensamientos sobre la muerte, decide aventurarse en el mundo real.',
-'En Cartelera', '/Images/Posters/Barbie.jpg', TRUE);
+'En Cartelera', 'Posters/Barbie.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (6, 'Frozen 2', 'Animación, Aventura, Fantasía', 'PG', 103, 'Chris Buck, Jennifer Lee', 'Kristen Bell, Idina Menzel, Josh Gad',
 '/videos/Frozen 2 de Disney  Nuevo Tráiler Oficial en español  HD - Disney España (1080p, h264).mp4',
 'Elsa escucha una misteriosa voz llamándola. Junto a Anna, Kristoff, Olaf y Sven, emprende un viaje épico para descubrir el origen de sus poderes y salvar su reino.',
-'En Cartelera', '/Images/Posters/Frozen2.jpg', TRUE);
+'En Cartelera', 'Posters/Frozen2.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (7, 'Interstellar', 'Ciencia ficción, Drama, Aventura', 'PG-13', 169, 'Christopher Nolan', 'Matthew McConaughey, Anne Hathaway, Jessica Chastain',
 '/videos/Interstellar - Tráiler final en español HD - Warner Bros. Pictures España (1080p, h264).mp4',
 'Un grupo de exploradores viaja a través de un agujero de gusano en el espacio en un intento de asegurar la supervivencia de la humanidad.',
-'En Cartelera', '/Images/Posters/Interestellar.jpg', TRUE);
+'En Cartelera', 'Posters/Interestellar.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (8, 'Las Aventuras de Sharkboy y Lavagirl', 'Aventura, Familia, Ciencia ficción', 'PG', 93, 'Robert Rodriguez', 'Taylor Lautner, Taylor Dooley, Cayden Boyd',
 '/videos/THEADV~1.MP4',
 'Un niño solitario inventa dos superhéroes imaginarios: Sharkboy y Lavagirl. Cuando estos personajes cobran vida, lo llevan al Planeta Drool donde debe salvar su mundo de ensueño.',
-'En Cartelera', '/Images/Posters/Las aventuras de sharkboy y lavagirl.jpg', TRUE);
+'En Cartelera', 'Posters/Las aventuras de sharkboy y lavagirl.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (9, 'No Se Aceptan Devoluciones', 'Comedia, Drama', 'PG-13', 122, 'Eugenio Derbez', 'Eugenio Derbez, Karla Souza, Jessica Lindsey',
 '/videos/NO SE ACEPTAN DEVOLUCIONES - Tráiler Oficial España - Estreno en cines el 30 de abril - Filmax (1080p, h264).mp4',
 'Un playboy empedernido ve su vida cambiar cuando una mujer del pasado le deja una bebé diciendo que es su hija. Cuando aprende a amarla, la madre reaparece para reclamarla.',
-'En Cartelera', '/Images/Posters/NoSeAceptanDevoluciones.jpg', TRUE);
+'En Cartelera', 'Posters/NoSeAceptanDevoluciones.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (10, 'Spider-Man: Brand New Day', 'Acción, Aventura, Superhéroes', 'PG-13', 135, 'TBA', 'Tom Holland, Zendaya',
-'/videos/SPIDER-MAN BRAND NEW DAY – "Shadows of the Symbiote" Trailer (Concept Version) - Teaser Universe (1080p, h264).mp4',
+'/videos/TrailerSpiderMan.mp4',
 'Spider-Man enfrenta nuevas amenazas mientras lidia con las sombras del simbionte y descubre secretos que cambiarán su vida para siempre.',
-'En Cartelera', '/Images/Posters/SpiderManBrandNewDay.jpg', TRUE);
+'En Cartelera', 'Posters/SpiderManBrandNewDay.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (11, 'Star Wars: The Force Awakens', 'Ciencia ficción, Aventura, Acción', 'PG-13', 138, 'J.J. Abrams', 'Daisy Ridley, John Boyega, Harrison Ford',
-'/videos/Star Wars The Force Awakens Trailer (Official) - Star Wars (1080p, h264).mp4',
+'/videos/StarWarsTrailer.mp4',
 'Tres décadas después de la derrota del Imperio Galáctico, una nueva amenaza surge. Una joven chatarrera y un stormtrooper desertor se unen en una búsqueda desesperada del último Jedi.',
-'En Cartelera', '/Images/Posters/starWarsTheForceAwakens.jpg', TRUE);
+'En Cartelera', 'Posters/starWarsTheForceAwakens.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (12, 'Teen Beach Movie', 'Musical, Comedia, Romance', 'G', 110, 'Jeffrey Hornaday', 'Ross Lynch, Maia Mitchell, Grace Phipps',
 '/videos/TEEN BEACH MOVIE (Trailer español) - Cine Fantasia (720p, h264).mp4',
 'Dos adolescentes se transportan mágicamente dentro de una película musical de playa de los años 60 donde deben encontrar la forma de regresar a casa.',
-'En Cartelera', '/Images/Posters/teenbeachmovie.jpg', TRUE);
+'En Cartelera', 'Posters/teenbeachmovie.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (13, 'Violet Evergarden: Eternity and the Auto Memory Doll', 'Animación, Drama, Fantasía', 'PG-13', 90, 'Haruka Fujita', 'Yui Ishikawa, Minako Kotobuki',
 '/videos/Violet Evergarden – Eternity and the Auto Memory Doll   In Cinemas December 5 - Crunchyroll Store Australia (1080p, h264).mp4',
 'Violet Evergarden ayuda a una joven noble a prepararse para su debut en sociedad, mientras ambas descubren el verdadero significado del amor y la familia.',
-'En Cartelera', '/Images/Posters/VioletEvergardenAutoMemoryDoll.jpg', TRUE);
+'En Cartelera', 'Posters/VioletEvergardenAutoMemoryDoll.jpg', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (14, 'WALL-E', 'Animación, Ciencia ficción, Romance', 'G', 98, 'Andrew Stanton', 'Ben Burtt, Elissa Knight, Jeff Garlin',
 '/videos/WALL•E  Tráiler Oficial  Disney · Pixar Oficial - Disney España (240p, h264).mp4',
 'Un pequeño robot recolector de basura llamado WALL-E se embarca en una aventura espacial que decidirá el destino de la humanidad.',
-'En Cartelera', '/Images/Posters/Wall-E.jpg', TRUE);
+'En Cartelera', 'Posters/Wall-E.jpg', TRUE);
 
 
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');

@@ -205,38 +205,57 @@ private void updateMovieButtons() {
 
     public void init(UsuarioDTO usuario) { 
         this.usuario = usuario;
+        postersRequested = false;
         
-        // Usar la ciudad de la sesión si está disponible
         String ciudad = sigmacine.aplicacion.session.Session.getSelectedCity();
         if (ciudad != null && !ciudad.isEmpty()) {
             this.ciudadSeleccionada = ciudad;
         }
         
-        esperarYCargarPeliculas();
+        System.out.println("[DEBUG] ClienteController.init(usuario) - peliculasPane: " + (peliculasPane != null ? "existe" : "null"));
+        
+        javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(150));
+        pause.setOnFinished(e -> cargarPeliculasInicio());
+        pause.play();
     }
+    
     public void init(UsuarioDTO usuario, String ciudad) {
         this.usuario = usuario;
         this.ciudadSeleccionada = ciudad;
         sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
-        esperarYCargarPeliculas();
+        postersRequested = false;
+        
+        System.out.println("[DEBUG] ClienteController.init(usuario, ciudad) - peliculasPane: " + (peliculasPane != null ? "existe" : "null"));
+        
+        javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(150));
+        pause.setOnFinished(e -> cargarPeliculasInicio());
+        pause.play();
     }
             private void esperarYCargarPeliculas() {
+            System.out.println("esperarYCargarPeliculas() - postersRequested: " + postersRequested);
             if (postersRequested) return;
             postersRequested = true;
 
             StackPane anchor = (peliculasPane != null) ? peliculasPane : promoPane;
+            System.out.println("anchor seleccionado: " + (anchor == peliculasPane ? "peliculasPane" : anchor == promoPane ? "promoPane" : "null"));
 
             if (anchor != null && anchor.getScene() != null) {
+                System.out.println("anchor tiene scene, ejecutando cargarPeliculasInicio inmediatamente");
                 Platform.runLater(this::cargarPeliculasInicio);
                 return;
             }
             if (anchor != null) {
+                System.out.println("anchor existe pero no tiene scene, agregando listener");
                 anchor.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                    if (newScene != null) Platform.runLater(this::cargarPeliculasInicio);
+                    if (newScene != null) {
+                        System.out.println("Scene agregada, ejecutando cargarPeliculasInicio");
+                        Platform.runLater(this::cargarPeliculasInicio);
+                    }
                 });
                 return;
             }
             // Último recurso
+            System.out.println("Sin anchor, usando Thread con delay");
             new Thread(() -> {
                 try {
                     Thread.sleep(800);
@@ -249,7 +268,7 @@ private void updateMovieButtons() {
 private void advanceMovies(int dir) {
     if (peliculasScroll == null) return;
     stepFraction = computeStepFraction();
-    if (stepFraction <= 0.0) return; // sin overflow, nada que mover
+    if (stepFraction <= 0.0) return;
 
     double now = peliculasScroll.getHvalue();
     double target = Math.max(0.0, Math.min(1.0, now + dir * stepFraction));
@@ -280,7 +299,6 @@ private void advanceMovies(int dir) {
     @FXML
     private void initialize() {
          initCarrusel();
-        // Solo mantener el Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("inicio");
@@ -537,15 +555,21 @@ private void advanceMovies(int dir) {
                 return new Image(r, true);
             }
 
-            int slash = Math.max(r.lastIndexOf('/'), r.lastIndexOf('\\'));
-            String fileName = (slash >= 0) ? r.substring(slash + 1) : r;
-
-            java.net.URL res = getClass().getResource("/Images/" + fileName);
+            // Try with /Images/ prefix first (for paths like "Posters/image.jpg")
+            java.net.URL res = getClass().getResource("/Images/" + r);
             if (res != null) return new Image(res.toExternalForm(), false);
 
+            // Extract just the filename and try in /Images/
+            int slash = Math.max(r.lastIndexOf('/'), r.lastIndexOf('\\'));
+            String fileName = (slash >= 0) ? r.substring(slash + 1) : r;
+            res = getClass().getResource("/Images/" + fileName);
+            if (res != null) return new Image(res.toExternalForm(), false);
+
+            // Try as absolute path
             res = getClass().getResource(r.startsWith("/") ? r : ("/" + r));
             if (res != null) return new Image(res.toExternalForm(), false);
 
+            // Try as file path
             java.io.File f = new java.io.File(r);
             if (f.exists()) return new Image(f.toURI().toString(), false);
         } catch (Exception ignored) {}
@@ -765,21 +789,28 @@ private void advanceMovies(int dir) {
     }
 
     private void cargarPeliculasInicio() {
+    System.out.println("[DEBUG] cargarPeliculasInicio() INICIANDO");
+    System.out.println("[DEBUG] peliculasBox: " + (peliculasBox != null ? "existe" : "NULL"));
+    System.out.println("[DEBUG] peliculasPane: " + (peliculasPane != null ? "existe" : "NULL"));
     try {
         DatabaseConfig db = new DatabaseConfig();
         PeliculaRepositoryJdbc repo = new PeliculaRepositoryJdbc(db);
-        List<Pelicula> peliculas = repo.buscarPorTitulo(""); // todas
+        List<Pelicula> peliculas = repo.buscarPorTitulo("");
+
+        System.out.println("[DEBUG] Peliculas encontradas: " + (peliculas != null ? peliculas.size() : "NULL"));
 
         if (peliculas == null || peliculas.isEmpty()) {
             if (peliculasBox != null) {
-                peliculasBox.getChildren().setAll(new Label("No hay películas para mostrar"));
+                peliculasBox.getChildren().setAll(new Label("No hay peliculas para mostrar"));
             }
             return;
         }
         construirCarruselPeliculas(peliculas);
+        System.out.println("[DEBUG] cargarPeliculasInicio() COMPLETADO");
     } catch (Exception ex) {
+        System.out.println("[ERROR] en cargarPeliculasInicio(): " + ex.getMessage());
         ex.printStackTrace();
-        if (peliculasBox != null) peliculasBox.getChildren().setAll(new Label("Error cargando películas."));
+        if (peliculasBox != null) peliculasBox.getChildren().setAll(new Label("Error cargando peliculas."));
        }
 }
 private Node buildMovieCard(Pelicula p) {

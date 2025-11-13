@@ -202,7 +202,13 @@ public class ControladorControlador {
                 stage.setTitle("Sigma Cine - Admin");
             } else {
                 ClienteController c = loader.getController();
-                c.init(usuario);
+                // Obtener la ciudad de la sesión
+                String ciudad = sigmacine.aplicacion.session.Session.getSelectedCity();
+                if (ciudad != null && !ciudad.isEmpty()) {
+                    c.init(usuario, ciudad);
+                } else {
+                    c.init(usuario);
+                }
                 c.setCoordinador(this);
                 stage.setTitle("Sigma Cine - Cliente");
             }
@@ -443,6 +449,9 @@ public class ControladorControlador {
         ClienteController controller = loader.getController();
         if (Session.isLoggedIn()) {
             controller.init(Session.getCurrent());
+        } else {
+            // Llamar init con null para que cargue el carrusel sin usuario
+            controller.init(null);
         }
         controller.setCoordinador(this);
         

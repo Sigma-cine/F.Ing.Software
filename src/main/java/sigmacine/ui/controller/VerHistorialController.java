@@ -152,6 +152,8 @@ public class VerHistorialController {
         posterView.setSmooth(true);
         posterView.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.6) , 6,0,0,2 );");
 
+        boolean imageLoaded = false;
+        
         try {
             if (dto.getCompraId() != null && this.historialService != null && this.historialService.repo != null) {
                 var boletos = this.historialService.repo.obtenerBoletosPorCompra(dto.getCompraId());
@@ -164,8 +166,29 @@ public class VerHistorialController {
                             String posterRef = matches.get(0).getPosterUrl();
                             try {
                                 Image img = resolveImage(posterRef);
-                                if (img != null) posterView.setImage(img);
+                                if (img != null) {
+                                    posterView.setImage(img);
+                                    imageLoaded = true;
+                                }
                             } catch (Exception ignore) {}
+                        }
+                    }
+                }
+                if (!imageLoaded) {
+                    var productos = this.historialService.repo.obtenerProductosPorCompra(dto.getCompraId());
+                    if (productos != null && !productos.isEmpty()) {
+                        for (var producto : productos) {
+                            String imagenUrl = producto.getImageUrl();
+                            if (imagenUrl != null && !imagenUrl.isBlank()) {
+                                try {
+                                    Image img = resolveImage(imagenUrl);
+                                    if (img != null) {
+                                        posterView.setImage(img);
+                                        imageLoaded = true;
+                                        break; // Usar la primera imagen disponible
+                                    }
+                                } catch (Exception ignore) {}
+                            }
                         }
                     }
                 }
@@ -207,16 +230,27 @@ public class VerHistorialController {
     private Image resolveImage(String ref) {
         if (ref == null || ref.isBlank()) return null;
         try {
+            // Intentar primero con la ruta completa si empieza con /Images/
+            if (ref.startsWith("/Images/")) {
+                java.net.URL res = getClass().getResource(ref);
+                if (res != null) return new Image(res.toExternalForm(), false);
+            }
+            
             String r = ref;
             String lower = ref.toLowerCase();
             if (lower.contains("src") && (lower.contains("images") || lower.contains("img"))) {
                 int idx = Math.max(ref.lastIndexOf('/'), ref.lastIndexOf('\\'));
                 if (idx >= 0 && idx + 1 < ref.length()) r = ref.substring(idx + 1);
             }
+            
+            // Intentar con /Images/ + ruta relativa
             java.net.URL res = getClass().getResource("/Images/" + r);
             if (res != null) return new Image(res.toExternalForm(), false);
+            
+            // Intentar como archivo en el sistema
             java.io.File f = new java.io.File(ref);
             if (f.exists()) return new Image(f.toURI().toString(), false);
+            
             return new Image(ref, true);
         } catch (Exception e) { return null; }
     }

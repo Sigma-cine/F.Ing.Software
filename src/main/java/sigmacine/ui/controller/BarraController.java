@@ -50,7 +50,7 @@ public class BarraController {
     }
 
     private void configurarEventos() {
-        logoImage.setOnMouseClicked(this::onLogoClick);
+        // El evento del logo ya está configurado en el FXML con onMouseClicked="#onLogoClick"
 
         btnCartelera.setOnAction(e -> {
             navegarACartelera();
@@ -377,11 +377,24 @@ public class BarraController {
 
     @FXML
     private void onLogoClick(MouseEvent event) {
+        System.out.println("[DEBUG] Logo SIGMA CINE clickeado");
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            // Ir a cartelera en lugar de página inicial vacía
-            coordinador.mostrarCartelera();
-            marcarBotonActivo("cartelera");
+            // Verificar si hay sesión activa
+            boolean haySession = Session.isLoggedIn();
+            UsuarioDTO usuario = Session.getCurrent();
+            
+            System.out.println("[DEBUG] Session.isLoggedIn(): " + haySession);
+            System.out.println("[DEBUG] Session.getCurrent(): " + (usuario != null ? "existe" : "null"));
+            
+            if (haySession && usuario != null) {
+                System.out.println("[DEBUG] Llamando a mostrarHome()");
+                coordinador.mostrarHome(usuario);
+            } else {
+                System.out.println("[DEBUG] Llamando a mostrarPaginaInicial()");
+                coordinador.mostrarPaginaInicial();
+            }
+            marcarBotonActivo("inicio");
         }
     }
 
