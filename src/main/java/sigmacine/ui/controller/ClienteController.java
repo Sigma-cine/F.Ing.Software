@@ -205,20 +205,27 @@ private void updateMovieButtons() {
 
     public void init(UsuarioDTO usuario) { 
         this.usuario = usuario;
+        postersRequested = false;
         
-        // Usar la ciudad de la sesión si está disponible
         String ciudad = sigmacine.aplicacion.session.Session.getSelectedCity();
         if (ciudad != null && !ciudad.isEmpty()) {
             this.ciudadSeleccionada = ciudad;
         }
         
-        esperarYCargarPeliculas();
+        javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(150));
+        pause.setOnFinished(e -> cargarPeliculasInicio());
+        pause.play();
     }
+    
     public void init(UsuarioDTO usuario, String ciudad) {
         this.usuario = usuario;
         this.ciudadSeleccionada = ciudad;
         sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
-        esperarYCargarPeliculas();
+        postersRequested = false;
+        
+        javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(javafx.util.Duration.millis(150));
+        pause.setOnFinished(e -> cargarPeliculasInicio());
+        pause.play();
     }
             private void esperarYCargarPeliculas() {
             if (postersRequested) return;
@@ -232,7 +239,9 @@ private void updateMovieButtons() {
             }
             if (anchor != null) {
                 anchor.sceneProperty().addListener((obs, oldScene, newScene) -> {
-                    if (newScene != null) Platform.runLater(this::cargarPeliculasInicio);
+                    if (newScene != null) {
+                        Platform.runLater(this::cargarPeliculasInicio);
+                    }
                 });
                 return;
             }
@@ -249,7 +258,7 @@ private void updateMovieButtons() {
 private void advanceMovies(int dir) {
     if (peliculasScroll == null) return;
     stepFraction = computeStepFraction();
-    if (stepFraction <= 0.0) return; // sin overflow, nada que mover
+    if (stepFraction <= 0.0) return;
 
     double now = peliculasScroll.getHvalue();
     double target = Math.max(0.0, Math.min(1.0, now + dir * stepFraction));
@@ -280,7 +289,6 @@ private void advanceMovies(int dir) {
     @FXML
     private void initialize() {
          initCarrusel();
-        // Solo mantener el Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("inicio");
@@ -537,15 +545,21 @@ private void advanceMovies(int dir) {
                 return new Image(r, true);
             }
 
-            int slash = Math.max(r.lastIndexOf('/'), r.lastIndexOf('\\'));
-            String fileName = (slash >= 0) ? r.substring(slash + 1) : r;
-
-            java.net.URL res = getClass().getResource("/Images/" + fileName);
+            // Try with /Images/ prefix first (for paths like "Posters/image.jpg")
+            java.net.URL res = getClass().getResource("/Images/" + r);
             if (res != null) return new Image(res.toExternalForm(), false);
 
+            // Extract just the filename and try in /Images/
+            int slash = Math.max(r.lastIndexOf('/'), r.lastIndexOf('\\'));
+            String fileName = (slash >= 0) ? r.substring(slash + 1) : r;
+            res = getClass().getResource("/Images/" + fileName);
+            if (res != null) return new Image(res.toExternalForm(), false);
+
+            // Try as absolute path
             res = getClass().getResource(r.startsWith("/") ? r : ("/" + r));
             if (res != null) return new Image(res.toExternalForm(), false);
 
+            // Try as file path
             java.io.File f = new java.io.File(r);
             if (f.exists()) return new Image(f.toURI().toString(), false);
         } catch (Exception ignored) {}
@@ -768,18 +782,18 @@ private void advanceMovies(int dir) {
     try {
         DatabaseConfig db = new DatabaseConfig();
         PeliculaRepositoryJdbc repo = new PeliculaRepositoryJdbc(db);
-        List<Pelicula> peliculas = repo.buscarPorTitulo(""); // todas
+        List<Pelicula> peliculas = repo.buscarPorTitulo("");
 
         if (peliculas == null || peliculas.isEmpty()) {
             if (peliculasBox != null) {
-                peliculasBox.getChildren().setAll(new Label("No hay películas para mostrar"));
+                peliculasBox.getChildren().setAll(new Label("No hay peliculas para mostrar"));
             }
             return;
         }
         construirCarruselPeliculas(peliculas);
     } catch (Exception ex) {
         ex.printStackTrace();
-        if (peliculasBox != null) peliculasBox.getChildren().setAll(new Label("Error cargando películas."));
+        if (peliculasBox != null) peliculasBox.getChildren().setAll(new Label("Error cargando peliculas."));
        }
 }
 private Node buildMovieCard(Pelicula p) {
@@ -808,7 +822,7 @@ private Node buildMovieCard(Pelicula p) {
     verMas.setPrefWidth(84);
     verMas.setPrefHeight(28);
     verMas.setOnAction(e -> abrirDetallePelicula(p));
-    verMas.setStyle("-fx-background-color:#993726; -fx-background-radius:12; -fx-font-weight:bold; -fx-text-fill:#fff;");
+    verMas.setStyle("-fx-background-color:#8A2F24; -fx-background-radius:12; -fx-font-weight:bold; -fx-text-fill:#fff;");
 
     VBox card = new VBox(6, poster, titulo, verMas);
     card.setAlignment(javafx.geometry.Pos.TOP_CENTER);

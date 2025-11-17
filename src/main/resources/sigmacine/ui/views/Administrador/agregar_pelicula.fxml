@@ -11,7 +11,7 @@
 
     <!-- Header -->
     <top>
-        <BorderPane prefHeight="80.0" style="-fx-background-color: #993726;" BorderPane.alignment="CENTER">
+        <BorderPane prefHeight="80.0" style="-fx-background-color: #8A2F24;" BorderPane.alignment="CENTER">
             <center>
                 <Label text="Administrar Películas" textFill="WHITE">
                     <font><Font name="System Bold" size="22.0"/></font>
@@ -20,8 +20,8 @@
             <right>
                 <HBox spacing="10" style="-fx-padding: 10;">
                     <TextField fx:id="campoBusqueda" promptText="Buscar por título o género" prefWidth="420"/>
-                    <Button text="Buscar"       style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onBuscar"/>
-                    <Button text="Listar todas" style="-fx-background-color: #993726;" textFill="WHITE" onAction="#onListarTodas"/>
+                    <Button text="Buscar"       style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onBuscar"/>
+                    <Button text="Listar todas" style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onListarTodas"/>
                 </HBox>
             </right>
         </BorderPane>
@@ -75,7 +75,7 @@
                         <Label text="Póster:" textFill="WHITE" GridPane.rowIndex="3"/>
                         <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="3" alignment="CENTER_LEFT">
                             <Button text="Elegir imagen" onAction="#onElegirImagen"
-                                    style="-fx-background-color:#993726; -fx-text-fill:white;"/>
+                                    style="-fx-background-color:#8A2F24; -fx-text-fill:white;"/>
                             <Label fx:id="lblImgStatus" text="Sin imagen" textFill="WHITE"/>
                         </HBox>
 

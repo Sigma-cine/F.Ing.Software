@@ -39,7 +39,6 @@ public class BarraController {
     @FXML
     public void initialize() {
         instance = this;
-        System.out.println("✓ BarraController inicializado - instance configurada");
         configurarEventos();
         actualizarEstadoSesion();
         configurarCarritoDropdown();
@@ -50,7 +49,7 @@ public class BarraController {
     }
 
     private void configurarEventos() {
-        logoImage.setOnMouseClicked(this::onLogoClick);
+        // El evento del logo ya está configurado en el FXML con onMouseClicked="#onLogoClick"
 
         btnCartelera.setOnAction(e -> {
             navegarACartelera();
@@ -276,6 +275,9 @@ public class BarraController {
     */
 
     private void navegarACartelera() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCartelera();
@@ -283,6 +285,9 @@ public class BarraController {
     }
 
     private void navegarAConfiteria() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarConfiteria();
@@ -290,6 +295,9 @@ public class BarraController {
     }
 
     private void navegarASigmaCard() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarSigmaCard();
@@ -309,6 +317,9 @@ public class BarraController {
     }
 
     private void navegarACarritoCompleto() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCarritoCompleto();
@@ -348,6 +359,9 @@ public class BarraController {
     }
 
     private void navegarAHistorial() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarHistorialCompras();
@@ -355,6 +369,9 @@ public class BarraController {
     }
 
     private void navegarARegistro() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarRegistro();
@@ -362,6 +379,9 @@ public class BarraController {
     }
 
     private void navegarALogin() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarLogin();
@@ -377,15 +397,28 @@ public class BarraController {
 
     @FXML
     private void onLogoClick(MouseEvent event) {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            // Ir a cartelera en lugar de página inicial vacía
-            coordinador.mostrarCartelera();
-            marcarBotonActivo("cartelera");
+            // Verificar si hay sesión activa
+            boolean haySession = Session.isLoggedIn();
+            UsuarioDTO usuario = Session.getCurrent();
+            
+            if (haySession && usuario != null) {
+                coordinador.mostrarHome(usuario);
+            } else {
+                coordinador.mostrarPaginaInicial();
+            }
+            marcarBotonActivo("inicio");
         }
     }
 
     private void realizarBusqueda() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         String textoBusqueda = txtBuscar.getText().trim();
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {

@@ -39,7 +39,7 @@
                     </StackPane>
 
                     <!-- Botón para cambiar (puedes enganchar el onAction al controller) -->
-                    <Button fx:id="btnCambiarFoto" onAction="#onCambiarFoto" style="-fx-background-color:#993726; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Cambiar foto" />
+                    <Button fx:id="btnCambiarFoto" onAction="#onCambiarFoto" style="-fx-background-color:#8A2F24; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Cambiar foto" />
                 </children>
             </VBox>
 
@@ -74,8 +74,8 @@
                         <children>
                             <Label fx:id="lblMensaje" style="-fx-text-fill:#ffcc00;" text="" visible="false" />
                             <Region HBox.hgrow="ALWAYS" />
-                            <Button fx:id="btnCancelar" onAction="#onCancelar" style="-fx-background-color:transparent; -fx-border-color:#993726; -fx-text-fill:#fff; -fx-border-radius:14; -fx-background-radius:14; -fx-padding:6 16;" text="Cancelar" />
-                            <Button fx:id="btnGuardar" onAction="#onGuardar" style="-fx-background-color:#993726; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Guardar cambios" />
+                            <Button fx:id="btnCancelar" onAction="#onCancelar" style="-fx-background-color:transparent; -fx-border-color:#8A2F24; -fx-text-fill:#fff; -fx-border-radius:14; -fx-background-radius:14; -fx-padding:6 16;" text="Cancelar" />
+                            <Button fx:id="btnGuardar" onAction="#onGuardar" style="-fx-background-color:#8A2F24; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Guardar cambios" />
                         </children>
                     </HBox>
                 </children>

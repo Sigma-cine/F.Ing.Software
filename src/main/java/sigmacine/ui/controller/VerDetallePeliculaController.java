@@ -23,8 +23,15 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
     private Label timeLabel;
     private boolean isUpdatingSlider = false;
     
+    // Variables estáticas para control global de trailers
+    private static MediaPlayer currentGlobalPlayer = null;
+    private static VerDetallePeliculaController currentController = null;
+    
     @Override
     public void setPelicula(Pelicula p) {
+        // Detener cualquier trailer global que se esté reproduciendo
+        stopCurrentGlobalPlayer();
+        
         super.setPelicula(p);
         
         if (p != null) {
@@ -38,6 +45,7 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
         try {
             trailerContainer.getChildren().clear();
             
+            // Limpiar MediaPlayer anterior si existe
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
                 mediaPlayer.dispose();
@@ -151,6 +159,10 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
         
         playBtn.setOnAction(e -> {
             if (mediaPlayer != null) {
+                // Detener cualquier otro player y establecer este como actual
+                stopCurrentGlobalPlayer();
+                currentGlobalPlayer = mediaPlayer;
+                currentController = this;
                 mediaPlayer.play();
             }
         });
@@ -165,6 +177,10 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
                 mediaPlayer.seek(javafx.util.Duration.ZERO);
+                if (currentGlobalPlayer == mediaPlayer) {
+                    currentGlobalPlayer = null;
+                    currentController = null;
+                }
             }
         });
         
@@ -198,5 +214,20 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
         Label lblNoTrailer = new Label("No hay trailer disponible para esta película");
         lblNoTrailer.setStyle("-fx-text-fill: #888888; -fx-font-size: 14px;");
         trailerContainer.getChildren().add(lblNoTrailer);
+    }
+    
+    // Método estático para detener cualquier trailer global
+    public static void stopCurrentGlobalPlayer() {
+        if (currentGlobalPlayer != null) {
+            try {
+                if (currentGlobalPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                    currentGlobalPlayer.pause();
+                }
+            } catch (Exception e) {
+                System.err.println("Error deteniendo MediaPlayer: " + e.getMessage());
+            }
+            currentGlobalPlayer = null;
+            currentController = null;
+        }
     }
 }

@@ -44,4 +44,57 @@ public class RegistroServiceTest {
         RegistroService svc = new RegistroService(repo);
         assertThrows(IllegalArgumentException.class, () -> svc.registrarCliente("N", "invalid-email", "p"));
     }
+
+    @Test
+    public void registrarConNombreVacio() {
+        StubRepo repo = new StubRepo(null);
+        RegistroService svc = new RegistroService(repo);
+        // El servicio no valida nombre vacío, debería crear el usuario
+        int id = svc.registrarCliente("", "test@example.com", "password");
+        assertEquals(123, id);
+    }
+
+    @Test
+    public void registrarConPasswordVacia() {
+        StubRepo repo = new StubRepo(null);
+        RegistroService svc = new RegistroService(repo);
+        // El servicio no valida password vacía, debería crear el usuario
+        int id = svc.registrarCliente("Usuario", "test@example.com", "");
+        assertEquals(123, id);
+    }
+
+    @Test
+    public void registrarEncriptaPassword() {
+        StubRepo repo = new StubRepo(null);
+        RegistroService svc = new RegistroService(repo);
+        
+        svc.registrarCliente("Test", "test@example.com", "mypassword");
+        
+        assertEquals(123, repo.createdId);
+    }
+
+    @Test
+    public void registrarConEmailSinArroba() {
+        StubRepo repo = new StubRepo(null);
+        RegistroService svc = new RegistroService(repo);
+        assertThrows(IllegalArgumentException.class, () -> 
+            svc.registrarCliente("Usuario", "testexample.com", "password"));
+    }
+
+    @Test
+    public void registrarConEmailSinDominio() {
+        StubRepo repo = new StubRepo(null);
+        RegistroService svc = new RegistroService(repo);
+        assertThrows(IllegalArgumentException.class, () -> 
+            svc.registrarCliente("Usuario", "test@", "password"));
+    }
+
+    @Test
+    public void registrarConEmailNulo() {
+        StubRepo repo = new StubRepo(null);
+        RegistroService svc = new RegistroService(repo);
+        assertThrows(IllegalArgumentException.class, () -> 
+            svc.registrarCliente("Usuario", null, "password"));
+    }
 }
+

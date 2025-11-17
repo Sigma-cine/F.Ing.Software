@@ -32,6 +32,10 @@ INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (2, 'Gran Estación',     'Bogotá'
 INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (3, 'Parque La Colina',  'Bogotá');
 INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (4, 'Viva Envigado',     'Medellín');
 INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (5, 'El Tesoro',         'Medellín');
+INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (6, 'Unicentro',         'Cali');
+INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (7, 'Jardín Plaza',      'Cali');
+INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (8, 'Buenavista',        'Barranquilla');
+INSERT INTO SEDE (ID, NOMBRE, CIUDAD) VALUES (9, 'Villa Country',     'Barranquilla');
 
 -- Salas por sede
 INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(1,  1, 150, '2D', 1);
@@ -44,30 +48,110 @@ INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(7,  2,  90, 
 INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(8,  1, 170, '2D', 4);
 INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(9,  2, 105, '3D', 4);
 INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(10, 1, 120, '2D', 5);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(11, 1, 130, '2D', 6);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(12, 2, 95,  '3D', 6);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(13, 1, 145, '2D', 7);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(14, 2, 85,  'VIP',7);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(15, 1, 155, '2D', 8);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(16, 2, 100, '3D', 8);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(17, 1, 125, '2D', 9);
+INSERT INTO SALA (ID, NUMERO_SALA, CAPACIDAD, TIPO, SEDE_ID) VALUES(18, 2, 90,  'VIP',9);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (1, 'Dune: Part Two', 'Ciencia ficción', 'PG-13', 166, 'Denis Villeneuve', 'Timothée Chalamet, Zendaya',
 '/videos/dune_trailer.mp4',
 'Sigue el viaje mítico de Paul Atreides mientras se une a Chani y los Fremen en una guerra de venganza contra los conspiradores que destruyeron a su familia.',
-'En Cartelera', 'src\\main\\resources\\Images\\dune_poster.png', TRUE);
+'En Cartelera', 'Posters/dune_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (2, 'Joker', 'Thriller psicológico', 'R', 122, 'Todd Phillips', 'Joaquin Phoenix, Robert De Niro',
 '/videos/joker_trailer.mp4',
 'Un comediante fracasado desciende a la locura y se convierte en una figura icónica del crimen.',
-'En Cartelera', 'src\\main\\resources\\Images\\joker_poster.png', TRUE);
+'En Cartelera', 'Posters/joker_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (3, 'Godzilla x Kong: The New Empire', 'Acción, Ciencia ficción', 'PG-13', 115, 'Adam Wingard', 'Rebecca Hall, Brian Tyree Henry',
 '/videos/godzillavskong_trailer.mp4',
 'Kong y Godzilla se unen para luchar contra una amenaza colosal desconocida que se esconde en nuestro mundo.',
-'En Cartelera', 'src\\main\\resources\\Images\\godzillavskong_poster.png', TRUE);
+'En Cartelera', 'Posters/godzillavskong_poster.png', TRUE);
 
 INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
 (4, 'Los Pitufos', 'Animación, Comedia, Aventura', 'PG', 90, 'Raja Gosnell', 'Hank Azaria, Neil Patrick Harris, Jayma Mays',
 '/videos/pitufos_trailer.mp4',
 'Un grupo de pequeños seres azules de tres manzanas de altura huyen de su pueblo natal después de que el malvado hechicero Gargamel los descubre, y terminan en el Central Park de Nueva York.',
-'En Cartelera', 'src\\main\\resources\\Images\\LosPitufos.jpg', TRUE);
+'En Cartelera', 'Posters/LosPitufos.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(5, 'Barbie', 'Comedia, Fantasía, Romance', 'PG-13', 114, 'Greta Gerwig', 'Margot Robbie, Ryan Gosling',
+'/videos/BarbieTrailer.mp4',
+'Barbie vive en Barbieland donde todo es perfecto. Sin embargo, cuando tiene pensamientos sobre la muerte, decide aventurarse en el mundo real.',
+'En Cartelera', 'Posters/Barbie.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(6, 'Frozen 2', 'Animación, Aventura, Fantasía', 'PG', 103, 'Chris Buck, Jennifer Lee', 'Kristen Bell, Idina Menzel, Josh Gad',
+'/videos/Frozen2Trailer.mp4',
+'Elsa escucha una misteriosa voz llamándola. Junto a Anna, Kristoff, Olaf y Sven, emprende un viaje épico para descubrir el origen de sus poderes y salvar su reino.',
+'En Cartelera', 'Posters/Frozen2.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(7, 'Interstellar', 'Ciencia ficción, Drama, Aventura', 'PG-13', 169, 'Christopher Nolan', 'Matthew McConaughey, Anne Hathaway, Jessica Chastain',
+'/videos/InterestellarTrailer.mp4',
+'Un grupo de exploradores viaja a través de un agujero de gusano en el espacio en un intento de asegurar la supervivencia de la humanidad.',
+'En Cartelera', 'Posters/Interestellar.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(8, 'Las Aventuras de Sharkboy y Lavagirl', 'Aventura, Familia, Ciencia ficción', 'PG', 93, 'Robert Rodriguez', 'Taylor Lautner, Taylor Dooley, Cayden Boyd',
+'/videos/THEADV~1.MP4',
+'Un niño solitario inventa dos superhéroes imaginarios: Sharkboy y Lavagirl. Cuando estos personajes cobran vida, lo llevan al Planeta Drool donde debe salvar su mundo de ensueño.',
+'En Cartelera', 'Posters/Las aventuras de sharkboy y lavagirl.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(9, 'No Se Aceptan Devoluciones', 'Comedia, Drama', 'PG-13', 122, 'Eugenio Derbez', 'Eugenio Derbez, Karla Souza, Jessica Lindsey',
+'/videos/NoSeAceptanDevolucionesTrailer.mp4',
+'Un playboy empedernido ve su vida cambiar cuando una mujer del pasado le deja una bebé diciendo que es su hija. Cuando aprende a amarla, la madre reaparece para reclamarla.',
+'En Cartelera', 'Posters/NoSeAceptanDevoluciones.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(10, 'Spider-Man: Brand New Day', 'Acción, Aventura, Superhéroes', 'PG-13', 135, 'TBA', 'Tom Holland, Zendaya',
+'/videos/TrailerSpiderMan.mp4',
+'Spider-Man enfrenta nuevas amenazas mientras lidia con las sombras del simbionte y descubre secretos que cambiarán su vida para siempre.',
+'En Cartelera', 'Posters/SpiderManBrandNewDay.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(11, 'Star Wars: The Force Awakens', 'Ciencia ficción, Aventura, Acción', 'PG-13', 138, 'J.J. Abrams', 'Daisy Ridley, John Boyega, Harrison Ford',
+'/videos/StarWarsTrailer.mp4',
+'Tres décadas después de la derrota del Imperio Galáctico, una nueva amenaza surge. Una joven chatarrera y un stormtrooper desertor se unen en una búsqueda desesperada del último Jedi.',
+'En Cartelera', 'Posters/starWarsTheForceAwakens.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(12, 'Teen Beach Movie', 'Musical, Comedia, Romance', 'G', 110, 'Jeffrey Hornaday', 'Ross Lynch, Maia Mitchell, Grace Phipps',
+'/videos/TeenBeachMovieTrailer.mp4',
+'Dos adolescentes se transportan mágicamente dentro de una película musical de playa de los años 60 donde deben encontrar la forma de regresar a casa.',
+'En Cartelera', 'Posters/teenbeachmovie.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(13, 'Violet Evergarden: Eternity and the Auto Memory Doll', 'Animación, Drama, Fantasía', 'PG-13', 90, 'Haruka Fujita', 'Yui Ishikawa, Minako Kotobuki',
+'/videos/VioletEvergardenTrailer.mp4',
+'Violet Evergarden ayuda a una joven noble a prepararse para su debut en sociedad, mientras ambas descubren el verdadero significado del amor y la familia.',
+'En Cartelera', 'Posters/VioletEvergardenAutoMemoryDoll.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(14, 'WALL-E', 'Animación, Ciencia ficción, Romance', 'G', 98, 'Andrew Stanton', 'Ben Burtt, Elissa Knight, Jeff Garlin',
+'/videos/Wall-ETrailer.mp4',
+'Un pequeño robot recolector de basura llamado WALL-E se embarca en una aventura espacial que decidirá el destino de la humanidad.',
+'En Cartelera', 'Posters/Wall-E.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(15, 'Teen Beach Movie 2', 'Musical, Comedia, Romance', 'G', 104, 'Jeffrey Hornaday', 'Ross Lynch, Maia Mitchell, Grace Phipps',
+'/videos/TeenBeachMovie2Trailer.mp4',
+'Mack y Brady descubren que los personajes de su película favorita han salido de la pantalla y están en el mundo real. Ahora deben encontrar la forma de devolverlos antes de que sea demasiado tarde.',
+'En Cartelera', 'Posters/teenbeachmovie2.jpg', TRUE);
+
+INSERT INTO PELICULA (ID, TITULO, GENERO, CLASIFICACION, DURACION, DIRECTOR, REPARTO, TRAILER, SINOPSIS, ESTADO, POSTER_URL, ESTADO_BOOL) VALUES
+(16, '31 Minutos: La Película', 'Animación, Comedia, Aventura', 'PG', 31, 'Álvaro Díaz González, Pedro Peirano', 'Tulio Triviño, Juan Carlos Bodoque, Patana',
+'/videos/31MinutosTrailer.mp4',
+'El noticiero de títeres más famoso de Latinoamérica enfrenta su mayor aventura cuando deben salvar a su querido programa de una inminente cancelación.',
+'En Cartelera', 'Posters/31MinutosFilme.jpg', TRUE);
 
 
 INSERT INTO TARIFA (ID, NOMBRE, PRECIO_BASE, VIGENCIA) VALUES(1, 'Entrada General 2D', 15.00, '2025-01-01');
@@ -112,16 +196,6 @@ INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(14, '2025-09-15', '19:10', 'Activa', TIME '02:46:00', TRUE, 1, 9);
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(15, '2025-09-15', '21:30', 'Activa', TIME '02:46:00', TRUE, 1, 9);
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(16, '2025-09-15', '20:30', 'Activa', TIME '02:02:00', TRUE, 2, 10); -- El Tesoro
-
--- Funciones para Los Pitufos (película 4) - 2025-11-11
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(200, '2025-11-11', '10:00', 'Activa', TIME '01:30:00', TRUE, 4, 1); -- Bogotá / Salitre Plaza
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(201, '2025-11-11', '14:00', 'Activa', TIME '01:30:00', TRUE, 4, 2);
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(202, '2025-11-11', '16:30', 'Activa', TIME '01:30:00', TRUE, 4, 3);
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(203, '2025-11-11', '11:00', 'Activa', TIME '01:30:00', TRUE, 4, 4); -- Bogotá / Gran Estación
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(204, '2025-11-11', '15:00', 'Activa', TIME '01:30:00', TRUE, 4, 5);
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(205, '2025-11-11', '10:30', 'Activa', TIME '01:30:00', TRUE, 4, 8); -- Medellín / Viva Envigado
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(206, '2025-11-11', '17:00', 'Activa', TIME '01:30:00', TRUE, 4, 9);
-INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES(207, '2025-11-11', '12:00', 'Activa', TIME '01:30:00', TRUE, 4, 10); -- Medellín / El Tesoro
 
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(1, 'A', 1, 'Reclinable', TRUE, 1);
 INSERT INTO SILLA (ID, FILA, NUMERO, TIPO, ESTADO_BOOL, SALA_ID) VALUES(2, 'A', 2, 'Reclinable', TRUE, 1);
@@ -300,11 +374,783 @@ INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID
 (136,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2, 9),
 (135,'2025-10-20','19:00','Activa', TIME '02:02:00', TRUE, 2,10);
 
--- Funciones para Godzilla x Kong (PELICULA_ID = 3)
+-- Funciones para Godzilla x Kong
 INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
-(300,'2025-10-19','14:30','Activa', TIME '01:55:00', TRUE, 3, 1),
-(301,'2025-10-19','17:15','Activa', TIME '01:55:00', TRUE, 3, 2),
-(302,'2025-10-19','20:00','Activa', TIME '01:55:00', TRUE, 3, 3),
-(303,'2025-10-20','15:00','Activa', TIME '01:55:00', TRUE, 3, 4),
-(304,'2025-10-20','18:30','Activa', TIME '01:55:00', TRUE, 3, 5),
-(305,'2025-10-20','21:15','Activa', TIME '01:55:00', TRUE, 3, 6);
+(300,'2025-11-13','14:30','Activa', TIME '01:55:00', TRUE, 3, 1),
+(301,'2025-11-13','17:30','Activa', TIME '01:55:00', TRUE, 3, 2),
+(302,'2025-11-13','20:00','Activa', TIME '01:55:00', TRUE, 3, 3),
+(303,'2025-11-13','13:00','Activa', TIME '01:55:00', TRUE, 3, 4),
+(304,'2025-11-13','16:00','Activa', TIME '01:55:00', TRUE, 3, 5),
+(305,'2025-11-13','19:00','Activa', TIME '01:55:00', TRUE, 3, 6),
+(306,'2025-11-13','15:00','Activa', TIME '01:55:00', TRUE, 3, 7),
+(307,'2025-11-13','18:00','Activa', TIME '01:55:00', TRUE, 3, 8),
+(308,'2025-11-13','21:00','Activa', TIME '01:55:00', TRUE, 3, 9),
+(309,'2025-11-13','14:00','Activa', TIME '01:55:00', TRUE, 3, 10);
+
+-- 2025-11-14 en todas las salas
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(310,'2025-11-14','14:30','Activa', TIME '01:55:00', TRUE, 3, 1),
+(311,'2025-11-14','17:30','Activa', TIME '01:55:00', TRUE, 3, 2),
+(312,'2025-11-14','20:00','Activa', TIME '01:55:00', TRUE, 3, 3),
+(313,'2025-11-14','13:00','Activa', TIME '01:55:00', TRUE, 3, 4),
+(314,'2025-11-14','16:00','Activa', TIME '01:55:00', TRUE, 3, 5),
+(315,'2025-11-14','19:00','Activa', TIME '01:55:00', TRUE, 3, 6),
+(316,'2025-11-14','15:00','Activa', TIME '01:55:00', TRUE, 3, 7),
+(317,'2025-11-14','18:00','Activa', TIME '01:55:00', TRUE, 3, 8),
+(318,'2025-11-14','21:00','Activa', TIME '01:55:00', TRUE, 3, 9),
+(319,'2025-11-14','14:00','Activa', TIME '01:55:00', TRUE, 3, 10);
+
+-- Funciones para Los Pitufos
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(400,'2025-11-13','10:00','Activa', TIME '01:30:00', TRUE, 4, 1),
+(401,'2025-11-13','12:00','Activa', TIME '01:30:00', TRUE, 4, 2),
+(402,'2025-11-13','14:00','Activa', TIME '01:30:00', TRUE, 4, 3),
+(403,'2025-11-13','11:00','Activa', TIME '01:30:00', TRUE, 4, 4),
+(404,'2025-11-13','13:00','Activa', TIME '01:30:00', TRUE, 4, 5),
+(405,'2025-11-13','15:00','Activa', TIME '01:30:00', TRUE, 4, 6),
+(406,'2025-11-13','16:00','Activa', TIME '01:30:00', TRUE, 4, 7),
+(407,'2025-11-13','10:30','Activa', TIME '01:30:00', TRUE, 4, 8),
+(408,'2025-11-13','12:30','Activa', TIME '01:30:00', TRUE, 4, 9),
+(409,'2025-11-13','14:30','Activa', TIME '01:30:00', TRUE, 4, 10);
+
+-- 2025-11-14 en todas las salas
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(410,'2025-11-14','10:00','Activa', TIME '01:30:00', TRUE, 4, 1),
+(411,'2025-11-14','12:00','Activa', TIME '01:30:00', TRUE, 4, 2),
+(412,'2025-11-14','14:00','Activa', TIME '01:30:00', TRUE, 4, 3),
+(413,'2025-11-14','11:00','Activa', TIME '01:30:00', TRUE, 4, 4),
+(414,'2025-11-14','13:00','Activa', TIME '01:30:00', TRUE, 4, 5),
+(415,'2025-11-14','15:00','Activa', TIME '01:30:00', TRUE, 4, 6),
+(416,'2025-11-14','16:00','Activa', TIME '01:30:00', TRUE, 4, 7),
+(417,'2025-11-14','10:30','Activa', TIME '01:30:00', TRUE, 4, 8),
+(418,'2025-11-14','12:30','Activa', TIME '01:30:00', TRUE, 4, 9),
+(419,'2025-11-14','14:30','Activa', TIME '01:30:00', TRUE, 4, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(500,'2025-11-15','12:00','Activa', TIME '01:54:00', TRUE, 5, 1),
+(501,'2025-11-15','15:00','Activa', TIME '01:54:00', TRUE, 5, 2),
+(502,'2025-11-15','18:00','Activa', TIME '01:54:00', TRUE, 5, 3),
+(503,'2025-11-15','21:00','Activa', TIME '01:54:00', TRUE, 5, 4),
+(504,'2025-11-15','13:30','Activa', TIME '01:54:00', TRUE, 5, 5),
+(505,'2025-11-15','16:30','Activa', TIME '01:54:00', TRUE, 5, 6),
+(506,'2025-11-15','19:30','Activa', TIME '01:54:00', TRUE, 5, 7),
+(507,'2025-11-15','14:00','Activa', TIME '01:54:00', TRUE, 5, 8),
+(508,'2025-11-15','17:00','Activa', TIME '01:54:00', TRUE, 5, 9),
+(509,'2025-11-15','20:00','Activa', TIME '01:54:00', TRUE, 5, 10);
+
+-- 2025-11-16 en todas las salas
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(510,'2025-11-16','12:00','Activa', TIME '01:54:00', TRUE, 5, 1),
+(511,'2025-11-16','15:00','Activa', TIME '01:54:00', TRUE, 5, 2),
+(512,'2025-11-16','18:00','Activa', TIME '01:54:00', TRUE, 5, 3),
+(513,'2025-11-16','21:00','Activa', TIME '01:54:00', TRUE, 5, 4),
+(514,'2025-11-16','13:30','Activa', TIME '01:54:00', TRUE, 5, 5),
+(515,'2025-11-16','16:30','Activa', TIME '01:54:00', TRUE, 5, 6),
+(516,'2025-11-16','19:30','Activa', TIME '01:54:00', TRUE, 5, 7),
+(517,'2025-11-16','14:00','Activa', TIME '01:54:00', TRUE, 5, 8),
+(518,'2025-11-16','17:00','Activa', TIME '01:54:00', TRUE, 5, 9),
+(519,'2025-11-16','20:00','Activa', TIME '01:54:00', TRUE, 5, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(600,'2025-11-15','11:00','Activa', TIME '01:43:00', TRUE, 6, 1),
+(601,'2025-11-15','14:00','Activa', TIME '01:43:00', TRUE, 6, 2),
+(602,'2025-11-15','17:00','Activa', TIME '01:43:00', TRUE, 6, 3),
+(603,'2025-11-15','20:00','Activa', TIME '01:43:00', TRUE, 6, 4),
+(604,'2025-11-15','12:30','Activa', TIME '01:43:00', TRUE, 6, 5),
+(605,'2025-11-15','15:30','Activa', TIME '01:43:00', TRUE, 6, 6),
+(606,'2025-11-15','18:30','Activa', TIME '01:43:00', TRUE, 6, 7),
+(607,'2025-11-15','13:00','Activa', TIME '01:43:00', TRUE, 6, 8),
+(608,'2025-11-15','16:00','Activa', TIME '01:43:00', TRUE, 6, 9),
+(609,'2025-11-15','19:00','Activa', TIME '01:43:00', TRUE, 6, 10);
+
+-- 2025-11-16 en todas las salas
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(610,'2025-11-16','11:00','Activa', TIME '01:43:00', TRUE, 6, 1),
+(611,'2025-11-16','14:00','Activa', TIME '01:43:00', TRUE, 6, 2),
+(612,'2025-11-16','17:00','Activa', TIME '01:43:00', TRUE, 6, 3),
+(613,'2025-11-16','20:00','Activa', TIME '01:43:00', TRUE, 6, 4),
+(614,'2025-11-16','12:30','Activa', TIME '01:43:00', TRUE, 6, 5),
+(615,'2025-11-16','15:30','Activa', TIME '01:43:00', TRUE, 6, 6),
+(616,'2025-11-16','18:30','Activa', TIME '01:43:00', TRUE, 6, 7),
+(617,'2025-11-16','13:00','Activa', TIME '01:43:00', TRUE, 6, 8),
+(618,'2025-11-16','16:00','Activa', TIME '01:43:00', TRUE, 6, 9),
+(619,'2025-11-16','19:00','Activa', TIME '01:43:00', TRUE, 6, 10);
+
+-- Funciones para Interstellar 
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(700,'2025-11-17','12:00','Activa', TIME '02:49:00', TRUE, 7, 1),
+(701,'2025-11-17','15:30','Activa', TIME '02:49:00', TRUE, 7, 2),
+(702,'2025-11-17','19:00','Activa', TIME '02:49:00', TRUE, 7, 3),
+(703,'2025-11-17','13:00','Activa', TIME '02:49:00', TRUE, 7, 4),
+(704,'2025-11-17','16:30','Activa', TIME '02:49:00', TRUE, 7, 5),
+(705,'2025-11-17','20:00','Activa', TIME '02:49:00', TRUE, 7, 6),
+(706,'2025-11-17','14:00','Activa', TIME '02:49:00', TRUE, 7, 7),
+(707,'2025-11-17','17:30','Activa', TIME '02:49:00', TRUE, 7, 8),
+(708,'2025-11-17','21:00','Activa', TIME '02:49:00', TRUE, 7, 9),
+(709,'2025-11-17','12:30','Activa', TIME '02:49:00', TRUE, 7, 10);
+
+-- 2025-11-18 en todas las salas
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(710,'2025-11-18','12:00','Activa', TIME '02:49:00', TRUE, 7, 1),
+(711,'2025-11-18','15:30','Activa', TIME '02:49:00', TRUE, 7, 2),
+(712,'2025-11-18','19:00','Activa', TIME '02:49:00', TRUE, 7, 3),
+(713,'2025-11-18','13:00','Activa', TIME '02:49:00', TRUE, 7, 4),
+(714,'2025-11-18','16:30','Activa', TIME '02:49:00', TRUE, 7, 5),
+(715,'2025-11-18','20:00','Activa', TIME '02:49:00', TRUE, 7, 6),
+(716,'2025-11-18','14:00','Activa', TIME '02:49:00', TRUE, 7, 7),
+(717,'2025-11-18','17:30','Activa', TIME '02:49:00', TRUE, 7, 8),
+(718,'2025-11-18','21:00','Activa', TIME '02:49:00', TRUE, 7, 9),
+(719,'2025-11-18','12:30','Activa', TIME '02:49:00', TRUE, 7, 10);
+
+-- Funciones para Sharkboy y Lavagirl
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(800,'2025-11-17','10:30','Activa', TIME '01:33:00', TRUE, 8, 1),
+(801,'2025-11-17','13:00','Activa', TIME '01:33:00', TRUE, 8, 2),
+(802,'2025-11-17','15:30','Activa', TIME '01:33:00', TRUE, 8, 3),
+(803,'2025-11-17','18:00','Activa', TIME '01:33:00', TRUE, 8, 4),
+(804,'2025-11-17','11:00','Activa', TIME '01:33:00', TRUE, 8, 5),
+(805,'2025-11-17','14:00','Activa', TIME '01:33:00', TRUE, 8, 6),
+(806,'2025-11-17','16:30','Activa', TIME '01:33:00', TRUE, 8, 7),
+(807,'2025-11-17','19:00','Activa', TIME '01:33:00', TRUE, 8, 8),
+(808,'2025-11-17','12:00','Activa', TIME '01:33:00', TRUE, 8, 9),
+(809,'2025-11-17','15:00','Activa', TIME '01:33:00', TRUE, 8, 10);
+
+-- 2025-11-18 en todas las salas
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(810,'2025-11-18','10:30','Activa', TIME '01:33:00', TRUE, 8, 1),
+(811,'2025-11-18','13:00','Activa', TIME '01:33:00', TRUE, 8, 2),
+(812,'2025-11-18','15:30','Activa', TIME '01:33:00', TRUE, 8, 3),
+(813,'2025-11-18','18:00','Activa', TIME '01:33:00', TRUE, 8, 4),
+(814,'2025-11-18','11:00','Activa', TIME '01:33:00', TRUE, 8, 5),
+(815,'2025-11-18','14:00','Activa', TIME '01:33:00', TRUE, 8, 6),
+(816,'2025-11-18','16:30','Activa', TIME '01:33:00', TRUE, 8, 7),
+(817,'2025-11-18','19:00','Activa', TIME '01:33:00', TRUE, 8, 8),
+(818,'2025-11-18','12:00','Activa', TIME '01:33:00', TRUE, 8, 9),
+(819,'2025-11-18','15:00','Activa', TIME '01:33:00', TRUE, 8, 10);
+
+-- Funciones para No Se Aceptan Devoluciones 
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(900,'2025-11-19','12:00','Activa', TIME '02:02:00', TRUE, 9, 1),
+(901,'2025-11-19','15:00','Activa', TIME '02:02:00', TRUE, 9, 2),
+(902,'2025-11-19','18:00','Activa', TIME '02:02:00', TRUE, 9, 3),
+(903,'2025-11-19','21:00','Activa', TIME '02:02:00', TRUE, 9, 4),
+(904,'2025-11-19','13:00','Activa', TIME '02:02:00', TRUE, 9, 5),
+(905,'2025-11-19','16:00','Activa', TIME '02:02:00', TRUE, 9, 6),
+(906,'2025-11-19','19:00','Activa', TIME '02:02:00', TRUE, 9, 7),
+(907,'2025-11-19','14:00','Activa', TIME '02:02:00', TRUE, 9, 8),
+(908,'2025-11-19','17:00','Activa', TIME '02:02:00', TRUE, 9, 9),
+(909,'2025-11-19','20:00','Activa', TIME '02:02:00', TRUE, 9, 10);
+
+-- 2025-11-20 en todas las salas
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(910,'2025-11-20','12:00','Activa', TIME '02:02:00', TRUE, 9, 1),
+(911,'2025-11-20','15:00','Activa', TIME '02:02:00', TRUE, 9, 2),
+(912,'2025-11-20','18:00','Activa', TIME '02:02:00', TRUE, 9, 3),
+(913,'2025-11-20','21:00','Activa', TIME '02:02:00', TRUE, 9, 4),
+(914,'2025-11-20','13:00','Activa', TIME '02:02:00', TRUE, 9, 5),
+(915,'2025-11-20','16:00','Activa', TIME '02:02:00', TRUE, 9, 6),
+(916,'2025-11-20','19:00','Activa', TIME '02:02:00', TRUE, 9, 7),
+(917,'2025-11-20','14:00','Activa', TIME '02:02:00', TRUE, 9, 8),
+(918,'2025-11-20','17:00','Activa', TIME '02:02:00', TRUE, 9, 9),
+(919,'2025-11-20','20:00','Activa', TIME '02:02:00', TRUE, 9, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1000,'2025-11-21','12:00','Activa', TIME '02:15:00', TRUE, 10, 1),
+(1001,'2025-11-21','15:00','Activa', TIME '02:15:00', TRUE, 10, 2),
+(1002,'2025-11-21','18:00','Activa', TIME '02:15:00', TRUE, 10, 3),
+(1003,'2025-11-21','21:00','Activa', TIME '02:15:00', TRUE, 10, 4),
+(1004,'2025-11-21','13:00','Activa', TIME '02:15:00', TRUE, 10, 5),
+(1005,'2025-11-21','16:00','Activa', TIME '02:15:00', TRUE, 10, 6),
+(1006,'2025-11-21','19:00','Activa', TIME '02:15:00', TRUE, 10, 7),
+(1007,'2025-11-21','14:00','Activa', TIME '02:15:00', TRUE, 10, 8),
+(1008,'2025-11-21','17:00','Activa', TIME '02:15:00', TRUE, 10, 9),
+(1009,'2025-11-21','20:00','Activa', TIME '02:15:00', TRUE, 10, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1010,'2025-11-22','12:00','Activa', TIME '02:15:00', TRUE, 10, 1),
+(1011,'2025-11-22','15:00','Activa', TIME '02:15:00', TRUE, 10, 2),
+(1012,'2025-11-22','18:00','Activa', TIME '02:15:00', TRUE, 10, 3),
+(1013,'2025-11-22','21:00','Activa', TIME '02:15:00', TRUE, 10, 4),
+(1014,'2025-11-22','13:00','Activa', TIME '02:15:00', TRUE, 10, 5),
+(1015,'2025-11-22','16:00','Activa', TIME '02:15:00', TRUE, 10, 6),
+(1016,'2025-11-22','19:00','Activa', TIME '02:15:00', TRUE, 10, 7),
+(1017,'2025-11-22','14:00','Activa', TIME '02:15:00', TRUE, 10, 8),
+(1018,'2025-11-22','17:00','Activa', TIME '02:15:00', TRUE, 10, 9),
+(1019,'2025-11-22','20:00','Activa', TIME '02:15:00', TRUE, 10, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1100,'2025-11-23','11:00','Activa', TIME '02:18:00', TRUE, 11, 1),
+(1101,'2025-11-23','14:00','Activa', TIME '02:18:00', TRUE, 11, 2),
+(1102,'2025-11-23','17:00','Activa', TIME '02:18:00', TRUE, 11, 3),
+(1103,'2025-11-23','20:00','Activa', TIME '02:18:00', TRUE, 11, 4),
+(1104,'2025-11-23','12:00','Activa', TIME '02:18:00', TRUE, 11, 5),
+(1105,'2025-11-23','15:00','Activa', TIME '02:18:00', TRUE, 11, 6),
+(1106,'2025-11-23','18:00','Activa', TIME '02:18:00', TRUE, 11, 7),
+(1107,'2025-11-23','13:00','Activa', TIME '02:18:00', TRUE, 11, 8),
+(1108,'2025-11-23','16:00','Activa', TIME '02:18:00', TRUE, 11, 9),
+(1109,'2025-11-23','19:00','Activa', TIME '02:18:00', TRUE, 11, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1110,'2025-11-24','11:00','Activa', TIME '02:18:00', TRUE, 11, 1),
+(1111,'2025-11-24','14:00','Activa', TIME '02:18:00', TRUE, 11, 2),
+(1112,'2025-11-24','17:00','Activa', TIME '02:18:00', TRUE, 11, 3),
+(1113,'2025-11-24','20:00','Activa', TIME '02:18:00', TRUE, 11, 4),
+(1114,'2025-11-24','12:00','Activa', TIME '02:18:00', TRUE, 11, 5),
+(1115,'2025-11-24','15:00','Activa', TIME '02:18:00', TRUE, 11, 6),
+(1116,'2025-11-24','18:00','Activa', TIME '02:18:00', TRUE, 11, 7),
+(1117,'2025-11-24','13:00','Activa', TIME '02:18:00', TRUE, 11, 8),
+(1118,'2025-11-24','16:00','Activa', TIME '02:18:00', TRUE, 11, 9),
+(1119,'2025-11-24','19:00','Activa', TIME '02:18:00', TRUE, 11, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1200,'2025-11-25','10:00','Activa', TIME '01:50:00', TRUE, 12, 1),
+(1201,'2025-11-25','13:00','Activa', TIME '01:50:00', TRUE, 12, 2),
+(1202,'2025-11-25','16:00','Activa', TIME '01:50:00', TRUE, 12, 3),
+(1203,'2025-11-25','19:00','Activa', TIME '01:50:00', TRUE, 12, 4),
+(1204,'2025-11-25','11:00','Activa', TIME '01:50:00', TRUE, 12, 5),
+(1205,'2025-11-25','14:00','Activa', TIME '01:50:00', TRUE, 12, 6),
+(1206,'2025-11-25','17:00','Activa', TIME '01:50:00', TRUE, 12, 7),
+(1207,'2025-11-25','12:00','Activa', TIME '01:50:00', TRUE, 12, 8),
+(1208,'2025-11-25','15:00','Activa', TIME '01:50:00', TRUE, 12, 9),
+(1209,'2025-11-25','18:00','Activa', TIME '01:50:00', TRUE, 12, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1210,'2025-11-26','10:00','Activa', TIME '01:50:00', TRUE, 12, 1),
+(1211,'2025-11-26','13:00','Activa', TIME '01:50:00', TRUE, 12, 2),
+(1212,'2025-11-26','16:00','Activa', TIME '01:50:00', TRUE, 12, 3),
+(1213,'2025-11-26','19:00','Activa', TIME '01:50:00', TRUE, 12, 4),
+(1214,'2025-11-26','11:00','Activa', TIME '01:50:00', TRUE, 12, 5),
+(1215,'2025-11-26','14:00','Activa', TIME '01:50:00', TRUE, 12, 6),
+(1216,'2025-11-26','17:00','Activa', TIME '01:50:00', TRUE, 12, 7),
+(1217,'2025-11-26','12:00','Activa', TIME '01:50:00', TRUE, 12, 8),
+(1218,'2025-11-26','15:00','Activa', TIME '01:50:00', TRUE, 12, 9),
+(1219,'2025-11-26','18:00','Activa', TIME '01:50:00', TRUE, 12, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1300,'2025-11-27','11:30','Activa', TIME '01:30:00', TRUE, 13, 1),
+(1301,'2025-11-27','14:30','Activa', TIME '01:30:00', TRUE, 13, 2),
+(1302,'2025-11-27','17:30','Activa', TIME '01:30:00', TRUE, 13, 3),
+(1303,'2025-11-27','20:30','Activa', TIME '01:30:00', TRUE, 13, 4),
+(1304,'2025-11-27','12:00','Activa', TIME '01:30:00', TRUE, 13, 5),
+(1305,'2025-11-27','15:00','Activa', TIME '01:30:00', TRUE, 13, 6),
+(1306,'2025-11-27','18:00','Activa', TIME '01:30:00', TRUE, 13, 7),
+(1307,'2025-11-27','13:00','Activa', TIME '01:30:00', TRUE, 13, 8),
+(1308,'2025-11-27','16:00','Activa', TIME '01:30:00', TRUE, 13, 9),
+(1309,'2025-11-27','19:00','Activa', TIME '01:30:00', TRUE, 13, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1310,'2025-11-28','11:30','Activa', TIME '01:30:00', TRUE, 13, 1),
+(1311,'2025-11-28','14:30','Activa', TIME '01:30:00', TRUE, 13, 2),
+(1312,'2025-11-28','17:30','Activa', TIME '01:30:00', TRUE, 13, 3),
+(1313,'2025-11-28','20:30','Activa', TIME '01:30:00', TRUE, 13, 4),
+(1314,'2025-11-28','12:00','Activa', TIME '01:30:00', TRUE, 13, 5),
+(1315,'2025-11-28','15:00','Activa', TIME '01:30:00', TRUE, 13, 6),
+(1316,'2025-11-28','18:00','Activa', TIME '01:30:00', TRUE, 13, 7),
+(1317,'2025-11-28','13:00','Activa', TIME '01:30:00', TRUE, 13, 8),
+(1318,'2025-11-28','16:00','Activa', TIME '01:30:00', TRUE, 13, 9),
+(1319,'2025-11-28','19:00','Activa', TIME '01:30:00', TRUE, 13, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1400,'2025-11-29','10:30','Activa', TIME '01:38:00', TRUE, 14, 1),
+(1401,'2025-11-29','13:30','Activa', TIME '01:38:00', TRUE, 14, 2),
+(1402,'2025-11-29','16:30','Activa', TIME '01:38:00', TRUE, 14, 3),
+(1403,'2025-11-29','19:30','Activa', TIME '01:38:00', TRUE, 14, 4),
+(1404,'2025-11-29','11:00','Activa', TIME '01:38:00', TRUE, 14, 5),
+(1405,'2025-11-29','14:00','Activa', TIME '01:38:00', TRUE, 14, 6),
+(1406,'2025-11-29','17:00','Activa', TIME '01:38:00', TRUE, 14, 7),
+(1407,'2025-11-29','12:00','Activa', TIME '01:38:00', TRUE, 14, 8),
+(1408,'2025-11-29','15:00','Activa', TIME '01:38:00', TRUE, 14, 9),
+(1409,'2025-11-29','18:00','Activa', TIME '01:38:00', TRUE, 14, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(1410,'2025-11-30','10:30','Activa', TIME '01:38:00', TRUE, 14, 1),
+(1411,'2025-11-30','13:30','Activa', TIME '01:38:00', TRUE, 14, 2),
+(1412,'2025-11-30','16:30','Activa', TIME '01:38:00', TRUE, 14, 3),
+(1413,'2025-11-30','19:30','Activa', TIME '01:38:00', TRUE, 14, 4),
+(1414,'2025-11-30','11:00','Activa', TIME '01:38:00', TRUE, 14, 5),
+(1415,'2025-11-30','14:00','Activa', TIME '01:38:00', TRUE, 14, 6),
+(1416,'2025-11-30','17:00','Activa', TIME '01:38:00', TRUE, 14, 7),
+(1417,'2025-11-30','12:00','Activa', TIME '01:38:00', TRUE, 14, 8),
+(1418,'2025-11-30','15:00','Activa', TIME '01:38:00', TRUE, 14, 9),
+(1419,'2025-11-30','18:00','Activa', TIME '01:38:00', TRUE, 14, 10);
+
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2000,'2025-11-13','12:00','Activa', TIME '02:46:00', TRUE, 1, 11),
+(2001,'2025-11-13','15:00','Activa', TIME '02:46:00', TRUE, 1, 12),
+(2002,'2025-11-13','18:00','Activa', TIME '02:46:00', TRUE, 1, 13),
+(2003,'2025-11-13','21:00','Activa', TIME '02:46:00', TRUE, 1, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2010,'2025-11-13','13:00','Activa', TIME '02:02:00', TRUE, 2, 11),
+(2011,'2025-11-13','16:00','Activa', TIME '02:02:00', TRUE, 2, 12),
+(2012,'2025-11-13','19:00','Activa', TIME '02:02:00', TRUE, 2, 13),
+(2013,'2025-11-13','22:00','Activa', TIME '02:02:00', TRUE, 2, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2020,'2025-11-13','14:00','Activa', TIME '01:55:00', TRUE, 3, 11),
+(2021,'2025-11-13','17:00','Activa', TIME '01:55:00', TRUE, 3, 12),
+(2022,'2025-11-13','20:00','Activa', TIME '01:55:00', TRUE, 3, 13),
+(2023,'2025-11-13','15:00','Activa', TIME '01:55:00', TRUE, 3, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2030,'2025-11-13','10:00','Activa', TIME '01:30:00', TRUE, 4, 11),
+(2031,'2025-11-13','12:00','Activa', TIME '01:30:00', TRUE, 4, 12),
+(2032,'2025-11-13','14:00','Activa', TIME '01:30:00', TRUE, 4, 13),
+(2033,'2025-11-13','16:00','Activa', TIME '01:30:00', TRUE, 4, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2040,'2025-11-15','11:00','Activa', TIME '01:54:00', TRUE, 5, 11),
+(2041,'2025-11-15','14:00','Activa', TIME '01:54:00', TRUE, 5, 12),
+(2042,'2025-11-15','17:00','Activa', TIME '01:54:00', TRUE, 5, 13),
+(2043,'2025-11-15','20:00','Activa', TIME '01:54:00', TRUE, 5, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2050,'2025-11-15','10:00','Activa', TIME '01:43:00', TRUE, 6, 11),
+(2051,'2025-11-15','13:00','Activa', TIME '01:43:00', TRUE, 6, 12),
+(2052,'2025-11-15','16:00','Activa', TIME '01:43:00', TRUE, 6, 13),
+(2053,'2025-11-15','19:00','Activa', TIME '01:43:00', TRUE, 6, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2060,'2025-11-17','12:00','Activa', TIME '02:49:00', TRUE, 7, 11),
+(2061,'2025-11-17','15:30','Activa', TIME '02:49:00', TRUE, 7, 12),
+(2062,'2025-11-17','19:00','Activa', TIME '02:49:00', TRUE, 7, 13),
+(2063,'2025-11-17','13:00','Activa', TIME '02:49:00', TRUE, 7, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2070,'2025-11-17','10:00','Activa', TIME '01:33:00', TRUE, 8, 11),
+(2071,'2025-11-17','12:30','Activa', TIME '01:33:00', TRUE, 8, 12),
+(2072,'2025-11-17','15:00','Activa', TIME '01:33:00', TRUE, 8, 13),
+(2073,'2025-11-17','17:30','Activa', TIME '01:33:00', TRUE, 8, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2080,'2025-11-19','12:00','Activa', TIME '02:02:00', TRUE, 9, 11),
+(2081,'2025-11-19','15:00','Activa', TIME '02:02:00', TRUE, 9, 12),
+(2082,'2025-11-19','18:00','Activa', TIME '02:02:00', TRUE, 9, 13),
+(2083,'2025-11-19','21:00','Activa', TIME '02:02:00', TRUE, 9, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2090,'2025-11-21','11:00','Activa', TIME '02:15:00', TRUE, 10, 11),
+(2091,'2025-11-21','14:00','Activa', TIME '02:15:00', TRUE, 10, 12),
+(2092,'2025-11-21','17:00','Activa', TIME '02:15:00', TRUE, 10, 13),
+(2093,'2025-11-21','20:00','Activa', TIME '02:15:00', TRUE, 10, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2100,'2025-11-23','10:00','Activa', TIME '02:18:00', TRUE, 11, 11),
+(2101,'2025-11-23','13:00','Activa', TIME '02:18:00', TRUE, 11, 12),
+(2102,'2025-11-23','16:00','Activa', TIME '02:18:00', TRUE, 11, 13),
+(2103,'2025-11-23','19:00','Activa', TIME '02:18:00', TRUE, 11, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2110,'2025-11-25','09:00','Activa', TIME '01:50:00', TRUE, 12, 11),
+(2111,'2025-11-25','12:00','Activa', TIME '01:50:00', TRUE, 12, 12),
+(2112,'2025-11-25','15:00','Activa', TIME '01:50:00', TRUE, 12, 13),
+(2113,'2025-11-25','18:00','Activa', TIME '01:50:00', TRUE, 12, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2120,'2025-11-27','11:00','Activa', TIME '01:30:00', TRUE, 13, 11),
+(2121,'2025-11-27','14:00','Activa', TIME '01:30:00', TRUE, 13, 12),
+(2122,'2025-11-27','17:00','Activa', TIME '01:30:00', TRUE, 13, 13),
+(2123,'2025-11-27','20:00','Activa', TIME '01:30:00', TRUE, 13, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(2130,'2025-11-29','10:00','Activa', TIME '01:38:00', TRUE, 14, 11),
+(2131,'2025-11-29','13:00','Activa', TIME '01:38:00', TRUE, 14, 12),
+(2132,'2025-11-29','16:00','Activa', TIME '01:38:00', TRUE, 14, 13),
+(2133,'2025-11-29','19:00','Activa', TIME '01:38:00', TRUE, 14, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3000,'2025-11-13','11:00','Activa', TIME '02:46:00', TRUE, 1, 15),
+(3001,'2025-11-13','14:00','Activa', TIME '02:46:00', TRUE, 1, 16),
+(3002,'2025-11-13','17:00','Activa', TIME '02:46:00', TRUE, 1, 17),
+(3003,'2025-11-13','20:00','Activa', TIME '02:46:00', TRUE, 1, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3010,'2025-11-13','12:00','Activa', TIME '02:02:00', TRUE, 2, 15),
+(3011,'2025-11-13','15:00','Activa', TIME '02:02:00', TRUE, 2, 16),
+(3012,'2025-11-13','18:00','Activa', TIME '02:02:00', TRUE, 2, 17),
+(3013,'2025-11-13','21:00','Activa', TIME '02:02:00', TRUE, 2, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3020,'2025-11-13','13:00','Activa', TIME '01:55:00', TRUE, 3, 15),
+(3021,'2025-11-13','16:00','Activa', TIME '01:55:00', TRUE, 3, 16),
+(3022,'2025-11-13','19:00','Activa', TIME '01:55:00', TRUE, 3, 17),
+(3023,'2025-11-13','14:00','Activa', TIME '01:55:00', TRUE, 3, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3030,'2025-11-13','09:00','Activa', TIME '01:30:00', TRUE, 4, 15),
+(3031,'2025-11-13','11:00','Activa', TIME '01:30:00', TRUE, 4, 16),
+(3032,'2025-11-13','13:00','Activa', TIME '01:30:00', TRUE, 4, 17),
+(3033,'2025-11-13','15:00','Activa', TIME '01:30:00', TRUE, 4, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3040,'2025-11-15','10:00','Activa', TIME '01:54:00', TRUE, 5, 15),
+(3041,'2025-11-15','13:00','Activa', TIME '01:54:00', TRUE, 5, 16),
+(3042,'2025-11-15','16:00','Activa', TIME '01:54:00', TRUE, 5, 17),
+(3043,'2025-11-15','19:00','Activa', TIME '01:54:00', TRUE, 5, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3050,'2025-11-15','09:00','Activa', TIME '01:43:00', TRUE, 6, 15),
+(3051,'2025-11-15','12:00','Activa', TIME '01:43:00', TRUE, 6, 16),
+(3052,'2025-11-15','15:00','Activa', TIME '01:43:00', TRUE, 6, 17),
+(3053,'2025-11-15','18:00','Activa', TIME '01:43:00', TRUE, 6, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3060,'2025-11-17','11:00','Activa', TIME '02:49:00', TRUE, 7, 15),
+(3061,'2025-11-17','14:30','Activa', TIME '02:49:00', TRUE, 7, 16),
+(3062,'2025-11-17','18:00','Activa', TIME '02:49:00', TRUE, 7, 17),
+(3063,'2025-11-17','12:00','Activa', TIME '02:49:00', TRUE, 7, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3070,'2025-11-17','09:00','Activa', TIME '01:33:00', TRUE, 8, 15),
+(3071,'2025-11-17','11:30','Activa', TIME '01:33:00', TRUE, 8, 16),
+(3072,'2025-11-17','14:00','Activa', TIME '01:33:00', TRUE, 8, 17),
+(3073,'2025-11-17','16:30','Activa', TIME '01:33:00', TRUE, 8, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3080,'2025-11-19','11:00','Activa', TIME '02:02:00', TRUE, 9, 15),
+(3081,'2025-11-19','14:00','Activa', TIME '02:02:00', TRUE, 9, 16),
+(3082,'2025-11-19','17:00','Activa', TIME '02:02:00', TRUE, 9, 17),
+(3083,'2025-11-19','20:00','Activa', TIME '02:02:00', TRUE, 9, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3090,'2025-11-21','10:00','Activa', TIME '02:15:00', TRUE, 10, 15),
+(3091,'2025-11-21','13:00','Activa', TIME '02:15:00', TRUE, 10, 16),
+(3092,'2025-11-21','16:00','Activa', TIME '02:15:00', TRUE, 10, 17),
+(3093,'2025-11-21','19:00','Activa', TIME '02:15:00', TRUE, 10, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3100,'2025-11-23','09:00','Activa', TIME '02:18:00', TRUE, 11, 15),
+(3101,'2025-11-23','12:00','Activa', TIME '02:18:00', TRUE, 11, 16),
+(3102,'2025-11-23','15:00','Activa', TIME '02:18:00', TRUE, 11, 17),
+(3103,'2025-11-23','18:00','Activa', TIME '02:18:00', TRUE, 11, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3110,'2025-11-25','08:00','Activa', TIME '01:50:00', TRUE, 12, 15),
+(3111,'2025-11-25','11:00','Activa', TIME '01:50:00', TRUE, 12, 16),
+(3112,'2025-11-25','14:00','Activa', TIME '01:50:00', TRUE, 12, 17),
+(3113,'2025-11-25','17:00','Activa', TIME '01:50:00', TRUE, 12, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3120,'2025-11-27','10:00','Activa', TIME '01:30:00', TRUE, 13, 15),
+(3121,'2025-11-27','13:00','Activa', TIME '01:30:00', TRUE, 13, 16),
+(3122,'2025-11-27','16:00','Activa', TIME '01:30:00', TRUE, 13, 17),
+(3123,'2025-11-27','19:00','Activa', TIME '01:30:00', TRUE, 13, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3130,'2025-11-29','09:00','Activa', TIME '01:38:00', TRUE, 14, 15),
+(3131,'2025-11-29','12:00','Activa', TIME '01:38:00', TRUE, 14, 16),
+(3132,'2025-11-29','15:00','Activa', TIME '01:38:00', TRUE, 14, 17),
+(3133,'2025-11-29','18:00','Activa', TIME '01:38:00', TRUE, 14, 18);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3140,'2025-11-14','08:00','Activa', TIME '01:44:00', TRUE, 15, 1),
+(3141,'2025-11-14','11:00','Activa', TIME '01:44:00', TRUE, 15, 1),
+(3142,'2025-11-14','14:00','Activa', TIME '01:44:00', TRUE, 15, 1),
+(3143,'2025-11-14','17:00','Activa', TIME '01:44:00', TRUE, 15, 1),
+(3144,'2025-11-14','20:00','Activa', TIME '01:44:00', TRUE, 15, 1);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3150,'2025-11-15','09:00','Activa', TIME '01:44:00', TRUE, 15, 2),
+(3151,'2025-11-15','12:00','Activa', TIME '01:44:00', TRUE, 15, 2),
+(3152,'2025-11-15','15:00','Activa', TIME '01:44:00', TRUE, 15, 2),
+(3153,'2025-11-15','18:00','Activa', TIME '01:44:00', TRUE, 15, 2),
+(3154,'2025-11-15','21:00','Activa', TIME '01:44:00', TRUE, 15, 2);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3160,'2025-11-16','08:30','Activa', TIME '01:44:00', TRUE, 15, 3),
+(3161,'2025-11-16','11:30','Activa', TIME '01:44:00', TRUE, 15, 3),
+(3162,'2025-11-16','14:30','Activa', TIME '01:44:00', TRUE, 15, 3),
+(3163,'2025-11-16','17:30','Activa', TIME '01:44:00', TRUE, 15, 3),
+(3164,'2025-11-16','20:30','Activa', TIME '01:44:00', TRUE, 15, 3);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3170,'2025-11-17','10:00','Activa', TIME '01:44:00', TRUE, 15, 4),
+(3171,'2025-11-17','13:00','Activa', TIME '01:44:00', TRUE, 15, 4),
+(3172,'2025-11-17','16:00','Activa', TIME '01:44:00', TRUE, 15, 4),
+(3173,'2025-11-17','19:00','Activa', TIME '01:44:00', TRUE, 15, 4),
+(3174,'2025-11-17','22:00','Activa', TIME '01:44:00', TRUE, 15, 4);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3180,'2025-11-18','09:00','Activa', TIME '01:44:00', TRUE, 15, 5),
+(3181,'2025-11-18','12:00','Activa', TIME '01:44:00', TRUE, 15, 5),
+(3182,'2025-11-18','15:00','Activa', TIME '01:44:00', TRUE, 15, 5),
+(3183,'2025-11-18','18:00','Activa', TIME '01:44:00', TRUE, 15, 5),
+(3184,'2025-11-18','21:00','Activa', TIME '01:44:00', TRUE, 15, 5);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3190,'2025-11-19','08:00','Activa', TIME '01:44:00', TRUE, 15, 6),
+(3191,'2025-11-19','11:00','Activa', TIME '01:44:00', TRUE, 15, 6),
+(3192,'2025-11-19','14:00','Activa', TIME '01:44:00', TRUE, 15, 6),
+(3193,'2025-11-19','17:00','Activa', TIME '01:44:00', TRUE, 15, 6),
+(3194,'2025-11-19','20:00','Activa', TIME '01:44:00', TRUE, 15, 6);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3200,'2025-11-20','09:30','Activa', TIME '01:44:00', TRUE, 15, 7),
+(3201,'2025-11-20','12:30','Activa', TIME '01:44:00', TRUE, 15, 7),
+(3202,'2025-11-20','15:30','Activa', TIME '01:44:00', TRUE, 15, 7),
+(3203,'2025-11-20','18:30','Activa', TIME '01:44:00', TRUE, 15, 7),
+(3204,'2025-11-20','21:30','Activa', TIME '01:44:00', TRUE, 15, 7);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3210,'2025-11-14','10:00','Activa', TIME '01:44:00', TRUE, 15, 8),
+(3211,'2025-11-14','13:00','Activa', TIME '01:44:00', TRUE, 15, 8),
+(3212,'2025-11-14','16:00','Activa', TIME '01:44:00', TRUE, 15, 8),
+(3213,'2025-11-14','19:00','Activa', TIME '01:44:00', TRUE, 15, 8),
+(3214,'2025-11-14','22:00','Activa', TIME '01:44:00', TRUE, 15, 8);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3220,'2025-11-15','08:30','Activa', TIME '01:44:00', TRUE, 15, 9),
+(3221,'2025-11-15','11:30','Activa', TIME '01:44:00', TRUE, 15, 9),
+(3222,'2025-11-15','14:30','Activa', TIME '01:44:00', TRUE, 15, 9),
+(3223,'2025-11-15','17:30','Activa', TIME '01:44:00', TRUE, 15, 9),
+(3224,'2025-11-15','20:30','Activa', TIME '01:44:00', TRUE, 15, 9);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3230,'2025-11-16','09:00','Activa', TIME '01:44:00', TRUE, 15, 10),
+(3231,'2025-11-16','12:00','Activa', TIME '01:44:00', TRUE, 15, 10),
+(3232,'2025-11-16','15:00','Activa', TIME '01:44:00', TRUE, 15, 10),
+(3233,'2025-11-16','18:00','Activa', TIME '01:44:00', TRUE, 15, 10),
+(3234,'2025-11-16','21:00','Activa', TIME '01:44:00', TRUE, 15, 10);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3240,'2025-11-17','08:00','Activa', TIME '01:44:00', TRUE, 15, 11),
+(3241,'2025-11-17','11:00','Activa', TIME '01:44:00', TRUE, 15, 11),
+(3242,'2025-11-17','14:00','Activa', TIME '01:44:00', TRUE, 15, 11),
+(3243,'2025-11-17','17:00','Activa', TIME '01:44:00', TRUE, 15, 11),
+(3244,'2025-11-17','20:00','Activa', TIME '01:44:00', TRUE, 15, 11);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3250,'2025-11-18','09:30','Activa', TIME '01:44:00', TRUE, 15, 12),
+(3251,'2025-11-18','12:30','Activa', TIME '01:44:00', TRUE, 15, 12),
+(3252,'2025-11-18','15:30','Activa', TIME '01:44:00', TRUE, 15, 12),
+(3253,'2025-11-18','18:30','Activa', TIME '01:44:00', TRUE, 15, 12),
+(3254,'2025-11-18','21:30','Activa', TIME '01:44:00', TRUE, 15, 12);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3260,'2025-11-19','10:00','Activa', TIME '01:44:00', TRUE, 15, 13),
+(3261,'2025-11-19','13:00','Activa', TIME '01:44:00', TRUE, 15, 13),
+(3262,'2025-11-19','16:00','Activa', TIME '01:44:00', TRUE, 15, 13),
+(3263,'2025-11-19','19:00','Activa', TIME '01:44:00', TRUE, 15, 13),
+(3264,'2025-11-19','22:00','Activa', TIME '01:44:00', TRUE, 15, 13);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3270,'2025-11-20','08:30','Activa', TIME '01:44:00', TRUE, 15, 14),
+(3271,'2025-11-20','11:30','Activa', TIME '01:44:00', TRUE, 15, 14),
+(3272,'2025-11-20','14:30','Activa', TIME '01:44:00', TRUE, 15, 14),
+(3273,'2025-11-20','17:30','Activa', TIME '01:44:00', TRUE, 15, 14),
+(3274,'2025-11-20','20:30','Activa', TIME '01:44:00', TRUE, 15, 14);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3280,'2025-11-21','09:00','Activa', TIME '01:44:00', TRUE, 15, 15),
+(3281,'2025-11-21','12:00','Activa', TIME '01:44:00', TRUE, 15, 15),
+(3282,'2025-11-21','15:00','Activa', TIME '01:44:00', TRUE, 15, 15),
+(3283,'2025-11-21','18:00','Activa', TIME '01:44:00', TRUE, 15, 15),
+(3284,'2025-11-21','21:00','Activa', TIME '01:44:00', TRUE, 15, 15);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3290,'2025-11-22','10:00','Activa', TIME '01:44:00', TRUE, 15, 16),
+(3291,'2025-11-22','13:00','Activa', TIME '01:44:00', TRUE, 15, 16),
+(3292,'2025-11-22','16:00','Activa', TIME '01:44:00', TRUE, 15, 16),
+(3293,'2025-11-22','19:00','Activa', TIME '01:44:00', TRUE, 15, 16),
+(3294,'2025-11-22','22:00','Activa', TIME '01:44:00', TRUE, 15, 16);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3300,'2025-11-23','08:00','Activa', TIME '01:44:00', TRUE, 15, 17),
+(3301,'2025-11-23','11:00','Activa', TIME '01:44:00', TRUE, 15, 17),
+(3302,'2025-11-23','14:00','Activa', TIME '01:44:00', TRUE, 15, 17),
+(3303,'2025-11-23','17:00','Activa', TIME '01:44:00', TRUE, 15, 17),
+(3304,'2025-11-23','20:00','Activa', TIME '01:44:00', TRUE, 15, 17);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3310,'2025-11-24','09:30','Activa', TIME '01:44:00', TRUE, 15, 18),
+(3311,'2025-11-24','12:30','Activa', TIME '01:44:00', TRUE, 15, 18),
+(3312,'2025-11-24','15:30','Activa', TIME '01:44:00', TRUE, 15, 18),
+(3313,'2025-11-24','18:30','Activa', TIME '01:44:00', TRUE, 15, 18),
+(3314,'2025-11-24','21:30','Activa', TIME '01:44:00', TRUE, 15, 18);
+
+-- Película 16: 31 Minutos: La Película - Duración: 00:31:00
+-- Bogotá (Salas 1-7)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3320,'2025-11-25','08:00','Activa', TIME '00:31:00', TRUE, 16, 1),
+(3321,'2025-11-25','09:00','Activa', TIME '00:31:00', TRUE, 16, 1),
+(3322,'2025-11-25','10:00','Activa', TIME '00:31:00', TRUE, 16, 1),
+(3323,'2025-11-25','11:00','Activa', TIME '00:31:00', TRUE, 16, 1),
+(3324,'2025-11-25','12:00','Activa', TIME '00:31:00', TRUE, 16, 1),
+(3325,'2025-11-25','13:00','Activa', TIME '00:31:00', TRUE, 16, 1),
+(3326,'2025-11-25','14:00','Activa', TIME '00:31:00', TRUE, 16, 1),
+(3327,'2025-11-25','15:00','Activa', TIME '00:31:00', TRUE, 16, 1);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3330,'2025-11-26','08:30','Activa', TIME '00:31:00', TRUE, 16, 2),
+(3331,'2025-11-26','09:30','Activa', TIME '00:31:00', TRUE, 16, 2),
+(3332,'2025-11-26','10:30','Activa', TIME '00:31:00', TRUE, 16, 2),
+(3333,'2025-11-26','11:30','Activa', TIME '00:31:00', TRUE, 16, 2),
+(3334,'2025-11-26','12:30','Activa', TIME '00:31:00', TRUE, 16, 2),
+(3335,'2025-11-26','13:30','Activa', TIME '00:31:00', TRUE, 16, 2),
+(3336,'2025-11-26','14:30','Activa', TIME '00:31:00', TRUE, 16, 2),
+(3337,'2025-11-26','15:30','Activa', TIME '00:31:00', TRUE, 16, 2);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3340,'2025-11-27','09:00','Activa', TIME '00:31:00', TRUE, 16, 3),
+(3341,'2025-11-27','10:00','Activa', TIME '00:31:00', TRUE, 16, 3),
+(3342,'2025-11-27','11:00','Activa', TIME '00:31:00', TRUE, 16, 3),
+(3343,'2025-11-27','12:00','Activa', TIME '00:31:00', TRUE, 16, 3),
+(3344,'2025-11-27','13:00','Activa', TIME '00:31:00', TRUE, 16, 3),
+(3345,'2025-11-27','14:00','Activa', TIME '00:31:00', TRUE, 16, 3),
+(3346,'2025-11-27','15:00','Activa', TIME '00:31:00', TRUE, 16, 3),
+(3347,'2025-11-27','16:00','Activa', TIME '00:31:00', TRUE, 16, 3);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3350,'2025-11-28','08:00','Activa', TIME '00:31:00', TRUE, 16, 4),
+(3351,'2025-11-28','09:00','Activa', TIME '00:31:00', TRUE, 16, 4),
+(3352,'2025-11-28','10:00','Activa', TIME '00:31:00', TRUE, 16, 4),
+(3353,'2025-11-28','11:00','Activa', TIME '00:31:00', TRUE, 16, 4),
+(3354,'2025-11-28','12:00','Activa', TIME '00:31:00', TRUE, 16, 4),
+(3355,'2025-11-28','13:00','Activa', TIME '00:31:00', TRUE, 16, 4),
+(3356,'2025-11-28','14:00','Activa', TIME '00:31:00', TRUE, 16, 4),
+(3357,'2025-11-28','15:00','Activa', TIME '00:31:00', TRUE, 16, 4);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3360,'2025-11-29','08:30','Activa', TIME '00:31:00', TRUE, 16, 5),
+(3361,'2025-11-29','09:30','Activa', TIME '00:31:00', TRUE, 16, 5),
+(3362,'2025-11-29','10:30','Activa', TIME '00:31:00', TRUE, 16, 5),
+(3363,'2025-11-29','11:30','Activa', TIME '00:31:00', TRUE, 16, 5),
+(3364,'2025-11-29','12:30','Activa', TIME '00:31:00', TRUE, 16, 5),
+(3365,'2025-11-29','13:30','Activa', TIME '00:31:00', TRUE, 16, 5),
+(3366,'2025-11-29','14:30','Activa', TIME '00:31:00', TRUE, 16, 5),
+(3367,'2025-11-29','15:30','Activa', TIME '00:31:00', TRUE, 16, 5);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3370,'2025-11-30','09:00','Activa', TIME '00:31:00', TRUE, 16, 6),
+(3371,'2025-11-30','10:00','Activa', TIME '00:31:00', TRUE, 16, 6),
+(3372,'2025-11-30','11:00','Activa', TIME '00:31:00', TRUE, 16, 6),
+(3373,'2025-11-30','12:00','Activa', TIME '00:31:00', TRUE, 16, 6),
+(3374,'2025-11-30','13:00','Activa', TIME '00:31:00', TRUE, 16, 6),
+(3375,'2025-11-30','14:00','Activa', TIME '00:31:00', TRUE, 16, 6),
+(3376,'2025-11-30','15:00','Activa', TIME '00:31:00', TRUE, 16, 6),
+(3377,'2025-11-30','16:00','Activa', TIME '00:31:00', TRUE, 16, 6);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3380,'2025-12-01','08:00','Activa', TIME '00:31:00', TRUE, 16, 7),
+(3381,'2025-12-01','09:00','Activa', TIME '00:31:00', TRUE, 16, 7),
+(3382,'2025-12-01','10:00','Activa', TIME '00:31:00', TRUE, 16, 7),
+(3383,'2025-12-01','11:00','Activa', TIME '00:31:00', TRUE, 16, 7),
+(3384,'2025-12-01','12:00','Activa', TIME '00:31:00', TRUE, 16, 7),
+(3385,'2025-12-01','13:00','Activa', TIME '00:31:00', TRUE, 16, 7),
+(3386,'2025-12-01','14:00','Activa', TIME '00:31:00', TRUE, 16, 7),
+(3387,'2025-12-01','15:00','Activa', TIME '00:31:00', TRUE, 16, 7);
+
+-- Medellín (Salas 8-10)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3390,'2025-11-25','09:00','Activa', TIME '00:31:00', TRUE, 16, 8),
+(3391,'2025-11-25','10:00','Activa', TIME '00:31:00', TRUE, 16, 8),
+(3392,'2025-11-25','11:00','Activa', TIME '00:31:00', TRUE, 16, 8),
+(3393,'2025-11-25','12:00','Activa', TIME '00:31:00', TRUE, 16, 8),
+(3394,'2025-11-25','13:00','Activa', TIME '00:31:00', TRUE, 16, 8),
+(3395,'2025-11-25','14:00','Activa', TIME '00:31:00', TRUE, 16, 8),
+(3396,'2025-11-25','15:00','Activa', TIME '00:31:00', TRUE, 16, 8),
+(3397,'2025-11-25','16:00','Activa', TIME '00:31:00', TRUE, 16, 8);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3400,'2025-11-26','08:30','Activa', TIME '00:31:00', TRUE, 16, 9),
+(3401,'2025-11-26','09:30','Activa', TIME '00:31:00', TRUE, 16, 9),
+(3402,'2025-11-26','10:30','Activa', TIME '00:31:00', TRUE, 16, 9),
+(3403,'2025-11-26','11:30','Activa', TIME '00:31:00', TRUE, 16, 9),
+(3404,'2025-11-26','12:30','Activa', TIME '00:31:00', TRUE, 16, 9),
+(3405,'2025-11-26','13:30','Activa', TIME '00:31:00', TRUE, 16, 9),
+(3406,'2025-11-26','14:30','Activa', TIME '00:31:00', TRUE, 16, 9),
+(3407,'2025-11-26','15:30','Activa', TIME '00:31:00', TRUE, 16, 9);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3410,'2025-11-27','09:00','Activa', TIME '00:31:00', TRUE, 16, 10),
+(3411,'2025-11-27','10:00','Activa', TIME '00:31:00', TRUE, 16, 10),
+(3412,'2025-11-27','11:00','Activa', TIME '00:31:00', TRUE, 16, 10),
+(3413,'2025-11-27','12:00','Activa', TIME '00:31:00', TRUE, 16, 10),
+(3414,'2025-11-27','13:00','Activa', TIME '00:31:00', TRUE, 16, 10),
+(3415,'2025-11-27','14:00','Activa', TIME '00:31:00', TRUE, 16, 10),
+(3416,'2025-11-27','15:00','Activa', TIME '00:31:00', TRUE, 16, 10),
+(3417,'2025-11-27','16:00','Activa', TIME '00:31:00', TRUE, 16, 10);
+
+-- Cali (Salas 11-14)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3420,'2025-11-28','08:00','Activa', TIME '00:31:00', TRUE, 16, 11),
+(3421,'2025-11-28','09:00','Activa', TIME '00:31:00', TRUE, 16, 11),
+(3422,'2025-11-28','10:00','Activa', TIME '00:31:00', TRUE, 16, 11),
+(3423,'2025-11-28','11:00','Activa', TIME '00:31:00', TRUE, 16, 11),
+(3424,'2025-11-28','12:00','Activa', TIME '00:31:00', TRUE, 16, 11),
+(3425,'2025-11-28','13:00','Activa', TIME '00:31:00', TRUE, 16, 11),
+(3426,'2025-11-28','14:00','Activa', TIME '00:31:00', TRUE, 16, 11),
+(3427,'2025-11-28','15:00','Activa', TIME '00:31:00', TRUE, 16, 11);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3430,'2025-11-29','08:30','Activa', TIME '00:31:00', TRUE, 16, 12),
+(3431,'2025-11-29','09:30','Activa', TIME '00:31:00', TRUE, 16, 12),
+(3432,'2025-11-29','10:30','Activa', TIME '00:31:00', TRUE, 16, 12),
+(3433,'2025-11-29','11:30','Activa', TIME '00:31:00', TRUE, 16, 12),
+(3434,'2025-11-29','12:30','Activa', TIME '00:31:00', TRUE, 16, 12),
+(3435,'2025-11-29','13:30','Activa', TIME '00:31:00', TRUE, 16, 12),
+(3436,'2025-11-29','14:30','Activa', TIME '00:31:00', TRUE, 16, 12),
+(3437,'2025-11-29','15:30','Activa', TIME '00:31:00', TRUE, 16, 12);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3440,'2025-11-30','09:00','Activa', TIME '00:31:00', TRUE, 16, 13),
+(3441,'2025-11-30','10:00','Activa', TIME '00:31:00', TRUE, 16, 13),
+(3442,'2025-11-30','11:00','Activa', TIME '00:31:00', TRUE, 16, 13),
+(3443,'2025-11-30','12:00','Activa', TIME '00:31:00', TRUE, 16, 13),
+(3444,'2025-11-30','13:00','Activa', TIME '00:31:00', TRUE, 16, 13),
+(3445,'2025-11-30','14:00','Activa', TIME '00:31:00', TRUE, 16, 13),
+(3446,'2025-11-30','15:00','Activa', TIME '00:31:00', TRUE, 16, 13),
+(3447,'2025-11-30','16:00','Activa', TIME '00:31:00', TRUE, 16, 13);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3450,'2025-12-01','08:00','Activa', TIME '00:31:00', TRUE, 16, 14),
+(3451,'2025-12-01','09:00','Activa', TIME '00:31:00', TRUE, 16, 14),
+(3452,'2025-12-01','10:00','Activa', TIME '00:31:00', TRUE, 16, 14),
+(3453,'2025-12-01','11:00','Activa', TIME '00:31:00', TRUE, 16, 14),
+(3454,'2025-12-01','12:00','Activa', TIME '00:31:00', TRUE, 16, 14),
+(3455,'2025-12-01','13:00','Activa', TIME '00:31:00', TRUE, 16, 14),
+(3456,'2025-12-01','14:00','Activa', TIME '00:31:00', TRUE, 16, 14),
+(3457,'2025-12-01','15:00','Activa', TIME '00:31:00', TRUE, 16, 14);
+
+-- Barranquilla (Salas 15-18)
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3460,'2025-11-25','08:00','Activa', TIME '00:31:00', TRUE, 16, 15),
+(3461,'2025-11-25','09:00','Activa', TIME '00:31:00', TRUE, 16, 15),
+(3462,'2025-11-25','10:00','Activa', TIME '00:31:00', TRUE, 16, 15),
+(3463,'2025-11-25','11:00','Activa', TIME '00:31:00', TRUE, 16, 15),
+(3464,'2025-11-25','12:00','Activa', TIME '00:31:00', TRUE, 16, 15),
+(3465,'2025-11-25','13:00','Activa', TIME '00:31:00', TRUE, 16, 15),
+(3466,'2025-11-25','14:00','Activa', TIME '00:31:00', TRUE, 16, 15),
+(3467,'2025-11-25','15:00','Activa', TIME '00:31:00', TRUE, 16, 15);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3470,'2025-11-26','08:30','Activa', TIME '00:31:00', TRUE, 16, 16),
+(3471,'2025-11-26','09:30','Activa', TIME '00:31:00', TRUE, 16, 16),
+(3472,'2025-11-26','10:30','Activa', TIME '00:31:00', TRUE, 16, 16),
+(3473,'2025-11-26','11:30','Activa', TIME '00:31:00', TRUE, 16, 16),
+(3474,'2025-11-26','12:30','Activa', TIME '00:31:00', TRUE, 16, 16),
+(3475,'2025-11-26','13:30','Activa', TIME '00:31:00', TRUE, 16, 16),
+(3476,'2025-11-26','14:30','Activa', TIME '00:31:00', TRUE, 16, 16),
+(3477,'2025-11-26','15:30','Activa', TIME '00:31:00', TRUE, 16, 16);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3480,'2025-11-27','09:00','Activa', TIME '00:31:00', TRUE, 16, 17),
+(3481,'2025-11-27','10:00','Activa', TIME '00:31:00', TRUE, 16, 17),
+(3482,'2025-11-27','11:00','Activa', TIME '00:31:00', TRUE, 16, 17),
+(3483,'2025-11-27','12:00','Activa', TIME '00:31:00', TRUE, 16, 17),
+(3484,'2025-11-27','13:00','Activa', TIME '00:31:00', TRUE, 16, 17),
+(3485,'2025-11-27','14:00','Activa', TIME '00:31:00', TRUE, 16, 17),
+(3486,'2025-11-27','15:00','Activa', TIME '00:31:00', TRUE, 16, 17),
+(3487,'2025-11-27','16:00','Activa', TIME '00:31:00', TRUE, 16, 17);
+
+INSERT INTO FUNCION (ID, FECHA, HORA, ESTADO, DURACION, ESTADO_BOOL, PELICULA_ID, SALA_ID) VALUES
+(3490,'2025-11-28','08:00','Activa', TIME '00:31:00', TRUE, 16, 18),
+(3491,'2025-11-28','09:00','Activa', TIME '00:31:00', TRUE, 16, 18),
+(3492,'2025-11-28','10:00','Activa', TIME '00:31:00', TRUE, 16, 18),
+(3493,'2025-11-28','11:00','Activa', TIME '00:31:00', TRUE, 16, 18),
+(3494,'2025-11-28','12:00','Activa', TIME '00:31:00', TRUE, 16, 18),
+(3495,'2025-11-28','13:00','Activa', TIME '00:31:00', TRUE, 16, 18),
+(3496,'2025-11-28','14:00','Activa', TIME '00:31:00', TRUE, 16, 18),
+(3497,'2025-11-28','15:00','Activa', TIME '00:31:00', TRUE, 16, 18);
+
