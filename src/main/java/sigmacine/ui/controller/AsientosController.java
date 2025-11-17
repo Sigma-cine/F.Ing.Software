@@ -16,6 +16,7 @@ import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 import java.net.URL;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AsientosController implements Initializable {
 
@@ -39,6 +40,7 @@ public class AsientosController implements Initializable {
     private String hora   = "1:10 pm";
     private String ciudad = "";
     private String sede   = "";
+
     private Image poster;
     private Long funcionId;
 
@@ -79,9 +81,9 @@ public class AsientosController implements Initializable {
     public void setSede(String sede) { this.sede = sede; }
 
 
-    // ----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     // INITIALIZE
-    // ----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -112,10 +114,25 @@ public class AsientosController implements Initializable {
         actualizarResumen();
     }
 
+    @FXML private void onBuscarTop() { doSearch(txtBuscar != null ? txtBuscar.getText() : ""); }
 
-    // ----------------------------------------------------------------------------------------------------
-    // GRID DE ASIENTOS — DISEÑO IRREGULAR
-    // ----------------------------------------------------------------------------------------------------
+    @FXML
+    private void onCarritoTop() { toggleCartPopup(); }
+
+
+    @FXML
+    private void onSigmaCardTop() {
+        try {
+            Stage stage = null;
+            try { stage = gridSala != null && gridSala.getScene() != null ? (Stage) gridSala.getScene().getWindow() : null; } catch (Exception ignore) {}
+            if (stage != null) SigmaCardController.openAsScene(stage);
+        } catch (Exception ex) { ex.printStackTrace(); }
+    }
+
+
+    // --------------------------------------------------------------------------------------------
+    // GRID DE ASIENTOS
+    // --------------------------------------------------------------------------------------------
     private void poblarGrilla() {
         gridSala.getChildren().clear();
         seatByCode.clear();
@@ -171,7 +188,6 @@ public class AsientosController implements Initializable {
 
     private enum SeatState { AVAILABLE, SELECTED, UNAVAILABLE }
 
-
     private void setSeatState(ToggleButton b, SeatState st) {
 
         b.getStyleClass().removeAll("seat--available", "seat--selected",
@@ -200,9 +216,9 @@ public class AsientosController implements Initializable {
     }
 
 
-    // ----------------------------------------------------------------------------------------------------
-    // RESUMEN
-    // ----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
+    // RESUMEN Y CONTINUAR
+    // --------------------------------------------------------------------------------------------
     private void actualizarResumen() {
         int n = seleccion.size();
         if (lblResumen != null)
@@ -211,32 +227,97 @@ public class AsientosController implements Initializable {
             btnContinuar.setDisable(n == 0);
     }
 
+    @FXML
+    private void onContinuar() {
 
-    // ----------------------------------------------------------------------------------------------------
-    // SINCRONIZAR CON CARRITO
-    // ----------------------------------------------------------------------------------------------------
+        if (seleccion.isEmpty()) {
+            Alert alerta = new Alert(Alert.AlertType.WARNING);
+            alerta.setTitle("Selección requerida");
+            alerta.setHeaderText("No hay asientos seleccionados");
+            alerta.setContentText("Por favor selecciona al menos un asiento antes de continuar.");
+            alerta.showAndWait();
+            return;
+        }
+
+        sincronizarAsientosConCarrito();
+    }
+
+
+    // --------------------------------------------------------------------------------------------
+    // CARRITO
+    // --------------------------------------------------------------------------------------------
     private void sincronizarAsientosConCarrito() {
-        // (Este método lo dejo intacto — no había conflicto aquí)
+
+        if (!asientoItems.isEmpty()) {
+            for (var dto : asientoItems) carrito.removeItem(dto);
+            asientoItems.clear();
+        }
+
+        if (!seleccion.isEmpty()) {
+            for (String code : seleccion.stream().sorted().toList()) {
+
+                StringBuilder nombreBuilder = new StringBuilder("Asiento ").append(code);
+
+                if (titulo != null && !titulo.isBlank()) nombreBuilder.append(" - ").append(titulo);
+                if (sede != null && !sede.isBlank()) nombreBuilder.append(" - ").append(sede);
+                else if (ciudad != null && !ciudad.isBlank()) nombreBuilder.append(" - ").append(ciudad);
+
+                if (hora != null && !hora.isBlank()) nombreBuilder.append(" (").append(hora).append(")");
+
+                String nombre = nombreBuilder.toString();
+
+                var dto = new sigmacine.aplicacion.data.CompraProductoDTO(
+                        null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code
+                );
+
+                carrito.addItem(dto);
+                asientoItems.add(dto);
+            }
+        }
     }
 
 
-    // ----------------------------------------------------------------------------------------------------
-    // MÉTODO QUE QUEDÓ ROTO POR EL CONFLICTO — YA CORREGIDO
-    // ----------------------------------------------------------------------------------------------------
-    private void tryFindPosterInScene() {
+    private void toggleCartPopup() {
+        if (cartStage != null && cartStage.isShowing()) {
+            cartStage.close();
+        } else {
+            openCartPopup();
+        }
+    }
+
+    private void openCartPopup() {
         try {
-            // buscar escenas donde ya esté insertado el poster
-            if (imgPoster != null && imgPoster.getImage() != null)
-                return;
+            if (cartStage == null) {
+                var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/verCarrito.fxml"));
+                Parent root = loader.load();
+                cartStage = new Stage();
+                cartStage.initOwner(gridSala.getScene().getWindow());
+                cartStage.initModality(javafx.stage.Modality.NONE);
+                cartStage.setResizable(false);
+                cartStage.setTitle("Carrito");
+                cartStage.setScene(new Scene(root));
+                cartStage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED,
+                        ev -> { if (ev.getCode() == KeyCode.ESCAPE) cartStage.close(); });
+            }
 
-            // Si no existe, no hacer nada más
-        } catch (Exception ignored) {}
+            if (gridSala != null && gridSala.getScene() != null && gridSala.getScene().getWindow() != null) {
+                Stage owner = (Stage) gridSala.getScene().getWindow();
+                cartStage.setX(owner.getX() + owner.getWidth() - 650);
+                cartStage.setY(owner.getY() + 100);
+            }
+
+            cartStage.show();
+            cartStage.toFront();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
-    // ----------------------------------------------------------------------------------------------------
-    // CONFIGURACIÓN DE FUNCIÓN
-    // ----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
+    // CONFIGURACIÓN DE FUNCIÓN / POSTER
+    // --------------------------------------------------------------------------------------------
     public void setFuncion(String titulo,
                            String hora,
                            Set<String> ocupados,
@@ -265,34 +346,50 @@ public class AsientosController implements Initializable {
         if (ocupados != null) this.ocupados.addAll(ocupados);
 
         this.accesibles.clear();
-        if (accesibles != null && !accesibles.isEmpty()) {
+        if (accesibles != null && !accesibles.isEmpty())
             this.accesibles.addAll(accesibles);
-        } else {
+        else
             this.accesibles.addAll(Arrays.asList("A5","A6","A7","A8"));
-        }
 
         if (lblTitulo != null) lblTitulo.setText(this.titulo);
         if (lblHoraPill != null) lblHoraPill.setText(this.hora);
 
         if (gridSala != null) {
             poblarGrilla();
+            sincronizarConCarritoExistente();
             actualizarResumen();
         }
-
-        tryFindPosterInScene();
     }
 
-    // Método que había quedado huérfano en el conflicto → lo eliminamos porque YA existe arriba
-    public void setFuncion(String titulo2, String hora2,
-                           Set<String> ocupados2,
-                           Set<String> accesibles2) {
-        throw new UnsupportedOperationException("Unimplemented method 'setFuncion'");
+    private void sincronizarConCarritoExistente() {
+        seleccion.clear();
+        asientoItems.clear();
+
+        var itemsCarrito = carrito.getItems();
+
+        for (var item : itemsCarrito) {
+            if (item.getFuncionId() != null &&
+                item.getAsiento() != null &&
+                item.getFuncionId().equals(this.funcionId)) {
+
+                String code = item.getAsiento();
+
+                seleccion.add(code);
+                asientoItems.add(item);
+
+                ToggleButton btn = seatByCode.get(code);
+                if (btn != null) {
+                    btn.setSelected(true);
+                    setSeatState(btn, SeatState.SELECTED);
+                }
+            }
+        }
     }
 
 
-    // ----------------------------------------------------------------------------------------------------
-    // BÚSQUEDA — parte del método que quedó mezclado por el conflicto
-    // ----------------------------------------------------------------------------------------------------
+    // --------------------------------------------------------------------------------------------
+    // BÚSQUEDA
+    // --------------------------------------------------------------------------------------------
     private void doSearch(String texto) {
         if (texto == null || texto.isBlank()) return;
 
@@ -314,12 +411,16 @@ public class AsientosController implements Initializable {
             }
 
             Stage stage = (Stage) gridSala.getScene().getWindow();
-            stage.setScene(new Scene(root));
+
+            Scene current = stage.getScene();
+            double w = current != null ? current.getWidth() : 900;
+            double h = current != null ? current.getHeight() : 600;
+
+            stage.setScene(new Scene(root, w, h));
             stage.setMaximized(true);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
 }
