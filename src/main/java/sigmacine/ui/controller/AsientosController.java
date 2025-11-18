@@ -16,7 +16,6 @@ import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 import java.net.URL;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AsientosController implements Initializable {
 
@@ -28,8 +27,19 @@ public class AsientosController implements Initializable {
     @FXML private ImageView imgPoster;
     @FXML private Button btnContinuar;
 
-    private int filas = 8;
-    private int columnas = 12;
+    private final int FILAS = 8;
+
+    // FILAS REALISTAS
+    private final int[][] configFilas = {
+            {3, 6},  // A
+            {2, 8},  // B
+            {2, 8},  // C
+            {2, 8},  // D
+            {1,10},  // E
+            {1,10},  // F
+            {1,10},  // G
+            {1,10}   // H
+    };
 
     private final Set<String> ocupados   = new HashSet<>();
     private final Set<String> accesibles = new HashSet<>();
@@ -40,7 +50,6 @@ public class AsientosController implements Initializable {
     private String hora   = "1:10 pm";
     private String ciudad = "";
     private String sede   = "";
-
     private Image poster;
     private Long funcionId;
 
@@ -53,13 +62,11 @@ public class AsientosController implements Initializable {
     private static final BigDecimal PRECIO_ASIENTO = new BigDecimal("12.00");
 
     private Stage cartStage;
-
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
 
     public void setUsuario(UsuarioDTO u) { this.usuario = u; }
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
-
     public void setFuncionId(Long funcionId) { this.funcionId = funcionId; }
 
     public void setPoster(Image poster) {
@@ -80,10 +87,6 @@ public class AsientosController implements Initializable {
     public void setCiudad(String ciudad) { this.ciudad = ciudad; }
     public void setSede(String sede) { this.sede = sede; }
 
-
-    // --------------------------------------------------------------------------------------------
-    // INITIALIZE
-    // --------------------------------------------------------------------------------------------
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -98,9 +101,9 @@ public class AsientosController implements Initializable {
             });
 
         if (ocupados.isEmpty()) {
-            for (int c = 3; c <= columnas; c += 2) ocupados.add("D" + c);
-            for (int c = 2; c <= columnas; c += 3) ocupados.add("E" + c);
-            for (int c = 1; c <= columnas; c += 4) ocupados.add("F" + c);
+            for (int c = 3; c <= 12; c += 2) ocupados.add("D" + c);
+            for (int c = 2; c <= 12; c += 3) ocupados.add("E" + c);
+            for (int c = 1; c <= 12; c += 4) ocupados.add("F" + c);
         }
 
         if (accesibles.isEmpty())
@@ -115,59 +118,52 @@ public class AsientosController implements Initializable {
     }
 
     @FXML private void onBuscarTop() { doSearch(txtBuscar != null ? txtBuscar.getText() : ""); }
-
-    @FXML
-    private void onCarritoTop() { toggleCartPopup(); }
-
+    @FXML private void onCarritoTop() { toggleCartPopup(); }
 
     @FXML
     private void onSigmaCardTop() {
         try {
             Stage stage = null;
-            try { stage = gridSala != null && gridSala.getScene() != null ? (Stage) gridSala.getScene().getWindow() : null; } catch (Exception ignore) {}
+            try { stage = gridSala != null ? (Stage) gridSala.getScene().getWindow() : null; } catch (Exception ignore) {}
             if (stage != null) SigmaCardController.openAsScene(stage);
         } catch (Exception ex) { ex.printStackTrace(); }
     }
 
-
-    // --------------------------------------------------------------------------------------------
-    // GRID DE ASIENTOS
-    // --------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------
+    //       GENERA LA GRILLA DE ASIENTOS (REALISTA + CENTRADA)
+    // ---------------------------------------------------------------
     private void poblarGrilla() {
+
         gridSala.getChildren().clear();
         seatByCode.clear();
         seleccion.clear();
 
-        int[][] filasConfig = {
-                {2, 10}, // A
-                {1, 11}, // B
-                {0, 12}, // C
-                {0, 12}, // D
-                {1, 11}, // E
-                {2, 10}, // F
-                {2, 10}, // G
-                {3, 9}   // H
-        };
+        for (int f = 0; f < FILAS; f++) {
 
-        for (int f = 0; f < filas; f++) {
-            int inicio = filasConfig[f][0];
-            int fin    = filasConfig[f][1];
+            int inicio = configFilas[f][0];
+            int cant   = configFilas[f][1];
 
-            for (int c = inicio; c < fin; c++) {
-                String code = code(f, c - inicio + 1);
+            for (int i = 0; i < cant; i++) {
+
+                int columnaReal = inicio + i;
+                String code = generarCodigo(f, i + 1);
+
                 ToggleButton seat = new ToggleButton();
-                seat.getStyleClass().add("seat");
                 seat.setUserData(code);
                 seat.setTooltip(new Tooltip(code));
                 seat.setFocusTraversable(false);
 
-                seat.getProperties().put("accessible", accesibles.contains(code));
+                seat.getStyleClass().add("seat");
+
+                boolean isAccessible = accesibles.contains(code);
+                seat.getProperties().put("accessible", isAccessible);
 
                 if (ocupados.contains(code)) {
                     setSeatState(seat, SeatState.UNAVAILABLE);
                     seat.setDisable(true);
                 } else {
-                    setSeatState(seat, SeatState.AVAILABLE);
+                    setSeatState(seat, seleccion.contains(code) ? SeatState.SELECTED : SeatState.AVAILABLE);
+
                     seat.setOnAction(e -> {
                         if (seat.isSelected()) {
                             setSeatState(seat, SeatState.SELECTED);
@@ -181,7 +177,7 @@ public class AsientosController implements Initializable {
                 }
 
                 seatByCode.put(code, seat);
-                gridSala.add(seat, c, f);
+                gridSala.add(seat, columnaReal, f);
             }
         }
     }
@@ -190,35 +186,39 @@ public class AsientosController implements Initializable {
 
     private void setSeatState(ToggleButton b, SeatState st) {
 
-        b.getStyleClass().removeAll("seat--available", "seat--selected",
-                "seat--unavailable", "seat--accessible");
-
         boolean isAccessible = Boolean.TRUE.equals(b.getProperties().get("accessible"));
+
+        b.getStyleClass().removeAll(
+                "seat--available", "seat--selected",
+                "seat--unavailable", "seat--accessible"
+        );
 
         switch (st) {
             case AVAILABLE -> {
                 b.getStyleClass().add("seat--available");
                 if (isAccessible) b.getStyleClass().add("seat--accessible");
+                b.setSelected(false);
             }
             case SELECTED -> {
                 b.getStyleClass().add("seat--selected");
                 if (isAccessible) b.getStyleClass().add("seat--accessible");
+                b.setSelected(true);
             }
-            case UNAVAILABLE -> b.getStyleClass().add("seat--unavailable");
+            case UNAVAILABLE -> {
+                b.getStyleClass().add("seat--unavailable");
+                b.setSelected(false);
+            }
         }
-
-        b.setSelected(st == SeatState.SELECTED);
     }
 
-    private String code(int filaIdx, int colIdx) {
+    private String generarCodigo(int filaIdx, int colIdx) {
         char fila = (char) ('A' + filaIdx);
-        return fila + String.valueOf(colIdx);
+        return fila + Integer.toString(colIdx);
     }
 
-
-    // --------------------------------------------------------------------------------------------
-    // RESUMEN Y CONTINUAR
-    // --------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------
+    //         RESUMEN Y CONTINUAR
+    // ---------------------------------------------------------------
     private void actualizarResumen() {
         int n = seleccion.size();
         if (lblResumen != null)
@@ -234,7 +234,7 @@ public class AsientosController implements Initializable {
             Alert alerta = new Alert(Alert.AlertType.WARNING);
             alerta.setTitle("Selección requerida");
             alerta.setHeaderText("No hay asientos seleccionados");
-            alerta.setContentText("Por favor selecciona al menos un asiento antes de continuar.");
+            alerta.setContentText("Selecciona al menos una silla para continuar.");
             alerta.showAndWait();
             return;
         }
@@ -242,10 +242,9 @@ public class AsientosController implements Initializable {
         sincronizarAsientosConCarrito();
     }
 
-
-    // --------------------------------------------------------------------------------------------
-    // CARRITO
-    // --------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------
+    //                     CARRITO
+    // ---------------------------------------------------------------
     private void sincronizarAsientosConCarrito() {
 
         if (!asientoItems.isEmpty()) {
@@ -256,18 +255,16 @@ public class AsientosController implements Initializable {
         if (!seleccion.isEmpty()) {
             for (String code : seleccion.stream().sorted().toList()) {
 
-                StringBuilder nombreBuilder = new StringBuilder("Asiento ").append(code);
+                StringBuilder nombre = new StringBuilder("Asiento ").append(code);
 
-                if (titulo != null && !titulo.isBlank()) nombreBuilder.append(" - ").append(titulo);
-                if (sede != null && !sede.isBlank()) nombreBuilder.append(" - ").append(sede);
-                else if (ciudad != null && !ciudad.isBlank()) nombreBuilder.append(" - ").append(ciudad);
-
-                if (hora != null && !hora.isBlank()) nombreBuilder.append(" (").append(hora).append(")");
-
-                String nombre = nombreBuilder.toString();
+                if (titulo != null && !titulo.isBlank()) nombre.append(" - ").append(titulo);
+                if (sede != null && !sede.isBlank()) nombre.append(" - ").append(sede);
+                else if (ciudad != null && !ciudad.isBlank()) nombre.append(" - ").append(ciudad);
+                if (hora != null) nombre.append(" (").append(hora).append(")");
 
                 var dto = new sigmacine.aplicacion.data.CompraProductoDTO(
-                        null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code
+                        null, this.funcionId, nombre.toString(),
+                        1, PRECIO_ASIENTO, code
                 );
 
                 carrito.addItem(dto);
@@ -275,7 +272,6 @@ public class AsientosController implements Initializable {
             }
         }
     }
-
 
     private void toggleCartPopup() {
         if (cartStage != null && cartStage.isShowing()) {
@@ -300,7 +296,7 @@ public class AsientosController implements Initializable {
                         ev -> { if (ev.getCode() == KeyCode.ESCAPE) cartStage.close(); });
             }
 
-            if (gridSala != null && gridSala.getScene() != null && gridSala.getScene().getWindow() != null) {
+            if (gridSala != null && gridSala.getScene() != null) {
                 Stage owner = (Stage) gridSala.getScene().getWindow();
                 cartStage.setX(owner.getX() + owner.getWidth() - 650);
                 cartStage.setY(owner.getY() + 100);
@@ -314,10 +310,9 @@ public class AsientosController implements Initializable {
         }
     }
 
-
-    // --------------------------------------------------------------------------------------------
-    // CONFIGURACIÓN DE FUNCIÓN / POSTER
-    // --------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------
+    //       FUNCIÓN / POSTER
+    // ---------------------------------------------------------------
     public void setFuncion(String titulo,
                            String hora,
                            Set<String> ocupados,
@@ -326,7 +321,6 @@ public class AsientosController implements Initializable {
 
         setFuncion(titulo, hora, ocupados, accesibles, funcionId, "", "");
     }
-
 
     public void setFuncion(String titulo,
                            String hora,
@@ -337,9 +331,9 @@ public class AsientosController implements Initializable {
                            String sede) {
 
         if (titulo != null) this.titulo = titulo;
-        if (hora   != null) this.hora = hora;
+        if (hora   != null) this.hora   = hora;
         if (ciudad != null) this.ciudad = ciudad;
-        if (sede   != null) this.sede = sede;
+        if (sede   != null) this.sede   = sede;
         this.funcionId = funcionId;
 
         this.ocupados.clear();
@@ -362,14 +356,16 @@ public class AsientosController implements Initializable {
     }
 
     private void sincronizarConCarritoExistente() {
+
         seleccion.clear();
         asientoItems.clear();
 
         var itemsCarrito = carrito.getItems();
 
         for (var item : itemsCarrito) {
+
             if (item.getFuncionId() != null &&
-                item.getAsiento() != null &&
+                item.getAsiento()    != null &&
                 item.getFuncionId().equals(this.funcionId)) {
 
                 String code = item.getAsiento();
@@ -386,15 +382,15 @@ public class AsientosController implements Initializable {
         }
     }
 
-
-    // --------------------------------------------------------------------------------------------
-    // BÚSQUEDA
-    // --------------------------------------------------------------------------------------------
+    // ---------------------------------------------------------------
+    //                     BÚSQUEDA
+    // ---------------------------------------------------------------
     private void doSearch(String texto) {
+
         if (texto == null || texto.isBlank()) return;
 
         try {
-            var db = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
+            var db  = new sigmacine.infraestructura.configDataBase.DatabaseConfig();
             var repo = new PeliculaRepositoryJdbc(db);
             var resultados = repo.buscarPorTitulo(texto);
 
