@@ -14,8 +14,9 @@ import sigmacine.infraestructura.persistencia.Mapper.PeliculaMapper;
 
 
 
+
 public class PeliculaRepositoryJdbc implements PeliculaRepository {
-    private final DatabaseConfig db;
+    protected DatabaseConfig db;
 
     public PeliculaRepositoryJdbc(DatabaseConfig db) {
         this.db = db;
