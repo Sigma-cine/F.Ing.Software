@@ -9,4 +9,9 @@ public interface SigmaCardRepository {
     BigDecimal recargar(long usuarioId, BigDecimal monto);
 
     BigDecimal consultarSaldo(long usuarioId);
+
+    /**
+     * Retorna true si el usuario ya tiene SigmaCard.
+     */
+    boolean existeCard(long usuarioId);
 }

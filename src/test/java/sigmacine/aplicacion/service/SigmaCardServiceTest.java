@@ -1,3 +1,4 @@
+//
 package sigmacine.aplicacion.service;
 
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,11 @@ public class SigmaCardServiceTest {
     static class StubRepo implements SigmaCardRepository {
         boolean created = false;
         BigDecimal saldo = BigDecimal.valueOf(10);
-        @Override public boolean crearSiNoExiste(long usuarioId) { this.created = true; return true; }
+        boolean existe = false;
+        @Override public boolean crearSiNoExiste(long usuarioId) { this.created = true; this.existe = true; return true; }
         @Override public BigDecimal recargar(long usuarioId, BigDecimal monto) { if (monto == null) throw new IllegalArgumentException("monto"); this.saldo = this.saldo.add(monto); return this.saldo; }
         @Override public BigDecimal consultarSaldo(long usuarioId) { return saldo; }
+        @Override public boolean existeCard(long usuarioId) { return existe; }
     }
 
     @Test
@@ -45,6 +48,7 @@ public class SigmaCardServiceTest {
             @Override public boolean crearSiNoExiste(long usuarioId) { return false; }
             @Override public BigDecimal recargar(long usuarioId, BigDecimal monto) { return BigDecimal.ZERO; }
             @Override public BigDecimal consultarSaldo(long usuarioId) { return null; }
+            @Override public boolean existeCard(long usuarioId) { return false; }
         });
         BigDecimal saldo = svc.consultarSaldo("123");
         assertEquals(BigDecimal.ZERO, saldo);
@@ -139,6 +143,17 @@ public class SigmaCardServiceTest {
         BigDecimal saldoFinal = svc.consultarSaldo("1");
         
         assertEquals(saldoInicial.add(BigDecimal.valueOf(20)), saldoFinal);
+    }
+        @Test
+    public void testTieneCard() {
+        StubRepo repo = new StubRepo();
+        SigmaCardService svc = new SigmaCardService(repo);
+        // Al inicio, no tiene tarjeta
+        repo.existe = false;
+        assertFalse(svc.tieneCard(1L));
+        // Simular que ahora tiene tarjeta
+        repo.existe = true;
+        assertTrue(svc.tieneCard(1L));
     }
 }
 

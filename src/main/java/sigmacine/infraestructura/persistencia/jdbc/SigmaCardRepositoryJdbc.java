@@ -1,8 +1,8 @@
+
 package sigmacine.infraestructura.persistencia.jdbc;
 
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.dominio.repository.SigmaCardRepository;
-
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -100,6 +100,23 @@ public class SigmaCardRepositoryJdbc implements SigmaCardRepository {
             return nuevo;
         } catch (SQLException e) {
             throw new RuntimeException("Error recargando SIGMA_CARD", e);
+        }
+    }
+
+    @Override
+    public boolean existeCard(long usuarioId) {
+        final String select = "SELECT COUNT(1) AS CNT FROM SIGMA_CARD WHERE ID = ?";
+        try (Connection con = db.getConnection();
+             PreparedStatement ps = con.prepareStatement(select)) {
+            ps.setLong(1, usuarioId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("CNT") > 0;
+                }
+            }
+            return false;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error consultando existencia de SIGMA_CARD", e);
         }
     }
 }
