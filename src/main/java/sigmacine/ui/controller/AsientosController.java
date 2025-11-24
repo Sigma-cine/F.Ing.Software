@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.math.BigDecimal;
@@ -32,21 +33,18 @@ public class AsientosController implements Initializable {
     @FXML private ImageView imgPoster;
     @FXML private Button btnContinuar;
 
-    // opcional, si decides añadir una ImageView para la convención en tu FXML
     @FXML private ImageView imgConvencion;
 
     private final int FILAS = 8;
-
-    // (inicio, cantidad)
     private final int[][] configFilas = {
-            {3, 6},  // A
-            {2, 8},  // B
-            {2, 8},  // C
-            {2, 8},  // D
-            {1,10},  // E
-            {1,10},  // F
-            {1,10},  // G
-            {1,10}   // H
+            {3, 6},
+            {2, 8},
+            {2, 8},
+            {2, 8},
+            {1,10},
+            {1,10},
+            {1,10},
+            {1,10}
     };
 
     private final Set<String> ocupados   = new HashSet<>();
@@ -58,8 +56,8 @@ public class AsientosController implements Initializable {
     private String hora;
     private String ciudad;
     private String sede;
-    private Image poster;                      // si lo envían como Image
-    private String posterResourceName = null;   // si lo envían como nombre de archivo o ruta en resources
+    private Image poster;
+    private String posterResourceName = null;
     private Long funcionId;
 
     private final sigmacine.aplicacion.service.CarritoService carrito =
@@ -78,60 +76,207 @@ public class AsientosController implements Initializable {
     public void setCoordinador(ControladorControlador c) { this.coordinador = c; }
     public void setFuncionId(Long funcionId) { this.funcionId = funcionId; }
 
+    // ================================================================
+    //      SISTEMA DE IMÁGENES CORREGIDO Y ROBUSTO
+    // ================================================================
+
     /**
-     * Si el coordinador ya tiene un Image (por ejemplo convertido desde bytes), puede usar este.
+     * Intenta cargar un InputStream desde resources para la ruta dada (por ejemplo:
+     * "/Images/Posters/avatar.png" o "/Images/Asientos/convencion.png").
+     * Devuelve null si no existe.
      */
+    private Image cargarDesdeResources(String resourcePath) {
+        if (resourcePath == null || resourcePath.isBlank()) return null;
+
+        String candidate = resourcePath.startsWith("/") ? resourcePath : ("/" + resourcePath);
+        try (InputStream is = getClass().getResourceAsStream(candidate)) {
+            if (is != null) return new Image(is);
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    /**
+     * Normaliza una entrada de poster/trailer/imagen que puede venir en muchas formas:
+     * - "avatar.png"
+     * - "Posters/avatar.png"
+     * - "/Images/Posters/avatar.png"
+     * - "F.Ing.Software/src/main/resources/Images/Posters/avatar.png"
+     *
+     * Resultado: intenta devolver el nombre de archivo "avatar.png" y también puede devolver
+     * la ruta "/Images/Posters/avatar.png" si detecta que el valor ya apunta dentro de resources.
+     *
+     * No imprime ni lanza excepciones.
+     */
+    private String normalizePosterReference(String raw) {
+        if (raw == null) return null;
+        String s = raw.trim().replace("\\", "/");
+
+        // Si ya es una URL remota o file:, devolver tal cual (para fallback)
+        if (s.startsWith("http://") || s.startsWith("https://") || s.startsWith("file:/")) {
+            return s;
+        }
+
+        // Si contiene src/main/resources, eliminar el prefijo hasta Images/...
+        int idx = s.indexOf("src/main/resources");
+        if (idx >= 0) {
+            int imagesIdx = s.indexOf("Images/", idx);
+            if (imagesIdx >= 0) {
+                return "/" + s.substring(imagesIdx); // devolver "/Images/Posters/..."
+            } else {
+                // intentar recuperar filename
+                int lastSlash = s.lastIndexOf('/');
+                return lastSlash >= 0 ? s.substring(lastSlash + 1) : s;
+            }
+        }
+
+        // Si contiene "/Images/" ya es una ruta dentro del jar
+        if (s.contains("/Images/")) {
+            // asegurar que comience con '/'
+            if (!s.startsWith("/")) return "/" + s;
+            return s;
+        }
+
+        // Si contiene "Images/" sin leading slash
+        if (s.startsWith("Images/")) {
+            return "/" + s;
+        }
+
+        // Si contiene "Posters/" o "Asientos/" devolver con /Images/ prefijo
+        if (s.startsWith("Posters/") || s.startsWith("Asientos/") || s.startsWith("Asientos\\")) {
+            return "/Images/" + s;
+        }
+
+        // Si viene con path que incluye folders, quitar folders y devolver solo filename
+        if (s.contains("/")) {
+            String filename = s.substring(s.lastIndexOf('/') + 1);
+            return filename;
+        }
+
+        // Por defecto devolver el nombre (filename)
+        return s;
+    }
+
+    /**
+     * Resolver imagen de póster con varios intentos:
+     * 1) Si poster (Image) ya definido, retornarlo.
+     * 2) Si posterResourceName define ruta o nombre, intentar:
+     *    - si normalize devuelve "/Images/Posters/<file>", intentar cargar directo.
+     *    - si normalize devuelve "file.png", intentar "/Images/Posters/file.png".
+     *    - si normalize devuelve url remota, intentar cargar como URL.
+     *    - fallback: intentar en "/Images/<file>".
+     * 3) Si todo falla, devolver null.
+     *
+     * No imprime ni lanza errores.
+     */
+    private Image resolvePosterImage() {
+        // 1) Image ya definida
+        if (this.poster != null) return this.poster;
+
+        if (this.posterResourceName == null || this.posterResourceName.isBlank()) return null;
+
+        String normalized = normalizePosterReference(this.posterResourceName);
+
+        // Si normalization devolvió una URL remota (starts with http or file)
+        if (normalized != null && (normalized.startsWith("http://") || normalized.startsWith("https://") || normalized.startsWith("file:/"))) {
+            try {
+                return new Image(normalized, true);
+            } catch (Exception ignored) { /* fallback below */ }
+        }
+
+        // Si normalization devolvió algo tipo "/Images/Posters/avatar.png", probar directo
+        if (normalized != null && normalized.startsWith("/Images/Posters/")) {
+            Image img = cargarDesdeResources(normalized);
+            if (img != null) return img;
+        }
+
+        // Si normalization devolvió solo filename o "avatar.png"
+        if (normalized != null && !normalized.startsWith("/")) {
+            Image img = cargarDesdeResources("/Images/Posters/" + normalized);
+            if (img != null) return img;
+
+            img = cargarDesdeResources("/Images/" + normalized);
+            if (img != null) return img;
+        }
+
+        // último intento: si posterResourceName es una ruta absoluta en FS, intentar cargar File
+        try {
+            File f = new File(this.posterResourceName);
+            if (f.exists()) {
+                return new Image(f.toURI().toString(), false);
+            }
+        } catch (Exception ignored) {}
+
+        // no se encontró
+        return null;
+    }
+
     public void setPoster(Image poster) {
         this.poster = poster;
-        this.posterResourceName = null; // priorizar Image recibido directamente
+        this.posterResourceName = null;
         if (imgPoster != null && poster != null) imgPoster.setImage(poster);
     }
 
     /**
-     * Si tu BD devuelve solo el nombre del archivo (ej: "avengers.png") o la ruta en resources
-     * usa esto. Intentará varias formas de resolverlo:
-     *  - /Images/Posters/<nombreArchivo>
-     *  - /Images/<posterResourceName> (por compatibilidad)
-     *  - si el valor es una URL (http/https/file:/) creará Image con esa URL
+     * Acepta valores como:
+     *  - "avatar.png"
+     *  - "Posters/avatar.png"
+     *  - "/Images/Posters/avatar.png"
+     *  - "F.Ing.Software/src/main/resources/Images/Posters/avatar.png"
+     *
+     * y los normaliza / intenta resolver.
      */
     public void setPosterResource(String nombreArchivo) {
         this.posterResourceName = nombreArchivo;
         cargarPosterSiPosible();
     }
 
-    /**
-     * Opcional: si quieres mostrar imagen de convención (sede), llama a este método con
-     * el nombre del recurso dentro de resources (por ejemplo "Asientos/convencion.png")
-     * o con la ruta relativa en resources.
-     */
     public void setConvencionResource(String nombreArchivo) {
-        if (nombreArchivo == null || nombreArchivo.isBlank()) return;
-        // intentar cargar en caso de que el ImageView exista
-        if (imgConvencion != null) {
-            Image img = resolveResourceImageFlexible(nombreArchivo, "Images/Asientos/");
-            if (img != null) imgConvencion.setImage(img);
+        if (nombreArchivo == null || nombreArchivo.isBlank() || imgConvencion == null) return;
+
+        // normalize reference like poster
+        String normalized = normalizePosterReference(nombreArchivo);
+
+        // Preferir /Images/Asientos/<file>
+        Image img = null;
+        if (normalized != null && normalized.startsWith("/Images/Asientos/")) {
+            img = cargarDesdeResources(normalized);
         }
+        if (img == null) {
+            // si viene solo filename
+            String candidate = normalized != null && !normalized.startsWith("/") ? "/Images/Asientos/" + normalized : normalized;
+            img = cargarDesdeResources(candidate);
+        }
+        if (img == null) {
+            // fallback /Images/<name>
+            String filename = normalized != null && normalized.contains("/") ? normalized.substring(normalized.lastIndexOf('/') + 1) : normalized;
+            if (filename != null) img = cargarDesdeResources("/Images/" + filename);
+        }
+        if (img != null) imgConvencion.setImage(img);
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-        if (lblTitulo != null) lblTitulo.setText(titulo);
+    private void cargarPosterSiPosible() {
+        if (imgPoster == null) return;
+
+        // 1) si el Image ya fue provisto
+        if (this.poster != null) {
+            imgPoster.setImage(this.poster);
+            return;
+        }
+
+        // 2) intentar resolver por nombre/ruta
+        Image resolved = resolvePosterImage();
+        if (resolved != null) {
+            imgPoster.setImage(resolved);
+            return;
+        }
+
+        // 3) si no se encontró nada, dejar como estaba (no setear null)
     }
 
-    public void setHora(String hora) {
-        this.hora = hora;
-        if (lblHoraPill != null) lblHoraPill.setText(hora);
-    }
-
-    public void setCiudad(String ciudad) { this.ciudad = ciudad; }
-    public void setSede(String sede) { this.sede = sede; }
+    // ================================================================
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        // No sobreescribir información aquí
-        // Solo enlazar eventos y preparar UI
-
         BarraController barraController = BarraController.getInstance();
         if (barraController != null)
             barraController.marcarBotonActivo("asientos");
@@ -142,10 +287,8 @@ public class AsientosController implements Initializable {
                     doSearch(txtBuscar.getText());
             });
 
-        // intentar cargar poster si el setter se llamó antes de initialize()
         cargarPosterSiPosible();
 
-        // si poster (Image) fue seteado antes, mostrarlo
         if (poster != null && imgPoster != null) {
             imgPoster.setImage(poster);
         }
@@ -162,32 +305,27 @@ public class AsientosController implements Initializable {
         } catch (Exception ignored) {}
     }
 
-
-    // =====================================================================================
-    //         GRILLA — NUMERACIÓN ARRIBA (1..N) Y LETRAS A LA IZQUIERDA (A..)
-    // =====================================================================================
+    // ================================================================
+    //                       GRILLA DE ASIENTOS
+    // ================================================================
     private void poblarGrilla() {
         if (gridSala == null) return;
 
         gridSala.getChildren().clear();
         seatByCode.clear();
-        // no limpiamos seleccion aquí: sincronizarConCarritoExistente hará ese trabajo
 
         int maxColumn = 0;
         for (int[] fila : configFilas) {
             int inicio = fila[0];
             int cant   = fila[1];
-            maxColumn = Math.max(maxColumn, inicio + cant - 1); // columna máxima real
+            maxColumn = Math.max(maxColumn, inicio + cant - 1);
         }
 
-        // poner números arriba (centrados)
         for (int col = 1; col <= maxColumn; col++) {
             Label lbl = new Label(String.valueOf(col));
             lbl.getStyleClass().add("seat-number");
-
-            // asegurar espacio y alineación centrada
             lbl.setMinWidth(Region.USE_PREF_SIZE);
-            lbl.setPrefWidth(48); // ajusta según tu UI
+            lbl.setPrefWidth(48);
             lbl.setAlignment(Pos.CENTER);
 
             GridPane.setHalignment(lbl, HPos.CENTER);
@@ -196,30 +334,24 @@ public class AsientosController implements Initializable {
             gridSala.add(lbl, col, 0);
         }
 
-        // filas con letra a la izquierda
         for (int f = 0; f < FILAS; f++) {
 
             char letra = (char)('A' + f);
             Label lblFila = new Label(String.valueOf(letra));
             lblFila.getStyleClass().add("seat-letter");
-
-            // Tamaño y centrado de la letra de fila
             lblFila.setMinWidth(Region.USE_PREF_SIZE);
-            lblFila.setPrefWidth(40); // ajusta si lo necesitas
+            lblFila.setPrefWidth(40);
             lblFila.setAlignment(Pos.CENTER);
-
             GridPane.setHalignment(lblFila, HPos.CENTER);
-            GridPane.setValignment(lblFila, VPos.CENTER);
-
-            gridSala.add(lblFila, 0, f + 1);   // fila inicia en 1
+            gridSala.add(lblFila, 0, f + 1);
 
             int inicio = configFilas[f][0];
             int cant   = configFilas[f][1];
 
             for (int i = 0; i < cant; i++) {
 
-                int columnaReal = inicio + i;
-                String code = generarCodigo(f, columnaReal); // usar columna real
+                int colReal = inicio + i;
+                String code = generarCodigo(f, colReal);
 
                 ToggleButton seat = new ToggleButton();
                 seat.setUserData(code);
@@ -227,22 +359,21 @@ public class AsientosController implements Initializable {
                 seat.setFocusTraversable(false);
                 seat.getStyleClass().add("seat");
 
-                boolean isAccessible = accesibles.contains(code);
-                seat.getProperties().put("accessible", isAccessible);
+                boolean isAcc = accesibles.contains(code);
+                seat.getProperties().put("accessible", isAcc);
 
                 if (ocupados.contains(code)) {
                     setSeatState(seat, SeatState.UNAVAILABLE);
                     seat.setDisable(true);
-                    // si es accesible pero ocupado, mantener la clase visual accesible + unavailable
-                    if (isAccessible) seat.getStyleClass().add("seat--accessible");
+                    if (isAcc) seat.getStyleClass().add("seat--accessible");
                 } else {
                     if (seleccion.contains(code)) {
-                        if (isAccessible) setSeatState(seat, SeatState.SELECTED_ACCESSIBLE);
-                        else             setSeatState(seat, SeatState.SELECTED);
+                        if (isAcc) setSeatState(seat, SeatState.SELECTED_ACCESSIBLE);
+                        else setSeatState(seat, SeatState.SELECTED);
                         seat.setSelected(true);
                     } else {
-                        if (isAccessible) setSeatState(seat, SeatState.AVAILABLE_ACCESSIBLE);
-                        else             setSeatState(seat, SeatState.AVAILABLE);
+                        if (isAcc) setSeatState(seat, SeatState.AVAILABLE_ACCESSIBLE);
+                        else setSeatState(seat, SeatState.AVAILABLE);
                     }
 
                     seat.setOnAction(e -> {
@@ -250,27 +381,22 @@ public class AsientosController implements Initializable {
                         if (seat.isSelected()) {
                             seleccion.add(code);
                             if (acc) setSeatState(seat, SeatState.SELECTED_ACCESSIBLE);
-                            else     setSeatState(seat, SeatState.SELECTED);
+                            else setSeatState(seat, SeatState.SELECTED);
                         } else {
                             seleccion.remove(code);
                             if (acc) setSeatState(seat, SeatState.AVAILABLE_ACCESSIBLE);
-                            else     setSeatState(seat, SeatState.AVAILABLE);
+                            else setSeatState(seat, SeatState.AVAILABLE);
                         }
                         actualizarResumen();
                     });
                 }
 
                 seatByCode.put(code, seat);
-
-                // centrar el botón en la celda
                 GridPane.setHalignment(seat, HPos.CENTER);
-                GridPane.setValignment(seat, VPos.CENTER);
-
-                gridSala.add(seat, columnaReal, f + 1);  // +1 porque la fila 0 es la numeración
+                gridSala.add(seat, colReal, f + 1);
             }
         }
     }
-
 
     private enum SeatState {
         AVAILABLE,
@@ -306,8 +432,8 @@ public class AsientosController implements Initializable {
         }
     }
 
-    private String generarCodigo(int filaIdx, int columnaReal) {
-        return (char)('A' + filaIdx) + Integer.toString(columnaReal);
+    private String generarCodigo(int filaIdx, int colReal) {
+        return (char)('A' + filaIdx) + Integer.toString(colReal);
     }
 
     private void actualizarResumen() {
@@ -336,25 +462,22 @@ public class AsientosController implements Initializable {
             asientoItems.clear();
         }
 
-        if (!seleccion.isEmpty()) {
-            for (String code : seleccion.stream().sorted().toList()) {
+        for (String code : seleccion.stream().sorted().toList()) {
 
-                StringBuilder nombre = new StringBuilder("Asiento ")
-                        .append(code)
-                        .append(" - ").append(titulo);
+            StringBuilder nombre = new StringBuilder("Asiento ")
+                    .append(code).append(" - ").append(titulo);
 
-                if (sede != null && !sede.isBlank()) nombre.append(" - ").append(sede);
-                else if (ciudad != null && !ciudad.isBlank()) nombre.append(" - ").append(ciudad);
+            if (sede != null && !sede.isBlank()) nombre.append(" - ").append(sede);
+            else if (ciudad != null && !ciudad.isBlank()) nombre.append(" - ").append(ciudad);
 
-                nombre.append(" (").append(hora).append(")");
+            nombre.append(" (").append(hora).append(")");
 
-                var dto = new sigmacine.aplicacion.data.CompraProductoDTO(
-                        null, this.funcionId, nombre.toString(), 1, PRECIO_ASIENTO, code
-                );
+            var dto = new sigmacine.aplicacion.data.CompraProductoDTO(
+                    null, this.funcionId, nombre.toString(), 1, PRECIO_ASIENTO, code
+            );
 
-                carrito.addItem(dto);
-                asientoItems.add(dto);
-            }
+            carrito.addItem(dto);
+            asientoItems.add(dto);
         }
     }
 
@@ -371,12 +494,9 @@ public class AsientosController implements Initializable {
                 Parent root = loader.load();
                 cartStage = new Stage();
                 cartStage.initOwner(gridSala.getScene().getWindow());
-                cartStage.initModality(javafx.stage.Modality.NONE);
                 cartStage.setResizable(false);
                 cartStage.setTitle("Carrito");
                 cartStage.setScene(new Scene(root));
-                cartStage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED,
-                        ev -> { if (ev.getCode() == KeyCode.ESCAPE) cartStage.close(); });
             }
 
             Stage owner = (Stage) gridSala.getScene().getWindow();
@@ -386,14 +506,11 @@ public class AsientosController implements Initializable {
             cartStage.show();
             cartStage.toFront();
 
-        } catch (Exception ex) {
-            // silencio: maneja con logger si quieres
-        }
+        } catch (Exception ignored) {}
     }
 
-
     // ================================================================
-    //   CARGA DE INFORMACIÓN DE PELÍCULA / FUNCIÓN DESDE BD
+    //             CARGA INFO FUNCIÓN / BD
     // ================================================================
     public void setFuncion(String titulo,
                            String hora,
@@ -413,12 +530,10 @@ public class AsientosController implements Initializable {
         if (ocupados != null) this.ocupados.addAll(ocupados);
 
         this.accesibles.clear();
-        if (accesibles != null && !accesibles.isEmpty())
-            this.accesibles.addAll(accesibles);
+        if (accesibles != null) this.accesibles.addAll(accesibles);
 
-        // Cargar info visual (priorizar Image si está presente)
-        if (lblTitulo != null) lblTitulo.setText(this.titulo);
-        if (lblHoraPill != null) lblHoraPill.setText(this.hora);
+        if (lblTitulo != null) lblTitulo.setText(titulo);
+        if (lblHoraPill != null) lblHoraPill.setText(hora);
 
         cargarPosterSiPosible();
 
@@ -440,7 +555,6 @@ public class AsientosController implements Initializable {
         asientoItems.clear();
 
         for (var item : carrito.getItems()) {
-
             if (Objects.equals(item.getFuncionId(), this.funcionId)
                     && item.getAsiento() != null) {
 
@@ -453,7 +567,7 @@ public class AsientosController implements Initializable {
                     boolean acc = accesibles.contains(code);
                     btn.setSelected(true);
                     if (acc) setSeatState(btn, SeatState.SELECTED_ACCESSIBLE);
-                    else     setSeatState(btn, SeatState.SELECTED);
+                    else setSeatState(btn, SeatState.SELECTED);
                 }
             }
         }
@@ -480,85 +594,12 @@ public class AsientosController implements Initializable {
             }
 
             Stage stage = (Stage) gridSala.getScene().getWindow();
-
             Scene curr = stage.getScene();
             stage.setScene(new Scene(root,
                     curr != null ? curr.getWidth() : 900,
                     curr != null ? curr.getHeight() : 600));
             stage.setMaximized(true);
 
-        } catch (Exception ex) {
-            // silencio en errores de búsqueda (usa logger si quieres)
-        }
-    }
-
-    /* ------------------ Helpers de recursos e imágenes ------------------ */
-
-    /**
-     * Intenta cargar el poster usando las diferentes estrategias posibles:
-     * - si poster (Image) ya se pasó, usarlo
-     * - si posterResourceName tiene valor, intentar resolver:
-     *    1) /Images/Posters/<posterResourceName>
-     *    2) /Images/<posterResourceName>
-     *    3) posterResourceName (si es URL)
-     */
-    private void cargarPosterSiPosible() {
-        if (imgPoster == null) return;
-
-        if (this.poster != null) {
-            imgPoster.setImage(this.poster);
-            return;
-        }
-
-        if (this.posterResourceName == null || this.posterResourceName.isBlank()) return;
-
-        Image img = resolveResourceImageFlexible(this.posterResourceName, "Images/Posters/");
-        if (img == null) {
-            // segunda opcion: buscar en /Images/
-            img = resolveResourceImageFlexible(this.posterResourceName, "Images/");
-        }
-        if (img == null) {
-            // si el string parece una URL remota o file:, intentar cargar directamente
-            try {
-                if (this.posterResourceName.startsWith("http://") || this.posterResourceName.startsWith("https://")
-                        || this.posterResourceName.startsWith("file:/")) {
-                    img = new Image(this.posterResourceName, true);
-                }
-            } catch (Exception ignored) {}
-        }
-
-        if (img != null) imgPoster.setImage(img);
-    }
-
-    private Image resolveResourceImageFlexible(String resourceName, String defaultFolderPrefix) {
-        if (resourceName == null) return null;
-        try {
-            // 1) si viene como "/Images/Posters/avengers.png" o "/Images/avengers.png"
-            String candidate = resourceName.startsWith("/") ? resourceName : ("/" + resourceName);
-
-            // intentar directo
-            InputStream is = getClass().getResourceAsStream(candidate);
-            if (is != null) return new Image(is);
-
-            // intentar con prefijo
-            String withPrefix = resourceName.startsWith("/") ? ("/" + defaultFolderPrefix + resourceName.substring(1)) : ("/" + defaultFolderPrefix + resourceName);
-            is = getClass().getResourceAsStream(withPrefix);
-            if (is != null) return new Image(is);
-
-            // intentar sin slash + default folder
-            is = getClass().getResourceAsStream("/" + defaultFolderPrefix + resourceName);
-            if (is != null) return new Image(is);
-
-            // intentar tratar como URL
-            if (resourceName.startsWith("http://") || resourceName.startsWith("https://") || resourceName.startsWith("file:/")) {
-                return new Image(resourceName, true);
-            }
-
-            // intento final: buscar como resourceName tal cual (sin prefijos)
-            is = getClass().getResourceAsStream(resourceName);
-            if (is != null) return new Image(is);
-
         } catch (Exception ignored) {}
-        return null;
     }
 }
