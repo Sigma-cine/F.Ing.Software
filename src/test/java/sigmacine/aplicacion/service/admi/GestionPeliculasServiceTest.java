@@ -15,6 +15,105 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GestionPeliculasServiceTest {
+        @Test
+        public void convertirAEntidadConDuracionNullNoLanzaExcepcion() {
+            PeliculaDTO dto = crearDTO(1, "Titulo", "Genero", "PG", 120);
+            dto.setDuracionMinutos(null);
+            // No debe lanzar excepción, simplemente no setea duración
+            assertDoesNotThrow(() -> {
+                // Acceso por reflexión para probar método privado
+                try {
+                    var method = GestionPeliculasService.class.getDeclaredMethod("convertirA_Entidad", PeliculaDTO.class);
+                    method.setAccessible(true);
+                    Pelicula entidad = (Pelicula) method.invoke(servicio, dto);
+                    assertNotNull(entidad);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        @Test
+        public void convertirAEntidadConDuracionNoNullSeteaDuracion() {
+            PeliculaDTO dto = crearDTO(2, "Titulo", "Genero", "PG", 150);
+            // No debe lanzar excepción y debe setear duración
+            assertDoesNotThrow(() -> {
+                try {
+                    var method = GestionPeliculasService.class.getDeclaredMethod("convertirA_Entidad", PeliculaDTO.class);
+                    method.setAccessible(true);
+                    Pelicula entidad = (Pelicula) method.invoke(servicio, dto);
+                    assertNotNull(entidad);
+                    assertEquals(150, entidad.getDuracion());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+    @Test
+    public void actualizarPeliculaDTONuloLanzaExcepcion() {
+        PeliculaDTO dto = crearDTO(null, "Original", "Drama", "PG", 90);
+        PeliculaDTO creada = servicio.crearNuevaPelicula(dto);
+        assertThrows(IllegalArgumentException.class, () -> servicio.actualizarPeliculaExistente(creada.getIdPelicula(), null));
+    }
+
+    @Test
+    public void actualizarPeliculaTituloSoloEspaciosLanzaExcepcion() {
+        PeliculaDTO dto = crearDTO(null, "Original", "Drama", "PG", 90);
+        PeliculaDTO creada = servicio.crearNuevaPelicula(dto);
+        PeliculaDTO cambios = crearDTO(creada.getIdPelicula(), "   ", "Drama", "PG", 90);
+        assertThrows(IllegalArgumentException.class, () -> servicio.actualizarPeliculaExistente(creada.getIdPelicula(), cambios));
+    }
+
+    @Test
+    public void actualizarPeliculaClasificacionSoloEspaciosLanzaExcepcion() {
+        PeliculaDTO dto = crearDTO(null, "Original", "Drama", "PG", 90);
+        PeliculaDTO creada = servicio.crearNuevaPelicula(dto);
+        PeliculaDTO cambios = crearDTO(creada.getIdPelicula(), "Original", "Drama", "   ", 90);
+        assertThrows(IllegalArgumentException.class, () -> servicio.actualizarPeliculaExistente(creada.getIdPelicula(), cambios));
+    }
+
+    @Test
+    public void actualizarPeliculaDuracionNulaLanzaExcepcion() {
+        PeliculaDTO dto = crearDTO(null, "Original", "Drama", "PG", 90);
+        PeliculaDTO creada = servicio.crearNuevaPelicula(dto);
+        PeliculaDTO cambios = crearDTO(creada.getIdPelicula(), "Original", "Drama", "PG", 90);
+        cambios.setDuracionMinutos(null);
+        assertThrows(IllegalArgumentException.class, () -> servicio.actualizarPeliculaExistente(creada.getIdPelicula(), cambios));
+    }
+
+    @Test
+    public void actualizarPeliculaDuracionNegativaLanzaExcepcion() {
+        PeliculaDTO dto = crearDTO(null, "Original", "Drama", "PG", 90);
+        PeliculaDTO creada = servicio.crearNuevaPelicula(dto);
+        PeliculaDTO cambios = crearDTO(creada.getIdPelicula(), "Original", "Drama", "PG", -10);
+        assertThrows(IllegalArgumentException.class, () -> servicio.actualizarPeliculaExistente(creada.getIdPelicula(), cambios));
+    }
+
+    @Test
+    public void actualizarPeliculaEstadoNuloAsignaActiva() {
+        PeliculaDTO dto = crearDTO(null, "Original", "Drama", "PG", 90);
+        PeliculaDTO creada = servicio.crearNuevaPelicula(dto);
+        PeliculaDTO cambios = crearDTO(creada.getIdPelicula(), "Original", "Drama", "PG", 90);
+        cambios.setEstadoPelicula(null);
+        PeliculaDTO actualizada = servicio.actualizarPeliculaExistente(creada.getIdPelicula(), cambios);
+        assertEquals("ACTIVA", actualizada.getEstadoPelicula());
+    }
+
+    @Test
+    public void actualizarPeliculaEstadoSoloEspaciosAsignaActiva() {
+        PeliculaDTO dto = crearDTO(null, "Original", "Drama", "PG", 90);
+        PeliculaDTO creada = servicio.crearNuevaPelicula(dto);
+        PeliculaDTO cambios = crearDTO(creada.getIdPelicula(), "Original", "Drama", "PG", 90);
+        cambios.setEstadoPelicula("   ");
+        PeliculaDTO actualizada = servicio.actualizarPeliculaExistente(creada.getIdPelicula(), cambios);
+        assertEquals("ACTIVA", actualizada.getEstadoPelicula());
+    }
+
+    @Test
+    public void eliminarPeliculaIdInexistenteDevuelveFalse() {
+        boolean eliminado = servicio.eliminarPeliculaPorId(9999);
+        assertFalse(eliminado);
+    }
 
     private GestionPeliculasService servicio;
     private PeliculaRepositoryFake consultaRepo;
