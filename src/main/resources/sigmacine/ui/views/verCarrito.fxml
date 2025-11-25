@@ -25,20 +25,17 @@
 
             <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;" text="Mi carrito" />
 
-            <!-- Lista dinámica de productos en carrito -->
-            <ListView fx:id="listaItems" prefHeight="200.0" prefWidth="300.0" />
+            <!-- BOLETAS -->
+            <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #e0e0e0;" text="Boletas" />
+            <VBox fx:id="boletasContainer" style="-fx-spacing: 8; -fx-padding: 8; -fx-background-color: #1a1a1a; -fx-border-color: #444; -fx-border-width: 1;" VBox.vgrow="SOMETIMES" />
+
+            <!-- CONFITERÍA -->
+            <Label style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #e0e0e0;" text="Confitería" />
+            <VBox fx:id="confiteriaContainer" style="-fx-spacing: 8; -fx-padding: 8; -fx-background-color: #1a1a1a; -fx-border-color: #444; -fx-border-width: 1;" VBox.vgrow="SOMETIMES" />
 
             <!-- Resumen -->
             <VBox prefHeight="175.0" prefWidth="314.0" style="-fx-padding: 8; -fx-spacing: 12;">
               <children>
-                <Label style="-fx-text-fill: #929292; -fx-font-size: 12px; -fx-font-weight: bold;" text="Tiquetes" />
-                <HBox>
-                  <children>
-                    <Label style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: white;" text="Total tiquetes" />
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Label fx:id="lblTotal" prefHeight="15.0" prefWidth="65.0" style="-fx-font-weight: bold; -fx-font-size: 12px; -fx-text-fill: white;" text="[Precio]" />
-                  </children>
-                </HBox>
                 <HBox style="-fx-background-color: #2B2B2B; -fx-background-radius: 10; -fx-spacing: 10; -fx-padding: 7;">
                   <children>
                     <Label style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="TOTAL" />
@@ -46,6 +43,7 @@
                     <Label fx:id="lblTotalGlobal" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="[Precio]" />
                   </children>
                 </HBox>
+                <!-- (Eliminados botones de sesión para simplificar el carrito) -->
               </children>
             </VBox>
                   <Region prefHeight="200.0" prefWidth="200.0" />
@@ -53,7 +51,7 @@
             <!-- Botón pagar -->
             <HBox alignment="CENTER">
               <children>
-                <Button fx:id="btnProcederPago" onAction="#onProcederPago" style="-fx-background-color: #8B2E21; -fx-font-size: 13px; -fx-text-fill: white; -fx-padding: 7 18; -fx-background-radius: 20; -fx-font-weight: bold;" text="Proceder el pago" />
+                <Button fx:id="btnProcederPago" onAction="#onProcederPago" style="-fx-background-color: #8B2E21; -fx-font-size: 13px; -fx-text-fill: white; -fx-padding: 7 18; -fx-background-radius: 20; -fx-font-weight: bold;" text="Proceder al pago" />
               </children>
             </HBox>
 
