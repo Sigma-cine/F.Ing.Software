@@ -12,18 +12,18 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GestionProductosServiceTest {
-                @Test
-                public void crearProductoNombreNullLanzaExcepcion() {
-                    ProductoDTO p = new ProductoDTO(13L, null, "desc", "url", null, "Menu", new BigDecimal("2.00"), true, "Activo");
-                    assertThrows(IllegalArgumentException.class, () -> servicio.crear(p));
-                }
+            @Test
+            public void crearProductoNombreNullLanzaExcepcion() {
+                ProductoDTO p = new ProductoDTO(13L, null, "desc", "url", null, "Menu", new BigDecimal("2.00"), true, "Activo");
+                assertThrows(IllegalArgumentException.class, () -> servicio.crear(p));
+            }
 
-                @Test
-                public void actualizarProductoNombreNullLanzaExcepcion() {
-                    ProductoDTO cambios = new ProductoDTO(24L, null, "desc", "url", null, "Menu", new BigDecimal("1.00"), true, "Activo");
-                    repositorio.agregar(cambios);
-                    assertThrows(IllegalArgumentException.class, () -> servicio.actualizar(24L, cambios));
-                }
+            @Test
+            public void actualizarProductoNombreNullLanzaExcepcion() {
+                ProductoDTO cambios = new ProductoDTO(24L, null, "desc", "url", null, "Menu", new BigDecimal("1.00"), true, "Activo");
+                repositorio.agregar(cambios);
+                assertThrows(IllegalArgumentException.class, () -> servicio.actualizar(24L, cambios));
+            }
             @Test
             public void listarTodasSinProductosDevuelveListaVacia() {
                 List<ProductoDTO> resultado = servicio.listarTodas();
