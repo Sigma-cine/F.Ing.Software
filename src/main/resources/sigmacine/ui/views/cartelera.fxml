@@ -11,6 +11,10 @@
             <content>
                 <VBox spacing="16" alignment="TOP_CENTER" style="-fx-padding: 16;">
                     <Label text="Cartelera" style="-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 24;" />
+                    <HBox spacing="12" alignment="CENTER">
+                        <Label text="Filtrar por género:" style="-fx-text-fill: #ffffff; -fx-font-size: 14;" />
+                        <ComboBox fx:id="cbGenero" prefWidth="200" promptText="Todos los géneros" />
+                    </HBox>
                     <FlowPane fx:id="gridPeliculas" hgap="16" vgap="16" alignment="CENTER" />
                 </VBox>
             </content>

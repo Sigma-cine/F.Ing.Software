@@ -38,7 +38,12 @@
 
                         <Label fx:id="feedback" text="" />
 
-                        <Button fx:id="loginButton" styleClass="primary-btn" text="Iniciar Sesión" maxWidth="200" />
+                        <HBox alignment="CENTER" spacing="12">
+                           <children>
+                              <Button fx:id="cancelButton" onAction="#onVolver" styleClass="primary-btn" text="Volver" minWidth="110" />
+                              <Button fx:id="loginButton" styleClass="primary-btn" text="Iniciar Sesión" minWidth="110" />
+                           </children>
+                        </HBox>
 
                         <HBox alignment="CENTER" spacing="6">
                            <children>
