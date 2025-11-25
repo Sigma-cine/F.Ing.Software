@@ -358,9 +358,69 @@ public class ContenidoCarteleraController {
                 var result = alert.showAndWait();
                 
                 if (result.isPresent() && result.get() == btnIniciarSesion) {
+                    // Obtener datos de función seleccionada y asientos
+                    java.util.Set<String> ocupados = null;
+                    java.util.Set<String> accesibles = null;
+                    String ciudad = selectedFuncion != null ? selectedFuncion.getCiudad() : "";
+                    String sede = selectedFuncion != null ? selectedFuncion.getSede() : "";
+                    
+                    // Obtener posterUrl de la película
+                    String posterUrl = null;
+                    if (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank()) {
+                        posterUrl = pelicula.getPosterUrl();
+                        // Normalizar la ruta
+                        if (!posterUrl.startsWith("/")) {
+                            posterUrl = "/" + posterUrl;
+                        }
+                        if (!posterUrl.startsWith("/Images/")) {
+                            posterUrl = "/Images/" + posterUrl.substring(1);
+                        }
+                    }
+                    
+                    try {
+                        if (selectedFuncionId != null) {
+                            ocupados = obtenerAsientosOcupados(selectedFuncionId);
+                            accesibles = obtenerAsientosAccesibles(selectedFuncionId);
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("Error obteniendo asientos: " + ex.getMessage());
+                    }
+                    
                     // Usar el coordinador para mostrar la pantalla completa de login
                     if (coordinador != null) {
-                        coordinador.mostrarLogin();
+                        coordinador.mostrarLoginConContexto(selectedFuncionId, 
+                            pelicula != null ? pelicula.getTitulo() : "Película",
+                            selectedFuncionText, ciudad, sede, ocupados, accesibles, posterUrl);
+                    } else {
+                        // Fallback: usar ControladorControlador singleton si coordinador es null
+                        ControladorControlador coord = ControladorControlador.getInstance();
+                        if (coord != null) {
+                            coord.mostrarLoginConContexto(selectedFuncionId,
+                                pelicula != null ? pelicula.getTitulo() : "Película",
+                                selectedFuncionText, ciudad, sede, ocupados, accesibles, posterUrl);
+                        } else {
+                            // Último recurso: navegar manualmente con contexto
+                            try {
+                                FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
+                                Parent root = loader.load();
+                                LoginController loginCtrl = loader.getController();
+                                if (loginCtrl != null) {
+                                    loginCtrl.setCoordinador(coord);
+                                    loginCtrl.setPendingFuncionData(selectedFuncionId,
+                                        pelicula != null ? pelicula.getTitulo() : "Película",
+                                        selectedFuncionText, ciudad, sede, ocupados, accesibles);
+                                }
+                                Stage stage = (Stage) btnComprar.getScene().getWindow();
+                                Scene current = stage.getScene();
+                                double w = current != null ? current.getWidth() : 960;
+                                double h = current != null ? current.getHeight() : 600;
+                                stage.setScene(new Scene(root, w > 0 ? w : 960, h > 0 ? h : 600));
+                                stage.setTitle("Iniciar Sesión - Sigma Cine");
+                            } catch (Exception ex) {
+                                System.err.println("Error navegando a login: " + ex.getMessage());
+                                ex.printStackTrace();
+                            }
+                        }
                     }
                 }
                 // Si se cancela, simplemente se cierra el alert (no hacemos nada más)
@@ -468,8 +528,27 @@ public class ContenidoCarteleraController {
 
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
                     ? pelicula.getPosterUrl() : null;
+            
+            System.out.println("[DEBUG ContenidoCartelera] posterResource original: " + posterResource);
+            
+            // Normalizar la ruta del poster para que siempre tenga /Images/ al inicio
+            if (posterResource != null) {
+                if (!posterResource.startsWith("/")) {
+                    posterResource = "/" + posterResource;
+                }
+                if (!posterResource.startsWith("/Images/")) {
+                    posterResource = "/Images/" + posterResource.substring(1);
+                }
+                System.out.println("[DEBUG ContenidoCartelera] posterResource normalizado: " + posterResource);
+            }
+            
+            // Siempre pasar el posterUrl para el carrito, incluso si la imagen no se puede cargar aquí
+            ctrl.setPosterUrl(posterResource);
+            System.out.println("[DEBUG ContenidoCartelera] setPosterUrl llamado con: " + posterResource);
+            
             if (posterResource != null) {
                 var is = getClass().getResourceAsStream(posterResource);
+                System.out.println("[DEBUG ContenidoCartelera] InputStream es null? " + (is == null));
                 if (is != null) ctrl.setPoster(new Image(is));
             }
 

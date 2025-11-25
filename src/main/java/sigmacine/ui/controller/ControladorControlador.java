@@ -42,6 +42,8 @@ public class ControladorControlador {
 
     public AuthFacade getAuthFacade() { return this.authFacade; }
     
+    public Stage getMainStage() { return this.stage; }
+    
     /**
      * Método helper para cargar vistas con indicador de carga
      */
@@ -279,6 +281,56 @@ public class ControladorControlador {
         }
     }
 
+    public void mostrarLoginConEscenaAnterior(javafx.scene.Scene previousScene) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            LoginController controller = loader.getController();
+            if (controller != null) {
+                controller.setCoordinador(this);
+                controller.setAuthFacade(authFacade);
+                controller.setPreviousScene(previousScene);
+            }
+            
+            javafx.scene.Scene currentScene = stage.getScene();
+            double w = currentScene != null ? currentScene.getWidth() : 800;
+            double h = currentScene != null ? currentScene.getHeight() : 600;
+            stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 800, h > 0 ? h : 600));
+            stage.setTitle("Iniciar Sesión - Sigma Cine");
+        } catch (Exception e) {
+            throw new RuntimeException("Error cargando login.fxml", e);
+        }
+    }
+    
+    public void mostrarLoginConContexto(Long funcionId, String titulo, String hora, String ciudad, String sede,
+                                        java.util.Set<String> ocupados, java.util.Set<String> accesibles) {
+        mostrarLoginConContexto(funcionId, titulo, hora, ciudad, sede, ocupados, accesibles, null);
+    }
+    
+    public void mostrarLoginConContexto(Long funcionId, String titulo, String hora, String ciudad, String sede,
+                                        java.util.Set<String> ocupados, java.util.Set<String> accesibles, String posterUrl) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            LoginController controller = loader.getController();
+            if (controller != null) {
+                controller.setCoordinador(this);
+                controller.setAuthFacade(authFacade);
+                controller.setPendingFuncionData(funcionId, titulo, hora, ciudad, sede, ocupados, accesibles, posterUrl);
+            }
+            
+            javafx.scene.Scene currentScene = stage.getScene();
+            double w = currentScene != null ? currentScene.getWidth() : 800;
+            double h = currentScene != null ? currentScene.getHeight() : 600;
+            stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 800, h > 0 ? h : 600));
+            stage.setTitle("Iniciar Sesión - Sigma Cine");
+        } catch (Exception e) {
+            throw new RuntimeException("Error cargando login.fxml", e);
+        }
+    }
+    
     public void mostrarLogin() {
         if (sigmacine.aplicacion.session.Session.isLoggedIn()) {
             mostrarHome(sigmacine.aplicacion.session.Session.getCurrent());

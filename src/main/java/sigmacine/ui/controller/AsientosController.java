@@ -43,6 +43,7 @@ public class AsientosController implements Initializable {
     private String ciudad = "";
     private String sede = "";
     private Image poster;
+    private String posterUrl;
     private Long funcionId;
 
     private final sigmacine.aplicacion.service.CarritoService carrito = sigmacine.aplicacion.service.CarritoService.getInstance();
@@ -323,6 +324,16 @@ public class AsientosController implements Initializable {
             
             String nombre = nombreBuilder.toString();
             var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
+            
+            // Set poster image URL for display in payment screen
+            System.out.println("[DEBUG AsientosController] Al crear DTO del asiento, posterUrl = " + posterUrl);
+            if (posterUrl != null && !posterUrl.isEmpty()) {
+                dto.setImageUrl(posterUrl);
+                System.out.println("[DEBUG AsientosController] ImageUrl seteado en el DTO: " + posterUrl);
+            } else {
+                System.out.println("[DEBUG AsientosController] posterUrl es null o vacío, no se setea imageUrl");
+            }
+            
             carrito.addItem(dto);
             asientoItems.add(dto);
         }
@@ -543,6 +554,11 @@ public class AsientosController implements Initializable {
     public void setPoster(Image poster) {
         this.poster = poster;
         if (imgPoster != null && poster != null) imgPoster.setImage(poster);
+    }
+    
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+        System.out.println("[DEBUG AsientosController] setPosterUrl llamado con: " + posterUrl);
     }
 
     public void setFuncionConPoster(String titulo, String hora, Collection<String> ocupados, Image poster) {

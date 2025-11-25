@@ -35,6 +35,7 @@ public class BarraController {
 
     private ContextMenu carritoDropdown;
     private static BarraController instance;
+    private javafx.stage.Stage carritoStage;
 
     @FXML
     public void initialize() {
@@ -328,32 +329,41 @@ public class BarraController {
 
     private void mostrarCarritoPopup() {
         try {
+            // Si ya está abierto, cerrarlo
+            if (carritoStage != null && carritoStage.isShowing()) {
+                carritoStage.close();
+                return;
+            }
+            
             // Cargar el FXML del carrito
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
-            try (java.io.InputStream in = getClass().getResourceAsStream("/sigmacine/ui/views/verCarrito.fxml")) {
-                if (in == null) {
-                    System.err.println("No se pudo encontrar verCarrito.fxml");
-                    return;
-                }
-                javafx.scene.Parent carritoRoot = loader.load(in);
-                
-                // Crear un popup
-                javafx.stage.Popup popup = new javafx.stage.Popup();
-                popup.getContent().add(carritoRoot);
-                popup.setAutoHide(true);
-                popup.setHideOnEscape(true);
-                
-                // Obtener la posición del botón del carrito
-                javafx.geometry.Bounds bounds = btnCart.localToScreen(btnCart.getBoundsInLocal());
-                
-                // Mostrar el popup debajo del botón del carrito
-                popup.show(btnCart.getScene().getWindow(), 
-                          bounds.getMinX() - 250,  // Ajustar posición horizontal
-                          bounds.getMaxY() + 5);   // Debajo del botón con un pequeño margen
-                
-            }
+            loader.setLocation(getClass().getResource("/sigmacine/ui/views/verCarrito.fxml"));
+            javafx.scene.Parent carritoRoot = loader.load();
+            
+            // Crear un Stage flotante (no Popup)
+            carritoStage = new javafx.stage.Stage();
+            carritoStage.initOwner(btnCart.getScene().getWindow());
+            carritoStage.initModality(javafx.stage.Modality.NONE); // no bloquea
+            carritoStage.setResizable(false);
+            carritoStage.setTitle("Carrito");
+            carritoStage.setScene(new javafx.scene.Scene(carritoRoot));
+            
+            // Agregar listener para cerrar con ESC
+            carritoStage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, ev -> {
+                if (ev.getCode() == javafx.scene.input.KeyCode.ESCAPE) carritoStage.close();
+            });
+            
+            // Obtener la posición del botón del carrito
+            javafx.geometry.Bounds bounds = btnCart.localToScreen(btnCart.getBoundsInLocal());
+            
+            // Posicionar debajo del botón del carrito
+            carritoStage.setX(bounds.getMinX() - 250);
+            carritoStage.setY(bounds.getMaxY() + 5);
+            
+            carritoStage.show();
+            carritoStage.toFront();
         } catch (Exception ex) {
-            System.err.println("Error al mostrar popup del carrito: " + ex.getMessage());
+            System.err.println("Error al mostrar carrito: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -384,7 +394,14 @@ public class BarraController {
         
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            coordinador.mostrarLogin();
+            // Guardar la escena actual antes de ir al login
+            javafx.stage.Stage stage = coordinador.getMainStage();
+            if (stage != null) {
+                javafx.scene.Scene currentScene = stage.getScene();
+                coordinador.mostrarLoginConEscenaAnterior(currentScene);
+            } else {
+                coordinador.mostrarLogin();
+            }
         }
     }
 

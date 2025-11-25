@@ -16,7 +16,7 @@
   <children>
 
     <!-- Ancho total aprox 420; alto aprox 560 -->
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="502.0" prefWidth="336.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" prefHeight="502.0" prefWidth="336.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
       <content>
 
         <!-- Contenedor principal (borde rojo) un poco más angosto -->

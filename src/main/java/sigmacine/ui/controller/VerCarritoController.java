@@ -6,8 +6,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.stage.Stage;
-import javafx.stage.Modality;
 import javafx.scene.Scene;
 import java.math.BigDecimal;
 import sigmacine.aplicacion.data.CompraProductoDTO;
@@ -20,6 +18,7 @@ public class VerCarritoController {
     @FXML private VBox confiteriaContainer;
     @FXML private Label lblTotalGlobal;
     @FXML private Button btnProcederPago;
+    @FXML private ScrollPane scrollPane;
 
     private final CarritoService carrito = CarritoService.getInstance();
 
@@ -30,6 +29,15 @@ public class VerCarritoController {
     }
 
     private void updateCarrito() {
+        // Guardar la posición actual del scroll antes de actualizar
+        double scrollPosition = 0;
+        if (scrollPane != null) {
+            scrollPosition = scrollPane.getVvalue();
+        }
+        
+        // Desactivar temporalmente el listener para evitar cambios automáticos
+        final double savedPosition = scrollPosition;
+        
         boletasContainer.getChildren().clear();
         confiteriaContainer.getChildren().clear();
         
@@ -42,6 +50,19 @@ public class VerCarritoController {
             }
         }
         updateTotal();
+        
+        // Restaurar la posición del scroll después de que el layout se haya actualizado
+        if (scrollPane != null) {
+            final double finalPosition = savedPosition;
+            // Usar applyCss y layout para forzar el recálculo antes de restaurar
+            scrollPane.applyCss();
+            scrollPane.layout();
+            javafx.application.Platform.runLater(() -> {
+                javafx.application.Platform.runLater(() -> {
+                    scrollPane.setVvalue(finalPosition);
+                });
+            });
+        }
     }
 
     private VBox crearItemBoleta(CompraProductoDTO item) {
@@ -143,7 +164,8 @@ public class VerCarritoController {
         } catch (Exception ignore) {}
     }
 
-    private void navegarAPantallaPago() {
+    @FXML
+    private void onProcederPago() {
         if (carrito.getItems().isEmpty()) {
             javafx.scene.control.Alert a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION, "El carrito está vacío.");
             a.setHeaderText(null);
@@ -151,39 +173,37 @@ public class VerCarritoController {
             a.showAndWait();
             return;
         }
-        // Cargar el FXML de pago para usar PagoController (persistencia real)
+        
         try {
-            // Use getResourceAsStream to avoid URL/URI conversion issues on paths with
-            // special characters (OneDrive, accents, spaces). FXMLLoader can load from InputStream.
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
-            try (java.io.InputStream in = getClass().getResourceAsStream("/sigmacine/ui/views/pago.fxml")) {
-                if (in == null) throw new RuntimeException("Recurso /sigmacine/ui/views/pago.fxml no encontrado en el classpath.");
-                javafx.scene.Parent root = loader.load(in);
-                Stage stage = new Stage();
-                stage.setTitle("Pago");
-                stage.initModality(Modality.APPLICATION_MODAL);
-                // intentar establecer owner si es posible
-                try {
-                    if (carritoRoot != null && carritoRoot.getScene() != null) {
-                        Stage owner = (Stage) carritoRoot.getScene().getWindow();
-                        if (owner != null) stage.initOwner(owner);
-                    }
-                } catch (Exception ignore) {}
-                stage.setScene(new Scene(root));
-                stage.setResizable(false);
-                stage.showAndWait();
+            // Cerrar la ventana del carrito si está abierta como Stage
+            javafx.stage.Stage carritoStage = (javafx.stage.Stage) carritoRoot.getScene().getWindow();
+            if (carritoStage != null) {
+                carritoStage.close();
+            }
+            
+            // Obtener la ventana principal a través del coordinador
+            ControladorControlador coordinador = ControladorControlador.getInstance();
+            if (coordinador != null) {
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
+                java.net.URL fxmlUrl = getClass().getResource("/sigmacine/ui/views/pago.fxml");
+                System.out.println("Cargando FXML desde: " + fxmlUrl);
+                loader.setLocation(fxmlUrl);
+                javafx.scene.Parent root = loader.load();
+                
+                // Usar la ventana principal del coordinador
+                javafx.stage.Stage mainStage = coordinador.getMainStage();
+                if (mainStage != null) {
+                    javafx.scene.Scene currentScene = mainStage.getScene();
+                    double w = currentScene != null ? currentScene.getWidth() : 960;
+                    double h = currentScene != null ? currentScene.getHeight() : 600;
+                    mainStage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 960, h > 0 ? h : 600));
+                    mainStage.setTitle("Pago");
+                }
             }
         } catch (Exception ex) {
+            System.err.println("Error al abrir pantalla de pago: " + ex.getMessage());
             ex.printStackTrace();
-            // fallback: informar al usuario y no cerrar la ventana principal
-            new Alert(Alert.AlertType.ERROR, "No se pudo abrir la ventana de pago: " + ex.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "No se pudo abrir la pantalla de pago: " + ex.getMessage()).showAndWait();
         }
-    }
-
-
-    // Handler invocado desde el FXML (onAction="#onProcederPago")
-    @FXML
-    private void onProcederPago() {
-        navegarAPantallaPago();
     }
 }
