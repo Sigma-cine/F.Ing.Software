@@ -9,9 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SigmaCardRepositoryJdbc implements SigmaCardRepository {
 
-    private final DatabaseConfig db;
+public class SigmaCardRepositoryJdbc implements SigmaCardRepository {
+    protected DatabaseConfig db;
 
     public SigmaCardRepositoryJdbc(DatabaseConfig db) {
         this.db = db;
