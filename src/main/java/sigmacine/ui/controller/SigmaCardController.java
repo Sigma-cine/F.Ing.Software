@@ -30,10 +30,65 @@ public class SigmaCardController {
 		if (barraController != null) {
 			barraController.marcarBotonActivo("sigmacard");
 		}
-		if (btnRegistrarme != null) btnRegistrarme.setOnAction(e -> onRegistrarme());
+		UsuarioDTO usuario = Session.getCurrent();
+		if (usuario == null) {
+			if (lblFeedback != null) lblFeedback.setStyle("-fx-text-fill: #e53935;");
+			if (lblFeedback != null) lblFeedback.setText("Debes iniciar sesión para ver tu SigmaCard.");
+			if (btnRegistrarme != null) btnRegistrarme.setDisable(true);
+			if (btnRecargar != null) btnRecargar.setDisable(true);
+			if (btnVerMonto != null) btnVerMonto.setDisable(true);
+			if (txtIdentificacion != null) txtIdentificacion.setDisable(true);
+			if (txtPin != null) txtPin.setDisable(true);
+			return;
+		}
+		// Setear automáticamente el id
+		if (txtIdentificacion != null) {
+			txtIdentificacion.setText(String.valueOf(usuario.getId()));
+			txtIdentificacion.setDisable(true);
+		}
+		// Consultar si el usuario tiene SigmaCard en la BD
+		SigmaCardService sigmaCardService = new SigmaCardService();
+		boolean tieneCard = sigmaCardService.tieneCard(usuario.getId());
+
+		if (tieneCard) {
+			// Mostrar solo recargar y ver saldo
+			if (btnRegistrarme != null) btnRegistrarme.setVisible(false);
+			if (txtPin != null) txtPin.setVisible(false);
+			if (btnRecargar != null) btnRecargar.setVisible(true);
+			if (btnVerMonto != null) btnVerMonto.setVisible(true);
+			if (lblFeedback != null) lblFeedback.setStyle("-fx-text-fill: #2e7d32;");
+			if (lblFeedback != null) lblFeedback.setText("Tarjeta activa. Puedes recargar o consultar saldo.");
+		} else {
+			// Mostrar solo registrar y pin
+			if (btnRegistrarme != null) btnRegistrarme.setVisible(true);
+			if (txtPin != null) txtPin.setVisible(true);
+			if (btnRecargar != null) btnRecargar.setVisible(false);
+			if (btnVerMonto != null) btnVerMonto.setVisible(false);
+			if (lblFeedback != null) lblFeedback.setText("Registra tu SigmaCard para comenzar a usarla.");
+		}
+
+		if (btnRegistrarme != null) btnRegistrarme.setOnAction(e -> {
+			// Al registrar, ocultar registro y mostrar recargar/ver saldo
+			if (txtPin != null && !txtPin.getText().isBlank()) {
+				boolean ok = sigmaCardService.registrarCard(String.valueOf(usuario.getId()), txtPin.getText());
+				if (ok) {
+					btnRegistrarme.setVisible(false);
+					txtPin.setVisible(false);
+					if (btnRecargar != null) btnRecargar.setVisible(true);
+					if (btnVerMonto != null) btnVerMonto.setVisible(true);
+					if (lblFeedback != null) lblFeedback.setStyle("-fx-text-fill: #2e7d32;");
+					if (lblFeedback != null) lblFeedback.setText("¡Tarjeta registrada! Ahora puedes recargar o consultar saldo.");
+				} else {
+					if (lblFeedback != null) lblFeedback.setStyle("-fx-text-fill: #e53935;");
+					if (lblFeedback != null) lblFeedback.setText("No se pudo registrar la tarjeta. Intenta de nuevo.");
+				}
+			} else {
+				if (lblFeedback != null) lblFeedback.setStyle("-fx-text-fill: #e53935;");
+				if (lblFeedback != null) lblFeedback.setText("Debes ingresar un PIN para registrar la tarjeta.");
+			}
+		});
 		if (btnRecargar != null) btnRecargar.setOnAction(e -> onRecargar());
 		if (btnVerMonto != null) btnVerMonto.setOnAction(e -> onVerMonto());
-		if (lblFeedback != null) lblFeedback.setText("");
 	}
 
 	private String getIdInput() {

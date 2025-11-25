@@ -16,40 +16,38 @@
          <fx:include source="barra.fxml"/>  
     </top>
 
+
     <center>
-        <VBox spacing="18" alignment="TOP_CENTER">
+        <VBox spacing="24" alignment="CENTER">
             <children>
                 <Label text="Mi SigmaCard" style="-fx-text-fill: #fff; -fx-font-weight: bold;">
                     <font><Font size="34"/></font>
                 </Label>
-                <Label text="Ingresa los datos de tu SigmaCard" style="-fx-text-fill:#ccc;"/>
+                <Label text="Gestiona tu tarjeta de fidelidad" style="-fx-text-fill:#ccc; -fx-font-size: 16px;"/>
                 <Separator/>
-
-                <!-- Center the form and increase widths for better visibility -->
-                <GridPane hgap="12" vgap="12" prefWidth="760" maxWidth="760">
-                    <padding><Insets top="12" right="8" bottom="8" left="8"/></padding>
-
-                    <Label text="Número de Identificación" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-text-fill:#fff; -fx-font-weight:bold;"/>
-                    <TextField fx:id="txtIdentificacion" promptText="Número de Identificación" GridPane.rowIndex="1" GridPane.columnIndex="0" prefWidth="600" styleClass="input"/>
-
-                    <Label text="Pin de la tarjeta" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-text-fill:#fff; -fx-font-weight:bold;"/>
-                    <PasswordField fx:id="txtPin" promptText="Pin de la tarjeta" GridPane.rowIndex="3" GridPane.columnIndex="0" prefWidth="600" styleClass="input"/>
-
-                </GridPane>
-
-                <HBox spacing="20" alignment="CENTER">
-                    <children>
-                        <Button fx:id="btnRegistrarme" text="Registrarme" styleClass="primary-btn"/>
-                        <Button fx:id="btnRecargar" text="Recargar" styleClass="primary-btn"/>
-                        <Button fx:id="btnVerMonto" text="Ver Monto" styleClass="primary-btn"/>
-                    </children>
-                </HBox>
-
-                <Label fx:id="lblFeedback" text="" style="-fx-text-fill: #e53935;"/>
-
+                <StackPane alignment="CENTER">
+                    <VBox spacing="16" alignment="CENTER" style="-fx-background-color: #181818; -fx-background-radius: 18; -fx-padding: 32 40;">
+                        <children>
+                            <Label text="Número de Identificación" style="-fx-text-fill:#fff; -fx-font-weight:bold; -fx-font-size: 15px;"/>
+                            <TextField fx:id="txtIdentificacion" promptText="Número de Identificación" prefWidth="340" styleClass="input"/>
+                            <Label fx:id="lblPin" text="Pin de la tarjeta" style="-fx-text-fill:#fff; -fx-font-weight:bold; -fx-font-size: 15px;"/>
+                            <PasswordField fx:id="txtPin" promptText="Pin de la tarjeta" prefWidth="340" styleClass="input"/>
+                            <VBox alignment="CENTER" maxWidth="Infinity">
+                                <HBox spacing="32" alignment="CENTER">
+                                    <children>
+                                        <Button fx:id="btnRegistrarme" text="Registrarme" styleClass="primary-btn"/>
+                                        <Button fx:id="btnRecargar" text="Recargar" styleClass="primary-btn"/>
+                                        <Button fx:id="btnVerMonto" text="Ver Monto" styleClass="primary-btn"/>
+                                    </children>
+                                </HBox>
+                            </VBox>
+                        </children>
+                    </VBox>
+                </StackPane>
+                <Label fx:id="lblFeedback" text="" style="-fx-text-fill: #e53935; -fx-font-size: 15px; -fx-padding: 10 0 0 0;"/>
             </children>
-            <padding><Insets top="24" right="80" bottom="24" left="80"/></padding>
-            <maxWidth>900.0</maxWidth>
+            <padding><Insets top="32" right="0" bottom="32" left="0"/></padding>
+            <maxWidth>600.0</maxWidth>
         </VBox>
     </center>
 
