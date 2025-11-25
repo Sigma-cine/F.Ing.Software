@@ -59,4 +59,77 @@ public class CompraServiceTest {
         assertEquals(9999L, res);
         assertEquals(new BigDecimal("5.00"), repo.lastTotal);
     }
+
+    @Test
+    public void confirmarCompraConMultiplesProductos() {
+        StubRepo repo = new StubRepo();
+        CompraService svc = new CompraService(repo);
+        CompraProductoDTO prod1 = new CompraProductoDTO(1L, "Palomitas", 2, new BigDecimal("5.00"));
+        CompraProductoDTO prod2 = new CompraProductoDTO(2L, "Refresco", 3, new BigDecimal("3.00"));
+        
+        Long res = svc.confirmarCompraProductos(5, List.of(prod1, prod2), "tarjeta");
+        
+        assertEquals(9999L, res);
+        assertEquals(new BigDecimal("19.00"), repo.lastTotal);
+        assertEquals(2, repo.lastItems.size());
+    }
+
+    @Test
+    public void confirmarCompraConBoletoYProducto() {
+        StubRepo repo = new StubRepo();
+        CompraService svc = new CompraService(repo);
+        CompraProductoDTO boleto = new CompraProductoDTO(null, 5L, "Boleto", 1, new BigDecimal("10.00"));
+        CompraProductoDTO prod = new CompraProductoDTO(3L, "Combo", 1, new BigDecimal("8.00"));
+        
+        Long res = svc.confirmarCompraProductos(10, List.of(boleto, prod), "efectivo");
+        
+        assertEquals(9999L, res);
+        assertEquals(new BigDecimal("18.00"), repo.lastTotal);
+    }
+
+    @Test
+    public void confirmarCompraCalculaTotalCorrectamente() {
+        StubRepo repo = new StubRepo();
+        CompraService svc = new CompraService(repo);
+        CompraProductoDTO prod = new CompraProductoDTO(1L, "Producto", 5, new BigDecimal("2.50"));
+        
+        svc.confirmarCompraProductos(1, List.of(prod), "tarjeta");
+        
+        assertEquals(new BigDecimal("12.50"), repo.lastTotal);
+    }
+
+    @Test
+    public void confirmarCompraGuardaMetodoPago() {
+        StubRepo repo = new StubRepo();
+        CompraService svc = new CompraService(repo);
+        CompraProductoDTO prod = new CompraProductoDTO(1L, "X", 1, new BigDecimal("1.00"));
+        
+        svc.confirmarCompraProductos(1, List.of(prod), "sigma_card");
+        
+        assertEquals("sigma_card", repo.lastMetodo);
+    }
+
+    @Test
+    public void confirmarCompraGuardaFechaActual() {
+        StubRepo repo = new StubRepo();
+        CompraService svc = new CompraService(repo);
+        CompraProductoDTO prod = new CompraProductoDTO(1L, "X", 1, new BigDecimal("1.00"));
+        
+        svc.confirmarCompraProductos(1, List.of(prod), "efectivo");
+        
+        assertEquals(java.time.LocalDate.now(), repo.lastFecha);
+    }
+
+    @Test
+    public void confirmarCompraConPreciosDecimales() {
+        StubRepo repo = new StubRepo();
+        CompraService svc = new CompraService(repo);
+        CompraProductoDTO prod1 = new CompraProductoDTO(1L, "X", 3, new BigDecimal("1.99"));
+        CompraProductoDTO prod2 = new CompraProductoDTO(2L, "Y", 2, new BigDecimal("2.49"));
+        
+        svc.confirmarCompraProductos(1, List.of(prod1, prod2), "tarjeta");
+        
+        assertEquals(new BigDecimal("10.95"), repo.lastTotal);
+    }
 }
+

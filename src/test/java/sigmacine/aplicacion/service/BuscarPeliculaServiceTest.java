@@ -67,5 +67,71 @@ public class BuscarPeliculaServiceTest {
         assertEquals(1, res.size());
         assertEquals("Star Wars", res.get(0).getTitulo());
     }
+
+    @Test
+    public void buscarPorGeneroSinResultados() {
+        List<Pelicula> list = new ArrayList<>();
+        Pelicula p1 = new Pelicula(1, "A", "Drama", "G", 90, "D", "Activo");
+        list.add(p1);
+
+        BuscarPeliculaService svc = new BuscarPeliculaService(list);
+        List<Pelicula> res = svc.buscarPorGenero("Comedia");
+        assertEquals(0, res.size());
+    }
+
+    @Test
+    public void buscarPorGeneroConVariasCoincidencias() {
+        List<Pelicula> list = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            list.add(new Pelicula(i, "Pelicula" + i, "Accion", "PG", 100, "Director", "Activo"));
+        }
+
+        BuscarPeliculaService svc = new BuscarPeliculaService(list);
+        List<Pelicula> res = svc.buscarPorGenero("Accion");
+        assertEquals(5, res.size());
+    }
+
+    @Test
+    public void buscarPorTituloCaseSensitive() {
+        List<Pelicula> list = new ArrayList<>();
+        Pelicula p1 = new Pelicula(1, "STAR WARS", "SciFi", "PG-13", 120, "Lucas", "Activo");
+        Pelicula p2 = new Pelicula(2, "star wars", "SciFi", "PG", 100, "Otro", "Activo");
+        list.add(p1); list.add(p2);
+
+        BuscarPeliculaService svc = new BuscarPeliculaService(list);
+        List<Pelicula> res = svc.buscarPorTitulo("STAR");
+        assertEquals(2, res.size());
+    }
+
+    @Test
+    public void buscarTodasConListaVacia() {
+        List<Pelicula> list = new ArrayList<>();
+        BuscarPeliculaService svc = new BuscarPeliculaService(list);
+        List<Pelicula> res = svc.buscarTodas();
+        assertEquals(0, res.size());
+    }
+
+    @Test
+    public void buscarPorTituloConTextoNoEncontrado() {
+        List<Pelicula> list = new ArrayList<>();
+        list.add(new Pelicula(1, "Matrix", "SciFi", "R", 120, "Wachowski", "Activo"));
+        
+        BuscarPeliculaService svc = new BuscarPeliculaService(list);
+        List<Pelicula> res = svc.buscarPorTitulo("Avatar");
+        assertEquals(0, res.size());
+    }
+
+    @Test
+    public void buscarPorGeneroCaseInsensitive() {
+        List<Pelicula> list = new ArrayList<>();
+        list.add(new Pelicula(1, "A", "DRAMA", "PG", 90, "D", "Activo"));
+        list.add(new Pelicula(2, "B", "drama", "PG", 90, "D", "Activo"));
+        list.add(new Pelicula(3, "C", "Drama", "PG", 90, "D", "Activo"));
+
+        BuscarPeliculaService svc = new BuscarPeliculaService(list);
+        List<Pelicula> res = svc.buscarPorGenero("DrAmA");
+        assertEquals(3, res.size());
+    }
 }
+
 

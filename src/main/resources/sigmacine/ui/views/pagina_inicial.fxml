@@ -22,20 +22,17 @@
 <center>
     <VBox spacing="0">
 
-        <!-- ===== PROMO FULL-WIDTH ===== -->
         <StackPane fx:id="promoPane"
                    prefHeight="250.0" minHeight="250.0" maxHeight="250.0"
                    maxWidth="Infinity"
                    style="-fx-background-color:#742f24;">
             <children>
-                <!-- Imagen banner (una sola vez) -->
                 <ImageView fx:id="promoImg"
                            preserveRatio="true"
                            smooth="true"
                            pickOnBounds="false"
                            StackPane.alignment="CENTER"/>
 
-                <!-- Navegación -->
                 <BorderPane mouseTransparent="false">
                     <left>
                         <Button text="‹" onAction="#prevSlide"
@@ -98,10 +95,8 @@
             </children>
         </StackPane>
 
-        <!-- Contenedor dinámico para vistas -->
         <StackPane fx:id="content" VBox.vgrow="ALWAYS" pickOnBounds="false"/>
 
-        <!-- Si aún conservas bottom/footer antiguo, elimínalo o déjalo fuera para evitar conflictos -->
     </VBox>
 </center>
 </BorderPane>

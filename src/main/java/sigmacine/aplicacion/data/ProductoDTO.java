@@ -4,15 +4,27 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ProductoDTO {
-  private final Long productoId;
-  private final String nombreProducto;
-  private final String descripcionProducto;
-  private final String imagenURL;
-  private final String sabores;
-  private final String tipo;
-  private final BigDecimal precioLista;
-  private final boolean estadoBoolean;
-  private final String estado;
+  private Long productoId;
+  private String nombreProducto;
+  private String descripcionProducto;
+  private String imagenURL;
+  private String sabores;
+  private String tipo;
+  private BigDecimal precioLista;
+  private boolean estadoBoolean;
+  private String estado;
+
+  public ProductoDTO() {
+    this.productoId = 0l;
+    this.nombreProducto = "";
+    this.descripcionProducto = "";
+    this.imagenURL = "";
+    this.sabores = "";
+    this.tipo = "";
+    this.precioLista = BigDecimal.ZERO;
+    this.estadoBoolean = false;
+    this.estado = "";
+  }
 
   public ProductoDTO(
       Long productoId,
@@ -109,4 +121,40 @@ public class ProductoDTO {
         estadoBoolean,
         estado);
   }
+
+  public void setProductoId(Long productoId) {
+        this.productoId = productoId;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public void setDescripcionProducto(String descripcionProducto) {
+        this.descripcionProducto = descripcionProducto;
+    }
+
+    public void setImagenURL(String imagenURL) {
+        this.imagenURL = imagenURL;
+    }
+
+    public void setSabores(String sabores) {
+        this.sabores = sabores;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setPrecioLista(BigDecimal precioLista) {
+        this.precioLista = precioLista;
+    }
+
+    public void setEstadoBoolean(boolean estadoBoolean) {
+        this.estadoBoolean = estadoBoolean;
+    }
+    
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }

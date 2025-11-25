@@ -15,6 +15,7 @@ public class LoginController {
     @FXML private TextField passwordFieldVisible;
     @FXML private Button togglePasswordBtn;
     @FXML private Button loginButton;
+    @FXML private Button cancelButton;
     @FXML private Hyperlink registrarLink;
     @FXML private Label feedback;
 
@@ -33,6 +34,7 @@ public class LoginController {
             barraController.marcarBotonActivo("login");
         }
         if (loginButton != null) loginButton.setOnAction(e -> { onLogin(); });
+        if (cancelButton != null) cancelButton.setOnAction(e -> { onVolver(); });
         if (registrarLink != null) registrarLink.setOnAction(e -> { if (coordinador != null) coordinador.mostrarRegistro(); });
         
         // Configurar el botón de mostrar/ocultar contraseña
@@ -59,9 +61,16 @@ public class LoginController {
         }
     }
     @FXML
-public void onIrARegistro() {
-    coordinador.mostrarRegistro();
-}
+    public void onIrARegistro() {
+        coordinador.mostrarRegistro();
+    }
+
+    @FXML
+    public void onVolver() {
+        if (coordinador != null) {
+            coordinador.mostrarPaginaInicial();
+        }
+    }
 
 
     public void onLogin() {
