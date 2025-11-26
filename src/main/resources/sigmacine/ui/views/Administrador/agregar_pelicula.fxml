@@ -33,7 +33,7 @@
             <!-- Tabla -->
             <TableView fx:id="tablaPeliculas" prefHeight="330">
                 <columns>
-                    <TableColumn fx:id="columnaId"            text="ID"            prefWidth="70"/>
+                    <TableColumn fx:id="columnaId"            text="ID"            prefWidth="70" visible="false"/>
                     <TableColumn fx:id="columnaTitulo"        text="Título"        prefWidth="300"/>
                     <TableColumn fx:id="columnaGenero"        text="Género"        prefWidth="160"/>
                     <TableColumn fx:id="columnaClasificacion" text="Clasificación" prefWidth="130"/>
