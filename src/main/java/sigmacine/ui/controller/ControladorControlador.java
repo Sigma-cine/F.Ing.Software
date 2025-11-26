@@ -42,6 +42,8 @@ public class ControladorControlador {
 
     public AuthFacade getAuthFacade() { return this.authFacade; }
     
+    public Stage getMainStage() { return this.stage; }
+    
     /**
      * Método helper para cargar vistas con indicador de carga
      */
@@ -75,13 +77,35 @@ public class ControladorControlador {
                 container.getChildren().addAll(root, loadingOverlay.getOverlayPane());
                 rootContainer = container;
                 
+                // GUARDAR estado maximizado ANTES de cambiar la escena
+                boolean wasMaximized = stage.isMaximized();
+                
                 javafx.scene.Scene current = stage.getScene();
                 double w = current != null ? current.getWidth() : 900;
                 double h = current != null ? current.getHeight() : 600;
+                
+                // Si estaba maximizado, forzar tamaño de pantalla completo antes de setScene
+                if (wasMaximized) {
+                    javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
+                    javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
+                    w = bounds.getWidth();
+                    h = bounds.getHeight();
+                }
+                
                 stage.setScene(new Scene(container, w > 0 ? w : 900, h > 0 ? h : 600));
                 stage.setTitle(title);
-                stage.setMaximized(true);
+                
+                // Si estaba maximizado O si no hay escena previa (primera carga), maximizar
+                if (wasMaximized || current == null) {
+                    stage.setMaximized(true);
+                }
+                
                 stage.show();
+                
+                // Forzar maximización nuevamente después de show si es necesario
+                if (wasMaximized || current == null) {
+                    stage.setMaximized(true);
+                }
                 
                 hideLoadingOverlay();
             } catch (Exception e) {
@@ -219,7 +243,6 @@ public class ControladorControlador {
     }
 
         private void mostrarPopupCiudad(Runnable onCiudadSelected) {
-        System.out.println("DEBUG: Iniciando mostrarPopupCiudad");
         try {
             FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/sigmacine/ui/views/ciudad.fxml")
@@ -252,33 +275,77 @@ public class ControladorControlador {
             Object controller = loader.getController();
             if (controller instanceof CiudadController ciudadController) {
                 ciudadController.setOnCiudadSelected(ciudad -> {
-                    System.out.println("DEBUG: Ciudad seleccionada: " + ciudad);
                     sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
                     popupStage.close();
                 });
             }
 
-            System.out.println("DEBUG: Mostrando popup con showAndWait");
-            // Usar showAndWait para bloquear hasta que se cierre
             popupStage.showAndWait();
             
-            System.out.println("DEBUG: Popup cerrado, ejecutando callback");
-            // Ejecutar callback DESPUÉS de que se cierre el popup
             if (onCiudadSelected != null) {
                 Platform.runLater(onCiudadSelected);
             }
 
         } catch (Exception e) {
-            System.out.println("DEBUG: Error en mostrarPopupCiudad");
-            e.printStackTrace();
             sigmacine.aplicacion.session.Session.setSelectedCity("Bogotá");
-            // Si hay error, ejecutar callback de todos modos
             if (onCiudadSelected != null) {
                 Platform.runLater(onCiudadSelected);
             }
         }
     }
 
+    public void mostrarLoginConEscenaAnterior(javafx.scene.Scene previousScene) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            LoginController controller = loader.getController();
+            if (controller != null) {
+                controller.setCoordinador(this);
+                controller.setAuthFacade(authFacade);
+                controller.setPreviousScene(previousScene);
+            }
+            
+            boolean wasMaximized = stage.isMaximized();
+            javafx.scene.Scene currentScene = stage.getScene();
+            double w = currentScene != null ? currentScene.getWidth() : 800;
+            double h = currentScene != null ? currentScene.getHeight() : 600;
+            stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 800, h > 0 ? h : 600));
+            stage.setTitle("Iniciar Sesión - Sigma Cine");
+            stage.setMaximized(wasMaximized);
+        } catch (Exception e) {
+            throw new RuntimeException("Error cargando login.fxml", e);
+        }
+    }
+    
+    public void mostrarLoginConContexto(Long funcionId, String titulo, String hora, String ciudad, String sede,
+                                        java.util.Set<String> ocupados, java.util.Set<String> accesibles) {
+        mostrarLoginConContexto(funcionId, titulo, hora, ciudad, sede, ocupados, accesibles, null);
+    }
+    
+    public void mostrarLoginConContexto(Long funcionId, String titulo, String hora, String ciudad, String sede,
+                                        java.util.Set<String> ocupados, java.util.Set<String> accesibles, String posterUrl) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            LoginController controller = loader.getController();
+            if (controller != null) {
+                controller.setCoordinador(this);
+                controller.setAuthFacade(authFacade);
+                controller.setPendingFuncionData(funcionId, titulo, hora, ciudad, sede, ocupados, accesibles, posterUrl);
+            }
+            
+            javafx.scene.Scene currentScene = stage.getScene();
+            double w = currentScene != null ? currentScene.getWidth() : 800;
+            double h = currentScene != null ? currentScene.getHeight() : 600;
+            stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 800, h > 0 ? h : 600));
+            stage.setTitle("Iniciar Sesión - Sigma Cine");
+        } catch (Exception e) {
+            throw new RuntimeException("Error cargando login.fxml", e);
+        }
+    }
+    
     public void mostrarLogin() {
         if (sigmacine.aplicacion.session.Session.isLoggedIn()) {
             mostrarHome(sigmacine.aplicacion.session.Session.getCurrent());
@@ -452,6 +519,19 @@ public class ControladorControlador {
         });
     }
 
+    public void mostrarMisBoletas() {
+        loadViewWithSpinner("/sigmacine/ui/views/mis_boletas.fxml", "Sigma Cine - Mis Boletas", (controller, root) -> {
+            MisBoletasController c = (MisBoletasController) controller;
+            if (c != null) {
+                sigmacine.aplicacion.data.UsuarioDTO usuario = sigmacine.aplicacion.session.Session.getCurrent();
+                if (usuario != null && usuario.getEmail() != null) {
+                    c.setUsuarioEmail(usuario.getEmail());
+                }
+            }
+            configurarBarraEnVista(root, "misboletas");
+        });
+    }
+
     public void mostrarMiCuenta() {
         loadViewWithSpinner("/sigmacine/ui/views/mi_cuenta.fxml", "Sigma Cine - Mi Cuenta", (controller, root) -> {
             configurarBarraEnVista(root);
@@ -535,4 +615,16 @@ public void mostrarCarritoCompleto() {
             configurarBarraEnVista(root);
         });
     }
+    
+    public void mostrarConfirmacionCompra(Long compraId, String metodoPago, java.math.BigDecimal totalPagado,
+                                          java.util.List<sigmacine.aplicacion.data.CompraProductoDTO> items, 
+                                          java.math.BigDecimal saldoAnterior, java.math.BigDecimal saldoNuevo) {
+        loadViewWithSpinner("/sigmacine/ui/views/confirmacion_compra.fxml", "Sigma Cine - Confirmaci�n de Compra", (controller, root) -> {
+            configurarBarraEnVista(root);
+            
+            ConfirmacionCompraController c = (ConfirmacionCompraController) controller;
+            c.inicializar(compraId, metodoPago, totalPagado, items, saldoAnterior, saldoNuevo);
+        });
+    }
 }
+

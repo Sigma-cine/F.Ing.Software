@@ -896,7 +896,7 @@ private void startMoviesAutoplay(double seconds) {
             Parent root = loader.load();
 
             AsientosController ctrl = loader.getController();
-            ctrl.setFuncion(titulo, hora, ocupados, accesibles);
+            ctrl.setFuncion(titulo, hora, ocupados, accesibles, null);
 
             // Try to resolve poster for the given title and pass it to the AsientosController so the
             // poster appears in the right-hand panel. We search the Pelicula repository by title

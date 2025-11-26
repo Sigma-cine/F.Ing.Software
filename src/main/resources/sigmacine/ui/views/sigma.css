@@ -133,41 +133,71 @@
 #lblResumen { -fx-text-fill: #ffffff; -fx-font-weight: bold; }
 
 /* ======================= ASIENTOS (grilla) ======================= */
-.toggle-button.seat {
-  -fx-min-width: 26; -fx-min-height: 26;
-  -fx-pref-width: 26; -fx-pref-height: 26;
-  -fx-max-width: 26; -fx-max-height: 26;
-  -fx-background-radius: 6; -fx-border-radius: 6;
-  -fx-padding: 0;
-  -fx-text-fill: transparent;
-  -fx-background-insets: 0;
-  -fx-cursor: hand;
-  -fx-focus-traversable: true;
+.seat {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-cursor: hand;
 }
 
-/* Estados por clase (usados por la grilla y espejo en la leyenda) */
-.seat--available   { -fx-background-color: transparent; -fx-border-color: #e0665a; -fx-border-width: 2; }
-.seat--selected    { -fx-background-color: #8A2F24; -fx-border-color: transparent; }
-.seat--unavailable { -fx-background-color: #8b2c24; -fx-border-color: #8b2c24; }
-
-/* Accesibles: glow rojito permanente */
-.seat.seat--accessible {
-  -fx-effect: dropshadow(gaussian, rgba(210,74,57,0.70), 18, 0.50, 0, 0);
-  -fx-border-color: rgba(255,190,180,0.95);
-  -fx-border-width: 2;
+.seat--available {
+    -fx-background-image: url("/Images/Asientos/vacio.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 
-/* Pseudoclases del toggle (grilla) */
-.toggle-button.seat:armed    { -fx-opacity: 0.95; }
-.toggle-button.seat:hover    { -fx-effect: dropshadow(gaussian, rgba(210,74,57,0.35), 8, 0.2, 0, 1); }
-.toggle-button.seat:selected { -fx-background-color: #8A2F24; -fx-border-color: transparent; }
-.toggle-button.seat:disabled { -fx-background-color: #8b2c24; -fx-border-color: #8b2c24; -fx-opacity: 1.0; }
-.toggle-button.seat:focused  { -fx-effect: dropshadow(gaussian, rgba(157,58,45,0.75), 10, 0.4, 0, 0); }
+.seat--selected {
+    -fx-background-image: url("/Images/Asientos/seleccion.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
 
-/* ======================= Helpers visuales sala ======================= */
-.sala-canvas { -fx-background-color: #0a0a0a; -fx-background-radius: 10; -fx-padding: 22; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.2, 0, 4); }
-.pantalla-arc { -fx-background-color: #C0392B; -fx-background-radius: 120; }
-.pantalla-label { -fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-letter-spacing: 1px; }
+.seat--unavailable {
+    -fx-background-image: url("/Images/Asientos/ocupado.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-opacity: 0.5;
+}
+
+.seat--accessible {
+    -fx-background-image: url("/Images/Asientos/discapacitado.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.seat--selected.seat--accessible {
+    -fx-background-image: url("/Images/Asientos/seleccionDisca.png");
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+.seat:hover { -fx-opacity: 0.85; }
+
+#gridSala {
+    -fx-hgap: 6;
+    -fx-vgap: 6;
+    -fx-padding: 25;
+    -fx-alignment: center;
+}
+
+.seat-label { -fx-text-fill: white; -fx-font-size: 15px; }
+
+.seat-letter, .seat-number {
+    -fx-font-size: 16px;
+    -fx-padding: 4 8 4 8;
+}
+
+.seat-number { -fx-alignment: center; }
 
 /* ======================= Tablas / Tooltips / Links ======================= */
 .table-view { -fx-background-color: #0F0F0F; -fx-background-radius: 10; -fx-control-inner-background: #0F0F0F; -fx-table-cell-border-color: rgba(255,255,255,0.05); -fx-padding: 8; }

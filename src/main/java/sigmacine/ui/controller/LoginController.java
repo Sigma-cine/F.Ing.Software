@@ -22,10 +22,47 @@ public class LoginController {
     private ControladorControlador coordinador;
     private AuthFacade authFacade;
     private Runnable onSuccess;
+    
+    // Contexto para volver a la pantalla anterior
+    private javafx.scene.Scene previousScene;
+    private Long pendingFuncionId;
+    private String pendingTitulo;
+    private String pendingHora;
+    private String pendingCiudad;
+    private String pendingSede;
+    private String pendingPosterUrl;
+    private java.util.Set<String> pendingOcupados;
+    private java.util.Set<String> pendingAccesibles;
 
     public void setCoordinador(ControladorControlador coordinador) { this.coordinador = coordinador; }
     public void setAuthFacade(AuthFacade authFacade) { this.authFacade = authFacade; }
     public void setOnSuccess(Runnable onSuccess) { this.onSuccess = onSuccess; }
+    
+    public void setPreviousScene(javafx.scene.Scene scene) { this.previousScene = scene; }
+    
+    public void setPendingFuncionData(Long funcionId, String titulo, String hora, String ciudad, String sede, 
+                                      java.util.Set<String> ocupados, java.util.Set<String> accesibles) {
+        this.pendingFuncionId = funcionId;
+        this.pendingTitulo = titulo;
+        this.pendingHora = hora;
+        this.pendingCiudad = ciudad;
+        this.pendingSede = sede;
+        this.pendingOcupados = ocupados;
+        this.pendingAccesibles = accesibles;
+        this.pendingPosterUrl = null; // Por compatibilidad con código antiguo
+    }
+    
+    public void setPendingFuncionData(Long funcionId, String titulo, String hora, String ciudad, String sede, 
+                                      java.util.Set<String> ocupados, java.util.Set<String> accesibles, String posterUrl) {
+        this.pendingFuncionId = funcionId;
+        this.pendingTitulo = titulo;
+        this.pendingHora = hora;
+        this.pendingCiudad = ciudad;
+        this.pendingSede = sede;
+        this.pendingOcupados = ocupados;
+        this.pendingAccesibles = accesibles;
+        this.pendingPosterUrl = posterUrl;
+    }
 
     @FXML
     private void initialize() {
@@ -101,10 +138,67 @@ public class LoginController {
         feedback.setStyle("-fx-text-fill: #090;");
         feedback.setText("Bienvenido al Cine Sigma");
         Session.setCurrent(usuario);
+        
+        // Si hay un callback onSuccess, ejecutarlo
         if (onSuccess != null) {
             try { onSuccess.run(); } catch (Exception ex) { ex.printStackTrace(); }
             return;
         }
+        
+        // Si hay datos de función pendiente, ir a selección de asientos
+        if (pendingFuncionId != null && pendingTitulo != null) {
+            try {
+                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
+                loader.setLocation(getClass().getResource("/sigmacine/ui/views/asientos.fxml"));
+                javafx.scene.Parent root = loader.load();
+                
+                AsientosController controller = loader.getController();
+                if (controller != null) {
+                    controller.setCoordinador(coordinador);
+                    controller.setUsuario(usuario);
+                    controller.setFuncion(pendingTitulo, pendingHora, pendingOcupados, 
+                                         pendingAccesibles, pendingFuncionId, pendingCiudad, pendingSede);
+                    if (pendingPosterUrl != null) {
+                        controller.setPosterUrl(pendingPosterUrl);
+                    }
+                }
+                
+                javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
+                javafx.scene.Scene currentScene = stage.getScene();
+                double w = currentScene != null ? currentScene.getWidth() : 900;
+                double h = currentScene != null ? currentScene.getHeight() : 600;
+                stage.setScene(new javafx.scene.Scene(root, w, h));
+                stage.setTitle("Selección de Asientos - Sigma Cine");
+                stage.setMaximized(true);
+                return;
+            } catch (Exception ex) {
+                System.err.println("Error navegando a asientos: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+        
+        // Si hay escena anterior, restaurarla
+        if (previousScene != null) {
+            try {
+                javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
+                stage.setScene(previousScene);
+                
+                // Usar Platform.runLater para asegurar que setMaximized se aplique correctamente
+                javafx.application.Platform.runLater(() -> {
+                    stage.setMaximized(true);
+                    
+                    // Actualizar la barra de navegación después de restaurar la escena
+                    BarraController barraController = BarraController.getInstance();
+                    if (barraController != null) {
+                        barraController.actualizarEstadoSesion();
+                    }
+                });
+                return;
+            } catch (Exception ex) {
+            }
+        }
+        
+        // Por defecto, ir al home
         if (coordinador != null) {
             coordinador.mostrarHome(usuario);
         }

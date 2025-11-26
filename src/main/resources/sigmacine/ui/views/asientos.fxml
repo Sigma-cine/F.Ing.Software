@@ -23,9 +23,13 @@
     <center>
         <VBox spacing="14" style="-fx-background-color:#000;">
             <children>
-                <Label text="Selecciona tus asientos" style="-fx-text-fill:#fff; -fx-font-weight:bold;">
+
+                <!-- TITULO -->
+                <Label text="Selecciona tus asientos"
+                       style="-fx-text-fill:#fff; -fx-font-weight:bold;">
                     <font><Font size="20"/></font>
                 </Label>
+
                 <Separator/>
 
                 <HBox spacing="40" alignment="TOP_LEFT">
@@ -34,6 +38,7 @@
                     <!-- IZQUIERDA: sala -->
                     <VBox spacing="18" alignment="TOP_CENTER">
                         <children>
+
                             <!-- Pantalla -->
                             <StackPane prefHeight="56" maxWidth="Infinity">
                                 <Region StackPane.alignment="CENTER" prefHeight="6"
@@ -42,89 +47,112 @@
                                        style="-fx-text-fill:#ffffff; -fx-font-weight:bold; -fx-letter-spacing:1px;"/>
                             </StackPane>
 
-                            <!-- Lienzo + grilla (la llena el controller) -->
-                            <VBox spacing="14" style="-fx-background-color:#0a0a0a; -fx-background-radius:10; -fx-padding:22;">
+                            <!-- Grilla -->
+                            <VBox spacing="14"
+                                  alignment="CENTER"
+                                  style="-fx-background-color:#0a0a0a; -fx-background-radius:10; -fx-padding:22;">
                                 <children>
-                                    <GridPane fx:id="gridSala" hgap="10" vgap="10" alignment="CENTER">
-                                        <padding><Insets left="72" right="72"/></padding>
+
+                                    <!-- *** AQUÍ ESTÁ LA CORRECCIÓN *** -->
+                                    <GridPane fx:id="gridSala"
+                                              hgap="10"
+                                              vgap="10"
+                                              alignment="CENTER">
+
+                                        <!-- Padding CORREGIDO (antes tenía left="72" right="72") -->
+                                        <padding>
+                                            <Insets top="0" bottom="0" left="0" right="0"/>
+                                        </padding>
+
                                     </GridPane>
+
                                 </children>
                             </VBox>
+
                         </children>
                     </VBox>
 
                     <!-- DERECHA: info -->
-                    <VBox spacing="18" alignment="TOP_LEFT" prefWidth="340"
+                    <VBox spacing="18" alignment="TOP_LEFT" prefWidth="370"
                           style="-fx-background-color:#0a0a0a; -fx-background-radius:10; -fx-padding:18;">
                         <children>
+
                             <!-- Cabecera -->
                             <HBox spacing="12" alignment="CENTER_LEFT">
                                 <children>
+
+                                    <!-- Poster -->
                                     <StackPane prefWidth="220" prefHeight="320"
                                                style="-fx-background-color:#222; -fx-background-radius:8;">
-                                        <ImageView fx:id="imgPoster" fitWidth="200" fitHeight="300" preserveRatio="true"/>
+                                        <ImageView fx:id="imgPoster"
+                                                   fitWidth="220"
+                                                   fitHeight="320"
+                                                   preserveRatio="true"
+                                                   smooth="true"
+                                                   pickOnBounds="true"/>
                                     </StackPane>
-                                    <VBox spacing="6">
+
+                                    <!-- Info -->
+                                    <VBox spacing="10">
                                         <children>
-                                            <Label fx:id="lblTitulo" text="Película" style="-fx-text-fill:#fff; -fx-font-weight:bold;" wrapText="true" maxWidth="200">
+                                            <Label fx:id="lblTitulo" text="Película"
+                                                   style="-fx-text-fill:#fff; -fx-font-weight:bold;"
+                                                   wrapText="true" maxWidth="250">
                                                 <font><Font size="16"/></font>
                                             </Label>
                                             <Label fx:id="lblHoraPill" text="1:10 pm" styleClass="pill"/>
                                         </children>
                                     </VBox>
+
                                 </children>
                             </HBox>
 
-                            <!-- Convención: cajitas con estilo INLINE idéntico al grid -->
-                            <Label text="Información" style="-fx-text-fill:#ddd; -fx-font-weight:bold;"/>
-                            <FlowPane hgap="18" vgap="12" rowValignment="CENTER" columnHalignment="LEFT" prefWrapLength="300">
+                            <!-- Convención -->
+                            <Label text="Información"
+                                   style="-fx-text-fill:#ddd; -fx-font-weight:bold;"/>
 
-                                <!-- Disponibles (borde rojo) -->
-                                <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <Pane minWidth="26" minHeight="26" prefWidth="26" prefHeight="26" maxWidth="26" maxHeight="26"
-                                          style="-fx-background-color: transparent;
-                                                 -fx-border-color: #e0665a;
-                                                 -fx-border-width: 2;
-                                                 -fx-background-radius: 6;
-                                                 -fx-border-radius: 6;"/>
-                                    <Label text="Disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
-                                </HBox>
+                            <FlowPane hgap="18" vgap="12" prefWrapLength="300">
 
-                                <!-- No disponibles (vino sólido) -->
-                                <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <Pane minWidth="26" minHeight="26" prefWidth="26" prefHeight="26" maxWidth="26" maxHeight="26"
-                                          style="-fx-background-color: #8b2c24;
-                                                 -fx-border-color: #8b2c24;
-                                                 -fx-border-width: 2;
-                                                 -fx-background-radius: 6;
-                                                 -fx-border-radius: 6;"/>
-                                    <Label text="No disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
-                                </HBox>
+                        <!-- Disponible -->
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Region style="-fx-background-color:#b4b4b4; -fx-pref-width:18; -fx-pref-height:18; -fx-background-radius:4;"/>
+                            <Label text="Disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
+                        </HBox>
 
-                                <!-- Accesibles (glow rojito permanente) -->
-                                <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <Pane minWidth="26" minHeight="26" prefWidth="26" prefHeight="26" maxWidth="26" maxHeight="26"
-                                          style="-fx-background-color: transparent;
-                                                 -fx-border-color: rgba(255,190,180,0.95);
-                                                 -fx-border-width: 2;
-                                                 -fx-background-radius: 6;
-                                                 -fx-border-radius: 6;
-                                                 -fx-effect: dropshadow(gaussian, rgba(210,74,57,0.70), 18, 0.50, 0, 0);"/>
-                                    <Label text="Discapacitados" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
-                                </HBox>
+                        <!-- No disponibles -->
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Region style="-fx-background-color:#c0392b; -fx-pref-width:18; -fx-pref-height:18; -fx-background-radius:4;"/>
+                            <Label text="No disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
+                        </HBox>
+
+                        <!-- Accesibles -->
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Region style="-fx-background-color:#e0665a; -fx-pref-width:18; -fx-pref-height:18; -fx-background-radius:4;"/>
+                            <Label text="Discapacitados" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
+                        </HBox>
 
                             </FlowPane>
 
                             <!-- Resumen + CTA -->
-                            <Label fx:id="lblResumen" text="0 Sillas seleccionadas"
+                            <Label fx:id="lblResumen"
+                                   text="0 Sillas seleccionadas"
                                    style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
-                            <Button fx:id="btnContinuar" text="Añadir al carrito" onAction="#onContinuar"
+
+                            <Button fx:id="btnContinuar"
+                                    text="Añadir al carrito"
+                                    onAction="#onContinuar"
                                     maxWidth="Infinity" styleClass="cta"/>
+
                         </children>
                     </VBox>
+
                 </HBox>
+
             </children>
+
             <padding><Insets top="0" right="0" bottom="8" left="0"/></padding>
+
         </VBox>
     </center>
+
 </BorderPane>

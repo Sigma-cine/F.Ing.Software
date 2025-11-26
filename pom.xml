@@ -30,6 +30,14 @@
       <version>0.4</version>
     </dependency>
 
+    <!-- Mockito para pruebas unitarias -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.2.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- JavaFX -->
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -62,6 +70,18 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>5.10.0</version>
       <scope>test</scope>
+    </dependency>
+    
+    <!-- ZXing para generación de códigos de barras -->
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>3.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>3.5.3</version>
     </dependency>
   </dependencies>
 

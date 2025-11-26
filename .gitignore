@@ -46,6 +46,6 @@ build/
 .out/
 
 # Database files
-sigmacine/
 *.mv.db
+*.db
 *.trace.db

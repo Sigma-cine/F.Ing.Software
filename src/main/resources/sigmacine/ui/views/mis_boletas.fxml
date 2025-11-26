@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.MisBoletasController" stylesheets="@sigma.css">
+    <top>
+        <fx:include source="barra.fxml"/>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #000000;" hbarPolicy="NEVER">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 40; -fx-background-color: #000000;">
+                    
+                    <!-- Título -->
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="🎟️" style="-fx-font-size: 32;"/>
+                        <Label text="Mis Boletas" style="-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 28;" />
+                    </HBox>
+                    
+                    <Label text="Aquí encontrarás todas tus entradas de cine activas" 
+                           style="-fx-text-fill: #cccccc; -fx-font-size: 14;"/>
+                    
+                    <!-- Separador -->
+                    <Separator style="-fx-background-color: #8B2E21; -fx-pref-height: 2;"/>
+                    
+                    <!-- Container de boletas -->
+                    <VBox fx:id="boletasContainer" spacing="20" style="-fx-padding: 10;"/>
+                    
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

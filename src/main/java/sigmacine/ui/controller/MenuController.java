@@ -44,10 +44,7 @@ public class MenuController implements Initializable {
         javafx.application.Platform.runLater(() -> {
             BarraController barraController = BarraController.getInstance();
             if (barraController != null) {
-                System.out.println("MenuController: BarraController encontrado, marcando 'confiteria'");
                 barraController.marcarBotonActivo("confiteria");
-            } else {
-                System.out.println("MenuController: BarraController NO encontrado (getInstance retornó null)");
             }
         });
     }
@@ -310,6 +307,11 @@ public class MenuController implements Initializable {
             ? new CompraProductoDTO(p.id, itemName + " (" + selectedSabor + ")", qty, p.precio, selectedSabor)
             : new CompraProductoDTO(p.id, itemName, qty, p.precio);
         
+        // Setear la imagen URL si existe
+        if (p.imageUrl != null && !p.imageUrl.isEmpty()) {
+            dto.setImageUrl(p.imageUrl);
+        }
+        
         // Añadir al carrito con lógica de consolidación
         CarritoService.getInstance().addItemConsolidated(dto);
         
@@ -369,7 +371,7 @@ public class MenuController implements Initializable {
                             } catch (Exception ignore) {}
                         }
                         if (img == null) img = tryLoadImageFor(nombre, id);
-                        out.add(new ProductItem(id, nombre, descripcion, precio, img, sabores));
+                        out.add(new ProductItem(id, nombre, descripcion, precio, img, sabores, imagenUrl));
                     }
                 }
             }
@@ -390,7 +392,7 @@ public class MenuController implements Initializable {
     }
 
     private static class ProductItem {
-        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores;
-        ProductItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores) { this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; }
+        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores; final String imageUrl;
+        ProductItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores, String imageUrl) { this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; this.imageUrl = imageUrl; }
     }
 }

@@ -176,6 +176,12 @@ public class CombosController implements Initializable {
             int qty = quantity.get();
             String itemName = combo.nombre;
             var dto = new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
+            
+            // Setear la imagen URL si existe
+            if (combo.imageUrl != null && !combo.imageUrl.isEmpty()) {
+                dto.setImageUrl(combo.imageUrl);
+            }
+            
             CarritoService.getInstance().addItemConsolidated(dto);
             
             // Mostrar confirmación
@@ -236,7 +242,7 @@ public class CombosController implements Initializable {
                             } catch (Exception ignore) {}
                         }
                         if (img == null) img = tryLoadImageFor(nombre, id);
-                        out.add(new ComboItem(id, nombre, descripcion, precio, img, sabores));
+                        out.add(new ComboItem(id, nombre, descripcion, precio, img, sabores, imagenUrl));
                     }
                 }
             }
@@ -257,9 +263,9 @@ public class CombosController implements Initializable {
     }
 
     private static class ComboItem {
-        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores;
-        ComboItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores) { 
-            this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; 
+        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores; final String imageUrl;
+        ComboItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores, String imageUrl) { 
+            this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; this.imageUrl = imageUrl; 
         }
     }
 }
