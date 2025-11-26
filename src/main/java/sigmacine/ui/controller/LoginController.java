@@ -139,6 +139,13 @@ public class LoginController {
         feedback.setText("Bienvenido al Cine Sigma");
         Session.setCurrent(usuario);
         
+        if ("ADMIN".equalsIgnoreCase(usuario.getRol())) {
+        if (coordinador != null) {
+            coordinador.mostrarHome(usuario);  
+        }
+        return;
+    }
+
         // Si hay un callback onSuccess, ejecutarlo
         if (onSuccess != null) {
             try { onSuccess.run(); } catch (Exception ex) { ex.printStackTrace(); }
