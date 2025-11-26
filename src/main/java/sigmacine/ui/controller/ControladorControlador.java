@@ -77,35 +77,15 @@ public class ControladorControlador {
                 container.getChildren().addAll(root, loadingOverlay.getOverlayPane());
                 rootContainer = container;
                 
-                // GUARDAR estado maximizado ANTES de cambiar la escena
-                boolean wasMaximized = stage.isMaximized();
-                
-                javafx.scene.Scene current = stage.getScene();
-                double w = current != null ? current.getWidth() : 900;
-                double h = current != null ? current.getHeight() : 600;
-                
-                // Si estaba maximizado, forzar tamaño de pantalla completo antes de setScene
-                if (wasMaximized) {
+                    // Siempre forzar tamaño de pantalla completa al abrir la vista
                     javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
                     javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
-                    w = bounds.getWidth();
-                    h = bounds.getHeight();
-                }
-                
-                stage.setScene(new Scene(container, w > 0 ? w : 900, h > 0 ? h : 600));
-                stage.setTitle(title);
-                
-                // Si estaba maximizado O si no hay escena previa (primera carga), maximizar
-                if (wasMaximized || current == null) {
+                    double w = bounds.getWidth();
+                    double h = bounds.getHeight();
+                    stage.setScene(new Scene(container, w, h));
+                    stage.setTitle(title);
                     stage.setMaximized(true);
-                }
-                
-                stage.show();
-                
-                // Forzar maximización nuevamente después de show si es necesario
-                if (wasMaximized || current == null) {
-                    stage.setMaximized(true);
-                }
+                    stage.show();
                 
                 hideLoadingOverlay();
             } catch (Exception e) {
