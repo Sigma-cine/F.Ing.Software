@@ -2,7 +2,11 @@
   Sigma UI – Estilos globales
    ======================= */
 
-.root { -fx-background-color: #0D0D0D; -fx-font-family: "Segoe UI","Montserrat",Arial,sans-serif; -fx-text-fill: white; }
+.root {
+    -fx-background-color: #0D0D0D;
+    -fx-font-family: "Segoe UI","Montserrat",Arial,sans-serif;
+    -fx-text-fill: white;
+}
 .label { -fx-text-fill: white; }
 .dark-bg { -fx-background-color: #0D0D0D; }
 
@@ -12,9 +16,20 @@
 .scroll-pane, .scroll-pane > .viewport { -fx-background-color: #0D0D0D; }
 
 /* ======================= Topbar ======================= */
-.topbar { -fx-background-color: #8A2F24; -fx-padding: 8 16; -fx-spacing: 12; }
+.topbar {
+    -fx-background-color: #8A2F24;
+    -fx-padding: 8 16;
+    -fx-spacing: 12;
+}
 .brand { -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; }
-.toplink { -fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 6 10; -fx-background-radius: 10; }
+
+.toplink {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 6 10;
+    -fx-background-radius: 10;
+}
 .toplink:hover   { -fx-underline: true; -fx-background-color: rgba(255,255,255,0.08); }
 .toplink:pressed { -fx-background-color: rgba(0,0,0,0.15); }
 
@@ -23,12 +38,25 @@
 .icon-btn:hover   { -fx-background-color: rgba(255,255,255,0.08); }
 .icon-btn:pressed { -fx-background-color: rgba(0,0,0,0.18); }
 
+/* ======================= BUSCADOR – RESTAURADO ======================= */
+
+.text-field,
+.text-input,
 .search {
-  -fx-background-radius: 16; -fx-padding: 6 12;
-  -fx-background-color: #e9d7d3, transparent; -fx-background-insets: 0, 2;
-  -fx-prompt-text-fill: rgba(0,0,0,0.45); -fx-text-fill: #1b1b1b; -fx-border-color: transparent;
+    -fx-background-radius: 16;
+    -fx-padding: 6 12;
+    -fx-background-color: #e9d7d3, transparent;
+    -fx-background-insets: 0, 2;
+    -fx-prompt-text-fill: rgba(0,0,0,0.45);
+    -fx-text-fill: #1b1b1b;
+    -fx-border-color: transparent;
 }
-.search:focused { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 2); }
+
+.text-field:focused,
+.text-input:focused,
+.search:focused {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 2);
+}
 
 /* ======================= Publicidad ======================= */
 .promo-nav {
@@ -43,9 +71,7 @@
     -fx-background-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 4);
 }
-.movie-card:hover {
-    -fx-background-color: rgba(255,255,255,0.08);
-}
+.movie-card:hover { -fx-background-color: rgba(255,255,255,0.08); }
 
 .promo-dot {
   -fx-background-radius: 999;
@@ -54,9 +80,15 @@
 .promo-dot.active { -fx-background-color: white; }
 
 /* ======================= Menú y textos ======================= */
-.context-menu { -fx-background-color: #121212; -fx-background-radius: 12; -fx-padding: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.2, 0, 4); }
+.context-menu {
+    -fx-background-color: #121212;
+    -fx-background-radius: 12;
+    -fx-padding: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.2, 0, 4);
+}
 .menu-item > .label { -fx-text-fill: white; }
 .menu-item:focused { -fx-background-color: #1E1E1E; -fx-background-radius: 8; }
+
 .separator-menu-item > .line { -fx-background-color: #8A2F24; }
 
 .section-title, .venue { -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; }
@@ -96,7 +128,6 @@
 
 .primary-btn { -fx-background-radius: 15; -fx-padding: 8 20; }
 .pay-btn { -fx-font-size: 16px; -fx-background-radius: 24; -fx-padding: 12 24; }
-
 .button.cta { -fx-background-radius: 18; -fx-padding: 10 18; }
 
 /* ======================= Scrollbars ======================= */
@@ -131,6 +162,7 @@
   -fx-border-width: 1;
 }
 .line-item .label { -fx-text-fill:#E6E6E6; }
+
 /* ======================= Tarjetas / Cards ======================= */
 
 .movie-info-card,
@@ -141,12 +173,9 @@
     -fx-padding: 12;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.15, 0, 3);
 }
-
 .movie-info-card:hover,
 .food-info-card:hover,
-.ticket-info-card:hover {
-    -fx-background-color: #141414;
-}
+.ticket-info-card:hover { -fx-background-color: #141414; }
 
 /* ======================= Poster ======================= */
 
@@ -155,7 +184,6 @@
     -fx-background-radius: 8;
     -fx-padding: 8;
 }
-
 .poster > ImageView {
     -fx-background-radius: 8;
     -fx-smooth: true;
@@ -169,16 +197,12 @@
     -fx-font-weight: bold;
 }
 
-.section-label {
-    -fx-text-fill: #CCCCCC;
-    -fx-font-size: 14px;
-}
+.section-label { -fx-text-fill: #CCCCCC; -fx-font-size: 14px; }
 
 .bold { -fx-font-weight: bold; }
 .white { -fx-text-fill: white; }
 
 /* ======================= Precios y pills ======================= */
-
 .pill {
     -fx-background-color: #8A2F24;
     -fx-text-fill: white;
@@ -193,22 +217,6 @@
     -fx-font-weight: bold;
 }
 
-/* ======================= Campos de texto ======================= */
-
-.text-input {
-    -fx-background-color: #1C1C1C;
-    -fx-text-fill: white;
-    -fx-padding: 8;
-    -fx-background-radius: 8;
-    -fx-prompt-text-fill: rgba(255,255,255,0.4);
-    -fx-border-color: #2a2a2a;
-}
-
-.text-input:focused {
-    -fx-border-color: #8A2F24;
-    -fx-effect: dropshadow(gaussian, rgba(138,47,36,0.3), 10, 0.2, 0, 2);
-}
-
 /* ======================= Inputs numéricos ======================= */
 
 .spinner {
@@ -216,22 +224,14 @@
     -fx-background-radius: 8;
     -fx-border-color: #2a2a2a;
 }
-
-.spinner .text-field {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-}
-
+.spinner .text-field { -fx-background-color: transparent; -fx-text-fill: white; }
 .spinner .increment-arrow-button,
 .spinner .decrement-arrow-button {
     -fx-background-color: #2a2a2a;
     -fx-background-radius: 6;
 }
-
 .spinner .increment-arrow-button:hover,
-.spinner .decrement-arrow-button:hover {
-    -fx-background-color: #8A2F24;
-}
+.spinner .decrement-arrow-button:hover { -fx-background-color: #8A2F24; }
 
 /* ======================= Boletos y resumen ======================= */
 
@@ -241,19 +241,10 @@
     -fx-padding: 12;
     -fx-spacing: 10;
 }
-
 .ticket-row:hover { -fx-background-color: #161616; }
 
-.ticket-title {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-}
-
-.ticket-sub {
-    -fx-text-fill: #CFCFCF;
-    -fx-font-size: 12px;
-}
+.ticket-title { -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; }
+.ticket-sub { -fx-text-fill: #CFCFCF; -fx-font-size: 12px; }
 
 /* ======================= Carrito ======================= */
 
@@ -262,23 +253,13 @@
     -fx-background-radius: 10;
     -fx-padding: 10;
 }
+.cart-item:hover { -fx-background-color: rgba(255,255,255,0.08); }
 
-.cart-item:hover {
-    -fx-background-color: rgba(255,255,255,0.08);
-}
+.cart-title { -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; }
+.cart-price { -fx-text-fill: #E6E6E6; -fx-font-size: 14px; }
 
-.cart-title {
-    -fx-text-fill: white;
-    -fx-font-size: 15px;
-    -fx-font-weight: bold;
-}
-
-.cart-price {
-    -fx-text-fill: #E6E6E6;
-    -fx-font-size: 14px;
-}
 /* ========================================================= */
-/* ASIENTOS DE LA SALA                                       */
+/* ASIENTOS DE LA SALA */
 /* ========================================================= */
 
 .seat {
@@ -293,8 +274,6 @@
     -fx-cursor: hand;
 }
 
-/* ========================= DISPONIBLE ========================= */
-
 .seat--available {
     -fx-background-image: url("/Images/Asientos/vacio.png");
     -fx-background-size: contain;
@@ -302,16 +281,12 @@
     -fx-background-position: center;
 }
 
-/* ========================= SELECCIONADO ========================= */
-
 .seat--selected {
     -fx-background-image: url("/Images/Asientos/seleccion.png");
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
-
-/* ========================= OCUPADO ========================= */
 
 .seat--unavailable {
     -fx-background-image: url("/Images/Asientos/ocupado.png");
@@ -321,16 +296,12 @@
     -fx-opacity: 0.5;
 }
 
-/* ========================= ACCESIBLE ========================= */
-
 .seat--accessible {
     -fx-background-image: url("/Images/Asientos/discapacitado.png");
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
-
-/* ========================= ACCESIBLE SELECCIONADO ========================= */
 
 .seat--selected.seat--accessible {
     -fx-background-image: url("/Images/Asientos/seleccionDisca.png");
@@ -339,13 +310,7 @@
     -fx-background-position: center;
 }
 
-/* ========================= Hover ========================= */
-
-.seat:hover {
-    -fx-opacity: 0.85;
-}
-
-/* ========================= Grid ========================= */
+.seat:hover { -fx-opacity: 0.85; }
 
 #gridSala {
     -fx-hgap: 6;
@@ -354,19 +319,11 @@
     -fx-alignment: center;
 }
 
-/* Etiquetas de filas y columnas dentro de la sala */
-
-.seat-label {
-    -fx-text-fill: white;
-    -fx-font-size: 15px;
-}
+.seat-label { -fx-text-fill: white; -fx-font-size: 15px; }
 
 .seat-letter, .seat-number {
     -fx-font-size: 16px;
     -fx-padding: 4 8 4 8;
 }
 
-.seat-number {
-    -fx-alignment: center;
-}
-
+.seat-number { -fx-alignment: center; }
