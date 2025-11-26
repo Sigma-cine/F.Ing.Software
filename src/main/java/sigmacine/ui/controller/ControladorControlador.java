@@ -532,12 +532,6 @@ public class ControladorControlador {
         });
     }
 
-    public void mostrarMiCuenta() {
-        loadViewWithSpinner("/sigmacine/ui/views/mi_cuenta.fxml", "Sigma Cine - Mi Cuenta", (controller, root) -> {
-            configurarBarraEnVista(root);
-        });
-    }
-
     private void configurarBarraEnVista(Parent root) {
         configurarBarraEnVista(root, null);
     }
@@ -624,6 +618,21 @@ public void mostrarCarritoCompleto() {
             
             ConfirmacionCompraController c = (ConfirmacionCompraController) controller;
             c.inicializar(compraId, metodoPago, totalPagado, items, saldoAnterior, saldoNuevo);
+        });
+    }
+    public void mostrarMiCuenta() {
+        loadViewWithSpinner("/sigmacine/ui/views/infoUsuario.fxml", "Sigma Cine - Mi Cuenta", (controller, root) -> {
+            // 1. Configurar barra
+            configurarBarraEnVista(root, "micuenta"); // "micuenta" marca el botón activo en la barra
+            
+            // 2. Configurar el controller de Mi Cuenta
+            if (controller instanceof InfoPersonalController infoController) {
+                UsuarioDTO usuario = Session.getCurrent();
+                if (usuario != null) {
+                    infoController.setUsuario(usuario); // pasamos el DTO del usuario actual
+                }
+                infoController.initialize(); // inicializar datos si es necesario
+            }
         });
     }
 }
