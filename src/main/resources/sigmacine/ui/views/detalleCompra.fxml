@@ -28,14 +28,17 @@
                         <Label text="Sede/Ciudad:" GridPane.rowIndex="3" GridPane.columnIndex="0" />
                         <Label fx:id="lblSede" GridPane.rowIndex="3" GridPane.columnIndex="1" />
 
-                        <Label text="Función:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                        <Label fx:id="lblFuncion" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                        <Label text="Sala:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                        <Label fx:id="lblSala" GridPane.rowIndex="4" GridPane.columnIndex="1" />
 
-                        <Label text="Boletos:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
-                        <Label fx:id="lblBoletos" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                        <Label text="Función:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                        <Label fx:id="lblFuncion" GridPane.rowIndex="5" GridPane.columnIndex="1" />
 
-                        <Label text="Productos:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-                        <Label fx:id="lblProductos" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+                        <Label text="Boletos:" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                        <Label fx:id="lblBoletos" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+
+                        <Label text="Productos:" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+                        <Label fx:id="lblProductos" GridPane.rowIndex="7" GridPane.columnIndex="1" />
                     </children>
                 </GridPane>
                 <Separator />

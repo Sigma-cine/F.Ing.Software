@@ -25,6 +25,7 @@ public class LoginController {
     
     // Contexto para volver a la pantalla anterior
     private javafx.scene.Scene previousScene;
+    private boolean wasMaximized;
     private Long pendingFuncionId;
     private String pendingTitulo;
     private String pendingHora;
@@ -38,7 +39,13 @@ public class LoginController {
     public void setAuthFacade(AuthFacade authFacade) { this.authFacade = authFacade; }
     public void setOnSuccess(Runnable onSuccess) { this.onSuccess = onSuccess; }
     
-    public void setPreviousScene(javafx.scene.Scene scene) { this.previousScene = scene; }
+    public void setPreviousScene(javafx.scene.Scene scene) { 
+        this.previousScene = scene; 
+        // Guardar el estado de maximización cuando se guarda la escena
+        if (scene != null && scene.getWindow() instanceof javafx.stage.Stage) {
+            this.wasMaximized = ((javafx.stage.Stage) scene.getWindow()).isMaximized();
+        }
+    }
     
     public void setPendingFuncionData(Long funcionId, String titulo, String hora, String ciudad, String sede, 
                                       java.util.Set<String> ocupados, java.util.Set<String> accesibles) {
@@ -188,9 +195,21 @@ public class LoginController {
         if (previousScene != null) {
             try {
                 javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
-                stage.setScene(previousScene);
                 
-                // Usar Platform.runLater para asegurar que setMaximized se aplique correctamente
+                // Obtener las dimensiones de la pantalla
+                javafx.geometry.Rectangle2D screenBounds = javafx.stage.Screen.getPrimary().getVisualBounds();
+                
+                // Configurar dimensiones de la ventana ANTES de cambiar la escena
+                stage.setX(screenBounds.getMinX());
+                stage.setY(screenBounds.getMinY());
+                stage.setWidth(screenBounds.getWidth());
+                stage.setHeight(screenBounds.getHeight());
+                
+                // Restaurar la escena
+                stage.setScene(previousScene);
+                stage.setMaximized(true);
+                
+                // Asegurar maximización en Platform.runLater
                 javafx.application.Platform.runLater(() -> {
                     stage.setMaximized(true);
                     
@@ -202,6 +221,7 @@ public class LoginController {
                 });
                 return;
             } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
         

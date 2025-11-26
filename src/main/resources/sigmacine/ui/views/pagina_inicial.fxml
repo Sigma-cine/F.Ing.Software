@@ -2,101 +2,135 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Pos?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+<BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sigmacine.ui.controller.ClienteController"
-            prefHeight="600.0" prefWidth="1000.0"
-            style="-fx-background-color:#000000;"
+            prefWidth="1000" prefHeight="700"
+            style="-fx-background-color: #000000;"
             stylesheets="@sigma.css">
 
-    <!-- ===== TOP BAR ===== -->
+    <!-- ====================== TOP BAR ====================== -->
     <top>
         <fx:include source="barra.fxml"/>
     </top>
 
-<center>
-    <VBox spacing="0">
+    <!-- ====================== CONTENIDO ======================= -->
+    <center>
+        <ScrollPane fx:id="mainScroll"
+                    fitToWidth="true"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    style="-fx-background-color: transparent; -fx-background: transparent;"
+                    pannable="true">
 
-        <StackPane fx:id="promoPane"
-                   prefHeight="250.0" minHeight="250.0" maxHeight="250.0"
-                   maxWidth="Infinity"
-                   style="-fx-background-color:#742f24;">
-            <children>
-                <ImageView fx:id="promoImg"
-                           preserveRatio="true"
-                           smooth="true"
-                           pickOnBounds="false"
-                           StackPane.alignment="CENTER"/>
+            <!-- CONTENIDO REAL DEL SCROLLPANE -->
+            <VBox spacing="26"
+                  fillWidth="true"
+                  style="-fx-background-color: #000000;"
+                  alignment="TOP_CENTER">
 
-                <BorderPane mouseTransparent="false">
-                    <left>
-                        <Button text="‹" onAction="#prevSlide"
-                                focusTraversable="false"
-                                maxHeight="50" minWidth="40" mnemonicParsing="false"
-                                styleClass="promo-nav"/>
-                    </left>
-                    <right>
-                        <Button text="›" onAction="#nextSlide"
-                                focusTraversable="false"
-                                maxHeight="50" minWidth="40" mnemonicParsing="false"
-                                styleClass="promo-nav"/>
-                    </right>
-                    <bottom>
-                        <HBox fx:id="dotsBox" alignment="CENTER" spacing="6">
-                            <padding>
-                                <Insets top="6" right="10" bottom="6" left="10"/>
-                            </padding>
-                        </HBox>
-                    </bottom>
-                </BorderPane>
-            </children>
-        </StackPane>
+                <!-- =====================================================
+                               BANNER / PUBLICIDAD
+                ===================================================== -->
+                <StackPane fx:id="promoPane"
+                           prefHeight="260"
+                           maxHeight="260"
+                           minHeight="260"
+                           styleClass="promo-container">
 
-        <!-- ===== CARRUSEL DE PELÍCULAS ===== -->
-        <StackPane fx:id="peliculasPane" style="-fx-background-color: transparent;">
-            <children>
-                <BorderPane>
-                    <left>
-                        <Button fx:id="btnPrevMovies"
-                                text="‹"
-                                onAction="#onPrevMovies"
-                                focusTraversable="false"
-                                minWidth="40"
-                                styleClass="promo-nav"/>
-                    </left>
-                    <center>
-                        <ScrollPane fx:id="peliculasScroll"
-                                    hbarPolicy="NEVER" vbarPolicy="NEVER"
-                                    fitToHeight="true" fitToWidth="false"
-                                    pannable="true"
-                                    style="-fx-background-color: transparent;">
-                            <content>
+                    <ImageView fx:id="promoImg"
+                               StackPane.alignment="CENTER"
+                               preserveRatio="false"
+                               fitHeight="260"
+                               smooth="true"/>
+
+                    <BorderPane style="-fx-background-color: transparent;">
+                        <left>
+                            <Button text="‹"
+                                    onAction="#prevSlide"
+                                    styleClass="promo-nav"/>
+                        </left>
+                        <right>
+                            <Button text="›"
+                                    onAction="#nextSlide"
+                                    styleClass="promo-nav"/>
+                        </right>
+                        <bottom>
+                            <HBox fx:id="dotsBox"
+                                  alignment="CENTER"
+                                  spacing="6"
+                                  style="-fx-padding: 6 0 6 0;"/>
+                        </bottom>
+                    </BorderPane>
+                </StackPane>
+
+
+                <!-- =====================================================
+                           CARRUSEL DE PELÍCULAS
+                ===================================================== -->
+                <VBox alignment="CENTER" spacing="12">
+
+                    <Label text="Películas más importantes del momento"
+                           styleClass="seccion-titulo"/>
+
+                    <BorderPane maxWidth="1300" style="-fx-background-color: transparent;">
+
+                        <left>
+                            <Button fx:id="btnPrevMovies"
+                                    text="‹"
+                                    onAction="#onPrevMovies"
+                                    styleClass="promo-nav"/>
+                        </left>
+
+                        <center>
+                            <ScrollPane fx:id="peliculasScroll"
+                                        style="-fx-background-color: transparent; -fx-background: transparent;"
+                                        hbarPolicy="NEVER"
+                                        vbarPolicy="NEVER"
+                                        pannable="true"
+                                        fitToWidth="false"
+                                        prefViewportHeight="300">
+
                                 <HBox fx:id="peliculasBox"
                                       alignment="CENTER_LEFT"
-                                      spacing="16"
-                                      style="-fx-padding: 8 16 12 16;"/>
-                            </content>
-                        </ScrollPane>
-                    </center>
-                    <right>
-                        <Button fx:id="btnNextMovies"
-                                text="›"
-                                onAction="#onNextMovies"
-                                focusTraversable="false"
-                                minWidth="40"
-                                styleClass="promo-nav"/>
-                    </right>
-                </BorderPane>
-            </children>
-        </StackPane>
+                                      spacing="25"
+                                      style="-fx-background-color: transparent;"/>
+                            </ScrollPane>
+                        </center>
 
-        <StackPane fx:id="content" VBox.vgrow="ALWAYS" pickOnBounds="false"/>
+                        <right>
+                            <Button fx:id="btnNextMovies"
+                                    text="›"
+                                    onAction="#onNextMovies"
+                                    styleClass="promo-nav"/>
+                        </right>
 
-    </VBox>
-</center>
+                    </BorderPane>
+                </VBox>
+
+                <!-- =====================================================
+                                 CARTELERA COMPLETA
+                ===================================================== -->
+                <VBox alignment="TOP_CENTER"
+                      spacing="20"
+                      style="-fx-padding: 16 0 32 0;">
+
+                    <Label text="Cartelera"
+                           styleClass="seccion-titulo-grande"/>
+
+                    <FlowPane fx:id="gridPeliculas"
+                              hgap="20" vgap="20"
+                              alignment="CENTER"
+                              prefWrapLength="1100"
+                              style="-fx-background-color: transparent;"/>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
 </BorderPane>

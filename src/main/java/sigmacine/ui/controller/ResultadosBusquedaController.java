@@ -12,7 +12,6 @@ import java.util.List;
 import java.io.File;
 
 public class ResultadosBusquedaController {
-    @FXML private javafx.scene.control.Button btnVolver;
     @FXML private Label lblTituloResultados;
     @FXML private Label lblTextoBuscado;
     @FXML private VBox panelPeliculas;
@@ -34,34 +33,6 @@ public class ResultadosBusquedaController {
         this.peliculas = peliculas;
         this.textoBuscado = textoBuscado;
         mostrarResultados();
-
-        if (btnVolver != null) {
-            btnVolver.setOnAction(e -> volverAInicio());
-        }
-    }
-
-    private void volverAInicio() {
-        try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-            javafx.scene.Parent root = loader.load();
-            javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
-            try {
-                Object ctrl = loader.getController();
-                if (ctrl instanceof ClienteController) {
-                    ClienteController c = (ClienteController) ctrl;
-                    c.init(this.usuario);
-                    c.setCoordinador(this.coordinador);
-                }
-            } catch (Exception ignore) {}
-            javafx.scene.Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 900;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
-            stage.setTitle("Sigma Cine");
-        } catch (Exception ex) {
-            System.err.println("Error al volver a inicio: " + ex.getMessage());
-            ex.printStackTrace();
-        }
     }
 
     private void mostrarResultados() {
@@ -197,7 +168,7 @@ public class ResultadosBusquedaController {
             // Ensure the controller refreshes its session-aware UI
             ctrl.setPelicula(p);
 
-            javafx.stage.Stage stage = (javafx.stage.Stage) btnVolver.getScene().getWindow();
+            javafx.stage.Stage stage = (javafx.stage.Stage) panelPeliculas.getScene().getWindow();
             javafx.scene.Scene current = stage.getScene();
             double w = current != null ? current.getWidth() : 900;
             double h = current != null ? current.getHeight() : 600;
