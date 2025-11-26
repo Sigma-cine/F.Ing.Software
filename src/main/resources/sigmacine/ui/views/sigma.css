@@ -18,6 +18,12 @@
 .separator:horizontal .line { -fx-background-color: rgba(255,255,255,0.08); -fx-pref-height: 1; }
 .separator:vertical   .line { -fx-background-color: rgba(255,255,255,0.08); -fx-pref-width: 1; }
 
+.scroll-pane, .scroll-pane > .viewport { 
+    -fx-background-color: #0D0D0D; 
+    -fx-background: #0D0D0D;
+}
+.scroll-pane > .corner { -fx-background-color: #0D0D0D; }
+
 
 /* ======================= Topbar ======================= */
 .topbar { -fx-background-color: #8A2F24; -fx-padding: 8 16; -fx-spacing: 12; }
