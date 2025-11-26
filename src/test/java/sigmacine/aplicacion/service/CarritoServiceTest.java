@@ -6,6 +6,7 @@ import sigmacine.aplicacion.data.CompraProductoDTO;
 import sigmacine.dominio.entity.Boleto;
 import sigmacine.dominio.entity.Producto;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -439,6 +440,284 @@ public class CarritoServiceTest {
         carrito.addProducto(p);
         
         assertEquals(new BigDecimal("37.50"), carrito.getTotal());
+    }
+
+    
+    @Test
+    public void addItemConsolidated_ambosItemsNull_noConsolida() {
+        int sizeBefore = carrito.getItems().size();
+        carrito.addItemConsolidated(null);
+        assertEquals(sizeBefore, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_carritoConItemYAgregarNull_mantieneTamaño() {
+        CompraProductoDTO item = new CompraProductoDTO(1L, "Test", 1, new BigDecimal("5.00"));
+        carrito.addItemConsolidated(item);
+        
+        carrito.addItemConsolidated(null);
+        
+        assertEquals(1, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_itemsIguales_consolidaCantidades() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Palomitas Grandes", 2, new BigDecimal("5.50"));
+        CompraProductoDTO item2 = new CompraProductoDTO(1L, "Palomitas Grandes", 3, new BigDecimal("5.50"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(1, carrito.getItems().size());
+        assertEquals(5, carrito.getItems().get(0).getCantidad());
+        assertEquals(new BigDecimal("27.50"), carrito.getTotal());
+    }
+    
+    @Test
+    public void addItemConsolidated_nombresDiferentes_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Palomitas", 2, new BigDecimal("5.50"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Refresco", 1, new BigDecimal("5.50"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_preciosDiferentes_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Palomitas", 2, new BigDecimal("5.50"));
+        CompraProductoDTO item2 = new CompraProductoDTO(1L, "Palomitas", 1, new BigDecimal("6.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_nombresNulos_consolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, null, 2, new BigDecimal("5.50"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, null, 1, new BigDecimal("5.50"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(1, carrito.getItems().size());
+        assertEquals(3, carrito.getItems().get(0).getCantidad());
+    }
+    
+    @Test
+    public void addItemConsolidated_preciosNulos_consolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Producto", 2, null);
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Producto", 1, null);
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(1, carrito.getItems().size());
+        assertEquals(3, carrito.getItems().get(0).getCantidad());
+    }
+    
+    @Test
+    public void addItemConsolidated_unNombreNullOtroNo_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Palomitas", 2, new BigDecimal("5.50"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, null, 1, new BigDecimal("5.50"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_unPrecioNullOtroNo_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Palomitas", 2, new BigDecimal("5.50"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Palomitas", 1, null);
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_consolidaMultiplesVeces() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Nachos", 1, new BigDecimal("8.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(1L, "Nachos", 2, new BigDecimal("8.00"));
+        CompraProductoDTO item3 = new CompraProductoDTO(1L, "Nachos", 3, new BigDecimal("8.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        carrito.addItemConsolidated(item3);
+        
+        assertEquals(1, carrito.getItems().size());
+        assertEquals(6, carrito.getItems().get(0).getCantidad());
+        assertEquals(new BigDecimal("48.00"), carrito.getTotal());
+    }
+    
+    @Test
+    public void addItemConsolidated_ambosNombreYPrecioNull_consolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, null, 2, null);
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, null, 1, null);
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(1, carrito.getItems().size());
+        assertEquals(3, carrito.getItems().get(0).getCantidad());
+    }
+    
+    @Test
+    public void addItemConsolidated_primerItemExistenteNull_noLanzaExcepcion() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Combo", 1, new BigDecimal("10.00"));
+        carrito.addItemConsolidated(item1);
+        
+        carrito.addItemConsolidated(null);
+        
+        assertEquals(1, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_nombreNullVsNoNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, null, 2, new BigDecimal("5.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Producto", 1, new BigDecimal("5.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_precioNullVsNoNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Producto", 2, null);
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Producto", 1, new BigDecimal("5.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_consolidaYRetornaInmediatamente() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "A", 1, new BigDecimal("1.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "B", 1, new BigDecimal("2.00"));
+        CompraProductoDTO item3 = new CompraProductoDTO(3L, "A", 2, new BigDecimal("1.00")); // Match con item1
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        carrito.addItemConsolidated(item3);
+        
+        assertEquals(2, carrito.getItems().size());
+        
+        CompraProductoDTO itemA = carrito.getItems().stream()
+            .filter(i -> "A".equals(i.getNombre()))
+            .findFirst()
+            .orElse(null);
+        assertNotNull(itemA);
+        assertEquals(3, itemA.getCantidad());
+    }
+    
+    @Test
+    public void addItemConsolidated_nombreNoNullVsNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Producto", 2, new BigDecimal("5.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, null, 1, new BigDecimal("5.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_precioNoNullVsNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Producto", 2, new BigDecimal("5.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Producto", 1, null);
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_nombresDiferentesNoNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "ProductoA", 2, new BigDecimal("5.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "ProductoB", 1, new BigDecimal("5.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_preciosDiferentesNoNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Producto", 2, new BigDecimal("5.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Producto", 1, new BigDecimal("6.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_primerNombreNullSegundoNoNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, null, 2, new BigDecimal("5.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Test", 1, new BigDecimal("5.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void addItemConsolidated_primerPrecioNullSegundoNoNull_noConsolida() {
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Test", 2, null);
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Test", 1, new BigDecimal("5.00"));
+        
+        carrito.addItemConsolidated(item1);
+        carrito.addItemConsolidated(item2);
+        
+        assertEquals(2, carrito.getItems().size());
+    }
+    
+    @Test
+    public void areItemsEqual_primerItemNull_retornaFalse() throws Exception {
+        Method method = CarritoService.class.getDeclaredMethod("areItemsEqual", CompraProductoDTO.class, CompraProductoDTO.class);
+        method.setAccessible(true);
+        
+        CompraProductoDTO item2 = new CompraProductoDTO(1L, "Test", 1, new BigDecimal("5.00"));
+        boolean result = (boolean) method.invoke(carrito, null, item2);
+        
+        assertFalse(result);
+    }
+    
+    @Test
+    public void areItemsEqual_segundoItemNull_retornaFalse() throws Exception {
+        Method method = CarritoService.class.getDeclaredMethod("areItemsEqual", CompraProductoDTO.class, CompraProductoDTO.class);
+        method.setAccessible(true);
+        
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Test", 1, new BigDecimal("5.00"));
+        boolean result = (boolean) method.invoke(carrito, item1, null);
+        
+        assertFalse(result);
+    }
+    
+    @Test
+    public void areItemsEqual_ambosItemsNoNull_evaluaComparaciones() throws Exception {
+        Method method = CarritoService.class.getDeclaredMethod("areItemsEqual", CompraProductoDTO.class, CompraProductoDTO.class);
+        method.setAccessible(true);
+        
+        CompraProductoDTO item1 = new CompraProductoDTO(1L, "Test", 1, new BigDecimal("5.00"));
+        CompraProductoDTO item2 = new CompraProductoDTO(2L, "Test", 1, new BigDecimal("5.00"));
+        boolean result = (boolean) method.invoke(carrito, item1, item2);
+        
+        assertTrue(result);
     }
 }
 

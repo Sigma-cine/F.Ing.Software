@@ -44,10 +44,7 @@ public class MenuController implements Initializable {
         javafx.application.Platform.runLater(() -> {
             BarraController barraController = BarraController.getInstance();
             if (barraController != null) {
-                System.out.println("MenuController: BarraController encontrado, marcando 'confiteria'");
                 barraController.marcarBotonActivo("confiteria");
-            } else {
-                System.out.println("MenuController: BarraController NO encontrado (getInstance retornó null)");
             }
         });
     }
@@ -122,9 +119,37 @@ public class MenuController implements Initializable {
     selectors.setSpacing(20);
     selectors.setPickOnBounds(false);
     final IntegerProperty quantity = new SimpleIntegerProperty(1);
-    javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
+    
+    // Crear botones con imágenes
+    javafx.scene.control.Button btnMinus = new javafx.scene.control.Button();
     javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("x");
+    javafx.scene.control.Button btnPlus = new javafx.scene.control.Button();
+    
+    // Configurar imagen para botón menos
+    try {
+        javafx.scene.image.ImageView minusIcon = new javafx.scene.image.ImageView();
+        minusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/minus.png")));
+        minusIcon.setFitWidth(16);
+        minusIcon.setFitHeight(16);
+        minusIcon.setPreserveRatio(true);
+        btnMinus.setGraphic(minusIcon);
+    } catch (Exception e) {
+        // Fallback a texto si no se encuentra la imagen
+        btnMinus.setText("−");
+    }
+    
+    // Configurar imagen para botón más
+    try {
+        javafx.scene.image.ImageView plusIcon = new javafx.scene.image.ImageView();
+        plusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/plus.png")));
+        plusIcon.setFitWidth(16);
+        plusIcon.setFitHeight(16);
+        plusIcon.setPreserveRatio(true);
+        btnPlus.setGraphic(plusIcon);
+    } catch (Exception e) {
+        // Fallback a texto si no se encuentra la imagen
+        btnPlus.setText("+");
+    }
     
     btnMinus.getStyleClass().add("qty-btn");
     btnPlus.getStyleClass().add("qty-btn");
@@ -181,7 +206,55 @@ public class MenuController implements Initializable {
     cbOpt.setMaxWidth(180); 
     cbOpt.setMinWidth(180);
     
-    selectors.getChildren().addAll(qtyBox, cbOpt);
+    // Deshabilitar completamente la interacción del ComboBox
+    cbOpt.setMouseTransparent(true);
+    cbOpt.setFocusTraversable(false);
+    cbOpt.setEditable(false);
+    
+    // Crear contenedor StackPane para superponer la imagen DENTRO del ComboBox
+    javafx.scene.layout.StackPane comboContainer = new javafx.scene.layout.StackPane();
+    comboContainer.setPrefWidth(180);
+    comboContainer.setMaxWidth(180);
+    
+    // Agregar ComboBox al contenedor
+    comboContainer.getChildren().add(cbOpt);
+    
+    try {
+        // Crear imagen clickeable que estará DENTRO del ComboBox
+        javafx.scene.image.ImageView comboIcon = new javafx.scene.image.ImageView();
+        comboIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/combobox.png")));
+        comboIcon.setFitWidth(16);
+        comboIcon.setFitHeight(16);
+        comboIcon.setPreserveRatio(true);
+        
+        // Posicionar la imagen dentro del área del ComboBox, lado derecho
+        javafx.scene.layout.StackPane.setAlignment(comboIcon, javafx.geometry.Pos.CENTER_RIGHT);
+        javafx.scene.layout.StackPane.setMargin(comboIcon, new javafx.geometry.Insets(0, 8, 0, 0));
+        
+        // Hacer la imagen clickeable para abrir el dropdown
+        comboIcon.setOnMouseClicked(e -> {
+            // Temporalmente habilitar el ComboBox para mostrar opciones
+            cbOpt.setMouseTransparent(false);
+            if (!cbOpt.isShowing()) {
+                cbOpt.show();
+            } else {
+                cbOpt.hide();
+            }
+            // Inmediatamente volver a deshabilitar
+            javafx.application.Platform.runLater(() -> cbOpt.setMouseTransparent(true));
+        });
+        
+        // Estilo visual para indicar que es clickeable
+        comboIcon.setStyle("-fx-cursor: hand;");
+        
+        // Agregar imagen al contenedor (se superpondrá DENTRO del ComboBox)
+        comboContainer.getChildren().add(comboIcon);
+        
+    } catch (Exception e) {
+        System.err.println("Error cargando imagen del ComboBox: " + e.getMessage());
+    }
+    
+    selectors.getChildren().addAll(qtyBox, comboContainer);
 
     Button add = new Button("Agregar al carrito");
     add.getStyleClass().addAll("buy-btn", "menu-add-btn");
@@ -233,6 +306,11 @@ public class MenuController implements Initializable {
         var dto = (selectedSabor != null && !selectedSabor.equalsIgnoreCase("Sabor") && !selectedSabor.equalsIgnoreCase("Original") && !selectedSabor.trim().isEmpty())
             ? new CompraProductoDTO(p.id, itemName + " (" + selectedSabor + ")", qty, p.precio, selectedSabor)
             : new CompraProductoDTO(p.id, itemName, qty, p.precio);
+        
+        // Setear la imagen URL si existe
+        if (p.imageUrl != null && !p.imageUrl.isEmpty()) {
+            dto.setImageUrl(p.imageUrl);
+        }
         
         // Añadir al carrito con lógica de consolidación
         CarritoService.getInstance().addItemConsolidated(dto);
@@ -293,7 +371,7 @@ public class MenuController implements Initializable {
                             } catch (Exception ignore) {}
                         }
                         if (img == null) img = tryLoadImageFor(nombre, id);
-                        out.add(new ProductItem(id, nombre, descripcion, precio, img, sabores));
+                        out.add(new ProductItem(id, nombre, descripcion, precio, img, sabores, imagenUrl));
                     }
                 }
             }
@@ -314,7 +392,7 @@ public class MenuController implements Initializable {
     }
 
     private static class ProductItem {
-        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores;
-        ProductItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores) { this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; }
+        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores; final String imageUrl;
+        ProductItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores, String imageUrl) { this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; this.imageUrl = imageUrl; }
     }
 }

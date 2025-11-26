@@ -46,7 +46,6 @@ public class SigmaCard {
         this.activa = false;
     }
     
-    // Getters
     public Long getId() {
         return id;
     }

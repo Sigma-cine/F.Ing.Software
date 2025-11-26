@@ -1,3 +1,4 @@
+
 package sigmacine.aplicacion.service;
 
 import java.math.BigDecimal;
@@ -11,6 +12,13 @@ import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 public class SigmaCardService {
 
 	private final SigmaCardRepository repository;
+
+	/**
+	 * Retorna true si el usuario ya tiene SigmaCard.
+	 */
+	public boolean tieneCard(long usuarioId) {
+		return repository.existeCard(usuarioId);
+	}
 
 	public SigmaCardService() {
 		this.repository = new SigmaCardRepositoryJdbc(new DatabaseConfig());

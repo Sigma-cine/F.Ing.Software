@@ -30,11 +30,13 @@ public class BarraController {
     @FXML private MenuButton menuUsuario;
     @FXML private Label lblNombreUsuario;
     
+    @FXML private MenuItem miMisBoletas;
     @FXML private MenuItem miHistorial;
     @FXML private MenuItem miCerrarSesion;
 
     private ContextMenu carritoDropdown;
     private static BarraController instance;
+    private javafx.stage.Stage carritoStage;
 
     @FXML
     public void initialize() {
@@ -86,7 +88,14 @@ public class BarraController {
         });
 
         miCerrarSesion.setOnAction(e -> cerrarSesion());
-        miHistorial.setOnAction(e -> navegarAHistorial());
+        
+        if (miMisBoletas != null) {
+            miMisBoletas.setOnAction(e -> navegarAMisBoletas());
+        }
+        
+        if (miHistorial != null) {
+            miHistorial.setOnAction(e -> navegarAHistorial());
+        }
         
         configurarMenuUsuario();
     }
@@ -95,7 +104,7 @@ public class BarraController {
         for (MenuItem item : menuUsuario.getItems()) {
             if (item instanceof SeparatorMenuItem) continue;
             
-            if (item != miHistorial && item != miCerrarSesion) {
+            if (item != miHistorial && item != miCerrarSesion && item != miMisBoletas) {
                 item.setOnAction(e -> manejarItemMenu(item.getText()));
             }
         }
@@ -275,6 +284,9 @@ public class BarraController {
     */
 
     private void navegarACartelera() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCartelera();
@@ -282,6 +294,9 @@ public class BarraController {
     }
 
     private void navegarAConfiteria() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarConfiteria();
@@ -289,6 +304,9 @@ public class BarraController {
     }
 
     private void navegarASigmaCard() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarSigmaCard();
@@ -308,6 +326,9 @@ public class BarraController {
     }
 
     private void navegarACarritoCompleto() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarCarritoCompleto();
@@ -316,44 +337,69 @@ public class BarraController {
 
     private void mostrarCarritoPopup() {
         try {
+            // Si ya está abierto, cerrarlo
+            if (carritoStage != null && carritoStage.isShowing()) {
+                carritoStage.close();
+                return;
+            }
+            
             // Cargar el FXML del carrito
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
-            try (java.io.InputStream in = getClass().getResourceAsStream("/sigmacine/ui/views/verCarrito.fxml")) {
-                if (in == null) {
-                    System.err.println("No se pudo encontrar verCarrito.fxml");
-                    return;
-                }
-                javafx.scene.Parent carritoRoot = loader.load(in);
-                
-                // Crear un popup
-                javafx.stage.Popup popup = new javafx.stage.Popup();
-                popup.getContent().add(carritoRoot);
-                popup.setAutoHide(true);
-                popup.setHideOnEscape(true);
-                
-                // Obtener la posición del botón del carrito
-                javafx.geometry.Bounds bounds = btnCart.localToScreen(btnCart.getBoundsInLocal());
-                
-                // Mostrar el popup debajo del botón del carrito
-                popup.show(btnCart.getScene().getWindow(), 
-                          bounds.getMinX() - 250,  // Ajustar posición horizontal
-                          bounds.getMaxY() + 5);   // Debajo del botón con un pequeño margen
-                
-            }
+            loader.setLocation(getClass().getResource("/sigmacine/ui/views/verCarrito.fxml"));
+            javafx.scene.Parent carritoRoot = loader.load();
+            
+            // Crear un Stage flotante (no Popup)
+            carritoStage = new javafx.stage.Stage();
+            carritoStage.initOwner(btnCart.getScene().getWindow());
+            carritoStage.initModality(javafx.stage.Modality.NONE); // no bloquea
+            carritoStage.setResizable(false);
+            carritoStage.setTitle("Carrito");
+            carritoStage.setScene(new javafx.scene.Scene(carritoRoot));
+            
+            // Agregar listener para cerrar con ESC
+            carritoStage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, ev -> {
+                if (ev.getCode() == javafx.scene.input.KeyCode.ESCAPE) carritoStage.close();
+            });
+            
+            // Obtener la posición del botón del carrito
+            javafx.geometry.Bounds bounds = btnCart.localToScreen(btnCart.getBoundsInLocal());
+            
+            // Posicionar debajo del botón del carrito
+            carritoStage.setX(bounds.getMinX() - 250);
+            carritoStage.setY(bounds.getMaxY() + 5);
+            
+            carritoStage.show();
+            carritoStage.toFront();
         } catch (Exception ex) {
-            System.err.println("Error al mostrar popup del carrito: " + ex.getMessage());
+            System.err.println("Error al mostrar carrito: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
     private void navegarAHistorial() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarHistorialCompras();
         }
     }
 
+    private void navegarAMisBoletas() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) {
+            coordinador.mostrarMisBoletas();
+        }
+    }
+
     private void navegarARegistro() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarRegistro();
@@ -361,9 +407,19 @@ public class BarraController {
     }
 
     private void navegarALogin() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
-            coordinador.mostrarLogin();
+            // Guardar la escena actual antes de ir al login
+            javafx.stage.Stage stage = coordinador.getMainStage();
+            if (stage != null) {
+                javafx.scene.Scene currentScene = stage.getScene();
+                coordinador.mostrarLoginConEscenaAnterior(currentScene);
+            } else {
+                coordinador.mostrarLogin();
+            }
         }
     }
 
@@ -376,6 +432,9 @@ public class BarraController {
 
     @FXML
     private void onLogoClick(MouseEvent event) {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             // Verificar si hay sesión activa
@@ -392,6 +451,9 @@ public class BarraController {
     }
 
     private void realizarBusqueda() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
         String textoBusqueda = txtBuscar.getText().trim();
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {

@@ -113,7 +113,6 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
         final String nextIdSql     = "SELECT COALESCE(MAX(ID),0)+1 AS NEXT_ID FROM USUARIO";
         final String insertUsuario = "INSERT INTO USUARIO (ID, EMAIL, CONTRASENA, ROL) VALUES (?, ?, ?, 'CLIENTE')";
         final String insertCliente = "INSERT INTO CLIENTE (ID, NOMBRE, FECHA_REGISTRO) VALUES (?, ?, CURRENT_DATE)";
-    final String insertSigma = "INSERT INTO SIGMA_CARD (ID, SALDO, ESTADO) VALUES (?, 0.00, TRUE)";
 
         try (Connection con = db.getConnection()) {
             con.setAutoCommit(false);
@@ -126,8 +125,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                 }
 
                 try (PreparedStatement psU = con.prepareStatement(insertUsuario);
-                    PreparedStatement psC = con.prepareStatement(insertCliente);
-                    PreparedStatement psS = con.prepareStatement(insertSigma)) {
+                    PreparedStatement psC = con.prepareStatement(insertCliente)) {
 
                     psU.setLong(1, id);
                     psU.setString(2, email.value());
@@ -137,9 +135,6 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
                     psC.setLong(1, id);
                     psC.setString(2, nombre);
                     psC.executeUpdate();
-
-                    psS.setLong(1, id);
-                    psS.executeUpdate();
                 }
 
                 con.commit();

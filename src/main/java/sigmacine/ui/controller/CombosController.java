@@ -95,9 +95,35 @@ public class CombosController implements Initializable {
     desc.setMaxWidth(520);
 
         final IntegerProperty quantity = new SimpleIntegerProperty(1);
-        javafx.scene.control.Button btnMinus = new javafx.scene.control.Button("-");
+        
+        // Crear botones con imágenes
+        javafx.scene.control.Button btnMinus = new javafx.scene.control.Button();
+        javafx.scene.control.Button btnPlus = new javafx.scene.control.Button();
+        
+        try {
+            // Imagen para botón menos
+            javafx.scene.image.ImageView minusIcon = new javafx.scene.image.ImageView();
+            minusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/minus.png")));
+            minusIcon.setFitWidth(16);
+            minusIcon.setFitHeight(16);
+            minusIcon.setPreserveRatio(true);
+            btnMinus.setGraphic(minusIcon);
+            
+            // Imagen para botón más
+            javafx.scene.image.ImageView plusIcon = new javafx.scene.image.ImageView();
+            plusIcon.setImage(new javafx.scene.image.Image(getClass().getResourceAsStream("/Images/plus.png")));
+            plusIcon.setFitWidth(16);
+            plusIcon.setFitHeight(16);
+            plusIcon.setPreserveRatio(true);
+            btnPlus.setGraphic(plusIcon);
+            
+        } catch (Exception e) {
+            // Si las imágenes fallan, usar texto como fallback
+            btnMinus.setText("-");
+            btnPlus.setText("+");
+        }
+        
         javafx.scene.control.Label lblQty = new javafx.scene.control.Label("1");
-        javafx.scene.control.Button btnPlus = new javafx.scene.control.Button("x");
 
         btnMinus.getStyleClass().add("qty-btn");
         btnPlus.getStyleClass().add("qty-btn");
@@ -150,6 +176,12 @@ public class CombosController implements Initializable {
             int qty = quantity.get();
             String itemName = combo.nombre;
             var dto = new CompraProductoDTO(combo.id, itemName, qty, combo.precio);
+            
+            // Setear la imagen URL si existe
+            if (combo.imageUrl != null && !combo.imageUrl.isEmpty()) {
+                dto.setImageUrl(combo.imageUrl);
+            }
+            
             CarritoService.getInstance().addItemConsolidated(dto);
             
             // Mostrar confirmación
@@ -210,7 +242,7 @@ public class CombosController implements Initializable {
                             } catch (Exception ignore) {}
                         }
                         if (img == null) img = tryLoadImageFor(nombre, id);
-                        out.add(new ComboItem(id, nombre, descripcion, precio, img, sabores));
+                        out.add(new ComboItem(id, nombre, descripcion, precio, img, sabores, imagenUrl));
                     }
                 }
             }
@@ -231,9 +263,9 @@ public class CombosController implements Initializable {
     }
 
     private static class ComboItem {
-        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores;
-        ComboItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores) { 
-            this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; 
+        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores; final String imageUrl;
+        ComboItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores, String imageUrl) { 
+            this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; this.imageUrl = imageUrl; 
         }
     }
 }

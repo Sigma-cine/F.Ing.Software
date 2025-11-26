@@ -2,6 +2,7 @@ package sigmacine.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -40,17 +41,16 @@ public class AsientosController implements Initializable {
 
     private String titulo = "Película";
     private String hora   = "1:10 pm";
-    private String ciudad = "";  // Ciudad de la función
-    private String sede = "";    // Sede/centro comercial de la función
+    private String ciudad = "";
+    private String sede = "";
     private Image poster;
-    private Long funcionId; // ID de la función seleccionada
+    private String posterUrl;
+    private Long funcionId;
 
-    // --- Carrito ---
     private final sigmacine.aplicacion.service.CarritoService carrito = sigmacine.aplicacion.service.CarritoService.getInstance();
     private final List<sigmacine.aplicacion.data.CompraProductoDTO> asientoItems = new ArrayList<>();
-    private static final BigDecimal PRECIO_ASIENTO = new BigDecimal("12.00"); // Precio base por asiento
+    private static final BigDecimal PRECIO_ASIENTO = new BigDecimal("12.00");
 
-    // Popup del carrito (implementación ligera reutilizando verCarrito.fxml)
     private Stage cartStage;
 
     private UsuarioDTO usuario;
@@ -60,7 +60,6 @@ public class AsientosController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Solo mantener el Singleton para marcar la página activa
         BarraController barraController = BarraController.getInstance();
         if (barraController != null) {
             barraController.marcarBotonActivo("asientos");
@@ -77,7 +76,8 @@ public class AsientosController implements Initializable {
             for (int c = 1; c <= columnas; c += 4) ocupados.add("F" + c);
         }
         if (accesibles.isEmpty()) {
-            accesibles.addAll(Arrays.asList("A5","A6","A7","A8"));
+            // Cambiado a A2..A5 por defecto
+            accesibles.addAll(Arrays.asList("A2","A3","A4","A5"));
         }
         if (lblTitulo != null)   lblTitulo.setText(titulo);
         if (lblHoraPill != null) lblHoraPill.setText(hora);
@@ -152,21 +152,10 @@ public class AsientosController implements Initializable {
 
     private void onIniciarSesion() {
         if (sigmacine.aplicacion.session.Session.isLoggedIn()) return;
-        if (coordinador != null) { coordinador.mostrarLogin(); return; }
-        try {
-            var loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
-            Parent root = loader.load();
-            var dialog = new javafx.stage.Stage();
-            dialog.initModality(javafx.stage.Modality.APPLICATION_MODAL);
-            dialog.initOwner(gridSala.getScene().getWindow());
-            var ctrl = loader.getController();
-            if (ctrl instanceof LoginController lc) {
-                try { ControladorControlador global = ControladorControlador.getInstance(); if (global != null) { lc.setCoordinador(global); lc.setAuthFacade(global.getAuthFacade()); } } catch (Throwable ignore) {}
-                lc.setOnSuccess(() -> { try { dialog.close(); } catch (Exception ignore) {} });
-            }
-            dialog.setScene(new Scene(root));
-            dialog.showAndWait();
-        } catch (Exception ex) { ex.printStackTrace(); }
+        if (coordinador != null) { 
+            coordinador.mostrarLogin(); 
+            return; 
+        }
     }
 
     private void onRegistrarse() {
@@ -237,8 +226,32 @@ public class AsientosController implements Initializable {
         seatByCode.clear();
         seleccion.clear();
 
+        // Centrar la grilla
+        gridSala.setAlignment(Pos.CENTER);
+
+        // Calculamos el máximo de columnas visual (10 para E-H)
+        int maxCols = 10;
+
+        // Numeración superior (fila 0 en GridPane). Dejamos la columna 0 para letras.
+        for (int i = 0; i < maxCols; i++) {
+            Label lblNum = new Label(String.valueOf(i + 1));
+            lblNum.getStyleClass().add("seat-number");
+            gridSala.add(lblNum, i + 1, 0);
+        }
+
+        // Recorremos filas 0..filas-1 (A..H), pero colocamos en GridPane en la fila +1
         for (int f = 0; f < filas; f++) {
-            for (int c = 0; c < columnas; c++) {
+
+            int colsThisRow = getColumnCountForRowIdx(f);
+            // letra
+            char filaChar = (char) ('A' + f);
+
+            // Label con la letra en la columna 0, fila f+1
+            Label lblLetra = new Label(String.valueOf(filaChar));
+            lblLetra.getStyleClass().add("seat-letter");
+            gridSala.add(lblLetra, 0, f + 1);
+
+            for (int c = 0; c < colsThisRow; c++) {
                 String code = code(f, c);
 
                 ToggleButton seat = new ToggleButton();
@@ -263,14 +276,27 @@ public class AsientosController implements Initializable {
                             seleccion.remove(code);
                         }
                         actualizarResumen();
-                        // NO sincronizar con carrito aquí, solo actualizar visualmente
                     });
                 }
 
                 seatByCode.put(code, seat);
-                gridSala.add(seat, c, f);
+                // añadimos +1 en columna para dejar la columna 0 a las letras
+                gridSala.add(seat, getStartColumnForRow(f) + c, f + 1);
             }
         }
+    }
+
+    private int getColumnCountForRowIdx(int filaIdxZeroBased) {
+        // filaIdxZeroBased: 0 -> A, 1 -> B, ...
+        if (filaIdxZeroBased == 0) return 6;      // A
+        if (filaIdxZeroBased >= 1 && filaIdxZeroBased <= 3) return 8; // B,C,D
+        return 10; // E..H
+    }
+
+        private int getStartColumnForRow(int filaIdxZeroBased) {
+        int maxCols = 10;
+        int cols = getColumnCountForRowIdx(filaIdxZeroBased);
+        return 1 + (maxCols - cols) / 2;
     }
 
     private enum SeatState { AVAILABLE, SELECTED, UNAVAILABLE }
@@ -307,7 +333,6 @@ public class AsientosController implements Initializable {
     }
 
     private void sincronizarAsientosConCarrito() {
-        // Limpiar asientos anteriores del carrito
         if (!asientoItems.isEmpty()) {
             for (var dto : asientoItems) {
                 carrito.removeItem(dto);
@@ -319,9 +344,7 @@ public class AsientosController implements Initializable {
             return;
         }
         
-        // Añadir todos los asientos seleccionados al carrito
         for (String code : seleccion.stream().sorted().toList()) {
-            // Crear nombre más descriptivo con película, sede, hora y asiento
             StringBuilder nombreBuilder = new StringBuilder();
             nombreBuilder.append("Asiento ").append(code);
             
@@ -341,11 +364,16 @@ public class AsientosController implements Initializable {
             
             String nombre = nombreBuilder.toString();
             var dto = new sigmacine.aplicacion.data.CompraProductoDTO(null, this.funcionId, nombre, 1, PRECIO_ASIENTO, code);
+            
+            // Set poster image URL for display in payment screen
+            if (posterUrl != null && !posterUrl.isEmpty()) {
+                dto.setImageUrl(posterUrl);
+            }
+            
             carrito.addItem(dto);
             asientoItems.add(dto);
         }
         
-        // Mostrar mensaje de confirmación cuando se confirman los asientos
         if (!seleccion.isEmpty()) {
             javafx.scene.control.Alert confirmacion = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
             confirmacion.setTitle("Asientos añadidos al carrito");
@@ -358,21 +386,17 @@ public class AsientosController implements Initializable {
             
             confirmacion.setContentText(mensaje);
             
-            // Aplicar CSS personalizado
             try {
                 confirmacion.getDialogPane().getStylesheets().add(
                     getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
                 );
             } catch (Exception ignore) {}
             
-            // Crear botones personalizados
             javafx.scene.control.ButtonType btnIrConfiteria = new javafx.scene.control.ButtonType("Ir a la confitería");
             javafx.scene.control.ButtonType btnIrCarrito = new javafx.scene.control.ButtonType("Ir al carrito");
-            // Botón invisible para manejar la X
             javafx.scene.control.ButtonType btnCerrar = new javafx.scene.control.ButtonType("", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
             confirmacion.getButtonTypes().setAll(btnIrConfiteria, btnIrCarrito, btnCerrar);
             
-            // Ocultar el botón de cerrar después de que se muestre el diálogo
             javafx.application.Platform.runLater(() -> {
                 confirmacion.getDialogPane().lookupButton(btnCerrar).setVisible(false);
                 confirmacion.getDialogPane().lookupButton(btnCerrar).setManaged(false);
@@ -381,7 +405,6 @@ public class AsientosController implements Initializable {
             var resultado = confirmacion.showAndWait();
             
             if (resultado.isPresent() && resultado.get() == btnIrCarrito) {
-                // Abrir el carrito
                 try {
                     openCartPopup();
                 } catch (Exception ex) {
@@ -389,7 +412,6 @@ public class AsientosController implements Initializable {
                     ex.printStackTrace();
                 }
             } else if (resultado.isPresent() && resultado.get() == btnIrConfiteria) {
-                // Ir a la confitería
                 try {
                     javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/menu.fxml"));
                     javafx.scene.Parent root = loader.load();
@@ -406,7 +428,6 @@ public class AsientosController implements Initializable {
                     ex.printStackTrace();
                 }
             }
-            // Si hace clic en X (btnCerrar), simplemente se cierra el dialog
         }
     }
 
@@ -438,14 +459,14 @@ public class AsientosController implements Initializable {
         if (accesibles != null && !accesibles.isEmpty()) {
             this.accesibles.addAll(shiftAccesiblesToFirstRowPlus2(accesibles));
         } else {
-            this.accesibles.addAll(Arrays.asList("A5","A6","A7","A8"));
+            this.accesibles.addAll(Arrays.asList("A2","A3","A4","A5"));
         }
 
         if (lblTitulo != null)   lblTitulo.setText(this.titulo);
         if (lblHoraPill != null) lblHoraPill.setText(this.hora);
         if (gridSala != null) { 
             poblarGrilla(); 
-            sincronizarConCarritoExistente(); // Verificar asientos ya en carrito
+            sincronizarConCarritoExistente();
             actualizarResumen(); 
         }
 
@@ -570,6 +591,10 @@ public class AsientosController implements Initializable {
         this.poster = poster;
         if (imgPoster != null && poster != null) imgPoster.setImage(poster);
     }
+    
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
 
     public void setFuncionConPoster(String titulo, String hora, Collection<String> ocupados, Image poster) {
         setFuncion(titulo, hora,
@@ -590,7 +615,6 @@ public class AsientosController implements Initializable {
 
     @FXML
     private void onContinuar() {
-        // Ahora es cuando sincronizamos los asientos con el carrito
         if (seleccion.isEmpty()) {
             javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
             alerta.setTitle("Selección requerida");
@@ -600,10 +624,8 @@ public class AsientosController implements Initializable {
             return;
         }
         
-        // Sincronizar con el carrito y mostrar confirmación
         sincronizarAsientosConCarrito();
         
-        // Ya no navegamos automáticamente a pago - el usuario puede ir al carrito o continuar comprando
     }
 
     private Set<String> shiftAccesiblesToFirstRowPlus2(Set<String> entrada) {
@@ -639,12 +661,10 @@ public class AsientosController implements Initializable {
                 cartStage.setResizable(false);
                 cartStage.setTitle("Carrito");
                 cartStage.setScene(new Scene(root));
-                // Cerrar con ESC
                 cartStage.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, ev -> {
                     if (ev.getCode() == KeyCode.ESCAPE) cartStage.close();
                 });
             }
-            // Posicionar el carrito en una ubicación fija cerca de la ventana principal
             if (gridSala != null && gridSala.getScene() != null && gridSala.getScene().getWindow() != null) {
                 javafx.stage.Window owner = gridSala.getScene().getWindow();
                 cartStage.setX(owner.getX() + owner.getWidth() - 650);
@@ -658,30 +678,21 @@ public class AsientosController implements Initializable {
         }
     }
 
-    /**
-     * Sincroniza el estado visual de los asientos con los que ya están en el carrito
-     * para evitar duplicados cuando el usuario vuelve a entrar a la pantalla.
-     */
     private void sincronizarConCarritoExistente() {
-        // Limpiar la selección y lista de asientos actuales
         seleccion.clear();
         asientoItems.clear();
         
-        // Verificar qué asientos de esta función ya están en el carrito
         var itemsCarrito = carrito.getItems();
         for (var item : itemsCarrito) {
-            // Verificar si este item es un asiento de la función actual
             if (item.getFuncionId() != null && 
                 item.getAsiento() != null && 
                 item.getFuncionId().equals(this.funcionId)) {
                 
                 String codigoAsiento = item.getAsiento();
                 
-                // Marcar este asiento como seleccionado
                 seleccion.add(codigoAsiento);
                 asientoItems.add(item);
                 
-                // Actualizar el estado visual del botón correspondiente
                 ToggleButton boton = seatByCode.get(codigoAsiento);
                 if (boton != null) {
                     boton.setSelected(true);

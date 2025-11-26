@@ -44,3 +44,8 @@ replay_pid*
 target/
 build/
 .out/
+
+# Database files
+*.mv.db
+*.db
+*.trace.db
