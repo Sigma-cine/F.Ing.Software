@@ -45,7 +45,10 @@ public class InfoPersonalController {
         dpFechaNacimiento.setValue(usuarioActual.getFechaNacimiento() != null ? usuarioActual.getFechaNacimiento() : LocalDate.now());
 
         if (usuarioActual.getAvatarPath() != null && !usuarioActual.getAvatarPath().isBlank()) {
-            avatarImage.setImage(new Image("file:" + usuarioActual.getAvatarPath()));
+            File f = new File(usuarioActual.getAvatarPath());
+            if (f.exists()) {
+                avatarImage.setImage(new Image(f.toURI().toString()));
+            }
         }
 
         lblMensaje.setVisible(false);
@@ -55,7 +58,7 @@ public class InfoPersonalController {
     private void onCambiarFoto() {
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg"));
-        File f = fc.showOpenDialog(null);
+        File f = fc.showOpenDialog(avatarImage.getScene().getWindow());
         if (f != null) {
             this.nuevaImagen = f;
             avatarImage.setImage(new Image(f.toURI().toString()));
@@ -78,8 +81,8 @@ public class InfoPersonalController {
         // Guardar imagen en carpeta Images
         if (nuevaImagen != null) {
             try {
-                String avatarPath = "/Images/" + usuarioActual.getId() + ".png";
                 Files.createDirectories(Path.of("Images"));
+                String avatarPath = "Images/" + usuarioActual.getId() + ".png";
                 Files.copy(nuevaImagen.toPath(), Path.of(avatarPath), StandardCopyOption.REPLACE_EXISTING);
                 usuarioActual.setAvatarPath(avatarPath);
             } catch (Exception e) {
@@ -98,5 +101,12 @@ public class InfoPersonalController {
     private void onCancelar() {
         cargarDatos();
     }
-}
 
+    // El setUsuario ya no lanza excepción, ahora permite asignar un usuario
+    public void setUsuario(UsuarioDTO usuario) {
+        if (usuario != null) {
+            this.usuarioActual = usuario;
+            cargarDatos();
+        }
+    }
+}
