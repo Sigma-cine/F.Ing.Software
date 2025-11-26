@@ -37,6 +37,7 @@ public class BarraController {
     @FXML private MenuItem miMisBoletas;
     @FXML private MenuItem miHistorial;
     @FXML private MenuItem miCerrarSesion;
+    @FXML private MenuItem miMiCuenta;
 
     private ContextMenu carritoDropdown;
     private static BarraController instance;
@@ -99,6 +100,10 @@ public class BarraController {
         
         if (miHistorial != null) {
             miHistorial.setOnAction(e -> navegarAHistorial());
+        }
+        
+        if (miMiCuenta != null) {
+            miMiCuenta.setOnAction(e -> navegarAMiCuenta());
         }
         
         configurarMenuUsuario();
