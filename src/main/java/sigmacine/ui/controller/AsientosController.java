@@ -280,7 +280,7 @@ public class AsientosController implements Initializable {
 
                 seatByCode.put(code, seat);
                 // añadimos +1 en columna para dejar la columna 0 a las letras
-                gridSala.add(seat, c + 1, f + 1);
+                gridSala.add(seat, getStartColumnForRow(f) + c, f + 1);
             }
         }
     }
@@ -290,6 +290,12 @@ public class AsientosController implements Initializable {
         if (filaIdxZeroBased == 0) return 6;      // A
         if (filaIdxZeroBased >= 1 && filaIdxZeroBased <= 3) return 8; // B,C,D
         return 10; // E..H
+    }
+
+        private int getStartColumnForRow(int filaIdxZeroBased) {
+        int maxCols = 10;
+        int cols = getColumnCountForRowIdx(filaIdxZeroBased);
+        return 1 + (maxCols - cols) / 2;
     }
 
     private enum SeatState { AVAILABLE, SELECTED, UNAVAILABLE }
