@@ -15,9 +15,14 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Region?>
 
-<BorderPane prefHeight="520" prefWidth="900" style="-fx-background-color: #000000; -fx-text-fill: #ffffff;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.InformacionPersonalController">
+<BorderPane prefHeight="520" prefWidth="900"
+            stylesheets="@../css/barra.css"
+            style="-fx-background-color: #000000;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sigmacine.ui.controller.InfoPersonalController">
 
     <!-- Encabezado -->
     <top>
@@ -26,69 +31,121 @@
 
     <!-- Contenido -->
     <center>
-        <!-- Layout principal: avatar a la izquierda, formulario a la derecha -->
         <HBox alignment="TOP_LEFT" prefHeight="509.0" prefWidth="900.0" spacing="24">
-            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+            <padding>
+                <Insets top="24" right="24" bottom="24" left="24"/>
+            </padding>
 
-            <!-- Columna izquierda: placeholder avatar + botón -->
+            <!-- Columna izquierda: Avatar -->
             <VBox alignment="TOP_CENTER" spacing="12">
                 <children>
-                    <!-- Recuadro para la imagen (160x160) -->
-                    <StackPane prefHeight="160" prefWidth="160" style="-fx-background-color:#222;                                       -fx-border-color:#555;                                       -fx-border-radius:12;                                       -fx-background-radius:12;">
-                  <ImageView fitHeight="150.0" fitWidth="163.0" pickOnBounds="true" preserveRatio="true" />
+
+                    <!-- Recuadro de la foto -->
+                    <StackPane fx:id="avatarPane" prefHeight="160" prefWidth="160"
+                               style="-fx-background-color:#222;
+                                      -fx-border-color:#555;
+                                      -fx-border-radius:12;
+                                      -fx-background-radius:12;">
+                        <children>
+                            <!-- ✅ ID corregido para coincidir con el controller -->
+                            <ImageView fx:id="avatarImage" fitHeight="150" fitWidth="150"
+                                       preserveRatio="true" pickOnBounds="true"/>
+                        </children>
                     </StackPane>
 
-                    <!-- Botón para cambiar (puedes enganchar el onAction al controller) -->
-                    <Button fx:id="btnCambiarFoto" onAction="#onCambiarFoto" style="-fx-background-color:#8A2F24; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Cambiar foto" />
+                    <!-- Cambiar foto -->
+                    <Button fx:id="btnCambiarFoto" onAction="#onCambiarFoto"
+                            text="Cambiar foto"
+                            style="-fx-background-color:#8A2F24;
+                                   -fx-text-fill:#fff;
+                                   -fx-background-radius:14;
+                                   -fx-padding:6 16;"/>
+
                 </children>
             </VBox>
 
-            <!-- Columna derecha: formulario -->
+            <!-- Columna derecha: Formulario -->
             <GridPane hgap="16" vgap="14">
+
                 <columnConstraints>
-                    <ColumnConstraints prefWidth="200" />
-                    <ColumnConstraints hgrow="ALWAYS" />
+                    <ColumnConstraints prefWidth="200"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
                 </columnConstraints>
 
+                <rowConstraints>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                </rowConstraints>
+
                 <children>
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Nombres:" />
-                    <TextField fx:id="txtNombres" promptText="Tus nombres" GridPane.columnIndex="1" />
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Apellidos:" GridPane.rowIndex="1" />
-                    <TextField fx:id="txtApellidos" promptText="Tus apellidos" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <!-- Nombres -->
+                    <Label text="Nombres:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
+                    <TextField fx:id="txtNombres" promptText="Tus nombres"
+                               GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Email:" GridPane.rowIndex="2" />
-                    <TextField fx:id="txtEmail" editable="false" promptText="correo@ejemplo.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <!-- Apellidos -->
+                    <Label text="Apellidos:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                           style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
+                    <TextField fx:id="txtApellidos" promptText="Tus apellidos"
+                               GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Teléfono:" GridPane.rowIndex="3" />
-                    <TextField fx:id="txtTelefono" promptText="+57 300 000 0000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    <!-- Email -->
+                    <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                           style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
+                    <TextField fx:id="txtEmail" promptText="correo@ejemplo.com"
+                               editable="false"
+                               GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Fecha de nacimiento:" GridPane.rowIndex="4" />
-                    <DatePicker fx:id="dpFechaNacimiento" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    <!-- Teléfono -->
+                    <Label text="Teléfono:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                           style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
+                    <TextField fx:id="txtTelefono" promptText="+57 300 000 0000"
+                               GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Nueva contraseña:" GridPane.rowIndex="5" />
-                    <PasswordField fx:id="txtNuevaClave" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                    <!-- Fecha de nacimiento -->
+                    <Label text="Fecha de nacimiento:" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                           style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
+                    <DatePicker fx:id="dpFechaNacimiento"
+                                GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-                    <!-- Acciones + mensaje -->
-                    <HBox alignment="CENTER_RIGHT" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                    <!-- Nueva contraseña -->
+                    <Label text="Nueva contraseña:" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                           style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
+                    <PasswordField fx:id="txtNuevaClave" promptText="••••••••"
+                                   GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+                    <!-- Botones + mensaje -->
+                    <HBox alignment="CENTER_RIGHT" spacing="12"
+                          GridPane.rowIndex="6" GridPane.columnIndex="1">
                         <children>
-                            <Label fx:id="lblMensaje" style="-fx-text-fill:#ffcc00;" text="" visible="false" />
-                            <Region HBox.hgrow="ALWAYS" />
-                            <Button fx:id="btnCancelar" onAction="#onCancelar" style="-fx-background-color:transparent; -fx-border-color:#8A2F24; -fx-text-fill:#fff; -fx-border-radius:14; -fx-background-radius:14; -fx-padding:6 16;" text="Cancelar" />
-                            <Button fx:id="btnGuardar" onAction="#onGuardar" style="-fx-background-color:#8A2F24; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Guardar cambios" />
+                            <Label fx:id="lblMensaje" visible="false"
+                                   style="-fx-text-fill:#ffcc00;" text=""/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="btnCancelar" onAction="#onCancelar" text="Cancelar"
+                                    style="-fx-background-color:transparent;
+                                           -fx-border-color:#8A2F24;
+                                           -fx-text-fill:#fff;
+                                           -fx-border-radius:14;
+                                           -fx-background-radius:14;
+                                           -fx-padding:6 16;"/>
+                            <Button fx:id="btnGuardar" onAction="#onGuardar" text="Guardar cambios"
+                                    style="-fx-background-color:#8A2F24;
+                                           -fx-text-fill:#fff;
+                                           -fx-background-radius:14;
+                                           -fx-padding:6 16;"/>
                         </children>
                     </HBox>
+
                 </children>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
             </GridPane>
+
         </HBox>
     </center>
 </BorderPane>

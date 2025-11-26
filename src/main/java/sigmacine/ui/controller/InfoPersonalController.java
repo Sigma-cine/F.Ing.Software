@@ -32,6 +32,11 @@ public class InfoPersonalController {
 
     @FXML
     public void initialize() {
+        BarraController barraController = BarraController.getInstance();
+        if (barraController != null) {
+            barraController.marcarBotonActivo("miMiCuenta");
+        }
+
         Platform.runLater(this::cargarDatos);
     }
 
