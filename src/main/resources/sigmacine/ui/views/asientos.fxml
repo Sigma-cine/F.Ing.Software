@@ -73,7 +73,7 @@
                     </VBox>
 
                     <!-- DERECHA: info -->
-                    <VBox spacing="18" alignment="TOP_LEFT" prefWidth="340"
+                    <VBox spacing="18" alignment="TOP_LEFT" prefWidth="370"
                           style="-fx-background-color:#0a0a0a; -fx-background-radius:10; -fx-padding:18;">
                         <children>
 
@@ -93,11 +93,11 @@
                                     </StackPane>
 
                                     <!-- Info -->
-                                    <VBox spacing="6">
+                                    <VBox spacing="10">
                                         <children>
                                             <Label fx:id="lblTitulo" text="Película"
                                                    style="-fx-text-fill:#fff; -fx-font-weight:bold;"
-                                                   wrapText="true" maxWidth="200">
+                                                   wrapText="true" maxWidth="250">
                                                 <font><Font size="16"/></font>
                                             </Label>
                                             <Label fx:id="lblHoraPill" text="1:10 pm" styleClass="pill"/>
@@ -113,26 +113,23 @@
 
                             <FlowPane hgap="18" vgap="12" prefWrapLength="300">
 
-                                <!-- Disponible -->
-                                <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <Button disable="true"
-                                            styleClass="seat-button seat-available"/>
-                                    <Label text="Disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
-                                </HBox>
+                        <!-- Disponible -->
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Region style="-fx-background-color:#b4b4b4; -fx-pref-width:18; -fx-pref-height:18; -fx-background-radius:4;"/>
+                            <Label text="Disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
+                        </HBox>
 
-                                <!-- No disponibles -->
-                                <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <Button disable="true"
-                                            styleClass="seat-button seat-unavailable"/>
-                                    <Label text="No disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
-                                </HBox>
+                        <!-- No disponibles -->
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Region style="-fx-background-color:#c0392b; -fx-pref-width:18; -fx-pref-height:18; -fx-background-radius:4;"/>
+                            <Label text="No disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
+                        </HBox>
 
-                                <!-- Accesibles -->
-                                <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <Button disable="true"
-                                            styleClass="seat-button seat-accessible"/>
-                                    <Label text="Discapacitados" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
-                                </HBox>
+                        <!-- Accesibles -->
+                        <HBox spacing="8" alignment="CENTER_LEFT">
+                            <Region style="-fx-background-color:#e0665a; -fx-pref-width:18; -fx-pref-height:18; -fx-background-radius:4;"/>
+                            <Label text="Discapacitados" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
+                        </HBox>
 
                             </FlowPane>
 
