@@ -492,11 +492,44 @@ public class BarraController {
             coordinador.mostrarPaginaInicial();
         }
         
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Sesión cerrada");
-        alert.setHeaderText(null);
-        alert.setContentText("Has cerrado sesión correctamente");
-        alert.showAndWait();
+        // Crear popup personalizado con los colores de la app
+        javafx.stage.Stage popup = new javafx.stage.Stage();
+        popup.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+        popup.setTitle("✓ Sesión Cerrada");
+        
+        javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(25);
+        content.setAlignment(javafx.geometry.Pos.CENTER);
+        content.setStyle("-fx-padding: 40; -fx-background-color: #1a1a1a;");
+        
+        // Ícono de éxito
+        javafx.scene.control.Label icono = new javafx.scene.control.Label("✓");
+        icono.setStyle("-fx-text-fill: #4CAF50; -fx-font-size: 60; -fx-font-weight: bold;");
+        
+        // Contenedor con borde para el ícono
+        javafx.scene.layout.VBox iconoContainer = new javafx.scene.layout.VBox();
+        iconoContainer.setAlignment(javafx.geometry.Pos.CENTER);
+        iconoContainer.setStyle("-fx-background-color: #2d5016; -fx-background-radius: 50; -fx-pref-width: 100; -fx-pref-height: 100;");
+        iconoContainer.getChildren().add(icono);
+        
+        javafx.scene.control.Label titulo = new javafx.scene.control.Label("Sesión Cerrada");
+        titulo.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 24; -fx-font-weight: bold;");
+        
+        javafx.scene.control.Label mensaje = new javafx.scene.control.Label("Has cerrado sesión correctamente");
+        mensaje.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14;");
+        mensaje.setWrapText(true);
+        mensaje.setMaxWidth(300);
+        mensaje.setAlignment(javafx.geometry.Pos.CENTER);
+        
+        javafx.scene.control.Button btnAceptar = new javafx.scene.control.Button("Aceptar");
+        btnAceptar.setStyle("-fx-background-color: #8B2E21; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 12 40; -fx-background-radius: 5; -fx-font-weight: bold;");
+        btnAceptar.setOnAction(e -> popup.close());
+        
+        content.getChildren().addAll(iconoContainer, titulo, mensaje, btnAceptar);
+        
+        javafx.scene.Scene scene = new javafx.scene.Scene(content, 400, 400);
+        popup.setScene(scene);
+        popup.setResizable(false);
+        popup.showAndWait();
     }
 
     public void actualizarEstadoSesion() {

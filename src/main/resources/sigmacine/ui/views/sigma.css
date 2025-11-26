@@ -2,12 +2,16 @@
   Sigma UI – Estilos globales
    ======================= */
 
-.root {
-    -fx-background-color: #000000;
-    -fx-font-family: "Segoe UI","Montserrat",Arial,sans-serif;
+/* Variables base de JavaFX */
+.root { 
+    -fx-background-color: #0D0D0D; 
+    -fx-font-family: "Segoe UI","Montserrat",Arial,sans-serif; 
     -fx-text-fill: white;
+    -fx-text-base-color: white;
+    -fx-accent: #8A2F24;
+    -fx-focus-color: #8A2F24;
+    -fx-faint-focus-color: rgba(138, 47, 36, 0.2);
 }
-
 .label { -fx-text-fill: white; }
 .dark-bg { -fx-background-color: #0D0D0D; }
 

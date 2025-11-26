@@ -28,6 +28,7 @@ public final class CompraMapper {
 
         BigDecimal total  = rs.getBigDecimal("COMPRA_TOTAL");
         String sedeCiudad = rs.getString("SEDE_CIUDAD");
+        String salaNombre = rs.getString("SALA_NOMBRE");
 
         int cantBoletos   = rs.getInt("CANT_BOLETOS");
         int cantProductos = rs.getInt("CANT_PRODUCTOS");
@@ -37,6 +38,7 @@ public final class CompraMapper {
                 dCompra  != null ? dCompra.toLocalDate()  : null,
                 total,
                 sedeCiudad,
+                salaNombre,
                 dFuncion != null ? dFuncion.toLocalDate() : null,
                 tFuncion != null ? tFuncion.toLocalTime() : null,
                 cantBoletos,

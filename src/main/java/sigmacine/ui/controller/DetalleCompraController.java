@@ -18,6 +18,7 @@ public class DetalleCompraController {
     @FXML private Label lblFecha;
     @FXML private Label lblTotal;
     @FXML private Label lblSede;
+    @FXML private Label lblSala;
     @FXML private Label lblFuncion;
     @FXML private Label lblBoletos;
     @FXML private Label lblProductos;
@@ -39,6 +40,7 @@ public class DetalleCompraController {
         lblFecha.setText(dto.getCompraFecha() != null ? dto.getCompraFecha().toString() : "N/A");
         lblTotal.setText(dto.getTotal() != null ? String.format("%.2f", dto.getTotal().doubleValue()) : "0.00");
         lblSede.setText(dto.getSedeCiudad() != null ? dto.getSedeCiudad() : "N/A");
+        lblSala.setText(dto.getSalaNombre() != null ? dto.getSalaNombre() : "N/A");
         lblFuncion.setText((dto.getFuncionFecha() != null ? dto.getFuncionFecha().toString() : "-") + " " + (dto.getFuncionHora() != null ? dto.getFuncionHora().toString() : ""));
         if (repo != null && dto.getCompraId() != null) {
             List<Boleto> boletos = repo.obtenerBoletosPorCompra(dto.getCompraId());

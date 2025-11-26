@@ -27,7 +27,7 @@ public class VerHistorialServiceTest {
 
     @Test
     public void verHistorial() {
-    HistorialCompraDTO h = new HistorialCompraDTO(1L, LocalDate.now(), BigDecimal.ZERO, "Bogota", LocalDate.now(), LocalTime.NOON, 1, 0);
+    HistorialCompraDTO h = new HistorialCompraDTO(1L, LocalDate.now(), BigDecimal.ZERO, "Bogota", "Sala 1", LocalDate.now(), LocalTime.NOON, 1, 0);
     List<HistorialCompraDTO> list = List.of(h);
         VerHistorialService svc = new VerHistorialService(new StubRepo(list));
         var res = svc.verHistorial("u@x.com");
@@ -44,11 +44,11 @@ public class VerHistorialServiceTest {
     @Test
     public void verHistorialConMultiplesCompras() {
         HistorialCompraDTO h1 = new HistorialCompraDTO(1L, LocalDate.of(2024, 1, 15), 
-            new BigDecimal("25.50"), "Bogota", LocalDate.of(2024, 1, 20), LocalTime.of(19, 30), 2, 1);
+            new BigDecimal("25.50"), "Bogota", "Sala 1", LocalDate.of(2024, 1, 20), LocalTime.of(19, 30), 2, 1);
         HistorialCompraDTO h2 = new HistorialCompraDTO(2L, LocalDate.of(2024, 2, 10), 
-            new BigDecimal("15.00"), "Medellin", LocalDate.of(2024, 2, 12), LocalTime.of(20, 0), 1, 0);
+            new BigDecimal("15.00"), "Medellin", "Sala 2", LocalDate.of(2024, 2, 12), LocalTime.of(20, 0), 1, 0);
         HistorialCompraDTO h3 = new HistorialCompraDTO(3L, LocalDate.of(2024, 3, 5), 
-            new BigDecimal("30.00"), "Cali", LocalDate.of(2024, 3, 8), LocalTime.of(18, 0), 3, 2);
+            new BigDecimal("30.00"), "Cali", "Sala 3", LocalDate.of(2024, 3, 8), LocalTime.of(18, 0), 3, 2);
         
         List<HistorialCompraDTO> list = List.of(h1, h2, h3);
         VerHistorialService svc = new VerHistorialService(new StubRepo(list));
@@ -83,6 +83,7 @@ public class VerHistorialServiceTest {
             LocalDate.of(2024, 6, 15), 
             new BigDecimal("45.75"), 
             "Barranquilla", 
+            "Sala VIP", 
             LocalDate.of(2024, 6, 18), 
             LocalTime.of(21, 15), 
             4, 

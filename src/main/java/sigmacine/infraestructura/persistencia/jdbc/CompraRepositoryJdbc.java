@@ -108,12 +108,24 @@ public class CompraRepositoryJdbc implements CompraRepository {
                     // 3b) BOLETOS: insertar cada boleto individualmente (productoId == null)
                     try (PreparedStatement nextBoletoPs = con.prepareStatement(nextBoletoIdSql);
                         PreparedStatement psBoleto = con.prepareStatement(insertBoleto);
-                        PreparedStatement psBoletoSilla = con.prepareStatement(insertBoletoSilla)) {
+                        PreparedStatement psBoletoSilla = con.prepareStatement(insertBoletoSilla);
+                        PreparedStatement psValidarFuncion = con.prepareStatement("SELECT ID FROM FUNCION WHERE ID = ?")) {
                         for (CompraProductoDTO it : items) {
                             if (it.getProductoId() != null) continue;
                             if (it.getFuncionId() == null) {
                                 throw new IllegalArgumentException("Boleto sin funcionId no puede insertarse.");
                             }
+                            
+                            // VALIDAR que la función existe antes de insertar
+                            psValidarFuncion.setLong(1, it.getFuncionId());
+                            boolean funcionExiste = false;
+                            try (ResultSet rsValidar = psValidarFuncion.executeQuery()) {
+                                funcionExiste = rsValidar.next();
+                            }
+                            if (!funcionExiste) {
+                                throw new IllegalArgumentException("La función con ID " + it.getFuncionId() + " no existe. No se puede crear el boleto para: " + it.getNombre());
+                            }
+                            
                             long boletoId;
                             try (ResultSet rs = nextBoletoPs.executeQuery()) {
                                 rs.next(); boletoId = rs.getLong("NEXT_ID");
