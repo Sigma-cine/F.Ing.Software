@@ -16,6 +16,7 @@ import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
 import sigmacine.ui.controller.admin.AgregarItemController;
 import sigmacine.ui.controller.admin.AgregarPeliculaController;
 import sigmacine.ui.controller.admin.GestionFuncionesController;
+import sigmacine.ui.controller.admin.ReportesController;
 
 import java.net.URL;
 
@@ -201,6 +202,51 @@ public class AdminController {
                 FXMLLoader loader = new FXMLLoader(fxml);
                 loader.setControllerFactory(param ->
                         new AgregarItemController(
+                                gestionProductosService
+                        )
+                );
+                Parent view = loader.load();
+                return view;
+            }
+        };
+
+        task.setOnSucceeded(event -> {
+            hideLoading();
+            Parent view = task.getValue();
+            if (contentArea != null) {
+                contentArea.getChildren().setAll(view);
+            }
+        });
+
+        task.setOnFailed(event -> {
+            hideLoading();
+            if (task.getException() != null) {
+                task.getException().printStackTrace();
+            }
+        });
+
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
+    }
+    @FXML
+    public void abrirReportes() {
+        showLoading();
+
+        Task<Parent> task = new Task<Parent>() {
+            @Override
+            protected Parent call() throws Exception {
+                String ruta = "/sigmacine/ui/views/Administrador/reportes.fxml";
+                URL fxml = AdminController.class.getResource(ruta);
+                if (fxml == null) {
+                    throw new IllegalStateException("No se encontró " + ruta);
+                }
+
+                FXMLLoader loader = new FXMLLoader(fxml);
+                loader.setControllerFactory(param ->
+                        new ReportesController(
+                                gestionPeliculasService,
+                                gestionFuncionesService,
                                 gestionProductosService
                         )
                 );
