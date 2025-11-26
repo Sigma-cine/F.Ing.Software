@@ -12,26 +12,23 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
 import java.time.LocalDate;
 
-
 public class InfoPersonalController {
 
     @FXML private TextField txtNombres;
     @FXML private TextField txtApellidos;
     @FXML private TextField txtTelefono;
+    @FXML private TextField txtEmail; // ✔️ AGREGADO
     @FXML private DatePicker dpFechaNacimiento;
     @FXML private PasswordField txtNuevaClave;
     @FXML private ImageView avatarImage;
     @FXML private Label lblMensaje;
     @FXML private HBox barraInclude;
-
-
 
     private UsuarioDTO usuarioActual;
     private File nuevaImagen;
@@ -42,7 +39,7 @@ public class InfoPersonalController {
             if (barraInclude != null) {
                 BarraController nuevoBarraController = (BarraController) barraInclude.getUserData();
                 if (nuevoBarraController != null) {
-                    BarraController.setInstance(nuevoBarraController); // reemplaza el viejo singleton
+                    BarraController.setInstance(nuevoBarraController);
                     nuevoBarraController.marcarBotonActivo("miMiCuenta");
                 }
             }
@@ -51,14 +48,21 @@ public class InfoPersonalController {
         Platform.runLater(this::cargarDatos);
     }
 
-
     private void cargarDatos() {
         usuarioActual = Session.getCurrent();
         if (usuarioActual == null) return;
 
         txtNombres.setText(usuarioActual.getNombre() != null ? usuarioActual.getNombre() : "");
         txtTelefono.setText(usuarioActual.getTelefono() != null ? usuarioActual.getTelefono() : "");
-        dpFechaNacimiento.setValue(usuarioActual.getFechaNacimiento() != null ? usuarioActual.getFechaNacimiento() : LocalDate.now());
+
+        // ✔️ Cargar email
+        txtEmail.setText(usuarioActual.getEmail() != null ? usuarioActual.getEmail() : "");
+
+        dpFechaNacimiento.setValue(
+                usuarioActual.getFechaNacimiento() != null
+                        ? usuarioActual.getFechaNacimiento()
+                        : LocalDate.now()
+        );
 
         if (usuarioActual.getAvatarPath() != null && !usuarioActual.getAvatarPath().isBlank()) {
             File f = new File(usuarioActual.getAvatarPath());
@@ -85,15 +89,18 @@ public class InfoPersonalController {
     private void onGuardar() {
         if (usuarioActual == null) return;
 
-        // Actualizar DTO en memoria
+        // ✔️ Guardar datos
         usuarioActual.setNombre(txtNombres.getText());
         usuarioActual.setTelefono(txtTelefono.getText());
+        usuarioActual.setEmail(txtEmail.getText()); // ✔️ AGREGADO
+
         usuarioActual.setFechaNacimiento(dpFechaNacimiento.getValue());
+
         if (!txtNuevaClave.getText().isBlank()) {
             usuarioActual.setContrasena(txtNuevaClave.getText());
         }
 
-        // Guardar imagen en carpeta Images
+        // Guardar imagen
         if (nuevaImagen != null) {
             try {
                 Files.createDirectories(Path.of("Images"));
@@ -117,7 +124,6 @@ public class InfoPersonalController {
         cargarDatos();
     }
 
-    // El setUsuario ya no lanza excepción, ahora permite asignar un usuario
     public void setUsuario(UsuarioDTO usuario) {
         if (usuario != null) {
             this.usuarioActual = usuario;
