@@ -134,21 +134,82 @@ public class SigmaCardController {
 		try {
 			String id = getIdInput();
 			if (id.isBlank()) { if (lblFeedback != null) lblFeedback.setText("Ingresa identificación para recargar"); return; }
-			javafx.scene.control.TextInputDialog d = new javafx.scene.control.TextInputDialog();
-			d.setTitle("Recargar SigmaCard");
-			d.setHeaderText(null);
-			d.setContentText("Monto (ej. 10.00):");
-			var res = d.showAndWait();
-			if (res.isEmpty()) return;
-			String montoStr = res.get();
-			BigDecimal monto = new BigDecimal(montoStr.trim());
-			BigDecimal nuevo = service.recargar(id, monto);
-			if (lblFeedback != null) {
-				lblFeedback.setStyle("-fx-text-fill: #2e7d32;");
-				lblFeedback.setText("Recargado. Nuevo saldo: " + service.format(nuevo));
-			}
-		} catch (NumberFormatException nfe) {
-			if (lblFeedback != null) { lblFeedback.setStyle("-fx-text-fill: #e53935;"); lblFeedback.setText("Monto inválido"); }
+			
+			// Crear popup personalizado con los colores de la app
+			javafx.stage.Stage popup = new javafx.stage.Stage();
+			popup.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+			popup.setTitle("💳 Recargar SigmaCard");
+			
+			javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(20);
+			content.setAlignment(javafx.geometry.Pos.CENTER);
+			content.setStyle("-fx-padding: 30; -fx-background-color: #1a1a1a;");
+			
+			javafx.scene.control.Label titulo = new javafx.scene.control.Label("💰 Recargar tu SigmaCard");
+			titulo.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 20; -fx-font-weight: bold;");
+			
+			javafx.scene.control.Label instruccion = new javafx.scene.control.Label("Ingresa el monto a recargar:");
+			instruccion.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14;");
+			
+			javafx.scene.control.TextField txtMonto = new javafx.scene.control.TextField();
+			txtMonto.setPromptText("Ejemplo: 50000");
+			txtMonto.setMaxWidth(250);
+			txtMonto.setStyle("-fx-background-color: #2a2a2a; -fx-text-fill: white; -fx-prompt-text-fill: #666666; -fx-font-size: 14; -fx-padding: 10;");
+			
+			javafx.scene.layout.HBox botones = new javafx.scene.layout.HBox(15);
+			botones.setAlignment(javafx.geometry.Pos.CENTER);
+			
+			javafx.scene.control.Button btnAceptar = new javafx.scene.control.Button("Recargar");
+			btnAceptar.setStyle("-fx-background-color: #8B2E21; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 10 25; -fx-background-radius: 5; -fx-font-weight: bold;");
+			
+			javafx.scene.control.Button btnCancelar = new javafx.scene.control.Button("Cancelar");
+			btnCancelar.setStyle("-fx-background-color: #555555; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 10 25; -fx-background-radius: 5;");
+			
+			final boolean[] recargado = {false};
+			
+			btnAceptar.setOnAction(e -> {
+				try {
+					String montoStr = txtMonto.getText().trim();
+					if (montoStr.isEmpty()) {
+						javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING);
+						alert.setTitle("Campo vacío");
+						alert.setHeaderText(null);
+						alert.setContentText("Debes ingresar un monto");
+						alert.showAndWait();
+						return;
+					}
+					BigDecimal monto = new BigDecimal(montoStr);
+					BigDecimal nuevo = service.recargar(id, monto);
+					recargado[0] = true;
+					if (lblFeedback != null) {
+						lblFeedback.setStyle("-fx-text-fill: #4CAF50;");
+						lblFeedback.setText("✓ Recargado. Nuevo saldo: " + service.format(nuevo));
+					}
+					popup.close();
+				} catch (NumberFormatException nfe) {
+					javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+					alert.setTitle("Monto inválido");
+					alert.setHeaderText(null);
+					alert.setContentText("Ingresa un número válido");
+					alert.showAndWait();
+				} catch (Exception ex) {
+					javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+					alert.setTitle("Error");
+					alert.setHeaderText(null);
+					alert.setContentText("Error al recargar: " + ex.getMessage());
+					alert.showAndWait();
+				}
+			});
+			
+			btnCancelar.setOnAction(e -> popup.close());
+			
+			botones.getChildren().addAll(btnAceptar, btnCancelar);
+			content.getChildren().addAll(titulo, instruccion, txtMonto, botones);
+			
+			javafx.scene.Scene scene = new javafx.scene.Scene(content, 400, 250);
+			popup.setScene(scene);
+			popup.setResizable(false);
+			popup.showAndWait();
+			
 		} catch (Exception ex) {
 			if (lblFeedback != null) { lblFeedback.setStyle("-fx-text-fill: #e53935;"); lblFeedback.setText("Error: " + ex.getMessage()); }
 		}
@@ -159,11 +220,43 @@ public class SigmaCardController {
 			String id = getIdInput();
 			if (id.isBlank()) { if (lblFeedback != null) lblFeedback.setText("Ingresa identificación para ver monto"); return; }
 			BigDecimal saldo = service.consultarSaldo(id);
-			String text = "Saldo: " + service.format(saldo);
-			Alert a = new Alert(Alert.AlertType.INFORMATION, text);
-			a.setHeaderText(null);
-			a.setTitle("Saldo SigmaCard");
-			a.showAndWait();
+			
+			// Crear popup personalizado con los colores de la app
+			javafx.stage.Stage popup = new javafx.stage.Stage();
+			popup.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+			popup.setTitle("💳 Saldo SigmaCard");
+			
+			javafx.scene.layout.VBox content = new javafx.scene.layout.VBox(25);
+			content.setAlignment(javafx.geometry.Pos.CENTER);
+			content.setStyle("-fx-padding: 40; -fx-background-color: #1a1a1a;");
+			
+			javafx.scene.control.Label titulo = new javafx.scene.control.Label("💰 Tu Saldo Actual");
+			titulo.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 20; -fx-font-weight: bold;");
+			
+			// Contenedor con estilo para el saldo
+			javafx.scene.layout.VBox saldoBox = new javafx.scene.layout.VBox(10);
+			saldoBox.setAlignment(javafx.geometry.Pos.CENTER);
+			saldoBox.setStyle("-fx-background-color: #8B2E21; -fx-padding: 30; -fx-background-radius: 10;");
+			
+			javafx.scene.control.Label lblSaldo = new javafx.scene.control.Label(service.format(saldo));
+			lblSaldo.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 36; -fx-font-weight: bold;");
+			
+			javafx.scene.control.Label lblSubtitulo = new javafx.scene.control.Label("Saldo disponible");
+			lblSubtitulo.setStyle("-fx-text-fill: #cccccc; -fx-font-size: 14;");
+			
+			saldoBox.getChildren().addAll(lblSaldo, lblSubtitulo);
+			
+			javafx.scene.control.Button btnCerrar = new javafx.scene.control.Button("Cerrar");
+			btnCerrar.setStyle("-fx-background-color: #555555; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 10 30; -fx-background-radius: 5;");
+			btnCerrar.setOnAction(e -> popup.close());
+			
+			content.getChildren().addAll(titulo, saldoBox, btnCerrar);
+			
+			javafx.scene.Scene scene = new javafx.scene.Scene(content, 400, 350);
+			popup.setScene(scene);
+			popup.setResizable(false);
+			popup.showAndWait();
+			
 		} catch (Exception ex) {
 			if (lblFeedback != null) { lblFeedback.setStyle("-fx-text-fill: #e53935;"); lblFeedback.setText("Error: " + ex.getMessage()); }
 		}
