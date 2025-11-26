@@ -2,6 +2,7 @@ package sigmacine.ui.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -75,7 +76,8 @@ public class AsientosController implements Initializable {
             for (int c = 1; c <= columnas; c += 4) ocupados.add("F" + c);
         }
         if (accesibles.isEmpty()) {
-            accesibles.addAll(Arrays.asList("A5","A6","A7","A8"));
+            // Cambiado a A2..A5 por defecto
+            accesibles.addAll(Arrays.asList("A2","A3","A4","A5"));
         }
         if (lblTitulo != null)   lblTitulo.setText(titulo);
         if (lblHoraPill != null) lblHoraPill.setText(hora);
@@ -224,8 +226,32 @@ public class AsientosController implements Initializable {
         seatByCode.clear();
         seleccion.clear();
 
+        // Centrar la grilla
+        gridSala.setAlignment(Pos.CENTER);
+
+        // Calculamos el máximo de columnas visual (10 para E-H)
+        int maxCols = 10;
+
+        // Numeración superior (fila 0 en GridPane). Dejamos la columna 0 para letras.
+        for (int i = 0; i < maxCols; i++) {
+            Label lblNum = new Label(String.valueOf(i + 1));
+            lblNum.getStyleClass().add("seat-number");
+            gridSala.add(lblNum, i + 1, 0);
+        }
+
+        // Recorremos filas 0..filas-1 (A..H), pero colocamos en GridPane en la fila +1
         for (int f = 0; f < filas; f++) {
-            for (int c = 0; c < columnas; c++) {
+
+            int colsThisRow = getColumnCountForRowIdx(f);
+            // letra
+            char filaChar = (char) ('A' + f);
+
+            // Label con la letra en la columna 0, fila f+1
+            Label lblLetra = new Label(String.valueOf(filaChar));
+            lblLetra.getStyleClass().add("seat-letter");
+            gridSala.add(lblLetra, 0, f + 1);
+
+            for (int c = 0; c < colsThisRow; c++) {
                 String code = code(f, c);
 
                 ToggleButton seat = new ToggleButton();
@@ -254,9 +280,23 @@ public class AsientosController implements Initializable {
                 }
 
                 seatByCode.put(code, seat);
-                gridSala.add(seat, c, f);
+                // añadimos +1 en columna para dejar la columna 0 a las letras
+                gridSala.add(seat, getStartColumnForRow(f) + c, f + 1);
             }
         }
+    }
+
+    private int getColumnCountForRowIdx(int filaIdxZeroBased) {
+        // filaIdxZeroBased: 0 -> A, 1 -> B, ...
+        if (filaIdxZeroBased == 0) return 6;      // A
+        if (filaIdxZeroBased >= 1 && filaIdxZeroBased <= 3) return 8; // B,C,D
+        return 10; // E..H
+    }
+
+        private int getStartColumnForRow(int filaIdxZeroBased) {
+        int maxCols = 10;
+        int cols = getColumnCountForRowIdx(filaIdxZeroBased);
+        return 1 + (maxCols - cols) / 2;
     }
 
     private enum SeatState { AVAILABLE, SELECTED, UNAVAILABLE }
@@ -419,7 +459,7 @@ public class AsientosController implements Initializable {
         if (accesibles != null && !accesibles.isEmpty()) {
             this.accesibles.addAll(shiftAccesiblesToFirstRowPlus2(accesibles));
         } else {
-            this.accesibles.addAll(Arrays.asList("A5","A6","A7","A8"));
+            this.accesibles.addAll(Arrays.asList("A2","A3","A4","A5"));
         }
 
         if (lblTitulo != null)   lblTitulo.setText(this.titulo);
