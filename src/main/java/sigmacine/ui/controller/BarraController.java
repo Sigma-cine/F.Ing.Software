@@ -5,6 +5,7 @@ import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -12,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import javafx.geometry.Bounds;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.aplicacion.service.CarritoService;
@@ -101,7 +103,7 @@ public class BarraController {
         if (miHistorial != null) {
             miHistorial.setOnAction(e -> navegarAHistorial());
         }
-        
+
         if (miMiCuenta != null) {
             miMiCuenta.setOnAction(e -> navegarAMiCuenta());
         }
@@ -109,60 +111,40 @@ public class BarraController {
         configurarMenuUsuario();
     }
 
-        private void configurarMenuUsuario() {
-            if (miHistorial != null) {
-                miHistorial.setOnAction(e -> {
-                    ControladorControlador coordinador = ControladorControlador.getInstance();
-                    if (coordinador != null) coordinador.mostrarHistorialCompras();
-                });
-            }
+   private void configurarMenuUsuario() {
+    // Limpiamos items actuales
+    menuUsuario.getItems().clear();
 
-            if (miCerrarSesion != null) {
-                miCerrarSesion.setOnAction(e -> cerrarSesion());
-            }
-
-            if (miMisBoletas != null) {
-                miMisBoletas.setOnAction(e -> {
-                    ControladorControlador coordinador = ControladorControlador.getInstance();
-                    if (coordinador != null) coordinador.mostrarMisBoletas();
-                });
-            }
-
-            // Si tienes otros MenuItems que también vienen del FXML
-            for (MenuItem item : menuUsuario.getItems()) {
-                if (item instanceof SeparatorMenuItem) continue;
-
-                // Por ejemplo, el MenuItem "Mi Cuenta"
-                if ("Mi Cuenta".equals(item.getText())) {
-                    item.setOnAction(e -> {
-                        ControladorControlador coordinador = ControladorControlador.getInstance();
-                        if (coordinador != null) coordinador.mostrarMiCuenta();
-                    });
-                }
-
-                if ("SigmaCard".equals(item.getText())) {
-                    item.setOnAction(e -> {
-                        ControladorControlador coordinador = ControladorControlador.getInstance();
-                        if (coordinador != null) coordinador.mostrarSigmaCard();
-                    });
-                }
-
-                if ("Confitería".equals(item.getText())) {
-                    item.setOnAction(e -> {
-                        ControladorControlador coordinador = ControladorControlador.getInstance();
-                        if (coordinador != null) coordinador.mostrarConfiteria();
-                    });
-                }
-
-                if ("Cartelera".equals(item.getText())) {
-                    item.setOnAction(e -> {
-                        ControladorControlador coordinador = ControladorControlador.getInstance();
-                        if (coordinador != null) coordinador.mostrarCartelera();
-                    });
-                }
-            }
+    // Crear "Mi Cuenta"
+    MenuItem miCuenta = new MenuItem("Mi Cuenta");
+    miCuenta.setOnAction(e -> {
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) {
+            coordinador.mostrarMiCuenta(); // Carga infoPersonal.fxml en el contenedor central
         }
+    });
 
+    // Crear "Mis Boletas"
+    MenuItem misBoletas = new MenuItem("Mis Boletas");
+    misBoletas.setOnAction(e -> {
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) coordinador.mostrarMisBoletas();
+    });
+
+    // Crear "Historial"
+    MenuItem historial = new MenuItem("Historial");
+    historial.setOnAction(e -> {
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) coordinador.mostrarHistorialCompras();
+    });
+
+    // Crear "Cerrar Sesión"
+    MenuItem cerrarSesion = new MenuItem("Cerrar Sesión");
+    cerrarSesion.setOnAction(e -> cerrarSesion());
+
+    // Agregar todos los items al MenuButton
+    menuUsuario.getItems().addAll(miCuenta, misBoletas, historial, new SeparatorMenuItem(), cerrarSesion);
+}
 
     public void marcarBotonActivo(String botonId) {
         resetearEstilosBotones();
