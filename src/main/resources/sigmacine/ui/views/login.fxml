@@ -8,13 +8,17 @@
    <center>
       <StackPane BorderPane.alignment="CENTER">
          <children>
-             <VBox StackPane.alignment="CENTER" alignment="CENTER" spacing="0.0" style="-fx-padding: 0; -fx-max-width: 420px;" styleClass="auth-card centered">
+            <!-- Centered auth card: use layout panes instead of absolute positions so it keeps centered on large screens -->
+            <VBox StackPane.alignment="CENTER" alignment="CENTER" spacing="0.0" style="-fx-padding: 0; -fx-max-width: 420px;" styleClass="auth-card centered">
                <children>
+                  <!-- Header inside the card so it doesn't stretch full width of the window -->
                   <HBox alignment="CENTER" prefHeight="52.0" style="-fx-background-color: #8B2E21; -fx-background-radius: 15 15 0 0; -fx-padding: 8 12;">
                      <children>
                         <Label text="Iniciar Sesión" style="-fx-text-fill: #ffffff; -fx-font-weight: bold;" />
                      </children>
                   </HBox>
+
+                  <!-- Content area: use a VBox with padding to layout fields cleanly -->
                   <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 16; -fx-background-radius: 0 0 15 15; -fx-background-color: -fx-background;">
                      <children>
                         <VBox alignment="CENTER_LEFT" spacing="6.0" style="-fx-pref-width: 100%;">

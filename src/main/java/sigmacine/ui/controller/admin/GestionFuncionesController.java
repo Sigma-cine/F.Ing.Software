@@ -26,11 +26,11 @@ public class GestionFuncionesController {
     private final PeliculaRepositoryJdbc peliculaRepo;
 
     // --- Top / búsqueda ---
-    @FXML private ComboBox<IdNombre> cbFiltroSala;
     @FXML private TextField tfBuscar;
 
     // --- Tabla ---
     @FXML private TableView<FuncionDisponibleDTO> tblFunciones;
+    @FXML private TableColumn<FuncionDisponibleDTO, String> colId;
     @FXML private TableColumn<FuncionDisponibleDTO, String> colPelicula;
     @FXML private TableColumn<FuncionDisponibleDTO, String> colSala;
     @FXML private TableColumn<FuncionDisponibleDTO, String> colFecha;
@@ -39,9 +39,7 @@ public class GestionFuncionesController {
     @FXML private TableColumn<FuncionDisponibleDTO, String> colEstado;
     @FXML private TableColumn<FuncionDisponibleDTO, String> colEstadoBool;
 
-    // lista completa y lista filtrada (tabla usa la filtrada)
     private final ObservableList<FuncionDisponibleDTO> modelo = FXCollections.observableArrayList();
-    private final ObservableList<FuncionDisponibleDTO> modeloFiltrado = FXCollections.observableArrayList();
 
     // --- Formulario ---
     @FXML private ComboBox<Pelicula> cbPelicula;
@@ -51,9 +49,9 @@ public class GestionFuncionesController {
     @FXML private TextField tfDuracion;
     @FXML private ComboBox<String> cbEstado;
     @FXML private CheckBox chkEstadoBool;
-    @FXML private TextField tfIdEdicion; // oculto en la vista
+    @FXML private TextField tfIdEdicion;
 
-    // --- Barra de estado ---
+    // --- Barra de estado (sin popups) ---
     @FXML private Label lblStatus;
 
     // --- Cachés para renderizado sin cambiar DTO ---
@@ -68,8 +66,7 @@ public class GestionFuncionesController {
         @Override public String toString() { return nombre; }
     }
 
-    public GestionFuncionesController(GestionFuncionesService service,
-                                      PeliculaRepositoryJdbc peliculaRepo) {
+    public GestionFuncionesController(GestionFuncionesService service, PeliculaRepositoryJdbc peliculaRepo) {
         if (service == null) throw new IllegalArgumentException("GestionFuncionesService nulo");
         if (peliculaRepo == null) throw new IllegalArgumentException("PeliculaRepositoryJdbc nulo");
         this.service = service;
@@ -79,7 +76,9 @@ public class GestionFuncionesController {
     @FXML
     public void initialize() {
         // ------ Tabla ------
-        tblFunciones.setItems(modeloFiltrado);
+        tblFunciones.setItems(modelo);
+
+        colId.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(c.getValue().getFuncionId())));
 
         colPelicula.setCellValueFactory(c -> {
             long pid = c.getValue().getPeliculaId();
@@ -87,8 +86,12 @@ public class GestionFuncionesController {
             return new SimpleStringProperty(titulo);
         });
 
-        colSala.setCellValueFactory(c ->
-                new SimpleStringProperty(formatSalaTexto(c.getValue())));
+        colSala.setCellValueFactory(c -> {
+            FuncionDisponibleDTO dto = c.getValue();
+            String sala = (dto.getNumeroSala() > 0 ? "Sala " + dto.getNumeroSala() : "");
+            String sede = (dto.getSede() != null && !dto.getSede().isBlank()) ? " (" + dto.getSede() + ")" : "";
+            return new SimpleStringProperty(sala + sede);
+        });
 
         colFecha.setCellValueFactory(c -> {
             LocalDate f = c.getValue().getFecha();
@@ -132,11 +135,12 @@ public class GestionFuncionesController {
             }
         });
 
-        // ------ Películas ------
+        // ------ Form ------
         ObservableList<Pelicula> peliculas =
                 FXCollections.observableArrayList(peliculaRepo.buscarTodas());
         cbPelicula.setItems(peliculas);
 
+        // FIX de genéricos: construir Map<Long,String> explícito y luego putAll
         Map<Long, String> cacheTitulos =
                 peliculas.stream().collect(Collectors.toMap(
                         p -> Long.valueOf(p.getId()),
@@ -172,7 +176,7 @@ public class GestionFuncionesController {
         cbEstado.setItems(FXCollections.observableArrayList("Activa", "Inactiva"));
         cbEstado.getSelectionModel().select("Activa");
 
-        ObservableList<IdNombre> salasEdicion = FXCollections.observableArrayList(
+        cbSala.setItems(FXCollections.observableArrayList(
                 new IdNombre(1,  "Sala 1 (Salitre Plaza)"),
                 new IdNombre(2,  "Sala 2 (Salitre Plaza 3D)"),
                 new IdNombre(3,  "Sala 3 (Salitre VIP)"),
@@ -183,17 +187,8 @@ public class GestionFuncionesController {
                 new IdNombre(8,  "Sala 1 (Viva Envigado)"),
                 new IdNombre(9,  "Sala 2 (Viva Envigado 3D)"),
                 new IdNombre(10, "Sala 1 (El Tesoro)")
-        );
-        cbSala.setItems(salasEdicion);
+        ));
 
-        ObservableList<IdNombre> salasFiltro = FXCollections.observableArrayList();
-        salasFiltro.add(new IdNombre(0, "Todas las salas"));
-        salasFiltro.addAll(salasEdicion);
-        cbFiltroSala.setItems(salasFiltro);
-        cbFiltroSala.getSelectionModel().selectFirst();
-        cbFiltroSala.valueProperty().addListener((obs, oldV, newV) -> aplicarFiltroSala());
-
-      
         dpFecha.setValue(LocalDate.now());
         tfHora.setText("13:00");
         tfDuracion.setText("02:00");
@@ -208,8 +203,7 @@ public class GestionFuncionesController {
     public void onBuscar() {
         String q = safe(tfBuscar.getText());
         try {
-            List<FuncionDisponibleDTO> res =
-                    q.isEmpty() ? service.listarTodas() : service.buscar(q);
+            List<FuncionDisponibleDTO> res = q.isEmpty() ? service.listarTodas() : service.buscar(q);
             cargarModeloYDetalles(res);
             setStatusInfo(res.isEmpty() ? "Sin resultados." : ("Resultados: " + res.size()));
         } catch (Exception e) {
@@ -259,7 +253,7 @@ public class GestionFuncionesController {
         try {
             long id = parseLongOrZero(safe(tfIdEdicion.getText()));
             if (id <= 0) {
-                setStatusInfo("Selecciona una fila para actualizar.");
+                setStatusInfo("Selecciona una fila o ingresa un ID para actualizar.");
                 return;
             }
             FuncionFormDTO dto = buildFormDTO(id);
@@ -274,17 +268,13 @@ public class GestionFuncionesController {
     @FXML
     public void onEliminar() {
         FuncionDisponibleDTO sel = tblFunciones.getSelectionModel().getSelectedItem();
-        if (sel == null) {
-            setStatusInfo("Selecciona una fila para eliminar.");
-            return;
-        }
+        if (sel == null) { setStatusInfo("Selecciona una fila para eliminar."); return; }
         long id = sel.getFuncionId();
         try {
             boolean ok = service.eliminar(id);
             if (ok) {
                 modelo.remove(sel);
                 detallesFuncion.remove(id);
-                aplicarFiltroSala();
                 onNuevo();
                 setStatusSuccess("Función eliminada (ID " + id + ").");
             } else {
@@ -296,8 +286,6 @@ public class GestionFuncionesController {
     }
 
     // -------- Helpers --------
-
-    /** Carga la lista completa y refresca el filtro de sala. */
     private void cargarModeloYDetalles(List<FuncionDisponibleDTO> res) {
         modelo.setAll(res);
         detallesFuncion.clear();
@@ -307,26 +295,7 @@ public class GestionFuncionesController {
                 if (f != null) detallesFuncion.put(dto.getFuncionId(), f);
             } catch (Exception ignored) {}
         }
-        aplicarFiltroSala();
         tblFunciones.refresh();
-    }
-
-    /** Aplica el filtro de sala SOLO sobre la tabla. */
-    private void aplicarFiltroSala() {
-        if (cbFiltroSala == null) {
-            modeloFiltrado.setAll(modelo);
-            return;
-        }
-        IdNombre filtro = cbFiltroSala.getValue();
-        if (filtro == null || filtro.id == 0) {
-            modeloFiltrado.setAll(modelo);
-            return;
-        }
-        String etiqueta = filtro.nombre;
-        List<FuncionDisponibleDTO> filtrados = modelo.stream()
-                .filter(dto -> etiqueta.equals(formatSalaTexto(dto)))
-                .collect(Collectors.toList());
-        modeloFiltrado.setAll(filtrados);
     }
 
     private FuncionFormDTO buildFormDTO(long id) {
@@ -356,23 +325,13 @@ public class GestionFuncionesController {
 
     private void seleccionarSalaDesdeDTO(FuncionDisponibleDTO sel) {
         if (sel.getNumeroSala() <= 0 && (sel.getSede() == null || sel.getSede().isBlank())) return;
-        String textoDTO = formatSalaTexto(sel);
         for (IdNombre opt : cbSala.getItems()) {
-            if (Objects.equals(opt.nombre, textoDTO)) {
+            if (opt.nombre.contains("Sala " + sel.getNumeroSala())
+                    && (sel.getSede() == null || opt.nombre.contains(sel.getSede()))) {
                 cbSala.setValue(opt);
                 break;
             }
         }
-    }
-
-    /** Construye el texto de la sala como se ve en la tabla/filtro. */
-    private String formatSalaTexto(FuncionDisponibleDTO dto) {
-        if (dto == null) return "";
-        String sala = (dto.getNumeroSala() > 0 ? "Sala " + dto.getNumeroSala() : "");
-        String sede = (dto.getSede() != null && !dto.getSede().isBlank())
-                ? " (" + dto.getSede() + ")"
-                : "";
-        return sala + sede;
     }
 
     private static String toHHmm(LocalTime t) {
@@ -394,11 +353,7 @@ public class GestionFuncionesController {
     }
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
-
-    private long parseLongOrZero(String s) {
-        try { return Long.parseLong(s); }
-        catch (Exception e) { return 0L; }
-    }
+    private long parseLongOrZero(String s) { try { return Long.parseLong(s); } catch (Exception e) { return 0L; } }
 
     // ----- barra de estado -----
     private void setStatus(String msg, String style) {

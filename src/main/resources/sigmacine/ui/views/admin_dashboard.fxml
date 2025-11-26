@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane fx:id="rootPane"
             xmlns="http://javafx.com/javafx"
@@ -32,16 +33,17 @@
                     style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;"/>
 
             <Button text="Gestionar productos"
-                    onAction="#abrirGestionProductos"
-                    style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;"/>
-
+                onAction="#abrirGestionProductos"
+                style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;" />
             <Button text="Reportes"
-                    style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;"/>
+                style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;" />
+            <Separator/>
 
             <Button text="Gestionar película"
                     onAction="#abrirAgregarPelicula"
                     style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;"/>
 
+            <Separator/>
             <Button text="Volver a inicio"
                     onAction="#mostrarInicio"
                     style="-fx-background-color:transparent; -fx-text-fill:white; -fx-border-color:#333; -fx-background-radius:10; -fx-border-radius:10;"/>
@@ -54,15 +56,7 @@
     </left>
 
     <center>
-        <StackPane style="-fx-background-color: #000000ff;">
-            <StackPane fx:id="contentArea"/>
-
-            <StackPane fx:id="loadingOverlay"
-                       visible="false" managed="false"
-                       style="-fx-background-color: rgba(0,0,0,0.55);">
-                <ProgressIndicator fx:id="loadingSpinner" prefWidth="80" prefHeight="80"/>
-            </StackPane>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #000000ff; ">
         </StackPane>
     </center>
-
 </BorderPane>
