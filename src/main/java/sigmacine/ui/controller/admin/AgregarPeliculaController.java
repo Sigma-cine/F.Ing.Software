@@ -28,13 +28,14 @@ public class AgregarPeliculaController {
 
     // ====== Formulario ======
     @FXML private TextField campoTituloPelicula;
-    @FXML private TextField campoGeneroPelicula;
+    // Género ahora es ComboBox editable (autocomplete básico)
+    @FXML private ComboBox<String> comboGeneroPelicula;
     @FXML private TextField campoClasificacionPelicula;
     @FXML private TextField campoDuracionMinutos;
     @FXML private TextField campoDirectorPelicula;
     @FXML private TextField campoRepartoPelicula;
 
-    // NUEVO: seguirá existiendo y se manda a la BD
+    // Ruta (string) del trailer (archivo mp4/mp3...), no URL
     @FXML private TextField campoUrlTrailer;
 
     // Ruta (string) del póster, **sin previsualización**
@@ -60,16 +61,20 @@ public class AgregarPeliculaController {
         // columnas
         if (columnaId != null) {
             columnaId.setCellValueFactory(c -> new javafx.beans.property.SimpleIntegerProperty(
-                c.getValue().getIdPelicula()==null?0:c.getValue().getIdPelicula()).asObject());
+                    c.getValue().getIdPelicula()==null?0:c.getValue().getIdPelicula()).asObject());
         }
-        if (columnaTitulo != null)        columnaTitulo.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getTituloPelicula())));
-        if (columnaGenero != null)        columnaGenero.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getGeneroPelicula())));
-        if (columnaClasificacion != null) columnaClasificacion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getClasificacionPelicula())));
+        if (columnaTitulo != null)
+            columnaTitulo.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getTituloPelicula())));
+        if (columnaGenero != null)
+            columnaGenero.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getGeneroPelicula())));
+        if (columnaClasificacion != null)
+            columnaClasificacion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getClasificacionPelicula())));
         if (columnaDuracion != null) {
             columnaDuracion.setCellValueFactory(c -> new javafx.beans.property.SimpleIntegerProperty(
-                c.getValue().getDuracionMinutos()==null?0:c.getValue().getDuracionMinutos()).asObject());
+                    c.getValue().getDuracionMinutos()==null?0:c.getValue().getDuracionMinutos()).asObject());
         }
-        if (columnaEstado != null) columnaEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getEstadoPelicula())));
+        if (columnaEstado != null)
+            columnaEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(nvl(c.getValue().getEstadoPelicula())));
 
         if (tablaPeliculas != null) {
             tablaPeliculas.getSelectionModel().selectedItemProperty().addListener((obs, a, b) -> cargarEnFormulario(b));
@@ -79,6 +84,10 @@ public class AgregarPeliculaController {
             comboEstado.setValue("ACTIVA");
         }
         if (lblImgStatus != null) lblImgStatus.setText("Sin imagen");
+
+        if (comboGeneroPelicula != null) {
+            comboGeneroPelicula.setEditable(true); // permite escribir nuevos géneros
+        }
     }
 
     private void inicializarDatos() {
@@ -94,7 +103,7 @@ public class AgregarPeliculaController {
             FileChooser fc = new FileChooser();
             fc.setTitle("Seleccionar imagen de póster");
             fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.webp")
+                    new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.webp")
             );
             File file = fc.showOpenDialog(null);
             if (file == null) return;
@@ -112,7 +121,7 @@ public class AgregarPeliculaController {
                 in.transferTo(out);
             }
 
-            // guardamos una ruta RELATIVA con slash normal (sirve en classpath y evita problemas)
+            // guardamos una ruta RELATIVA
             String relative = "src\\main\\resources\\Images\\" + newName;
             if (campoUrlPoster != null) campoUrlPoster.setText(relative);
 
@@ -123,7 +132,41 @@ public class AgregarPeliculaController {
         }
     }
 
+    // ========= Trailer (archivo video/audio) =========
+    @FXML
+    private void onElegirTrailer() {
+        try {
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Seleccionar archivo de trailer");
+            fc.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Video / Audio",
+                            "*.mp4", "*.mkv", "*.avi", "*.mov", "*.mp3")
+            );
+            File file = fc.showOpenDialog(null);
+            if (file == null) return;
 
+            Path projectRoot = Path.of("").toAbsolutePath();
+            Path videosDir   = projectRoot.resolve("src/main/resources/videos");
+            if (!Files.exists(videosDir)) Files.createDirectories(videosDir);
+
+            String ext = extension(file.getName());
+            String newName = UUID.randomUUID().toString().replace("-", "") + (ext.isEmpty()?".mp4":ext);
+            Path target = videosDir.resolve(newName);
+
+            try (FileInputStream in = new FileInputStream(file);
+                 FileOutputStream out = new FileOutputStream(target.toFile())) {
+                in.transferTo(out);
+            }
+
+            // ruta relativa al proyecto
+            String relative = "src\\main\\resources\\videos\\" + newName;
+            if (campoUrlTrailer != null) campoUrlTrailer.setText(relative);
+
+            mostrarMensaje("OK", "Trailer copiado.");
+        } catch (Exception ex) {
+            mostrarMensaje("ERROR", "No se pudo cargar el trailer: " + ex.getMessage());
+        }
+    }
 
     private static String extension(String name) {
         int p = name.lastIndexOf('.');
@@ -144,6 +187,7 @@ public class AgregarPeliculaController {
             lista = mergePorId(a, b);
         }
         if (tablaPeliculas != null) tablaPeliculas.setItems(FXCollections.observableArrayList(lista));
+        actualizarListaGeneros(lista); // actualiza los géneros del combo
     }
 
     @FXML
@@ -151,6 +195,7 @@ public class AgregarPeliculaController {
         if (gestionPeliculasService == null) return;
         List<PeliculaDTO> lista = gestionPeliculasService.obtenerTodasLasPeliculas();
         if (tablaPeliculas != null) tablaPeliculas.setItems(FXCollections.observableArrayList(lista));
+        actualizarListaGeneros(lista); // actualiza géneros al listar
     }
 
     // ===================== Acciones de formulario =====================
@@ -228,14 +273,14 @@ public class AgregarPeliculaController {
     private PeliculaDTO recogerFormulario() {
         PeliculaDTO dto = new PeliculaDTO();
         dto.setTituloPelicula(texto(campoTituloPelicula));
-        dto.setGeneroPelicula(texto(campoGeneroPelicula));
+        dto.setGeneroPelicula(textoCombo(comboGeneroPelicula));
         dto.setClasificacionPelicula(texto(campoClasificacionPelicula));
         dto.setDuracionMinutos(parseEntero(campoDuracionMinutos));
         dto.setDirectorPelicula(texto(campoDirectorPelicula));
         dto.setRepartoPelicula(texto(campoRepartoPelicula));
 
         // se persiste en BD
-        dto.setUrlTrailer(texto(campoUrlTrailer));
+        dto.setUrlTrailer(texto(campoUrlTrailer));   // ahora ruta de archivo
 
         // ruta relativa del póster
         dto.setUrlPoster(texto(campoUrlPoster));
@@ -247,12 +292,12 @@ public class AgregarPeliculaController {
     private void cargarEnFormulario(PeliculaDTO d) {
         if (d == null) { limpiarFormulario(); return; }
         setText(campoTituloPelicula, d.getTituloPelicula());
-        setText(campoGeneroPelicula, d.getGeneroPelicula());
+        setComboGenero(d.getGeneroPelicula());
         setText(campoClasificacionPelicula, d.getClasificacionPelicula());
         setText(campoDuracionMinutos, d.getDuracionMinutos()==null? "" : String.valueOf(d.getDuracionMinutos()));
         setText(campoDirectorPelicula, d.getDirectorPelicula());
         setText(campoRepartoPelicula, d.getRepartoPelicula());
-        setText(campoUrlTrailer, d.getUrlTrailer());      // <<<<<< nuevo en UI
+        setText(campoUrlTrailer, d.getUrlTrailer());
         setText(campoUrlPoster, d.getUrlPoster());
         setTextArea(campoSinopsisPelicula, d.getSinopsisPelicula());
         if (comboEstado != null) comboEstado.setValue(nvl(d.getEstadoPelicula(), "ACTIVA"));
@@ -261,12 +306,12 @@ public class AgregarPeliculaController {
 
     private void limpiarFormulario() {
         setText(campoTituloPelicula, "");
-        setText(campoGeneroPelicula, "");
+        setComboGenero("");
         setText(campoClasificacionPelicula, "");
         setText(campoDuracionMinutos, "");
         setText(campoDirectorPelicula, "");
         setText(campoRepartoPelicula, "");
-        setText(campoUrlTrailer, "");     // <<<<<< nuevo
+        setText(campoUrlTrailer, "");
         setText(campoUrlPoster, "");
         setTextArea(campoSinopsisPelicula, "");
         if (comboEstado != null) comboEstado.setValue("ACTIVA");
@@ -284,6 +329,21 @@ public class AgregarPeliculaController {
         return new ArrayList<>(mapa.values());
     }
 
+    // llena el combo de géneros con los existentes en la lista
+    private void actualizarListaGeneros(List<PeliculaDTO> peliculas) {
+        if (comboGeneroPelicula == null || peliculas == null) return;
+        Set<String> generos = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        for (PeliculaDTO p : peliculas) {
+            if (p == null) continue;
+            String g = p.getGeneroPelicula();
+            if (g != null) {
+                g = g.trim();
+                if (!g.isEmpty()) generos.add(g);
+            }
+        }
+        comboGeneroPelicula.setItems(FXCollections.observableArrayList(generos));
+    }
+
     // util ui
     private String texto(TextField t) { return t==null||t.getText()==null?null:t.getText().trim(); }
     private String textoArea(TextArea t) { return t==null||t.getText()==null?null:t.getText().trim(); }
@@ -292,10 +352,27 @@ public class AgregarPeliculaController {
         String s = t.getText().trim(); if (s.isEmpty()) return null;
         try { return Integer.parseInt(s); } catch(Exception e){ return null; }
     }
+    private String textoCombo(ComboBox<String> c) {
+        if (c == null) return null;
+        // si es editable, el texto puede estar en el editor
+        if (c.getEditor() != null && c.getEditor().getText() != null && !c.getEditor().getText().isBlank()) {
+            return c.getEditor().getText().trim();
+        }
+        String v = c.getValue();
+        return v==null?null:v.trim();
+    }
     private String nvl(String s){ return s==null? "": s; }
     private String nvl(String s,String def){ return (s==null||s.trim().isEmpty())?def:s; }
     private void setText(TextField t, String v){ if(t!=null) t.setText(v==null? "": v); }
     private void setTextArea(TextArea t, String v){ if(t!=null) t.setText(v==null? "": v); }
+    private void setComboGenero(String valor) {
+        if (comboGeneroPelicula == null) return;
+        if (valor == null) valor = "";
+        comboGeneroPelicula.setValue(valor);
+        if (comboGeneroPelicula.getEditor() != null) {
+            comboGeneroPelicula.getEditor().setText(valor);
+        }
+    }
 
     private void mostrarMensaje(String tipo, String texto) {
         if (mensajeLabel == null) return;
