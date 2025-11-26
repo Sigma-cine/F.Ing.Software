@@ -50,21 +50,13 @@
                         <VBox fx:id="sigmaCardContainer" style="-fx-spacing: 10; -fx-padding: 20; -fx-background-color: #8B2E21; -fx-background-radius: 8;">
                             <children>
                                 <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="SigmaCard - Información" />
-                                <HBox spacing="20">
+                                <VBox spacing="5">
                                     <children>
-                                        <VBox spacing="5">
-                                            <children>
-                                                <Label fx:id="lblSaldoAnterior" style="-fx-font-size: 13; -fx-text-fill: #ffffff;" text="Saldo anterior: $50.00" />
-                                                <Label style="-fx-font-size: 13; -fx-text-fill: #ffffff;" text="Monto debitado:" />
-                                            </children>
-                                        </VBox>
-                                        <VBox spacing="5">
-                                            <children>
-                                                <Label fx:id="lblSaldoNuevo" style="-fx-font-size: 13; -fx-text-fill: #4CAF50; -fx-font-weight: bold;" text="Saldo actual: $38.00" />
-                                            </children>
-                                        </VBox>
+                                        <Label fx:id="lblSaldoAnterior" style="-fx-font-size: 13; -fx-text-fill: #ffffff;" text="Saldo anterior: 0.00" />
+                                        <Label fx:id="lblMontoDebitado" style="-fx-font-size: 13; -fx-text-fill: #ffffff;" text="Monto debitado: 0.00" />
+                                        <Label fx:id="lblSaldoNuevo" style="-fx-font-size: 13; -fx-text-fill: #4CAF50; -fx-font-weight: bold;" text="Saldo actual: 0.00" />
                                     </children>
-                                </HBox>
+                                </VBox>
                             </children>
                         </VBox>
 

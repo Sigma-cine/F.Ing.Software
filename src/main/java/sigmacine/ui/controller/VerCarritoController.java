@@ -186,7 +186,7 @@ public class VerCarritoController {
             if (coordinador != null) {
                 javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
                 java.net.URL fxmlUrl = getClass().getResource("/sigmacine/ui/views/pago.fxml");
-                System.out.println("Cargando FXML desde: " + fxmlUrl);
+            
                 loader.setLocation(fxmlUrl);
                 javafx.scene.Parent root = loader.load();
                 

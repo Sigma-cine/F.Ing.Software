@@ -30,6 +30,7 @@ public class BarraController {
     @FXML private MenuButton menuUsuario;
     @FXML private Label lblNombreUsuario;
     
+    @FXML private MenuItem miMisBoletas;
     @FXML private MenuItem miHistorial;
     @FXML private MenuItem miCerrarSesion;
 
@@ -87,7 +88,14 @@ public class BarraController {
         });
 
         miCerrarSesion.setOnAction(e -> cerrarSesion());
-        miHistorial.setOnAction(e -> navegarAHistorial());
+        
+        if (miMisBoletas != null) {
+            miMisBoletas.setOnAction(e -> navegarAMisBoletas());
+        }
+        
+        if (miHistorial != null) {
+            miHistorial.setOnAction(e -> navegarAHistorial());
+        }
         
         configurarMenuUsuario();
     }
@@ -96,7 +104,7 @@ public class BarraController {
         for (MenuItem item : menuUsuario.getItems()) {
             if (item instanceof SeparatorMenuItem) continue;
             
-            if (item != miHistorial && item != miCerrarSesion) {
+            if (item != miHistorial && item != miCerrarSesion && item != miMisBoletas) {
                 item.setOnAction(e -> manejarItemMenu(item.getText()));
             }
         }
@@ -375,6 +383,16 @@ public class BarraController {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarHistorialCompras();
+        }
+    }
+
+    private void navegarAMisBoletas() {
+        // Detener cualquier trailer que se esté reproduciendo
+        VerDetallePeliculaController.stopCurrentGlobalPlayer();
+        
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) {
+            coordinador.mostrarMisBoletas();
         }
     }
 

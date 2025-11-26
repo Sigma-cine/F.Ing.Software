@@ -44,10 +44,7 @@ public class MenuController implements Initializable {
         javafx.application.Platform.runLater(() -> {
             BarraController barraController = BarraController.getInstance();
             if (barraController != null) {
-                System.out.println("MenuController: BarraController encontrado, marcando 'confiteria'");
                 barraController.marcarBotonActivo("confiteria");
-            } else {
-                System.out.println("MenuController: BarraController NO encontrado (getInstance retornó null)");
             }
         });
     }

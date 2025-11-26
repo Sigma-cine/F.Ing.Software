@@ -124,27 +124,17 @@ public class PagoController {
         
         try {
             String imagePath = item.getImageUrl();
-            System.out.println("[DEBUG] Cargando imagen para: " + item.getNombre());
-            System.out.println("[DEBUG] ImageUrl: " + imagePath);
             
             if (imagePath != null && !imagePath.isEmpty()) {
-                // Intentar cargar la imagen
                 java.io.InputStream imgStream = getClass().getResourceAsStream(imagePath);
-                System.out.println("[DEBUG] InputStream es null? " + (imgStream == null));
                 
                 if (imgStream != null) {
                     javafx.scene.image.Image img = new javafx.scene.image.Image(imgStream, 40, 40, true, true);
                     imgView.setImage(img);
-                    System.out.println("[DEBUG] Imagen cargada exitosamente");
-                } else {
-                    System.err.println("[ERROR] No se encontró el recurso: " + imagePath);
                 }
-            } else {
-                System.out.println("[DEBUG] ImageUrl está vacío o null");
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] Excepción al cargar imagen: " + item.getImageUrl());
-            e.printStackTrace();
+            // Silently handle image loading errors
         }
 
         // Contenedor vertical para nombre y detalles

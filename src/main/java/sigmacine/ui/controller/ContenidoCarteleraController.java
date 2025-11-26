@@ -529,8 +529,6 @@ public class ContenidoCarteleraController {
             String posterResource = (pelicula != null && pelicula.getPosterUrl() != null && !pelicula.getPosterUrl().isBlank())
                     ? pelicula.getPosterUrl() : null;
             
-            System.out.println("[DEBUG ContenidoCartelera] posterResource original: " + posterResource);
-            
             // Normalizar la ruta del poster para que siempre tenga /Images/ al inicio
             if (posterResource != null) {
                 if (!posterResource.startsWith("/")) {
@@ -539,16 +537,13 @@ public class ContenidoCarteleraController {
                 if (!posterResource.startsWith("/Images/")) {
                     posterResource = "/Images/" + posterResource.substring(1);
                 }
-                System.out.println("[DEBUG ContenidoCartelera] posterResource normalizado: " + posterResource);
             }
             
             // Siempre pasar el posterUrl para el carrito, incluso si la imagen no se puede cargar aquí
             ctrl.setPosterUrl(posterResource);
-            System.out.println("[DEBUG ContenidoCartelera] setPosterUrl llamado con: " + posterResource);
             
             if (posterResource != null) {
                 var is = getClass().getResourceAsStream(posterResource);
-                System.out.println("[DEBUG ContenidoCartelera] InputStream es null? " + (is == null));
                 if (is != null) ctrl.setPoster(new Image(is));
             }
 

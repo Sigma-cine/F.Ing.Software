@@ -182,10 +182,19 @@ public class LoginController {
             try {
                 javafx.stage.Stage stage = (javafx.stage.Stage) emailField.getScene().getWindow();
                 stage.setScene(previousScene);
+                
+                // Usar Platform.runLater para asegurar que setMaximized se aplique correctamente
+                javafx.application.Platform.runLater(() -> {
+                    stage.setMaximized(true);
+                    
+                    // Actualizar la barra de navegación después de restaurar la escena
+                    BarraController barraController = BarraController.getInstance();
+                    if (barraController != null) {
+                        barraController.actualizarEstadoSesion();
+                    }
+                });
                 return;
             } catch (Exception ex) {
-                System.err.println("Error restaurando escena anterior: " + ex.getMessage());
-                ex.printStackTrace();
             }
         }
         
