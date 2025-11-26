@@ -18,7 +18,6 @@
 .separator:horizontal .line { -fx-background-color: rgba(255,255,255,0.08); -fx-pref-height: 1; }
 .separator:vertical   .line { -fx-background-color: rgba(255,255,255,0.08); -fx-pref-width: 1; }
 
-.scroll-pane, .scroll-pane > .viewport { -fx-background-color: #0D0D0D; }
 
 /* ======================= Topbar ======================= */
 .topbar { -fx-background-color: #8A2F24; -fx-padding: 8 16; -fx-spacing: 12; }
@@ -27,7 +26,7 @@
 .toplink:hover   { -fx-underline: true; -fx-background-color: rgba(255,255,255,0.08); }
 .toplink:pressed { -fx-background-color: rgba(0,0,0,0.15); }
 
-.button.icon-btn, .menu-button.icon-btn { -fx-background-image: none; -fx-graphic: null; }
+.button.icon-btn, .menu-button.icon-btn { -fx-background-image: none;}
 .icon-btn { -fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 8; }
 .icon-btn:hover   { -fx-background-color: rgba(255,255,255,0.08); }
 .icon-btn:pressed { -fx-background-color: rgba(0,0,0,0.18); }
@@ -39,6 +38,56 @@
 }
 .search:focused { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 2); }
 
+
+
+/* ======================= pagina inicial ======================= */
+
+.promo-container {
+    -fx-background-color: #742f24;
+}
+
+.promo-nav {
+    -fx-background-radius: 40;
+    -fx-text-fill: white;
+    -fx-font-size: 24;
+    -fx-background-color: rgba(0,0,0,0.35);
+}
+.movie-cta {
+    -fx-background-color: #8b3026;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 18;
+    -fx-padding: 4 16;   /* más pequeño que el de la cartelera */
+    -fx-cursor: hand;
+}
+
+.seccion-titulo {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+}
+
+.seccion-titulo-grande {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 32;
+    -fx-font-weight: bold;
+}
+.carrusel-scroll,
+.carrusel-scroll .viewport {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+.carrusel-hbox {
+    -fx-background-color: transparent;
+}
+.promo-container {
+    -fx-background-color: #742f24;
+}
+.scroll-pane.global-dark,
+.scroll-pane.global-dark > .viewport {
+    -fx-background-color: #0D0D0D;
+}
 
 /* ======================= Publicidad======================= */
 /* Botones ‹ › */
