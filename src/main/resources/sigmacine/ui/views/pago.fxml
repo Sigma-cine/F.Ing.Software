@@ -78,11 +78,13 @@
                                 <Label style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #ffffff;" text="💳 Método de Pago" />
                                 <VBox style="-fx-spacing: 12; -fx-padding: 15; -fx-background-color: #0a0a0a; -fx-background-radius: 8;">
                                     <children>
-                                        <RadioButton fx:id="rbTarjeta" selected="true" style="-fx-text-fill: #ffffff; -fx-font-size: 14; -fx-font-weight: bold;" text="💳 Tarjeta de crédito/débito" />
-                                        <RadioButton fx:id="rbPresencial" style="-fx-text-fill: #ffffff; -fx-font-size: 14; -fx-font-weight: bold;" text="💵 Pago en caja (Efectivo)" />
-                                        <RadioButton fx:id="rbSigmaCard" style="-fx-text-fill: #ffffff; -fx-font-size: 14; -fx-font-weight: bold;" text="🎫 SigmaCard" />
+                                        <RadioButton fx:id="rbTarjeta" selected="true" style="-fx-text-fill: #ffffff; -fx-font-size: 14; -fx-font-weight: bold;" text="Tarjeta de credito/debito" />
+                                        <RadioButton fx:id="rbSigmaCard" style="-fx-text-fill: #ffffff; -fx-font-size: 14; -fx-font-weight: bold;" text="SigmaCard" />
                                     </children>
                                 </VBox>
+                                
+                                <!-- Contenedor dinámico para formularios de pago -->
+                                <VBox fx:id="formularioPagoContainer" style="-fx-spacing: 10; -fx-padding: 15; -fx-background-color: #0a0a0a; -fx-background-radius: 8;" />
                             </children>
                         </VBox>
 

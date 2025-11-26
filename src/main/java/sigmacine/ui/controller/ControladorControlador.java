@@ -587,4 +587,16 @@ public void mostrarCarritoCompleto() {
             configurarBarraEnVista(root);
         });
     }
+    
+    public void mostrarConfirmacionCompra(Long compraId, String metodoPago, java.math.BigDecimal totalPagado,
+                                          java.util.List<sigmacine.aplicacion.data.CompraProductoDTO> items, 
+                                          java.math.BigDecimal saldoAnterior, java.math.BigDecimal saldoNuevo) {
+        loadViewWithSpinner("/sigmacine/ui/views/confirmacion_compra.fxml", "Sigma Cine - Confirmación de Compra", (controller, root) -> {
+            configurarBarraEnVista(root);
+            
+            ConfirmacionCompraController c = (ConfirmacionCompraController) controller;
+            c.inicializar(compraId, metodoPago, totalPagado, items, saldoAnterior, saldoNuevo);
+        });
+    }
 }
+
