@@ -1,6 +1,11 @@
 package sigmacine.ui.controller;
 
+import java.util.Map;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -8,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.geometry.Side;
 import javafx.geometry.Bounds;
 import javafx.stage.Popup;
+import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
 import sigmacine.aplicacion.service.CarritoService;
@@ -33,9 +39,11 @@ public class BarraController {
     @FXML private MenuItem miMisBoletas;
     @FXML private MenuItem miHistorial;
     @FXML private MenuItem miCerrarSesion;
+    @FXML private MenuItem miMiCuenta;
 
     private ContextMenu carritoDropdown;
     private static BarraController instance;
+    private static BarraController singleton;
     private javafx.stage.Stage carritoStage;
 
     @FXML
@@ -96,82 +104,68 @@ public class BarraController {
         if (miHistorial != null) {
             miHistorial.setOnAction(e -> navegarAHistorial());
         }
+
+        if (miMiCuenta != null) {
+            miMiCuenta.setOnAction(e -> navegarAMiCuenta());
+        }
         
         configurarMenuUsuario();
     }
 
-    private void configurarMenuUsuario() {
-        for (MenuItem item : menuUsuario.getItems()) {
-            if (item instanceof SeparatorMenuItem) continue;
-            
-            if (item != miHistorial && item != miCerrarSesion && item != miMisBoletas) {
-                item.setOnAction(e -> manejarItemMenu(item.getText()));
-            }
-        }
-    }
+   private void configurarMenuUsuario() {
+    // Limpiamos items actuales
+    menuUsuario.getItems().clear();
 
-    private void manejarItemMenu(String textoItem) {
+    // Crear "Mi Cuenta"
+    MenuItem miCuenta = new MenuItem("Mi Cuenta");
+    miCuenta.setOnAction(e -> {
         ControladorControlador coordinador = ControladorControlador.getInstance();
-        if (coordinador == null) return;
-
-        switch (textoItem) {
-            case "Mi Cuenta":
-                coordinador.mostrarMiCuenta();
-                break;
-            case "Buscar Tiquetes":
-                coordinador.mostrarCartelera();
-                marcarBotonActivo("cartelera");
-                break;
-            case "Confitería":
-                coordinador.mostrarConfiteria();
-                marcarBotonActivo("confiteria");
-                break;
-            case "Promociones":
-                mostrarMensajeProximamente("Promociones");
-                break;
-            case "Información Personal":
-                coordinador.mostrarMiCuenta();
-                break;
-            case "SigmaCard":
-                coordinador.mostrarSigmaCard();
-                marcarBotonActivo("sigmacard");
-                break;
-            case "Historial de compras":
-                coordinador.mostrarHistorialCompras();
-                break;
-            case "Notificaciones":
-                mostrarMensajeProximamente("Notificaciones");
-                break;
-            case "Cartelera":
-                coordinador.mostrarCartelera();
-                marcarBotonActivo("cartelera");
-                break;
+        if (coordinador != null) {
+            coordinador.mostrarMiCuenta(); // Carga infoPersonal.fxml en el contenedor central
         }
-    }
+    });
+
+    // Crear "Mis Boletas"
+    MenuItem misBoletas = new MenuItem("Mis Boletas");
+    misBoletas.setOnAction(e -> {
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) coordinador.mostrarMisBoletas();
+    });
+
+    // Crear "Historial"
+    MenuItem historial = new MenuItem("Historial");
+    historial.setOnAction(e -> {
+        ControladorControlador coordinador = ControladorControlador.getInstance();
+        if (coordinador != null) coordinador.mostrarHistorialCompras();
+    });
+
+    // Crear "Cerrar Sesión"
+    MenuItem cerrarSesion = new MenuItem("Cerrar Sesión");
+    cerrarSesion.setOnAction(e -> cerrarSesion());
+
+    // Agregar todos los items al MenuButton
+    menuUsuario.getItems().addAll(miCuenta, misBoletas, historial, new SeparatorMenuItem(), cerrarSesion);
+}
 
     public void marcarBotonActivo(String botonId) {
         resetearEstilosBotones();
-        
-        switch (botonId) {
-            case "cartelera":
-                aplicarEstiloActivo(btnCartelera);
-                break;
-            case "confiteria":
-                aplicarEstiloActivo(btnConfiteria);
-                break;
-            case "sigmacard":
-                aplicarEstiloActivo(btnSigmaCard);
-                break;
-            case "login":
-                aplicarEstiloActivo(btnIniciarSesion);
-                break;
-            case "registro":
-                if (!Session.isLoggedIn()) {
-                    aplicarEstiloActivo(btnRegistrarse);
-                }
-                break;
+
+        // Mapear id a botones
+        Map<String, Button> botonesMap = Map.of(
+            "cartelera", btnCartelera,
+            "confiteria", btnConfiteria,
+            "sigmacard", btnSigmaCard,
+            "login", btnIniciarSesion,
+            "registro", btnRegistrarse,
+            "micuenta", btnIniciarSesion
+        );
+
+        Button boton = botonesMap.get(botonId);
+        if (boton != null) {
+            aplicarEstiloActivo(boton);
         }
     }
+
 
     private void aplicarEstiloActivo(Button boton) {
         if (boton != null) {
@@ -597,4 +591,11 @@ public class BarraController {
         alert.setContentText("Esta funcionalidad estará disponible próximamente.");
         alert.showAndWait();
     }
+
+    public static void setInstance(BarraController instance) {
+    BarraController.singleton = instance;
+    }
+
 }
+
+
