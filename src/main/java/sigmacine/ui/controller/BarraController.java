@@ -43,6 +43,7 @@ public class BarraController {
 
     private ContextMenu carritoDropdown;
     private static BarraController instance;
+    private static BarraController singleton;
     private javafx.stage.Stage carritoStage;
 
     @FXML
@@ -557,6 +558,11 @@ public class BarraController {
         alert.setContentText("Esta funcionalidad estará disponible próximamente.");
         alert.showAndWait();
     }
+
+    public static void setInstance(BarraController instance) {
+    BarraController.singleton = instance;
+    }
+
 }
 
 

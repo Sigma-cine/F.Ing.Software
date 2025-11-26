@@ -620,20 +620,36 @@ public void mostrarCarritoCompleto() {
             c.inicializar(compraId, metodoPago, totalPagado, items, saldoAnterior, saldoNuevo);
         });
     }
-    public void mostrarMiCuenta() {
-        loadViewWithSpinner("/sigmacine/ui/views/infoUsuario.fxml", "Sigma Cine - Mi Cuenta", (controller, root) -> {
-            // 1. Configurar barra
-            configurarBarraEnVista(root, "micuenta"); // "micuenta" marca el botón activo en la barra
-            
-            // 2. Configurar el controller de Mi Cuenta
-            if (controller instanceof InfoPersonalController infoController) {
-                UsuarioDTO usuario = Session.getCurrent();
-                if (usuario != null) {
-                    infoController.setUsuario(usuario); // pasamos el DTO del usuario actual
-                }
-                infoController.initialize(); // inicializar datos si es necesario
-            }
-        });
-    }
-}
+public void mostrarMiCuenta() {
+    loadViewWithSpinner("/sigmacine/ui/views/infoUsuario.fxml", "Sigma Cine - Mi Cuenta", (controller, root) -> {
 
+        // <3 Fuerza a que la escena tenga el CSS correcto
+        if (root.getScene() != null) {
+            root.getScene().getStylesheets().removeIf(s -> s.contains("sigma.css")); // borrar si estaba viejo
+            root.getScene().getStylesheets().add(
+                getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+            );
+        } else {
+            // Si aún no tiene scene, esperar a que la cargue y ahí inyectar el CSS
+            Platform.runLater(() -> {
+                if (root.getScene() != null) {
+                    root.getScene().getStylesheets().removeIf(s -> s.contains("sigma.css"));
+                    root.getScene().getStylesheets().add(
+                        getClass().getResource("/sigmacine/ui/views/sigma.css").toExternalForm()
+                    );
+                }
+            });
+        }
+
+        // Esto déjalo así c;)
+        configurarBarraEnVista(root, "micuenta");
+
+        if (controller instanceof InfoPersonalController infoController) {
+            UsuarioDTO usuario = Session.getCurrent();
+            if (usuario != null) {
+                infoController.setUsuario(usuario);
+            }
+        }
+    });
+}
+}

@@ -12,10 +12,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
 import java.time.LocalDate;
+
 
 public class InfoPersonalController {
 
@@ -26,19 +29,28 @@ public class InfoPersonalController {
     @FXML private PasswordField txtNuevaClave;
     @FXML private ImageView avatarImage;
     @FXML private Label lblMensaje;
+    @FXML private HBox barraInclude;
+
+
 
     private UsuarioDTO usuarioActual;
     private File nuevaImagen;
 
     @FXML
     public void initialize() {
-        BarraController barraController = BarraController.getInstance();
-        if (barraController != null) {
-            barraController.marcarBotonActivo("miMiCuenta");
-        }
+        Platform.runLater(() -> {
+            if (barraInclude != null) {
+                BarraController nuevoBarraController = (BarraController) barraInclude.getUserData();
+                if (nuevoBarraController != null) {
+                    BarraController.setInstance(nuevoBarraController); // reemplaza el viejo singleton
+                    nuevoBarraController.marcarBotonActivo("miMiCuenta");
+                }
+            }
+        });
 
         Platform.runLater(this::cargarDatos);
     }
+
 
     private void cargarDatos() {
         usuarioActual = Session.getCurrent();

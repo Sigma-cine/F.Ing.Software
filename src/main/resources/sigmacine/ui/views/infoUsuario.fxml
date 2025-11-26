@@ -18,15 +18,14 @@
 <?import javafx.scene.layout.Region?>
 
 <BorderPane prefHeight="520" prefWidth="900"
-            stylesheets="@../css/barra.css"
-            style="-fx-background-color: #000000;"
+            stylesheets="@/sigmacine/ui/views/sigma.css"
+            style="-fx-background-color:#000"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sigmacine.ui.controller.InfoPersonalController">
 
-    <!-- Encabezado -->
     <top>
-        <fx:include source="barra.fxml"/>
+        <fx:include fx:id="barraInclude" source="barra.fxml"/>
     </top>
 
     <!-- Contenido -->
