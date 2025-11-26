@@ -45,7 +45,6 @@ public class InfoPersonalController {
         if (usuarioActual == null) return;
 
         txtNombres.setText(usuarioActual.getNombre() != null ? usuarioActual.getNombre() : "");
-        txtApellidos.setText(usuarioActual.getApellido() != null ? usuarioActual.getApellido() : "");
         txtTelefono.setText(usuarioActual.getTelefono() != null ? usuarioActual.getTelefono() : "");
         dpFechaNacimiento.setValue(usuarioActual.getFechaNacimiento() != null ? usuarioActual.getFechaNacimiento() : LocalDate.now());
 
@@ -76,7 +75,6 @@ public class InfoPersonalController {
 
         // Actualizar DTO en memoria
         usuarioActual.setNombre(txtNombres.getText());
-        usuarioActual.setApellido(txtApellidos.getText());
         usuarioActual.setTelefono(txtTelefono.getText());
         usuarioActual.setFechaNacimiento(dpFechaNacimiento.getValue());
         if (!txtNuevaClave.getText().isBlank()) {
@@ -98,7 +96,7 @@ public class InfoPersonalController {
             }
         }
 
-        lblMensaje.setText("Datos guardados en memoria");
+        lblMensaje.setText("Datos guardados correctamente");
         lblMensaje.setVisible(true);
     }
 

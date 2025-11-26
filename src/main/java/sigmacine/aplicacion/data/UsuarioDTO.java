@@ -8,7 +8,6 @@ public class UsuarioDTO {
     private String email;
     private String rol;
     private String nombre;
-    private String apellido;
     private String telefono;
     private LocalDate fechaNacimiento;
     private String fechaRegistro;
@@ -28,7 +27,6 @@ public class UsuarioDTO {
     public String getEmail() { return email; }
     public String getRol() { return rol; }
     public String getNombre() { return nombre; }
-    public String getApellido() { return apellido; }
     public String getTelefono() { return telefono; }
     public LocalDate getFechaNacimiento() { return fechaNacimiento; }
     public String getFechaRegistro() { return fechaRegistro; }
@@ -45,7 +43,6 @@ public class UsuarioDTO {
     public void setEmail(String email) { this.email = email; }
     public void setRol(String rol) { this.rol = rol; }
     public void setNombre(String nombre) { this.nombre = nombre; }
-    public void setApellido(String apellido) { this.apellido = apellido; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
     public void setFechaNacimiento(LocalDate fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
     public void setFechaRegistro(String fechaRegistro) { this.fechaRegistro = fechaRegistro; }
