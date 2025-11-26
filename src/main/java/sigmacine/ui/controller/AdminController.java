@@ -1,37 +1,22 @@
 package sigmacine.ui.controller;
 
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.StackPane;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.service.admi.GestionFuncionesService;
 import sigmacine.aplicacion.service.admi.GestionPeliculasService;
 import sigmacine.aplicacion.service.admi.GestionProductosService;
-import sigmacine.aplicacion.session.Session;
 import sigmacine.infraestructura.persistencia.jdbc.PeliculaRepositoryJdbc;
-import sigmacine.ui.controller.admin.AgregarItemController;
-import sigmacine.ui.controller.admin.AgregarPeliculaController;
-import sigmacine.ui.controller.admin.GestionFuncionesController;
-
-import java.net.URL;
 
 public class AdminController {
 
     @FXML
     private Label welcomeLabel;
-
     @FXML
     private StackPane contentArea;
-
-    @FXML
-    private StackPane loadingOverlay;
-
-    @FXML
-    private ProgressIndicator progressSpinner;
 
     private UsuarioDTO usuario;
     private ControladorControlador coordinador;
@@ -42,9 +27,9 @@ public class AdminController {
     private final PeliculaRepositoryJdbc peliculaRepo;
 
     public AdminController(GestionPeliculasService gestionPeliculasService,
-                           GestionFuncionesService gestionFuncionesService,
-                           PeliculaRepositoryJdbc peliculaRepo,
-                           GestionProductosService productosService) {
+            GestionFuncionesService gestionFuncionesService,
+            PeliculaRepositoryJdbc peliculaRepo,
+            GestionProductosService productosService) {
         this.gestionPeliculasService = gestionPeliculasService;
         this.gestionFuncionesService = gestionFuncionesService;
         this.peliculaRepo = peliculaRepo;
@@ -62,12 +47,16 @@ public class AdminController {
 
     @FXML
     private void onLogout() {
-        Session.clear();
-        Session.setSelectedCity(null);
-        usuario = null;
-        if (coordinador != null) {
-            coordinador.mostrarPaginaInicial();
-        }
+        // if (coordinador != null) {
+        /*
+         * usuario.setId(0);
+         * usuario.setEmail("");
+         * usuario.setNombre("Invitado");
+         * coordinador.mostrarHome(usuario);
+         */
+        coordinador.mostrarClienteHomeConPopup(usuario);
+        // }
+        // coordinador.mostrarLogin();
     }
 
     @FXML
@@ -75,157 +64,71 @@ public class AdminController {
         if (contentArea != null) {
             contentArea.getChildren().clear();
         }
-        hideLoading();
-    }
-
-    private void showLoading() {
-        if (loadingOverlay != null) {
-            loadingOverlay.setVisible(true);
-            loadingOverlay.setManaged(true);
-            loadingOverlay.toFront();
-        }
-    }
-
-    private void hideLoading() {
-        if (loadingOverlay != null) {
-            loadingOverlay.setVisible(false);
-            loadingOverlay.setManaged(false);
-        }
     }
 
     @FXML
     private void abrirAgregarPelicula() {
-        showLoading();
-
-        Task<Parent> task = new Task<Parent>() {
-            @Override
-            protected Parent call() throws Exception {
-                String ruta = "/sigmacine/ui/views/Administrador/agregar_pelicula.fxml";
-                URL fxml = AdminController.class.getResource(ruta);
-                if (fxml == null) {
-                    throw new IllegalStateException("No se encontró " + ruta);
-                }
-
-                FXMLLoader loader = new FXMLLoader(fxml);
-                loader.setControllerFactory(param -> new AgregarPeliculaController());
-                Parent view = loader.load();
-
-                Object controller = loader.getController();
-                if (controller instanceof AgregarPeliculaController) {
-                    AgregarPeliculaController c = (AgregarPeliculaController) controller;
-                    c.setGestionPeliculasService(gestionPeliculasService);
-                }
-
-                return view;
+        try {
+            var fxml = AdminController.class.getResource("/sigmacine/ui/views/Administrador/agregar_pelicula.fxml");
+            if (fxml == null)
+                throw new IllegalStateException("No se encontró agregar_pelicula.fxml");
+            FXMLLoader loader = new FXMLLoader(fxml);
+            loader.setControllerFactory(param -> new sigmacine.ui.controller.admin.AgregarPeliculaController());
+            Parent view = loader.load();
+            var controller = loader.getController();
+            if (controller instanceof sigmacine.ui.controller.admin.AgregarPeliculaController c) {
+                c.setGestionPeliculasService(gestionPeliculasService);
             }
-        };
-
-        task.setOnSucceeded(event -> {
-            hideLoading();
-            Parent view = task.getValue();
-            if (contentArea != null) {
+            if (contentArea != null)
                 contentArea.getChildren().setAll(view);
-            }
-        });
-
-        task.setOnFailed(event -> {
-            hideLoading();
-            if (task.getException() != null) {
-                task.getException().printStackTrace();
-            }
-        });
-
-        Thread t = new Thread(task);
-        t.setDaemon(true);
-        t.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     public void abrirGestionFunciones() {
-        showLoading();
+        try {
+            final String ruta = "/sigmacine/ui/views/Administrador/gestion_funciones.fxml";
+            var fxml = AdminController.class.getResource(ruta);
+            if (fxml == null)
+                throw new IllegalStateException("No se encontró " + ruta);
 
-        Task<Parent> task = new Task<Parent>() {
-            @Override
-            protected Parent call() throws Exception {
-                String ruta = "/sigmacine/ui/views/Administrador/gestion_funciones.fxml";
-                URL fxml = AdminController.class.getResource(ruta);
-                if (fxml == null) {
-                    throw new IllegalStateException("No se encontró " + ruta);
-                }
+            FXMLLoader loader = new FXMLLoader(fxml);
+            loader.setControllerFactory(param -> new sigmacine.ui.controller.admin.GestionFuncionesController(
+                    this.gestionFuncionesService,
+                    this.peliculaRepo));
 
-                FXMLLoader loader = new FXMLLoader(fxml);
-                loader.setControllerFactory(param ->
-                        new GestionFuncionesController(
-                                gestionFuncionesService,
-                                peliculaRepo
-                        )
-                );
-                Parent view = loader.load();
-                return view;
-            }
-        };
-
-        task.setOnSucceeded(event -> {
-            hideLoading();
-            Parent view = task.getValue();
-            if (contentArea != null) {
+            Parent view = loader.load();
+            if (contentArea != null)
                 contentArea.getChildren().setAll(view);
-            }
-        });
-
-        task.setOnFailed(event -> {
-            hideLoading();
-            if (task.getException() != null) {
-                task.getException().printStackTrace();
-            }
-        });
-
-        Thread t = new Thread(task);
-        t.setDaemon(true);
-        t.start();
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo abrir la pantalla de gestión de funciones", e);
+        }
     }
 
     @FXML
     public void abrirGestionProductos() {
-        showLoading();
+        try {
+            final String ruta = "/sigmacine/ui/views/Administrador/AgregarItem.fxml";
 
-        Task<Parent> task = new Task<Parent>() {
-            @Override
-            protected Parent call() throws Exception {
-                String ruta = "/sigmacine/ui/views/Administrador/AgregarItem.fxml";
-                URL fxml = AdminController.class.getResource(ruta);
-                if (fxml == null) {
-                    throw new IllegalStateException("No se encontró " + ruta);
-                }
+            var fxml = AdminController.class.getResource(ruta);
+            if (fxml == null)
+                throw new IllegalStateException("No se encontró " + ruta);
 
-                FXMLLoader loader = new FXMLLoader(fxml);
-                loader.setControllerFactory(param ->
-                        new AgregarItemController(
-                                gestionProductosService
-                        )
-                );
-                Parent view = loader.load();
-                return view;
-            }
-        };
+            FXMLLoader loader = new FXMLLoader(fxml);
+            loader.setControllerFactory(param -> new sigmacine.ui.controller.admin.AgregarItemController(
+                this.gestionProductosService
+            ));
 
-        task.setOnSucceeded(event -> {
-            hideLoading();
-            Parent view = task.getValue();
-            if (contentArea != null) {
+            var controller = loader.getController();
+
+            Parent view = loader.load();
+            if (contentArea != null)
                 contentArea.getChildren().setAll(view);
-            }
-        });
+        } catch (Exception e) {
+            throw new RuntimeException("No se pudo abrir la pantalla de gestión de productos", e);
 
-        task.setOnFailed(event -> {
-            hideLoading();
-            if (task.getException() != null) {
-                task.getException().printStackTrace();
-            }
-        });
-
-        Thread t = new Thread(task);
-        t.setDaemon(true);
-        t.start();
+        }
     }
 }

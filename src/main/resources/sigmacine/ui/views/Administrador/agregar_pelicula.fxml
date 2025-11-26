@@ -33,7 +33,7 @@
             <!-- Tabla -->
             <TableView fx:id="tablaPeliculas" prefHeight="330">
                 <columns>
-                    <TableColumn fx:id="columnaId"            text="ID"            prefWidth="70" visible="false"/>
+                    <TableColumn fx:id="columnaId"            text="ID"            prefWidth="70"/>
                     <TableColumn fx:id="columnaTitulo"        text="Título"        prefWidth="300"/>
                     <TableColumn fx:id="columnaGenero"        text="Género"        prefWidth="160"/>
                     <TableColumn fx:id="columnaClasificacion" text="Clasificación" prefWidth="130"/>
@@ -57,8 +57,7 @@
                         <Label text="Título:" textFill="WHITE"/>
                         <TextField fx:id="campoTituloPelicula" GridPane.columnIndex="1" />
                         <Label text="Género:" textFill="WHITE" GridPane.columnIndex="2"/>
-                        <!-- ComboBox editable para género (autocomplete sencillo) -->
-                        <ComboBox fx:id="comboGeneroPelicula" GridPane.columnIndex="3" editable="true"/>
+                        <TextField fx:id="campoGeneroPelicula" GridPane.columnIndex="3"/>
 
                         <!-- Fila 1 -->
                         <Label text="Clasificación:" textFill="WHITE" GridPane.rowIndex="1"/>
@@ -72,7 +71,7 @@
                         <Label text="Reparto:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
                         <TextField fx:id="campoRepartoPelicula" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
 
-                        <!-- Fila 3: Póster + Trailer -->
+                        <!-- Fila 3: Póster + Trailer URL -->
                         <Label text="Póster:" textFill="WHITE" GridPane.rowIndex="3"/>
                         <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="3" alignment="CENTER_LEFT">
                             <Button text="Elegir imagen" onAction="#onElegirImagen"
@@ -80,16 +79,9 @@
                             <Label fx:id="lblImgStatus" text="Sin imagen" textFill="WHITE"/>
                         </HBox>
 
-                        <Label text="Trailer:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                        <HBox spacing="8" GridPane.columnIndex="3" GridPane.rowIndex="3" alignment="CENTER_LEFT">
-                            <Button text="Elegir trailer" onAction="#onElegirTrailer"
-                                    style="-fx-background-color:#8A2F24; -fx-text-fill:white;"/>
-                            <!-- ruta relativa del archivo (mp4/mp3...), no editable -->
-                            <TextField fx:id="campoUrlTrailer"
-                                       promptText="ruta relativa (p.ej. Trailers/xyz.mp4)"
-                                       prefWidth="260"
-                                       editable="false"/>
-                        </HBox>
+                        <Label text="Trailer (URL):" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                        <TextField fx:id="campoUrlTrailer" GridPane.columnIndex="3" GridPane.rowIndex="3"
+                                   promptText="https://www.youtube.com/watch?v=..."/>
 
                         <!-- Fila 4: Texto de ruta del póster -->
                         <Label text="Ruta póster:" textFill="WHITE" GridPane.rowIndex="4"/>
