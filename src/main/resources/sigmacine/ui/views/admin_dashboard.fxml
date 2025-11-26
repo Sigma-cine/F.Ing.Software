@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
 
 <BorderPane fx:id="rootPane"
             xmlns="http://javafx.com/javafx"
@@ -55,6 +56,14 @@
 
     <center>
         <StackPane style="-fx-background-color: #000000ff;">
+            <!-- Imagen de bienvenida admin -->
+            <ImageView fx:id="bienvenidaAdminImg"
+                       StackPane.alignment="CENTER"
+                       fitWidth="420" fitHeight="320"
+                       preserveRatio="true"
+                       opacity="0.92"
+                       style="-fx-effect: dropshadow(gaussian, #812d1e, 30, 0.3, 0, 8);"/>
+
             <StackPane fx:id="contentArea"/>
 
             <StackPane fx:id="loadingOverlay"
