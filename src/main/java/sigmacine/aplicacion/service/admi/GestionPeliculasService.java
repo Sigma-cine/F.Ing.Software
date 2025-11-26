@@ -101,7 +101,7 @@ public class GestionPeliculasService {
         if (dto.getClasificacionPelicula() == null || dto.getClasificacionPelicula().trim().isEmpty())
             throw new IllegalArgumentException("La clasificación es obligatoria");
         if (dto.getDuracionMinutos() == null || dto.getDuracionMinutos().intValue() <= 0)
-            throw new IllegalArgumentException("La duración debe ser en minutos");
+            throw new IllegalArgumentException("La duración debe ser en minutos entre 0 a 200 ");
         if (dto.getEstadoPelicula() == null || dto.getEstadoPelicula().trim().isEmpty())
             dto.setEstadoPelicula("ACTIVA");
     }

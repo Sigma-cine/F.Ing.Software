@@ -9,11 +9,11 @@
         <fx:include source="barra.fxml"/>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+        <ScrollPane fitToWidth="true" style="-fx-background: #0D0D0D; -fx-background-color: #0D0D0D;">
             <content>
-                <VBox alignment="TOP_CENTER" spacing="16" style="-fx-padding: 16;">
+                <VBox alignment="TOP_CENTER" spacing="16" style="-fx-padding: 16; -fx-background-color: #0D0D0D;">
                     <Label text="Historial de Compras" style="-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 24;" />
-                    <VBox fx:id="comprasContainer" spacing="15.0" styleClass="centered-container" />
+                    <VBox fx:id="comprasContainer" spacing="15.0" styleClass="centered-container" style="-fx-background-color: #0D0D0D;" />
                 </VBox>
             </content>
         </ScrollPane>

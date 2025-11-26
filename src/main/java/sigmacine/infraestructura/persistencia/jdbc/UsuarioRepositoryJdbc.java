@@ -203,6 +203,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository {
             ) AS COMPRA_TOTAL,
             MIN(se.ID) AS SEDE_ID,
             MIN(se.CIUDAD) AS SEDE_CIUDAD,
+            MIN(sa.NUMERO_SALA) AS SALA_NOMBRE,
             MIN(f.FECHA) AS FUNCION_FECHA,
             MIN(f.HORA) AS FUNCION_HORA,
             (SELECT COUNT(*) FROM BOLETO b3 WHERE b3.COMPRA_ID = co.ID) AS CANT_BOLETOS,

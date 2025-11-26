@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="960.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.VerDetallePeliculaController">
+<BorderPane prefHeight="600.0" prefWidth="960.0" stylesheets="@sigma.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.VerDetallePeliculaController">
     <top>
         <fx:include source="barra.fxml"/>
     </top>

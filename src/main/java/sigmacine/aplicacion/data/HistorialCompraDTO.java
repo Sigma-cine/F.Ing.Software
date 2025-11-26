@@ -9,6 +9,7 @@ public class HistorialCompraDTO {
     private LocalDate compraFecha;   // fecha de la compra
     private BigDecimal total;        // total exacto en moneda
     private String sedeCiudad;       // null si no hubo boletos
+    private String salaNombre;       // null si no hubo boletos
     private LocalDate funcionFecha;  // null si no hubo boletos
     private LocalTime funcionHora;   // null si no hubo boletos
     private int cantBoletos;
@@ -18,6 +19,7 @@ public class HistorialCompraDTO {
                             LocalDate compraFecha,
                             BigDecimal total,
                             String sedeCiudad,
+                            String salaNombre,
                             LocalDate funcionFecha,
                             LocalTime funcionHora,
                             int cantBoletos,
@@ -26,6 +28,7 @@ public class HistorialCompraDTO {
         this.compraFecha = compraFecha;
         this.total = total;
         this.sedeCiudad = sedeCiudad;
+        this.salaNombre = salaNombre;
         this.funcionFecha = funcionFecha;
         this.funcionHora = funcionHora;
         this.cantBoletos = cantBoletos;
@@ -36,6 +39,7 @@ public class HistorialCompraDTO {
     public LocalDate getCompraFecha() { return compraFecha; }
     public BigDecimal getTotal() { return total; }
     public String getSedeCiudad() { return sedeCiudad; }
+    public String getSalaNombre() { return salaNombre; }
     public LocalDate getFuncionFecha() { return funcionFecha; }
     public LocalTime getFuncionHora() { return funcionHora; }
     public int getCantBoletos() { return cantBoletos; }

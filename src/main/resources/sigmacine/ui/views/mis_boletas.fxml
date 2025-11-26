@@ -9,9 +9,9 @@
         <fx:include source="barra.fxml"/>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: #000000;" hbarPolicy="NEVER">
+        <ScrollPane fitToWidth="true" style="-fx-background: #0D0D0D; -fx-background-color: #0D0D0D;" hbarPolicy="NEVER">
             <content>
-                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 40; -fx-background-color: #000000;">
+                <VBox alignment="TOP_CENTER" spacing="20" style="-fx-padding: 40; -fx-background-color: #0D0D0D;">
                     
                     <!-- Título -->
                     <HBox alignment="CENTER_LEFT" spacing="10">

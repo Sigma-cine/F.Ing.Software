@@ -1,4 +1,3 @@
-        
 package sigmacine.aplicacion.service;
 
 
@@ -12,7 +11,56 @@ import sigmacine.aplicacion.service.PagoService;
 import sigmacine.aplicacion.service.SigmaCardService;
 
 class PagoServiceTest {
-        @Test
+    
+    private PagoService pagoService;
+    private FakeSigmaCardService sigmaCardService;
+    
+    @BeforeEach
+    void setUp() {
+        sigmaCardService = new FakeSigmaCardService();
+        // Crear un Mock Random que siempre devuelve 0 (< 90 = pago aprobado)
+        java.util.Random mockRandom = new java.util.Random() {
+            @Override
+            public int nextInt(int bound) {
+                return 0; // Siempre devuelve 0, garantiza que el pago sea aprobado
+            }
+        };
+        pagoService = new PagoService(sigmaCardService, mockRandom) {
+            @Override
+            protected void doSleep(long millis) {
+                // No hacer nada, evitar sleep en tests
+            }
+        };
+    }
+    
+    static class FakeSigmaCardService extends SigmaCardService {
+        boolean tieneCard = true;
+        BigDecimal saldo = new BigDecimal("100.00");
+        boolean recargaFalla = false;
+        RuntimeException excepcion = null;
+
+        public boolean tieneCard(long usuarioId) {
+            if (excepcion != null) throw excepcion;
+            return tieneCard;
+        }
+
+        public BigDecimal consultarSaldo(String usuarioId) {
+            if (excepcion != null) throw excepcion;
+            return saldo;
+        }
+
+        public BigDecimal recargar(String usuarioId, BigDecimal monto) {
+            if (recargaFalla) throw new RuntimeException("Fallo recarga");
+            saldo = saldo.add(monto);
+            return saldo;
+        }
+
+        public String format(BigDecimal monto) {
+            return monto.toString();
+        }
+    }
+    
+    @Test
         void tarjetaNumeroTarjetaDemasiadoLargo() {
             PagoTarjetaDTO dto = new PagoTarjetaDTO();
             dto.setNumeroTarjeta("411111111111111111111"); // 21 dígitos
@@ -388,7 +436,7 @@ class PagoServiceTest {
     @Test
     void tarjetaTipoCredito() {
         PagoTarjetaDTO dto = new PagoTarjetaDTO();
-        dto.setNumeroTarjeta("4111111111111111");
+        dto.setNumeroTarjeta("4111111111113"); // 13 dígitos (mínimo válido)
         dto.setNombreTitular("Juan Perez");
         dto.setCvv("123");
         dto.setCedula("12345678");
@@ -396,7 +444,7 @@ class PagoServiceTest {
         dto.setAnioExpiracion("2030");
         dto.setTipoTarjeta("credito");
         ResultadoPagoDTO resultado = pagoService.procesarPagoTarjeta(dto, new BigDecimal("10.00"));
-        assertTrue(resultado.isExitoso());
+        assertTrue(resultado.isExitoso(), "El pago debería ser exitoso pero falló con: " + resultado.getMensaje());
         assertTrue(resultado.getMensaje().contains("Crédito"));
     }
 
@@ -596,42 +644,6 @@ class PagoServiceTest {
     @Test
     void luhnNoNumerico() {
         assertFalse(pagoService.validarLuhn("abcd efgh ijkl mnop"));
-    }
-
-        @BeforeEach
-        void setUp() {
-            sigmaCardService = new FakeSigmaCardService();
-            pagoService = new PagoService(sigmaCardService);
-        }
-    private PagoService pagoService;
-    private FakeSigmaCardService sigmaCardService;
-
-
-    static class FakeSigmaCardService extends SigmaCardService {
-        boolean tieneCard = true;
-        BigDecimal saldo = new BigDecimal("100.00");
-        boolean recargaFalla = false;
-        RuntimeException excepcion = null;
-
-        public boolean tieneCard(long usuarioId) {
-            if (excepcion != null) throw excepcion;
-            return tieneCard;
-        }
-
-        public BigDecimal consultarSaldo(String usuarioId) {
-            if (excepcion != null) throw excepcion;
-            return saldo;
-        }
-
-        public BigDecimal recargar(String usuarioId, BigDecimal monto) {
-            if (recargaFalla) throw new RuntimeException("Fallo recarga");
-            saldo = saldo.add(monto);
-            return saldo;
-        }
-
-        public String format(BigDecimal monto) {
-            return monto.toString();
-        }
     }
 
     @Test
