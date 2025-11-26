@@ -2,14 +2,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
-<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@sigma.css" fx:controller="sigmacine.ui.controller.CarteleraController">
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@sigma.css" fx:controller="sigmacine.ui.controller.CarteleraController" style="-fx-background-color: #0D0D0D;">
     <top>
         <fx:include source="barra.fxml"/>
     </top>
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-control-inner-background: #0D0D0D; -fx-background: #0D0D0D;">
             <content>
-                <VBox spacing="16" alignment="TOP_CENTER" style="-fx-padding: 16;">
+                <VBox spacing="16" alignment="TOP_CENTER" style="-fx-padding: 16; -fx-background-color: #0D0D0D;">
                     <Label text="Cartelera" style="-fx-text-fill: #ffffff; -fx-font-weight: bold; -fx-font-size: 24;" />
                     <HBox spacing="12" alignment="CENTER">
                         <Label text="Filtrar por género:" style="-fx-text-fill: #ffffff; -fx-font-size: 14;" />
