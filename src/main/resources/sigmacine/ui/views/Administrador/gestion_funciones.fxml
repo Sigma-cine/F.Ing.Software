@@ -5,44 +5,66 @@
 
 <BorderPane prefHeight="680.0" prefWidth="1200.0"
             style="-fx-background-color: #000000;"
-            xmlns="http://javafx.com/javafx/21.0.4" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/21.0.4"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="sigmacine.ui.controller.admin.GestionFuncionesController">
 
+    <!-- BARRA SUPERIOR -->
     <top>
         <BorderPane prefHeight="80.0" style="-fx-background-color: #8A2F24;" BorderPane.alignment="CENTER">
-            <center>
-                <Label text="Administrar Funciones" textFill="WHITE">
-                    <font><Font name="System Bold" size="22.0"/></font>
+            <left>
+                <Label text="Administrar Funciones" textFill="WHITE" style="-fx-padding: 0 0 0 15;">
+                    <font>
+                        <Font name="System Bold" size="22.0"/>
+                    </font>
                 </Label>
-            </center>
-            <right>
+            </left>
+
+            <center>
                 <HBox spacing="10" style="-fx-padding: 10;">
-                    <TextField fx:id="tfBuscar" promptText="Buscar por película, sala o estado" prefWidth="420"/>
-                    <Button text="Buscar" style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onBuscar"/>
-                    <Button text="Listar todas" style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onListarTodas"/>
+                    <!-- Filtro solo para la tabla -->
+                    <ComboBox fx:id="cbFiltroSala"
+                              promptText="Filtrar por sala"
+                              prefWidth="190"/>
+                    <!-- Búsqueda general -->
+                    <TextField fx:id="tfBuscar"
+                               promptText="Buscar por película, sala o estado"
+                               prefWidth="420"/>
+                    <Button text="Buscar"
+                            style="-fx-background-color: #8A2F24;"
+                            textFill="WHITE"
+                            onAction="#onBuscar"/>
+                    <Button text="Listar todas"
+                            style="-fx-background-color: #8A2F24;"
+                            textFill="WHITE"
+                            onAction="#onListarTodas"/>
                 </HBox>
-            </right>
+            </center>
         </BorderPane>
     </top>
 
+    <!-- CENTRO: TABLA + FORM -->
     <center>
         <VBox spacing="10" style="-fx-padding: 15;">
+
+            <!-- TABLA (sin columna ID) -->
             <TableView fx:id="tblFunciones" prefHeight="330">
                 <columns>
-                    <TableColumn fx:id="colId"           text="ID"          prefWidth="70"/>
-                    <TableColumn fx:id="colPelicula"     text="Película"    prefWidth="250"/>
-                    <TableColumn fx:id="colSala"         text="Sala"        prefWidth="260"/>
-                    <TableColumn fx:id="colFecha"        text="Fecha"       prefWidth="110"/>
-                    <TableColumn fx:id="colHora"         text="Hora"        prefWidth="90"/>
-                    <TableColumn fx:id="colDuracion"     text="Duración"    prefWidth="90"/>
-                    <TableColumn fx:id="colEstado"       text="Estado"      prefWidth="120"/>
-                    <TableColumn fx:id="colEstadoBool"   text="Activo?"     prefWidth="90"/>
+                    <TableColumn fx:id="colPelicula"   text="Película"  prefWidth="250"/>
+                    <TableColumn fx:id="colSala"       text="Sala"      prefWidth="260"/>
+                    <TableColumn fx:id="colFecha"      text="Fecha"     prefWidth="110"/>
+                    <TableColumn fx:id="colHora"       text="Hora"      prefWidth="90"/>
+                    <TableColumn fx:id="colDuracion"   text="Duración"  prefWidth="90"/>
+                    <TableColumn fx:id="colEstado"     text="Estado"    prefWidth="120"/>
+                    <TableColumn fx:id="colEstadoBool" text="Activo"    prefWidth="90"/>
                 </columns>
             </TableView>
 
+            <!-- PANEL DE GESTIÓN -->
             <TitledPane text="Gestión de Funciones" expanded="true">
                 <content>
-                    <GridPane hgap="12" vgap="10" style="-fx-background-color: #111; -fx-padding: 16; -fx-background-radius: 8;">
+                    <GridPane hgap="12" vgap="10"
+                              style="-fx-background-color: #111; -fx-padding: 16; -fx-background-radius: 8;">
                         <columnConstraints>
                             <ColumnConstraints prefWidth="210"/>
                             <ColumnConstraints prefWidth="370"/>
@@ -50,8 +72,15 @@
                             <ColumnConstraints prefWidth="370"/>
                         </columnConstraints>
 
-                        <Label text="ID (edición)" textFill="WHITE"/>
-                        <TextField fx:id="tfIdEdicion" promptText="vacío/0 = crear" GridPane.columnIndex="1"/>
+                        <!-- ID solo para uso interno: oculto -->
+                        <Label text="ID (interno)" textFill="WHITE"
+                               visible="false" managed="false"/>
+                        <TextField fx:id="tfIdEdicion"
+                                   promptText="interno"
+                                   GridPane.columnIndex="1"
+                                   editable="false"
+                                   visible="false" managed="false"/>
+
                         <Label text="Estado" textFill="WHITE" GridPane.columnIndex="2"/>
                         <ComboBox fx:id="cbEstado" GridPane.columnIndex="3"/>
 
@@ -62,19 +91,42 @@
 
                         <Label text="Fecha" textFill="WHITE" GridPane.rowIndex="2"/>
                         <DatePicker fx:id="dpFecha" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                        <Label text="Activo (estado_bool)" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                        <CheckBox fx:id="chkEstadoBool" GridPane.columnIndex="3" GridPane.rowIndex="2" text="Sí"/>
+                        <Label text="Activo (estado_bool)" textFill="WHITE"
+                               GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                        <CheckBox fx:id="chkEstadoBool"
+                                  GridPane.columnIndex="3" GridPane.rowIndex="2"
+                                  text="Sí"/>
 
                         <Label text="Hora inicio (HH:mm)" textFill="WHITE" GridPane.rowIndex="3"/>
-                        <TextField fx:id="tfHora" promptText="13:00" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-                        <Label text="Duración (HH:mm)" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
-                        <TextField fx:id="tfDuracion" promptText="02:00" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
+                        <TextField fx:id="tfHora"
+                                   promptText="13:00"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        <Label text="Duración (HH:mm)" textFill="WHITE"
+                               GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                        <TextField fx:id="tfDuracion"
+                                   promptText="02:00"
+                                   GridPane.columnIndex="3" GridPane.rowIndex="3"/>
 
-                        <HBox spacing="10" GridPane.rowIndex="4" GridPane.columnSpan="4" alignment="CENTER_LEFT">
-                            <Button text="Nuevo"      style="-fx-background-color: #333;"     textFill="WHITE" onAction="#onNuevo"/>
-                            <Button text="Crear"      style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onCrear"/>
-                            <Button text="Actualizar" style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onActualizar"/>
-                            <Button text="Eliminar"   style="-fx-background-color: #8A2F24;" textFill="WHITE" onAction="#onEliminar"/>
+                        <HBox spacing="10"
+                              GridPane.rowIndex="4"
+                              GridPane.columnSpan="4"
+                              alignment="CENTER_LEFT">
+                            <Button text="Nuevo"
+                                    style="-fx-background-color: #333;"
+                                    textFill="WHITE"
+                                    onAction="#onNuevo"/>
+                            <Button text="Crear"
+                                    style="-fx-background-color: #8A2F24;"
+                                    textFill="WHITE"
+                                    onAction="#onCrear"/>
+                            <Button text="Actualizar"
+                                    style="-fx-background-color: #8A2F24;"
+                                    textFill="WHITE"
+                                    onAction="#onActualizar"/>
+                            <Button text="Eliminar"
+                                    style="-fx-background-color: #8A2F24;"
+                                    textFill="WHITE"
+                                    onAction="#onEliminar"/>
                         </HBox>
                     </GridPane>
                 </content>
@@ -82,10 +134,14 @@
         </VBox>
     </center>
 
+    <!-- BARRA DE ESTADO -->
     <bottom>
-        <HBox style="-fx-padding: 8; -fx-background-color: #111;" alignment="CENTER_LEFT" spacing="10">
+        <HBox style="-fx-padding: 8; -fx-background-color: #111;"
+              alignment="CENTER_LEFT"
+              spacing="10">
             <Label text="Estado:" textFill="WHITE"/>
             <Label fx:id="lblStatus" textFill="WHITE"/>
         </HBox>
     </bottom>
+
 </BorderPane>
