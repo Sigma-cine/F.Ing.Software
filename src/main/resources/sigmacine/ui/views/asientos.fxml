@@ -48,11 +48,24 @@
                             </StackPane>
 
                             <!-- Grilla -->
-                            <VBox spacing="14" style="-fx-background-color:#0a0a0a; -fx-background-radius:10; -fx-padding:22;">
+                            <VBox spacing="14"
+                                  alignment="CENTER"
+                                  style="-fx-background-color:#0a0a0a; -fx-background-radius:10; -fx-padding:22;">
                                 <children>
-                                    <GridPane fx:id="gridSala" hgap="10" vgap="10" alignment="CENTER">
-                                        <padding><Insets left="72" right="72"/></padding>
+
+                                    <!-- *** AQUÍ ESTÁ LA CORRECCIÓN *** -->
+                                    <GridPane fx:id="gridSala"
+                                              hgap="10"
+                                              vgap="10"
+                                              alignment="CENTER">
+
+                                        <!-- Padding CORREGIDO (antes tenía left="72" right="72") -->
+                                        <padding>
+                                            <Insets top="0" bottom="0" left="0" right="0"/>
+                                        </padding>
+
                                     </GridPane>
+
                                 </children>
                             </VBox>
 
@@ -102,29 +115,30 @@
 
                                 <!-- Disponible -->
                                 <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <ToggleButton disable="true" maxWidth="28" maxHeight="28"
-                                                  styleClass="seat seat--available"/>
+                                    <Button disable="true"
+                                            styleClass="seat-button seat-available"/>
                                     <Label text="Disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
                                 </HBox>
 
                                 <!-- No disponibles -->
                                 <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <ToggleButton disable="true" maxWidth="28" maxHeight="28"
-                                                  styleClass="seat seat--unavailable"/>
+                                    <Button disable="true"
+                                            styleClass="seat-button seat-unavailable"/>
                                     <Label text="No disponibles" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
                                 </HBox>
 
                                 <!-- Accesibles -->
                                 <HBox spacing="8" alignment="CENTER_LEFT">
-                                    <ToggleButton disable="true" maxWidth="28" maxHeight="28"
-                                                  styleClass="seat seat--accessible"/>
+                                    <Button disable="true"
+                                            styleClass="seat-button seat-accessible"/>
                                     <Label text="Discapacitados" style="-fx-text-fill:#bbb; -fx-font-size:12px;"/>
                                 </HBox>
 
                             </FlowPane>
 
                             <!-- Resumen + CTA -->
-                            <Label fx:id="lblResumen" text="0 Sillas seleccionadas"
+                            <Label fx:id="lblResumen"
+                                   text="0 Sillas seleccionadas"
                                    style="-fx-text-fill:#ffffff; -fx-font-weight:bold;"/>
 
                             <Button fx:id="btnContinuar"
@@ -143,4 +157,5 @@
 
         </VBox>
     </center>
+
 </BorderPane>

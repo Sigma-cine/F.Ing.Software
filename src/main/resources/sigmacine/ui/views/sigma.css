@@ -1,102 +1,372 @@
 /* =======================
-   ESTILOS ORIGINALES
+  Sigma UI – Estilos globales
    ======================= */
 
-.root {
-    -fx-font-family: "Segoe UI";
+.root { -fx-background-color: #0D0D0D; -fx-font-family: "Segoe UI","Montserrat",Arial,sans-serif; -fx-text-fill: white; }
+.label { -fx-text-fill: white; }
+.dark-bg { -fx-background-color: #0D0D0D; }
+
+.separator:horizontal .line { -fx-background-color: rgba(255,255,255,0.08); -fx-pref-height: 1; }
+.separator:vertical   .line { -fx-background-color: rgba(255,255,255,0.08); -fx-pref-width: 1; }
+
+.scroll-pane, .scroll-pane > .viewport { -fx-background-color: #0D0D0D; }
+
+/* ======================= Topbar ======================= */
+.topbar { -fx-background-color: #8A2F24; -fx-padding: 8 16; -fx-spacing: 12; }
+.brand { -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; }
+.toplink { -fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 6 10; -fx-background-radius: 10; }
+.toplink:hover   { -fx-underline: true; -fx-background-color: rgba(255,255,255,0.08); }
+.toplink:pressed { -fx-background-color: rgba(0,0,0,0.15); }
+
+.button.icon-btn, .menu-button.icon-btn { -fx-background-image: none; -fx-graphic: null; }
+.icon-btn { -fx-background-color: transparent; -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 8; }
+.icon-btn:hover   { -fx-background-color: rgba(255,255,255,0.08); }
+.icon-btn:pressed { -fx-background-color: rgba(0,0,0,0.18); }
+
+.search {
+  -fx-background-radius: 16; -fx-padding: 6 12;
+  -fx-background-color: #e9d7d3, transparent; -fx-background-insets: 0, 2;
+  -fx-prompt-text-fill: rgba(0,0,0,0.45); -fx-text-fill: #1b1b1b; -fx-border-color: transparent;
+}
+.search:focused { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 2); }
+
+/* ======================= Publicidad ======================= */
+.promo-nav {
+  -fx-background-color: rgba(255,255,255,0.15);
+  -fx-text-fill: white;
+  -fx-background-radius: 999;
+  -fx-padding: 6 10 6 10;
 }
 
-.top-bar {
-    -fx-background-color: #2c2c2c;
-    -fx-padding: 10;
-    -fx-spacing: 20;
-    -fx-alignment: center-left;
+.movie-card {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.2, 0, 4);
+}
+.movie-card:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
 }
 
-.title-label {
+.promo-dot {
+  -fx-background-radius: 999;
+  -fx-background-color: rgba(255,255,255,0.35);
+}
+.promo-dot.active { -fx-background-color: white; }
+
+/* ======================= Menú y textos ======================= */
+.context-menu { -fx-background-color: #121212; -fx-background-radius: 12; -fx-padding: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.2, 0, 4); }
+.menu-item > .label { -fx-text-fill: white; }
+.menu-item:focused { -fx-background-color: #1E1E1E; -fx-background-radius: 8; }
+.separator-menu-item > .line { -fx-background-color: #8A2F24; }
+
+.section-title, .venue { -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; }
+.muted { -fx-text-fill: #CFCFCF; -fx-font-size: 12px; }
+
+.synopsis {
+  -fx-control-inner-background: #0D0D0D;
+  -fx-text-fill: rgb(233,233,233);
+  -fx-border-color: #2a2a2a;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+.brand-sep:vertical .line { -fx-background-color: #8A2F24; -fx-pref-width: 3; }
+.brand-sep:horizontal .line { -fx-background-color: #8A2F24; -fx-pref-height: 2; }
+
+/* ======================= Chips y botones ======================= */
+.chip {
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
+  -fx-border-color: #E6E6E6;
+  -fx-border-radius: 18;
+  -fx-background-radius: 18;
+  -fx-padding: 6 12;
+}
+.chip:hover   { -fx-background-color: #1E1E1E; }
+.chip:focused { -fx-border-color: #8A2F24; }
+.chip:pressed { -fx-background-color: #161616; }
+
+.buy-btn, .primary-btn, .pay-btn, .button.cta {
+    -fx-background-color: #8A2F24;
     -fx-text-fill: white;
-    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
 }
 
-.card {
-    -fx-background-color: #ffffff;
+.primary-btn { -fx-background-radius: 15; -fx-padding: 8 20; }
+.pay-btn { -fx-font-size: 16px; -fx-background-radius: 24; -fx-padding: 12 24; }
+
+.button.cta { -fx-background-radius: 18; -fx-padding: 10 18; }
+
+/* ======================= Scrollbars ======================= */
+.scroll-bar:vertical, .scroll-bar:horizontal { -fx-background-color: #0D0D0D; }
+.thumb { -fx-background-color: #2a2a2a; -fx-background-radius: 4; }
+.thumb:hover { -fx-background-color: #8A2F24; }
+
+/* ======================= Helpers ======================= */
+.app-scale { -fx-font-size: 32px; }
+.panel-right { -fx-font-size: 14px; }
+.panel-right .section-title, .panel-right .venue { -fx-font-size: 16px; }
+.panel-right .muted { -fx-font-size: 12px; }
+.panel-right .chip  { -fx-font-size: 14px; -fx-padding: 8 14; }
+
+.content-root { -fx-alignment: center; -fx-padding: 24; }
+.content-root > * { -fx-max-width: 1280px; -fx-pref-width: 100%; }
+.centered-container { -fx-alignment: center; -fx-spacing: 12; -fx-padding: 12; }
+
+.detail-card {
+  -fx-background-color: #0F0F0F;
+  -fx-background-radius: 10;
+  -fx-padding: 16;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0.2, 0, 4);
+}
+
+.line-item {
+  -fx-background-color: #111;
+  -fx-background-radius: 6;
+  -fx-padding: 8 10;
+  -fx-spacing: 8;
+  -fx-border-color: rgba(255,255,255,0.03);
+  -fx-border-width: 1;
+}
+.line-item .label { -fx-text-fill:#E6E6E6; }
+/* ======================= Tarjetas / Cards ======================= */
+
+.movie-info-card,
+.food-info-card,
+.ticket-info-card {
+    -fx-background-color: #101010;
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.15, 0, 3);
+}
+
+.movie-info-card:hover,
+.food-info-card:hover,
+.ticket-info-card:hover {
+    -fx-background-color: #141414;
+}
+
+/* ======================= Poster ======================= */
+
+.poster {
+    -fx-background-color: #1A1A1A;
+    -fx-background-radius: 8;
+    -fx-padding: 8;
+}
+
+.poster > ImageView {
+    -fx-background-radius: 8;
+    -fx-smooth: true;
+}
+
+/* ======================= Títulos y etiquetas ======================= */
+
+.page-title {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.section-label {
+    -fx-text-fill: #CCCCCC;
+    -fx-font-size: 14px;
+}
+
+.bold { -fx-font-weight: bold; }
+.white { -fx-text-fill: white; }
+
+/* ======================= Precios y pills ======================= */
+
+.pill {
+    -fx-background-color: #8A2F24;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-font-weight: bold;
+    -fx-padding: 4 10;
+}
+
+.price {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* ======================= Campos de texto ======================= */
+
+.text-input {
+    -fx-background-color: #1C1C1C;
+    -fx-text-fill: white;
+    -fx-padding: 8;
+    -fx-background-radius: 8;
+    -fx-prompt-text-fill: rgba(255,255,255,0.4);
+    -fx-border-color: #2a2a2a;
+}
+
+.text-input:focused {
+    -fx-border-color: #8A2F24;
+    -fx-effect: dropshadow(gaussian, rgba(138,47,36,0.3), 10, 0.2, 0, 2);
+}
+
+/* ======================= Inputs numéricos ======================= */
+
+.spinner {
+    -fx-background-color: #1C1C1C;
+    -fx-background-radius: 8;
+    -fx-border-color: #2a2a2a;
+}
+
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: #2a2a2a;
+    -fx-background-radius: 6;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #8A2F24;
+}
+
+/* ======================= Boletos y resumen ======================= */
+
+.ticket-row {
+    -fx-background-color: #111;
     -fx-background-radius: 10;
-    -fx-padding: 15;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.3, 0, 2);
+    -fx-padding: 12;
+    -fx-spacing: 10;
 }
 
-.button-primary {
-    -fx-background-color: #0066ff;
+.ticket-row:hover { -fx-background-color: #161616; }
+
+.ticket-title {
     -fx-text-fill: white;
-    -fx-background-radius: 8;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
 }
 
-.button-primary:hover {
-    -fx-background-color: #0053d6;
+.ticket-sub {
+    -fx-text-fill: #CFCFCF;
+    -fx-font-size: 12px;
 }
 
-.button-danger {
-    -fx-background-color: #d9534f;
+/* ======================= Carrito ======================= */
+
+.cart-item {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+}
+
+.cart-item:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.cart-title {
     -fx-text-fill: white;
-    -fx-background-radius: 8;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
 }
 
-.button-danger:hover {
-    -fx-background-color: #c9302c;
+.cart-price {
+    -fx-text-fill: #E6E6E6;
+    -fx-font-size: 14px;
 }
+/* ========================================================= */
+/* ASIENTOS DE LA SALA                                       */
+/* ========================================================= */
 
-/* =====================================================================
-   ========================   SILLAS ACTUALIZADAS  ======================
-   ===================================================================== */
-
-/* Contenedor base del asiento */
 .seat {
-    -fx-pref-width: 45px;
-    -fx-pref-height: 45px;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-cursor: hand;
+}
 
+/* ========================= DISPONIBLE ========================= */
+
+.seat--available {
+    -fx-background-image: url("/Images/Asientos/vacio.png");
     -fx-background-size: contain;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
-
-    -fx-background-color: transparent;
-    -fx-padding: 0;
 }
 
-/* --- ESTADOS --- */
+/* ========================= SELECCIONADO ========================= */
 
-/* Disponible */
-.seat--available {
-    -fx-background-image: url("/Images/Asientos/vacio.png");
-    -fx-cursor: hand;
-}
-
-/* Seleccionado */
 .seat--selected {
     -fx-background-image: url("/Images/Asientos/seleccion.png");
-    -fx-cursor: hand;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 
-/* Ocupado */
+/* ========================= OCUPADO ========================= */
+
 .seat--unavailable {
     -fx-background-image: url("/Images/Asientos/ocupado.png");
-    -fx-opacity: 0.50;
-    -fx-cursor: default;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-opacity: 0.5;
 }
 
-/* Accesible (discapacitado) */
+/* ========================= ACCESIBLE ========================= */
+
 .seat--accessible {
     -fx-background-image: url("/Images/Asientos/discapacitado.png");
-    -fx-cursor: hand;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 
-/* Accesible seleccionado */
-.seat--accessible-selected {
+/* ========================= ACCESIBLE SELECCIONADO ========================= */
+
+.seat--selected.seat--accessible {
     -fx-background-image: url("/Images/Asientos/seleccionDisca.png");
-    -fx-cursor: hand;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
 }
 
-/* Hover SOLO para disponibles y accesibles */
-.seat--available:hover,
-.seat--accessible:hover {
+/* ========================= Hover ========================= */
+
+.seat:hover {
     -fx-opacity: 0.85;
 }
+
+/* ========================= Grid ========================= */
+
+#gridSala {
+    -fx-hgap: 6;
+    -fx-vgap: 6;
+    -fx-padding: 25;
+    -fx-alignment: center;
+}
+
+/* Etiquetas de filas y columnas dentro de la sala */
+
+.seat-label {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
+
+.seat-letter, .seat-number {
+    -fx-font-size: 16px;
+    -fx-padding: 4 8 4 8;
+}
+
+.seat-number {
+    -fx-alignment: center;
+}
+
