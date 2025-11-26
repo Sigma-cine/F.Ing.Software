@@ -17,8 +17,19 @@ public class PagoService {
     private final Random random;
 
     public PagoService(SigmaCardService sigmaCardService) {
+        this(sigmaCardService, new Random());
+    }
+
+    public PagoService(SigmaCardService sigmaCardService, Random random) {
         this.sigmaCardService = sigmaCardService;
-        this.random = new Random();
+        this.random = random;
+    }
+
+    /**
+     * Método protegido para simular sleep, sobreescribible en tests
+     */
+    protected void doSleep(long millis) throws InterruptedException {
+        Thread.sleep(millis);
     }
 
     /**
@@ -72,7 +83,7 @@ public class PagoService {
 
             // Simular procesamiento de pasarela de pago
             // En un sistema real, aquí se comunicaría con la pasarela de pago real
-            Thread.sleep(1000 + random.nextInt(2000)); // Simular tiempo de procesamiento
+            doSleep(1000 + random.nextInt(2000)); // Simular tiempo de procesamiento
 
             // Simular aprobación aleatoria (90% de éxito)
             boolean aprobado = random.nextInt(100) < 90;
