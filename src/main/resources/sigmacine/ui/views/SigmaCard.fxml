@@ -32,14 +32,16 @@
                             <TextField fx:id="txtIdentificacion" promptText="Número de Identificación" prefWidth="340" styleClass="input"/>
                             <Label fx:id="lblPin" text="Pin de la tarjeta" style="-fx-text-fill:#fff; -fx-font-weight:bold; -fx-font-size: 15px;"/>
                             <PasswordField fx:id="txtPin" promptText="Pin de la tarjeta" prefWidth="340" styleClass="input"/>
-                            <VBox alignment="CENTER" maxWidth="Infinity">
-                                <HBox spacing="32" alignment="CENTER">
-                                    <children>
-                                        <Button fx:id="btnRegistrarme" text="Registrarme" styleClass="primary-btn"/>
-                                        <Button fx:id="btnRecargar" text="Recargar" styleClass="primary-btn"/>
-                                        <Button fx:id="btnVerMonto" text="Ver Monto" styleClass="primary-btn"/>
-                                    </children>
-                                </HBox>
+                            <VBox alignment="CENTER" maxWidth="Infinity" spacing="15">
+                                <children>
+                                    <Button fx:id="btnRegistrarme" text="Registrarme" styleClass="primary-btn" prefWidth="200"/>
+                                    <HBox spacing="20" alignment="CENTER">
+                                        <children>
+                                            <Button fx:id="btnRecargar" text="Recargar" styleClass="primary-btn" prefWidth="150"/>
+                                            <Button fx:id="btnVerMonto" text="Ver Monto" styleClass="primary-btn" prefWidth="150"/>
+                                        </children>
+                                    </HBox>
+                                </children>
                             </VBox>
                         </children>
                     </VBox>

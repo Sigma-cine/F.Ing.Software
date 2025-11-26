@@ -101,15 +101,8 @@
                 </HBox>
             </graphic>
             <items>
-                <MenuItem text="Mi Cuenta" />
-                <MenuItem text="Buscar Tiquetes" />
-                <MenuItem text="Confitería" />
-                <MenuItem text="Promociones" />
-                <MenuItem text="Información Personal" />
-                <MenuItem text="SigmaCard" />
+                <MenuItem fx:id="miMisBoletas" text="Mis Boletas" />
                 <MenuItem fx:id="miHistorial" text="Historial de compras" />
-                <MenuItem text="Notificaciones" />
-                <MenuItem text="Cartelera" />
                 <SeparatorMenuItem />
                 <MenuItem fx:id="miCerrarSesion" text="Cerrar Sesión" />
             </items>
