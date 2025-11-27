@@ -6,11 +6,6 @@ public class Producto {
 	private Float precio; // en centavos o unidad mínima
 	private String imagenUrl;
 	private String sabores;
-	private String descripcion;
-	private String tipo;
-	private String estado;
-	private boolean estadoBool;
-
 	public Producto() {}
 
 	public Producto(Long id, String nombre, Float precio) {
@@ -36,13 +31,9 @@ public class Producto {
 	public Producto(Long id, String nombre, String descripcion, String imagenUrl, String sabores, String tipo, float precio, String estado, boolean estadoBool) {
 		this.id = id;
 		this.nombre = nombre;
-		this.descripcion = descripcion;
 		this.imagenUrl = imagenUrl;
 		this.sabores = sabores;
-		this.tipo = tipo;
 		this.precio = precio;
-		this.estado = estado;
-		this.estadoBool = estadoBool;
 	}
 
 	public Long getId() { return id; }

@@ -1,6 +1,5 @@
 package sigmacine.ui.controller;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -518,10 +517,6 @@ public class ContenidoCarteleraController {
             // Obtener asientos ocupados y accesibles desde la base de datos
             Set<String> ocupados = obtenerAsientosOcupados(selectedFuncionId);
             Set<String> accesibles = obtenerAsientosAccesibles(selectedFuncionId);
-            
-            // Obtener información de ciudad y sede de la función seleccionada
-            String ciudad = selectedFuncion != null ? selectedFuncion.getCiudad() : "";
-            String sede = selectedFuncion != null ? selectedFuncion.getSede() : "";
             
             // Pasar información completa incluyendo ciudad y sede
             ctrl.setFuncion(titulo, hora, ocupados, accesibles, selectedFuncionId);

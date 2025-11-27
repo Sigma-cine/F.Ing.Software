@@ -145,8 +145,6 @@ public class MisBoletasController {
         posterView.setSmooth(true);
         posterView.setStyle("-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.6) , 8,0,0,2 ); -fx-background-radius: 8;");
 
-        boolean imageLoaded = false;
-        
         try {
             if (dto.getCompraId() != null && this.historialService != null && this.historialService.repo != null) {
                 var boletos = this.historialService.repo.obtenerBoletosPorCompra(dto.getCompraId());
@@ -174,7 +172,6 @@ public class MisBoletasController {
                                 Image img = resolveImage(posterRef);
                                 if (img != null) {
                                     posterView.setImage(img);
-                                    imageLoaded = true;
                                 }
                             } catch (Exception ignore) {}
                         }

@@ -175,8 +175,6 @@ public class PagoService {
      */
     private boolean debitarSigmaCard(long usuarioId, BigDecimal monto) {
         try {
-            BigDecimal saldoActual = sigmaCardService.consultarSaldo(String.valueOf(usuarioId));
-            BigDecimal nuevoSaldo = saldoActual.subtract(monto);
             // Recargar con valor negativo para efectuar el débito
             sigmaCardService.recargar(String.valueOf(usuarioId), monto.negate());
             return true;
