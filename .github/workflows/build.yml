@@ -5,7 +5,10 @@ on:
   # Ejecución manual
   workflow_dispatch:
   # Cada vez que se haga un push al repositorio
-  #push:
+  push:
+    branches:
+      - main
+      - developer
   pull_request:
     types: [closed]
     branches:
@@ -16,8 +19,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions: write-all
-     # Asegura que solo se ejecute si el PR fue MERGED (no cerrado sin fusionar)
-    if: github.event.pull_request.merged == true
+     # Asegura que solo se ejecute si el PR fue MERGED (no cerrado sin fusionar) o si es un push directo
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
 
     steps:
       # Descargar última version desde el repositorio
@@ -28,8 +31,8 @@ jobs:
       - name: Instalar Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'adopt'
+          java-version: '21'
+          distribution: 'temurin'
 
       # Compilar y empaquetar
       - name: Compilar y empaquetar
