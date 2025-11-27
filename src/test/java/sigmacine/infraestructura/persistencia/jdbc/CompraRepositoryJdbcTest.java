@@ -4,7 +4,6 @@ import org.junit.jupiter.api.*;
 import org.h2.jdbcx.JdbcDataSource;
 import java.sql.Connection;
 import java.sql.Statement;
-import static org.junit.jupiter.api.Assertions.*;
 
 class CompraRepositoryJdbcTest {
     private static TestDbConfig dbConfig;
