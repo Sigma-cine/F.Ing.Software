@@ -2,7 +2,6 @@ package sigmacine.aplicacion.service;
 import java.util.List;
 
 import sigmacine.aplicacion.data.HistorialCompraDTO;
-import sigmacine.dominio.entity.Compra;
 import sigmacine.dominio.repository.UsuarioRepository;
 
 public class VerHistorialService {
