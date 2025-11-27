@@ -905,7 +905,6 @@ public class ClienteController {
     }
 
     // ========= DETALLE PELÍCULA =========
-    @SuppressWarnings("unused")
     private void abrirDetallePelicula(Pelicula p) {
         if (p == null) return;
         try {
