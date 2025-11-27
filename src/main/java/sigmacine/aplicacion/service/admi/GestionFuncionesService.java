@@ -28,7 +28,7 @@ public class GestionFuncionesService {
         Time dur  = toTime(dto.duracion);
 
         if (repo.existeTraslape(fecha, dto.salaId, hora, dur)) {
-            throw new RuntimeException("Ya existe una función que traslapa en esa sala/fecha/horario.");
+            throw new RuntimeException("Ya existe una función que esta en esa sala/fecha/horario.");
         }
         Funcion f = new Funcion(0L, fecha, hora, dto.estado, dur, dto.estadoBool, dto.peliculaId, dto.salaId);
         return repo.crear(f);
@@ -43,7 +43,7 @@ public class GestionFuncionesService {
         Time dur  = toTime(dto.duracion);
 
         if (repo.existeTraslapeExceptoId(fecha, dto.salaId, hora, dur, dto.id)) {
-            throw new RuntimeException("Traslape detectado al actualizar la función.");
+            throw new RuntimeException("Conflicto detectado al actualizar la función.");
         }
         Funcion f = new Funcion(dto.id, fecha, hora, dto.estado, dur, dto.estadoBool, dto.peliculaId, dto.salaId);
         return repo.actualizar(dto.id, f);
