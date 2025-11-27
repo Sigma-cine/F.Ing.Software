@@ -1,94 +1,152 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="520" prefWidth="900" style="-fx-background-color: #000000; -fx-text-fill: #ffffff;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sigmacine.ui.controller.InformacionPersonalController">
+<BorderPane prefHeight="520" prefWidth="900"
+            stylesheets="@/sigmacine/ui/views/sigma.css"
+            style="-fx-background-color:#0B0B0B;"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sigmacine.ui.controller.InfoPersonalController">
 
-    <!-- Encabezado -->
+    <!-- Barra superior -->
     <top>
-        <fx:include source="barra.fxml"/>
+        <fx:include fx:id="barraInclude" source="barra.fxml"/>
     </top>
 
-    <!-- Contenido -->
+    <!-- Contenido general -->
     <center>
-        <!-- Layout principal: avatar a la izquierda, formulario a la derecha -->
-        <HBox alignment="TOP_LEFT" prefHeight="509.0" prefWidth="900.0" spacing="24">
-            <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
+        <StackPane alignment="TOP_CENTER">
+            <padding>
+                <Insets top="30" bottom="30" left="30" right="30"/>
+            </padding>
 
-            <!-- Columna izquierda: placeholder avatar + botón -->
-            <VBox alignment="TOP_CENTER" spacing="12">
-                <children>
-                    <!-- Recuadro para la imagen (160x160) -->
-                    <StackPane prefHeight="160" prefWidth="160" style="-fx-background-color:#222;                                       -fx-border-color:#555;                                       -fx-border-radius:12;                                       -fx-background-radius:12;">
-                  <ImageView fitHeight="150.0" fitWidth="163.0" pickOnBounds="true" preserveRatio="true" />
+            <!-- Card central -->
+            <HBox prefWidth="820" spacing="36"
+                  style="-fx-background-color:#1A1A1A;
+                         -fx-background-radius:18;
+                         -fx-padding:32;
+                         -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.35), 20, 0, 0, 4);">
+
+                <!-- Avatar -->
+                <VBox alignment="TOP_CENTER" spacing="16">
+
+                    <Label text="Tu perfil"
+                           style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+
+                    <StackPane fx:id="avatarPane" prefHeight="170" prefWidth="170"
+                               style="-fx-background-color:#222;
+                                      -fx-border-color:#444;
+                                      -fx-border-radius:100;
+                                      -fx-background-radius:100;">
+                        <padding>
+                            <!-- CORRECCIÓN: usar top/right/bottom/left en lugar de "all" -->
+                            <Insets top="8" right="8" bottom="8" left="8"/>
+                        </padding>
+
+                        <children>
+                            <ImageView fx:id="avatarImage"
+                                       fitHeight="150" fitWidth="150"
+                                       preserveRatio="true"/>
+                        </children>
                     </StackPane>
 
-                    <!-- Botón para cambiar (puedes enganchar el onAction al controller) -->
-                    <Button fx:id="btnCambiarFoto" onAction="#onCambiarFoto" style="-fx-background-color:#8A2F24; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Cambiar foto" />
-                </children>
-            </VBox>
+                    <Button fx:id="btnCambiarFoto" onAction="#onCambiarFoto"
+                            text="Cambiar foto"
+                            style="-fx-background-color:#B0372F;
+                                   -fx-background-radius:16;
+                                   -fx-text-fill:white;
+                                   -fx-font-weight:bold;
+                                   -fx-padding:6 20;"/>
 
-            <!-- Columna derecha: formulario -->
-            <GridPane hgap="16" vgap="14">
-                <columnConstraints>
-                    <ColumnConstraints prefWidth="200" />
-                    <ColumnConstraints hgrow="ALWAYS" />
-                </columnConstraints>
+                </VBox>
 
-                <children>
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Nombres:" />
-                    <TextField fx:id="txtNombres" promptText="Tus nombres" GridPane.columnIndex="1" />
+                <!-- Formulario -->
+                <GridPane hgap="20" vgap="18">
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Apellidos:" GridPane.rowIndex="1" />
-                    <TextField fx:id="txtApellidos" promptText="Tus apellidos" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="200"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Email:" GridPane.rowIndex="2" />
-                    <TextField fx:id="txtEmail" editable="false" promptText="correo@ejemplo.com" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                    <children>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Teléfono:" GridPane.rowIndex="3" />
-                    <TextField fx:id="txtTelefono" promptText="+57 300 000 0000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <!-- NOMBRES -->
+                        <Label text="Nombres:"
+                               GridPane.rowIndex="0" GridPane.columnIndex="0"
+                               style="-fx-text-fill:#EEEEEE; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <TextField fx:id="txtNombres" promptText="Tus nombres"
+                                   GridPane.rowIndex="0" GridPane.columnIndex="1"
+                                   style="-fx-background-color:#2A2A2A; -fx-text-fill:white;"/>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Fecha de nacimiento:" GridPane.rowIndex="4" />
-                    <DatePicker fx:id="dpFechaNacimiento" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <!-- EMAIL -->
+                        <Label text="Email:"
+                               GridPane.rowIndex="1" GridPane.columnIndex="0"
+                               style="-fx-text-fill:#EEEEEE; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <TextField fx:id="txtEmail" promptText="correo@ejemplo.com" editable="true"
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1"
+                                   style="-fx-background-color:#2A2A2A; -fx-text-fill:white;"/>
 
-                    <Label style="-fx-text-fill:#ffffff; -fx-font-weight:bold;" text="Nueva contraseña:" GridPane.rowIndex="5" />
-                    <PasswordField fx:id="txtNuevaClave" promptText="••••••••" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <!-- TELEFONO -->
+                        <Label text="Teléfono:"
+                               GridPane.rowIndex="2" GridPane.columnIndex="0"
+                               style="-fx-text-fill:#EEEEEE; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <TextField fx:id="txtTelefono" promptText="+57 300 000 0000"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="1"
+                                   style="-fx-background-color:#2A2A2A; -fx-text-fill:white;"/>
 
-                    <!-- Acciones + mensaje -->
-                    <HBox alignment="CENTER_RIGHT" spacing="12" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                        <children>
-                            <Label fx:id="lblMensaje" style="-fx-text-fill:#ffcc00;" text="" visible="false" />
-                            <Region HBox.hgrow="ALWAYS" />
-                            <Button fx:id="btnCancelar" onAction="#onCancelar" style="-fx-background-color:transparent; -fx-border-color:#8A2F24; -fx-text-fill:#fff; -fx-border-radius:14; -fx-background-radius:14; -fx-padding:6 16;" text="Cancelar" />
-                            <Button fx:id="btnGuardar" onAction="#onGuardar" style="-fx-background-color:#8A2F24; -fx-text-fill:#fff; -fx-background-radius:14; -fx-padding:6 16;" text="Guardar cambios" />
-                        </children>
-                    </HBox>
-                </children>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
-            </GridPane>
-        </HBox>
+                        <!-- NACIMIENTO -->
+                        <Label text="Fecha de nacimiento:"
+                               GridPane.rowIndex="3" GridPane.columnIndex="0"
+                               style="-fx-text-fill:#EEEEEE; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <DatePicker fx:id="dpFechaNacimiento"
+                                    GridPane.rowIndex="3" GridPane.columnIndex="1"
+                                    style="-fx-background-color:#2A2A2A; -fx-text-fill:white;"/>
+
+                        <!-- CONTRASEÑA -->
+                        <Label text="Nueva contraseña:"
+                               GridPane.rowIndex="4" GridPane.columnIndex="0"
+                               style="-fx-text-fill:#EEEEEE; -fx-font-size:14px; -fx-font-weight:bold;"/>
+                        <PasswordField fx:id="txtNuevaClave" promptText="••••••••"
+                                       GridPane.rowIndex="4" GridPane.columnIndex="1"
+                                       style="-fx-background-color:#2A2A2A; -fx-text-fill:white;"/>
+
+                        <!-- BOTONES -->
+                        <HBox GridPane.rowIndex="5" GridPane.columnIndex="1"
+                              alignment="CENTER_RIGHT" spacing="16">
+                            
+                            <Label fx:id="lblMensaje" visible="false"
+                                   style="-fx-text-fill:#FFC533;
+                                          -fx-font-size:13px;"/>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <Button fx:id="btnCancelar" text="Cancelar" onAction="#onCancelar"
+                                    style="-fx-background-color:transparent;
+                                           -fx-border-color:#B0372F;
+                                           -fx-border-radius:16;
+                                           -fx-text-fill:white;
+                                           -fx-font-weight:bold;
+                                           -fx-padding:6 20;"/>
+
+                            <Button fx:id="btnGuardar" text="Guardar cambios" onAction="#onGuardar"
+                                    style="-fx-background-color:#B0372F;
+                                           -fx-background-radius:16;
+                                           -fx-text-fill:white;
+                                           -fx-font-weight:bold;
+                                           -fx-padding:6 20;"/>
+                        </HBox>
+
+                    </children>
+                </GridPane>
+
+            </HBox>
+        </StackPane>
     </center>
+
 </BorderPane>
