@@ -177,12 +177,11 @@ public class PagoService {
         try {
             BigDecimal saldoActual = sigmaCardService.consultarSaldo(String.valueOf(usuarioId));
             BigDecimal nuevoSaldo = saldoActual.subtract(monto);
-            
             // Recargar con valor negativo para efectuar el débito
             sigmaCardService.recargar(String.valueOf(usuarioId), monto.negate());
             return true;
         } catch (Exception e) {
-            System.err.println("Error al debitar SigmaCard: " + e.getMessage());
+            // Silenciado para evitar mensajes en tests
             return false;
         }
     }

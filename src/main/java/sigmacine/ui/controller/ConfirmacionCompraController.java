@@ -319,10 +319,10 @@ public class ConfirmacionCompraController {
         try {
             ControladorControlador coordinador = ControladorControlador.getInstance();
             if (coordinador != null) {
-                coordinador.mostrarHistorialCompras();
+                coordinador.mostrarMisBoletas();
             }
         } catch (Exception e) {
-            System.err.println("Error al mostrar historial: " + e.getMessage());
+            System.err.println("Error al mostrar boletas: " + e.getMessage());
         }
     }
 

@@ -44,8 +44,9 @@
 
                     <ImageView fx:id="promoImg"
                                StackPane.alignment="CENTER"
-                               preserveRatio="false"
+                               preserveRatio="true"
                                fitHeight="260"
+                               fitWidth="900"
                                smooth="true"/>
 
                     <BorderPane style="-fx-background-color: transparent;">

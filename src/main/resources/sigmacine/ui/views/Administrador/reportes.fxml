@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="sigmacine.ui.controller.admin.ReportesController"
+            prefWidth="1000" prefHeight="600"
+            style="-fx-background-color: #1b1b1b;"
+            stylesheets="@/sigmacine/ui/views/sigma.css">
+
+    <top>
+        <VBox spacing="8" style="-fx-padding: 16; -fx-background-color:#812d1e;">
+            <Label text="Reportes de Inventario y Ventas"
+                   style="-fx-text-fill:white; -fx-font-size:20; -fx-font-weight:bold;"/>
+
+            <HBox spacing="10">
+                <Label text="Tipo:" style="-fx-text-fill:black;"/>
+                <ComboBox fx:id="comboTipo" prefWidth="100"/>
+
+                <Label text="Estado:" style="-fx-text-fill:black;"/>
+                <ComboBox fx:id="comboEstado" prefWidth="130"/>
+
+                <Label text="Desde:" style="-fx-text-fill:black;"/>
+                <DatePicker fx:id="dpDesde"/>
+
+                <Label text="Hasta:" style="-fx-text-fill:black;"/>
+                <DatePicker fx:id="dpHasta"/>
+
+                <Button text="Aplicar filtros" onAction="#onAplicarFiltros"/>
+                <Button text="Limpiar" onAction="#onLimpiarFiltros"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="7" style="-fx-padding: 10;">
+            <TableView fx:id="tablaReporte" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colTipo" text="Tipo" prefWidth="90"/>
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="140"/>
+                    <TableColumn fx:id="colDetalle" text="Detalle" prefWidth="460"/>
+                    <TableColumn fx:id="colEstado" text="Estado" prefWidth="110"/>
+                </columns>
+            </TableView>
+
+            <Label fx:id="lblResumen"
+                   style="-fx-text-fill:black; -fx-font-size:12;"/>
+        </VBox>
+    </center>
+
+</BorderPane>

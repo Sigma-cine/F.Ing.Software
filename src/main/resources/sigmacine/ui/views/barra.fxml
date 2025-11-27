@@ -101,6 +101,7 @@
                 </HBox>
             </graphic>
             <items>
+                <MenuItem fx:id="miMiCuenta" text="Mi Cuenta"/>
                 <MenuItem fx:id="miMisBoletas" text="Mis Boletas" />
                 <MenuItem fx:id="miHistorial" text="Historial de compras" />
                 <SeparatorMenuItem />

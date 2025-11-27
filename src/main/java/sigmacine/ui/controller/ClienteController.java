@@ -77,9 +77,11 @@ public class ClienteController {
 
     // ========= ESTADO GENERAL =========
     private final List<String> banners = List.of(
-            "banner_promo_1.png",
-            "banner_promo_2.png",
-            "banner_promo_3.png"
+            "banner1.png",
+            "banner2.png",
+            "banner3.png",
+            "banner4.png",
+            "banner5.png"
     );
     private final List<Image> cache = new ArrayList<>();
     private int bannerIdx = 0;

@@ -36,7 +36,8 @@
                     onAction="#abrirGestionProductos"
                     style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;"/>
 
-            <Button text="Reportes"
+           <Button text="Reportes"
+                    onAction="#abrirReportes"
                     style="-fx-background-color:#8A2F24; -fx-text-fill:white; -fx-background-radius:10;"/>
 
             <Button text="Gestionar película"
