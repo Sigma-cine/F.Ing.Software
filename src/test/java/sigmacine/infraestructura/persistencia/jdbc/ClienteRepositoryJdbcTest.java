@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClienteRepositoryJdbcTest {
     private static TestDbConfig dbConfig;
-    // private ClienteRepositoryJdbc repository; // Descomentar y ajustar cuando exista la clase
 
     static class TestDbConfig {
         private final JdbcDataSource ds;
@@ -30,12 +29,11 @@ class ClienteRepositoryJdbcTest {
 
     @BeforeEach
     void setUp() {
-        // repository = new ClienteRepositoryJdbc(...)
+        try (Connection con = dbConfig.getConnection(); Statement st = con.createStatement()) {
+            st.execute("DELETE FROM CLIENTE");
+        } catch (Exception e) {
+            throw new RuntimeException("Error limpiando la tabla CLIENTE antes de la prueba", e);
+        }
     }
 
-    @Test
-    void ejemploTest() {
-        // Implementar pruebas CRUD reales cuando ClienteRepositoryJdbc esté disponible
-        assertTrue(true);
-    }
 }

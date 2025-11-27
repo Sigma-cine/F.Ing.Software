@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CompraRepositoryJdbcTest {
     private static TestDbConfig dbConfig;
-    // private CompraRepositoryJdbc repository; // Descomentar y ajustar cuando exista la clase
 
     static class TestDbConfig {
         private final JdbcDataSource ds;
@@ -30,12 +29,11 @@ class CompraRepositoryJdbcTest {
 
     @BeforeEach
     void setUp() {
-        // repository = new CompraRepositoryJdbc(...)
+        try (Connection con = dbConfig.getConnection(); Statement st = con.createStatement()) {
+            st.execute("DELETE FROM COMPRA");
+        } catch (Exception e) {
+            throw new RuntimeException("Error limpiando la tabla COMPRA antes de la prueba", e);
+        }
     }
 
-    @Test
-    void ejemploTest() {
-        // Implementar pruebas CRUD y transacciones reales cuando CompraRepositoryJdbc esté disponible
-        assertTrue(true);
-    }
 }
