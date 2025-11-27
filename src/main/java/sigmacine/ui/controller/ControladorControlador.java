@@ -23,10 +23,7 @@ public class ControladorControlador {
     private final AuthFacade authFacade;
     private Callback<Class<?>, Object> controllerFactory;
     private static ControladorControlador instance;
-    private static boolean cityPopupShownInSession = false;
     private LoadingOverlay loadingOverlay;
-    private StackPane rootContainer;
-
     public ControladorControlador(Stage stage, AuthFacade authFacade) {
         this.stage = stage;
         this.authFacade = authFacade;
@@ -75,9 +72,7 @@ public class ControladorControlador {
                 // Envolver en StackPane con overlay
                 StackPane container = new StackPane();
                 container.getChildren().addAll(root, loadingOverlay.getOverlayPane());
-                rootContainer = container;
-                
-                    // Siempre forzar tamaño de pantalla completa al abrir la vista
+                // Siempre forzar tamaño de pantalla completa al abrir la vista
                     javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
                     javafx.geometry.Rectangle2D bounds = screen.getVisualBounds();
                     double w = bounds.getWidth();
@@ -153,34 +148,7 @@ public class ControladorControlador {
         });
     }
     
-    private void mostrarClienteHomeConPopup_OLD(UsuarioDTO usuario) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/sigmacine/ui/views/pagina_inicial.fxml"));
-            if (controllerFactory != null) loader.setControllerFactory(controllerFactory);
-            Parent root = loader.load();
-
-            ClienteController cliente = loader.getController();
-            cliente.init(usuario);
-            cliente.setCoordinador(this);
-
-            configurarBarraEnVista(root);
-
-            javafx.scene.Scene current = stage.getScene();
-            double w = current != null ? current.getWidth() : 900;
-            double h = current != null ? current.getHeight() : 600;
-            stage.setScene(new Scene(root, w > 0 ? w : 900, h > 0 ? h : 600));
-            stage.setMaximized(true);
-            stage.setTitle("Sigma Cine - Cliente");
-            stage.show();
-
-            mostrarPopupCiudad(() -> {});
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error cargando cliente_home", e);
-        }
-    }
-
-        private void mostrarPopupCiudadSimple() {
+    private void mostrarPopupCiudadSimple() {
         try {
             FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/sigmacine/ui/views/ciudad.fxml")
@@ -222,59 +190,7 @@ public class ControladorControlador {
         }
     }
 
-        private void mostrarPopupCiudad(Runnable onCiudadSelected) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/sigmacine/ui/views/ciudad.fxml")
-            );
-            if (controllerFactory != null) {
-                loader.setControllerFactory(controllerFactory);
-            }
-            Parent popupRoot = loader.load();
-
-            Stage popupStage = new Stage(StageStyle.TRANSPARENT);
-            if (stage != null) {
-                popupStage.initOwner(stage);
-                popupStage.initModality(Modality.WINDOW_MODAL);
-            } else {
-                popupStage.initModality(Modality.APPLICATION_MODAL);
-            }
-            popupStage.setResizable(false);
-
-            Scene scene = new Scene(popupRoot);
-            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
-            popupStage.setScene(scene);
-
-            scene.setOnKeyPressed(ev -> {
-                switch (ev.getCode()) {
-                    case ESCAPE -> popupStage.close();
-                    default -> { }
-                }
-            });
-
-            Object controller = loader.getController();
-            if (controller instanceof CiudadController ciudadController) {
-                ciudadController.setOnCiudadSelected(ciudad -> {
-                    sigmacine.aplicacion.session.Session.setSelectedCity(ciudad);
-                    popupStage.close();
-                });
-            }
-
-            popupStage.showAndWait();
-            
-            if (onCiudadSelected != null) {
-                Platform.runLater(onCiudadSelected);
-            }
-
-        } catch (Exception e) {
-            sigmacine.aplicacion.session.Session.setSelectedCity("Bogotá");
-            if (onCiudadSelected != null) {
-                Platform.runLater(onCiudadSelected);
-            }
-        }
-    }
-
-    public void mostrarLoginConEscenaAnterior(javafx.scene.Scene previousScene) {
+        public void mostrarLoginConEscenaAnterior(javafx.scene.Scene previousScene) {
         try {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/sigmacine/ui/views/login.fxml"));
             javafx.scene.Parent root = loader.load();

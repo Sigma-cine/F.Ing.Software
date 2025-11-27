@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import sigmacine.dominio.entity.Pelicula;
 import java.util.List;
 import java.util.ArrayList;
@@ -31,12 +30,7 @@ public class DetallePeliculaController {
     @FXML private Label lblGenero, lblClasificacion, lblDuracion, lblDirector, lblReparto;
 
     private Pelicula pelicula;
-    private List<Pelicula> backResults;
-    private String backTexto;
-
     public void setBackResults(List<Pelicula> results, String texto) {
-        this.backResults = results;
-        this.backTexto = texto;
     }
 
     @FXML

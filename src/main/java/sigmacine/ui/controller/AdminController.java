@@ -39,7 +39,6 @@ public class AdminController {
     @FXML
     private ProgressIndicator progressSpinner;
 
-    private UsuarioDTO usuario;
     private ControladorControlador coordinador;
 
     private final GestionPeliculasService gestionPeliculasService;
@@ -78,7 +77,6 @@ public class AdminController {
     }
 
     public void init(UsuarioDTO usuario, ControladorControlador coordinador) {
-        this.usuario = usuario;
         this.coordinador = coordinador;
         if (welcomeLabel != null) {
             welcomeLabel.setText("Bienvenido al Cine Sigma");
@@ -90,7 +88,6 @@ public class AdminController {
     private void onLogout() {
         Session.clear();
         Session.setSelectedCity(null);
-        usuario = null;
         if (coordinador != null) {
             coordinador.mostrarPaginaInicial();
         }

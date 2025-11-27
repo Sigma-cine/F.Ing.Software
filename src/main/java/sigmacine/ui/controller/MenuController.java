@@ -33,7 +33,6 @@ public class MenuController implements Initializable {
     @FXML private TextField txtBuscar;
     @FXML private Button btnVerCombos;
 
-    private UsuarioDTO usuario;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (txtBuscar != null) txtBuscar.setOnAction(e -> loadProducts(txtBuscar.getText()));
@@ -49,7 +48,7 @@ public class MenuController implements Initializable {
         });
     }
 
-    public void setUsuario(UsuarioDTO u) { this.usuario = u; }
+    public void setUsuario(UsuarioDTO u) { }
 
     private void showCombos() {
         try {

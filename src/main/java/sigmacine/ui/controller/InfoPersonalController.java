@@ -23,7 +23,7 @@ public class InfoPersonalController {
     @FXML private TextField txtNombres;
     @FXML private TextField txtApellidos;
     @FXML private TextField txtTelefono;
-    @FXML private TextField txtEmail; // ✔️ AGREGADO
+    @FXML private TextField txtEmail;
     @FXML private DatePicker dpFechaNacimiento;
     @FXML private PasswordField txtNuevaClave;
     @FXML private ImageView avatarImage;
@@ -55,7 +55,6 @@ public class InfoPersonalController {
         txtNombres.setText(usuarioActual.getNombre() != null ? usuarioActual.getNombre() : "");
         txtTelefono.setText(usuarioActual.getTelefono() != null ? usuarioActual.getTelefono() : "");
 
-        // ✔️ Cargar email
         txtEmail.setText(usuarioActual.getEmail() != null ? usuarioActual.getEmail() : "");
 
         dpFechaNacimiento.setValue(
@@ -89,10 +88,9 @@ public class InfoPersonalController {
     private void onGuardar() {
         if (usuarioActual == null) return;
 
-        // ✔️ Guardar datos
         usuarioActual.setNombre(txtNombres.getText());
         usuarioActual.setTelefono(txtTelefono.getText());
-        usuarioActual.setEmail(txtEmail.getText()); // ✔️ AGREGADO
+        usuarioActual.setEmail(txtEmail.getText());
 
         usuarioActual.setFechaNacimiento(dpFechaNacimiento.getValue());
 

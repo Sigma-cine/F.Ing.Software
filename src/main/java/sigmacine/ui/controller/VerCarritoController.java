@@ -6,7 +6,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.Scene;
 import java.math.BigDecimal;
 import sigmacine.aplicacion.data.CompraProductoDTO;
 import sigmacine.aplicacion.service.CarritoService;

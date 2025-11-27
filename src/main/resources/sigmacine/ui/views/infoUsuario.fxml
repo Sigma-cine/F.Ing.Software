@@ -45,7 +45,6 @@
                                       -fx-border-radius:100;
                                       -fx-background-radius:100;">
                         <padding>
-                            <!-- CORRECCIÓN: usar top/right/bottom/left en lugar de "all" -->
                             <Insets top="8" right="8" bottom="8" left="8"/>
                         </padding>
 

@@ -52,11 +52,9 @@ public class ConfirmacionCompraController {
     private List<CompraProductoDTO> items;
     private BigDecimal saldoAnterior;
     private BigDecimal saldoNuevo;
-    private SigmaCardService sigmaCardService;
-
     @FXML
     private void initialize() {
-        sigmaCardService = new SigmaCardService();
+        new SigmaCardService();
         // Por defecto ocultar el contenedor de SigmaCard
         if (sigmaCardContainer != null) {
             sigmaCardContainer.setVisible(false);

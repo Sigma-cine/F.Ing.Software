@@ -88,7 +88,6 @@ public class ClienteController {
     private Timeline promoAuto;
 
     private UsuarioDTO usuario;
-    private String ciudadSeleccionada;
     private ControladorControlador coordinador;
     private boolean postersRequested = false;
 
@@ -104,7 +103,6 @@ public class ClienteController {
 
         String ciudad = Session.getSelectedCity();
         if (ciudad != null && !ciudad.isBlank()) {
-            this.ciudadSeleccionada = ciudad;
         }
 
         javafx.animation.PauseTransition pause =
@@ -117,7 +115,6 @@ public class ClienteController {
 
     public void init(UsuarioDTO usuario, String ciudad) {
         this.usuario = usuario;
-        this.ciudadSeleccionada = ciudad;
         Session.setSelectedCity(ciudad);
         postersRequested = false;
 
@@ -223,7 +220,6 @@ public class ClienteController {
     private void initCarrusel() {
         if (promoPane == null || promoImg == null || dotsBox == null) return;
 
-        // 🔴 CAMBIO CLAVE: que el banner se ESTIRE de lado a lado
         promoImg.setPreserveRatio(false);
         promoImg.setSmooth(true);
 
@@ -254,6 +250,7 @@ public class ClienteController {
             switch (e.getCode()) {
                 case LEFT  -> prevSlide();
                 case RIGHT -> nextSlide();
+                default -> throw new IllegalArgumentException("Unexpected value: " + e.getCode());
             }
         });
     }

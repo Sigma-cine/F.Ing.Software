@@ -23,8 +23,6 @@ public class VerHistorialController {
     @FXML
     private Button btnVolver;
     
-    private javafx.scene.Scene previousScene;
-    
     private VerHistorialService historialService;
     private String usuarioEmail;
 
@@ -43,7 +41,6 @@ public class VerHistorialController {
     }
     
     public void setPreviousScene(javafx.scene.Scene scene) {
-        this.previousScene = scene;
     }
     
     public void setUsuarioEmail(String email) {
