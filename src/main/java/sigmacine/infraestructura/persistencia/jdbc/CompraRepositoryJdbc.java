@@ -175,8 +175,6 @@ public class CompraRepositoryJdbc implements CompraRepository {
                                                             // mark silla as occupied
                                                             try (PreparedStatement psUpdate = con.prepareStatement("UPDATE SILLA SET ESTADO_BOOL = FALSE WHERE ID = ?")) {
                                                                 psUpdate.setLong(1, sillaId);
-                                                                int updated = psUpdate.executeUpdate();
-                                                                // updated
                                                             }
                                                             sillaInserted = true;
                                                 }
@@ -196,8 +194,6 @@ public class CompraRepositoryJdbc implements CompraRepository {
                                                         // mark silla as occupied (global match)
                                                         try (PreparedStatement psUpdate = con.prepareStatement("UPDATE SILLA SET ESTADO_BOOL = FALSE WHERE ID = ?")) {
                                                             psUpdate.setLong(1, sillaId);
-                                                            int updated = psUpdate.executeUpdate();
-                                                            // updated
                                                         }
                                                     } else {
                                                             // no match found; optionally create dynamic seat
@@ -224,8 +220,6 @@ public class CompraRepositoryJdbc implements CompraRepository {
                                                                     psBoletoSilla.executeUpdate();
                                                                     try (PreparedStatement psUpdate = con.prepareStatement("UPDATE SILLA SET ESTADO_BOOL = FALSE WHERE ID = ?")) {
                                                                         psUpdate.setLong(1, nextSillaId);
-                                                                        int updated = psUpdate.executeUpdate();
-                                                                        // updated
                                                                     }
                                                                     sillaInserted = true;
                                                                 } catch (SQLException e) {
