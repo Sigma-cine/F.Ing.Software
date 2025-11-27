@@ -5,7 +5,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -32,8 +31,6 @@ public class CombosController implements Initializable {
     @FXML private GridPane gridCombos;
     @FXML private TextField txtBuscar;
 
-    private UsuarioDTO usuario;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Solo mantener el Singleton para marcar la página activa
@@ -47,7 +44,7 @@ public class CombosController implements Initializable {
         loadCombos(null);
     }
 
-    public void setUsuario(UsuarioDTO u) { this.usuario = u; }
+    public void setUsuario(UsuarioDTO u) { }
 
     private void loadCombos(String filter) {
         try {
@@ -263,9 +260,9 @@ public class CombosController implements Initializable {
     }
 
     private static class ComboItem {
-        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String sabores; final String imageUrl;
+        final Long id; final String nombre; final String descripcion; final BigDecimal precio; final Image image; final String imageUrl;
         ComboItem(Long id, String nombre, String descripcion, BigDecimal precio, Image image, String sabores, String imageUrl) { 
-            this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.sabores = sabores; this.imageUrl = imageUrl; 
+            this.id = id; this.nombre = nombre; this.descripcion = descripcion; this.precio = precio; this.image = image; this.imageUrl = imageUrl; 
         }
     }
 }

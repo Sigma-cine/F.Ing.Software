@@ -3,21 +3,12 @@ package sigmacine.ui.controller;
 import java.util.Map;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.geometry.Side;
-import javafx.geometry.Bounds;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
 import sigmacine.aplicacion.data.UsuarioDTO;
 import sigmacine.aplicacion.session.Session;
-import sigmacine.aplicacion.service.CarritoService;
-import sigmacine.aplicacion.data.CompraProductoDTO;
 
 public class BarraController {
 
@@ -41,9 +32,7 @@ public class BarraController {
     @FXML private MenuItem miCerrarSesion;
     @FXML private MenuItem miMiCuenta;
 
-    private ContextMenu carritoDropdown;
     private static BarraController instance;
-    private static BarraController singleton;
     private javafx.stage.Stage carritoStage;
 
     @FXML
@@ -215,68 +204,6 @@ public class BarraController {
         });
     }
     
-    /* Función comentada - ahora usamos popup FXML
-    private void actualizarCarritoDropdown() {
-        carritoDropdown.getItems().clear();
-        
-        Label titulo = new Label("Carrito de Compras");
-        titulo.setStyle("-fx-font-size: 14; -fx-padding: 5 0 10 0;");
-        
-        Separator separator = new Separator();
-        
-        CustomMenuItem tituloItem = new CustomMenuItem(titulo, false);
-        CustomMenuItem separatorItem = new CustomMenuItem(separator, false);
-        tituloItem.setHideOnClick(false);
-        separatorItem.setHideOnClick(false);
-        
-        carritoDropdown.getItems().addAll(tituloItem, separatorItem);
-        
-        // Obtener items del carrito real
-        CarritoService carrito = CarritoService.getInstance();
-        var items = carrito.getItems();
-        
-        if (items.isEmpty()) {
-            Label vacio = new Label("Tu carrito está vacío");
-            vacio.setStyle("-fx-padding: 15 0; -fx-text-fill: #666; -fx-alignment: center;");
-            CustomMenuItem vacioItem = new CustomMenuItem(vacio, false);
-            vacioItem.setHideOnClick(false);
-            carritoDropdown.getItems().add(vacioItem);
-        } else {
-            // Mostrar cada item del carrito
-            for (CompraProductoDTO item : items) {
-                String texto = String.format("%s x%d - $%.2f", 
-                    item.getNombre() != null ? item.getNombre() : "Item", 
-                    item.getCantidad(),
-                    item.getPrecioUnitario().doubleValue() * item.getCantidad());
-                
-                Label lblItem = new Label(texto);
-                lblItem.setStyle("-fx-padding: 3 0; -fx-text-fill: #333;");
-                CustomMenuItem itemMenu = new CustomMenuItem(lblItem, false);
-                itemMenu.setHideOnClick(false);
-                carritoDropdown.getItems().add(itemMenu);
-            }
-            
-            // Mostrar total
-            Label total = new Label(String.format("Total: $%.2f", carrito.getTotal().doubleValue()));
-            total.setStyle("-fx-padding: 10 0 5 0; -fx-font-weight: bold;");
-            CustomMenuItem totalItem = new CustomMenuItem(total, false);
-            totalItem.setHideOnClick(false);
-            carritoDropdown.getItems().add(totalItem);
-        }
-        
-        Button btnVerCarrito = new Button("Ver carrito completo");
-        btnVerCarrito.setStyle("-fx-background-color: #8A2F24; -fx-text-fill: white; -fx-pref-width: 100%;");
-        btnVerCarrito.setOnAction(e -> {
-            carritoDropdown.hide();
-            navegarACarritoCompleto();
-        });
-        
-        CustomMenuItem botonItem = new CustomMenuItem(btnVerCarrito, false);
-        botonItem.setHideOnClick(false);
-        carritoDropdown.getItems().add(botonItem);
-    }
-    */
-
     private void navegarACartelera() {
         // Detener cualquier trailer que se esté reproduciendo
         VerDetallePeliculaController.stopCurrentGlobalPlayer();
@@ -304,28 +231,6 @@ public class BarraController {
         ControladorControlador coordinador = ControladorControlador.getInstance();
         if (coordinador != null) {
             coordinador.mostrarSigmaCard();
-        }
-    }
-
-    private void navegarACarrito() {
-        // Función comentada - ahora usamos mostrarCarritoPopup()
-        // Este método ya no se necesita porque el clic se maneja en configurarCarritoDropdown()
-        // pero lo mantenemos para compatibilidad
-        /*
-        actualizarCarritoDropdown();
-        if (carritoDropdown != null) {
-            carritoDropdown.show(btnCart, Side.BOTTOM, 0, 0);
-        }
-        */
-    }
-
-    private void navegarACarritoCompleto() {
-        // Detener cualquier trailer que se esté reproduciendo
-        VerDetallePeliculaController.stopCurrentGlobalPlayer();
-        
-        ControladorControlador coordinador = ControladorControlador.getInstance();
-        if (coordinador != null) {
-            coordinador.mostrarCarritoCompleto();
         }
     }
 
@@ -584,16 +489,7 @@ public class BarraController {
         return txtBuscar;
     }
 
-    private void mostrarMensajeProximamente(String funcionalidad) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Próximamente");
-        alert.setHeaderText(funcionalidad);
-        alert.setContentText("Esta funcionalidad estará disponible próximamente.");
-        alert.showAndWait();
-    }
-
     public static void setInstance(BarraController instance) {
-    BarraController.singleton = instance;
     }
 
 }

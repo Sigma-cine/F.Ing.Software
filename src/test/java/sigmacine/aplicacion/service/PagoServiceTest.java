@@ -7,8 +7,6 @@ import sigmacine.aplicacion.data.PagoTarjetaDTO;
 import sigmacine.aplicacion.data.ResultadoPagoDTO;
 import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
-import sigmacine.aplicacion.service.PagoService;
-import sigmacine.aplicacion.service.SigmaCardService;
 
 class PagoServiceTest {
     
@@ -887,12 +885,8 @@ class PagoServiceTest {
     void constructorConRandomYDoSleep() {
         // Crear una instancia con Random controlado pero SIN sobreescribir doSleep
         java.util.Random mockRandom = new java.util.Random() {
-            private int callCount = 0;
             @Override
             public int nextInt(int bound) {
-                // Primera llamada para tiempo de sleep: devolver 0 (mínimo tiempo)
-                // Segunda llamada para aprobación: devolver 0 (< 90, aprobado)
-                callCount++;
                 return 0;
             }
         };

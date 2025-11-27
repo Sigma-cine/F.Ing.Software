@@ -451,28 +451,4 @@ public class PagoController {
                 "No se pudo mostrar la confirmación de compra: " + ex.getMessage());
         }
     }
-
-    private void regresarAlCarrito() {
-        try {
-            ControladorControlador coordinador = ControladorControlador.getInstance();
-            if (coordinador != null) {
-                javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader();
-                loader.setLocation(getClass().getResource("/sigmacine/ui/views/verCarrito.fxml"));
-                javafx.scene.Parent root = loader.load();
-                
-                // Obtener la stage principal y cambiar su scene
-                javafx.stage.Stage mainStage = coordinador.getMainStage();
-                if (mainStage != null) {
-                    javafx.scene.Scene currentScene = mainStage.getScene();
-                    double w = currentScene != null ? currentScene.getWidth() : 960;
-                    double h = currentScene != null ? currentScene.getHeight() : 600;
-                    mainStage.setScene(new javafx.scene.Scene(root, w > 0 ? w : 960, h > 0 ? h : 600));
-                    mainStage.setTitle("Carrito");
-                }
-            }
-        } catch (Exception ex) {
-            System.err.println("Error al regresar al carrito: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
 }

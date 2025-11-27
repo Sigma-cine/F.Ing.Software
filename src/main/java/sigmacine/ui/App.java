@@ -2,8 +2,6 @@ package sigmacine.ui;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import java.sql.Connection;
-
 import sigmacine.infraestructura.configDataBase.DatabaseConfig;
 import sigmacine.infraestructura.persistencia.jdbc.UsuarioRepositoryJdbc;
 import sigmacine.infraestructura.configDataBase.ScriptLoader;

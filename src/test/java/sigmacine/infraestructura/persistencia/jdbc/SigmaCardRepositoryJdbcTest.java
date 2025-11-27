@@ -6,7 +6,6 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;

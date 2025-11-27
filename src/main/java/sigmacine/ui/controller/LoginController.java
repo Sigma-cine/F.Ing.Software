@@ -25,7 +25,6 @@ public class LoginController {
     
     // Contexto para volver a la pantalla anterior
     private javafx.scene.Scene previousScene;
-    private boolean wasMaximized;
     private Long pendingFuncionId;
     private String pendingTitulo;
     private String pendingHora;
@@ -43,7 +42,7 @@ public class LoginController {
         this.previousScene = scene; 
         // Guardar el estado de maximización cuando se guarda la escena
         if (scene != null && scene.getWindow() instanceof javafx.stage.Stage) {
-            this.wasMaximized = ((javafx.stage.Stage) scene.getWindow()).isMaximized();
+            ((javafx.stage.Stage) scene.getWindow()).isMaximized();
         }
     }
     

@@ -25,8 +25,6 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
     
     // Variables estáticas para control global de trailers
     private static MediaPlayer currentGlobalPlayer = null;
-    private static VerDetallePeliculaController currentController = null;
-    
     @Override
     public void setPelicula(Pelicula p) {
         // Detener cualquier trailer global que se esté reproduciendo
@@ -162,7 +160,6 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
                 // Detener cualquier otro player y establecer este como actual
                 stopCurrentGlobalPlayer();
                 currentGlobalPlayer = mediaPlayer;
-                currentController = this;
                 mediaPlayer.play();
             }
         });
@@ -179,7 +176,6 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
                 mediaPlayer.seek(javafx.util.Duration.ZERO);
                 if (currentGlobalPlayer == mediaPlayer) {
                     currentGlobalPlayer = null;
-                    currentController = null;
                 }
             }
         });
@@ -227,7 +223,6 @@ public class VerDetallePeliculaController extends ContenidoCarteleraController {
                 System.err.println("Error deteniendo MediaPlayer: " + e.getMessage());
             }
             currentGlobalPlayer = null;
-            currentController = null;
         }
     }
 }
