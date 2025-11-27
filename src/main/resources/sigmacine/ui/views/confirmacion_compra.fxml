@@ -126,7 +126,7 @@
                                 
                                 <Button fx:id="btnVerHistorial" onAction="#onVerHistorial" 
                                         style="-fx-background-color: #555555; -fx-font-size: 15px; -fx-text-fill: white; -fx-padding: 12 35; -fx-background-radius: 25; -fx-font-weight: bold;" 
-                                        text="Ver Historial de Compras" />
+                                        text="Mis Boletas" />
                             </children>
                         </HBox>
 
