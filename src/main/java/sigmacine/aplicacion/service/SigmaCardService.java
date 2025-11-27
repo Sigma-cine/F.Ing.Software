@@ -56,7 +56,7 @@ public class SigmaCardService {
 
 	public String format(BigDecimal value) {
 		if (value == null) value = BigDecimal.ZERO;
-		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
-		return nf.format(value);
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-CO"));
+        return nf.format(value);
 	}
 }

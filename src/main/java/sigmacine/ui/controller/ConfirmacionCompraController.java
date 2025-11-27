@@ -328,7 +328,7 @@ public class ConfirmacionCompraController {
         if (valor == null) {
             valor = BigDecimal.ZERO;
         }
-        NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("es-CO"));
         return nf.format(valor);
     }
 
